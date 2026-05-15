@@ -7,6 +7,10 @@ default:
 skills-sync:
   @cmd /c scripts\windows\sync-codex-skills.cmd
 
+# Open ~/.codex/skills in File Explorer
+skills-open:
+  @explorer "$env:USERPROFILE\.codex\skills"
+
 # Keep auto-linking newly created repo skills
 skills-watch:
   @powershell -ExecutionPolicy Bypass -File .\scripts\windows\watch-codex-skills.ps1
