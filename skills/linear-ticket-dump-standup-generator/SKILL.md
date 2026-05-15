@@ -9,6 +9,14 @@ Read the latest compatible ticket dump, collect a selection from the user, gener
 
 Use the dump file as source of truth. Do not query Linear unless the user explicitly asks.
 
+## Agent Execution Contract
+
+- Default behavior: spawn one new agent per requested date and run those per-date agents in parallel.
+- Single-date request: spawn one agent.
+- Date-range request: expand to daily dates and spawn one agent per date in parallel.
+- Pass through model and reasoning effort per agent from user input when provided, otherwise use current thread defaults.
+- Parent-orchestrated mode: if invoked by `$linear-standup-flow` with an explicit single-date handoff and dump path, do not spawn another agent; execute inline for that single date only.
+
 ## Execution Steps
 
 1. Locate the latest compatible dump file.
@@ -36,11 +44,12 @@ Use the dump file as source of truth. Do not query Linear unless the user explic
 5. Generate stand-up script from selected tickets only.
 - Treat existing `# Stand-up Script` text as output-only; never use it as input evidence.
 - Build the script from selected ticket sections and their activity flow/comments.
-- Use selected-ticket data as the only evidence source.
+- Use selected-ticket data as the only evidence source, including attribution metadata such as `My role`, `Initial dev assignee`, and testing/verification events.
 - For each selected ticket, infer and state:
 - Starting point: how/why the ticket began from the earliest relevant activity and notes.
 - Current state: where the ticket stands now based on latest status and latest meaningful activity, blended naturally into the same paragraph.
 - Keep chronology strict per ticket; use `Activity flow` itself as the narrative backbone and include all meaningful middle steps.
+- Keep phrasing role-consistent per ticket while preserving chronology.
 - Write objective statements from explicit data points (status, activity date, timeline events, comments, activity notes, test results), while allowing practical wording that makes the update clear to listeners.
 - Prefer concrete action wording tied to evidence and transform event types into spoken updates:
 - Ticket creation: use natural non-identifier phrasing such as `I created a ticket to address [issue]` or `I created a ticket for [problem area]`.
@@ -48,6 +57,10 @@ Use the dump file as source of truth. Do not query Linear unless the user explic
 - Testing: narrate as `I tested ...` and include the concrete result.
 - Cancel/revise/scope/status change events: state plainly that the ticket was cancelled/revised/re-scoped/moved and include the stated reason/details when present.
 - Include comment content and relevant details matter-of-factly; do not omit important specifics.
+- Attribution guardrails:
+- If `My role` and activity evidence indicate tester-only involvement for a ticket, use testing/verification language only and do not claim implementation/fix ownership.
+- Use implementation/fix wording for the user only when explicit ticket evidence shows user dev actions on that ticket.
+- If implementation/fix was done by others (or is unattributed), describe outcome neutrally without claiming the user performed it.
 - For `Done` tickets with verification evidence:
 - If the ticket is bug-oriented (fix/error/issue/broken/incorrect), describe outcome as fixed.
 - If the ticket is feature/enhancement-oriented (add/implement/enable/new behavior), describe outcome as implemented.
@@ -116,3 +129,7 @@ No major blockers right now.
 11. On reruns, avoid recency bias by ignoring previous script prose and re-deriving narrative from selected-ticket references plus `# All Scraped Tickets` data only.
 12. For each selected ticket, preserve the complete practical activity chain in spoken form; never omit known middle steps between start and current state.
 13. Keep inference limited to start/current-state framing and event-to-speech conversion grounded in selected-ticket evidence; when uncertain, stay literal to ticket data.
+14. On reruns, ignore all prior stand-up prose and regenerate from selected-ticket evidence plus attribution metadata (`My role`, `Initial dev assignee`, testing/verification events).
+15. Never attribute implementation/fix work to the user without explicit per-ticket dev-action evidence.
+16. For tester-only tickets, narration must stay in testing/verification terms and must not claim the user implemented or fixed the ticket.
+17. In parent-orchestrated single-date mode, do not spawn nested agents unless explicitly requested.
