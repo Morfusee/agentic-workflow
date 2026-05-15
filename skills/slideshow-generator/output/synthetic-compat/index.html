@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Synthetic Demo Deck</title>
+  <style>:root {
+  --bg: #0b1220;
+  --panel: #101827;
+  --text: #f8fafc;
+  --muted: #cbd5e1;
+  --accent: #14b8a6;
+  --warn: #f59e0b;
+  --ok: #34d399;
+  --risk: #f87171;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: radial-gradient(circle at 15% 15%, #1e293b 0%, #0b1220 45%, #020617 100%); color: var(--text); font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+#app, #presenter-app { width: 100%; height: 100%; }
+.slide { width: 100%; height: 100%; padding: 2.5rem 3rem; display: grid; grid-template-rows: auto 1fr auto; gap: 1rem; }
+header { display: grid; gap: 0.5rem; }
+.title { margin: 0; font-size: 2.1rem; font-weight: 700; line-height: 1.15; }
+.status { display: inline-block; width: fit-content; padding: 0.3rem 0.65rem; border-radius: 999px; border: 1px solid rgba(148, 163, 184, 0.45); font-size: 0.88rem; }
+.emphasis { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.emphasis span { background: rgba(20, 184, 166, 0.16); border: 1px solid rgba(20, 184, 166, 0.5); border-radius: 999px; padding: 0.2rem 0.55rem; font-size: 0.8rem; text-transform: lowercase; }
+.card { background: rgba(16, 24, 39, 0.9); border: 1px solid rgba(148, 163, 184, 0.28); border-radius: 14px; padding: 1rem 1.1rem; min-height: 0; }
+.slide-main { display: grid; gap: 0.8rem; min-height: 0; overflow: hidden; }
+.main-text p { margin: 0; line-height: 1.4; font-size: 1.05rem; }
+.meta-list, .item-list { margin: 0; padding-left: 1.2rem; display: grid; gap: 0.35rem; }
+.timeline { display: grid; gap: 0.45rem; }
+.timeline-item { font-size: 0.98rem; line-height: 1.35; color: var(--muted); }
+.footer { color: var(--muted); font-size: 0.9rem; }
+
+.layout-hero .slide-main { grid-template-columns: 1fr; grid-template-rows: auto auto auto auto auto; }
+.layout-two-column .slide-main { grid-template-columns: 1.1fr 0.9fr; grid-template-rows: auto auto auto; }
+.layout-two-column .main-visuals { grid-column: 2; grid-row: 1 / span 3; }
+.layout-timeline-focus .slide-main { grid-template-columns: 1fr; grid-template-rows: auto auto auto auto auto; }
+.layout-chart-focus .slide-main { grid-template-columns: 0.8fr 1.2fr; grid-template-rows: auto auto auto; }
+.layout-chart-focus .main-visuals { grid-column: 2; grid-row: 1 / span 3; }
+.layout-comparison .slide-main { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto auto; }
+.layout-comparison .main-items { grid-column: 2; grid-row: 1 / span 3; }
+.layout-dense-notes .slide-main { grid-template-columns: 1fr; grid-template-rows: auto auto auto auto auto; }
+
+.kpi-strip { display: grid; grid-template-columns: repeat(3, minmax(120px, 1fr)); gap: 0.55rem; }
+.kpi { background: rgba(30, 41, 59, 0.65); border: 1px solid rgba(148, 163, 184, 0.24); border-radius: 10px; padding: 0.55rem; }
+.kpi span { display: block; color: var(--muted); font-size: 0.82rem; }
+.kpi strong { display: block; margin-top: 0.2rem; font-size: 1.35rem; }
+
+.viz-bars { height: 180px; display: flex; align-items: flex-end; gap: 0.5rem; }
+.bar-wrap { flex: 1; min-width: 60px; display: grid; justify-items: center; gap: 0.2rem; }
+.bar { width: 100%; max-width: 44px; border-radius: 8px 8px 0 0; background: linear-gradient(180deg, #22d3ee 0%, #0ea5e9 100%); }
+.bar-label, .bar-value { font-size: 0.72rem; color: var(--muted); text-align: center; }
+
+.viz-trend { width: 100%; max-width: 640px; height: auto; }
+.viz-trend polyline { fill: none; stroke: #14b8a6; stroke-width: 4; stroke-linejoin: round; stroke-linecap: round; }
+
+.viz-flow { display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap; }
+.flow-node { width: 14px; height: 14px; border-radius: 999px; background: #60a5fa; }
+.flow-node-last { background: #f59e0b; }
+.flow-link { width: 20px; height: 2px; background: #64748b; }
+
+.viz-map { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.map-node { border-radius: 999px; border: 1px solid rgba(45, 212, 191, 0.6); background: rgba(20, 184, 166, 0.14); padding: 0.22rem 0.6rem; font-size: 0.82rem; }
+
+.viz-risk { border: 1px solid rgba(248, 113, 113, 0.45); background: rgba(127, 29, 29, 0.2); border-radius: 10px; padding: 0.6rem; }
+.risk-header { color: #fca5a5; font-weight: 700; margin-bottom: 0.3rem; }
+.viz-risk ul { margin: 0; padding-left: 1.1rem; }
+.viz-risk p { margin: 0; color: var(--muted); }
+
+.presenter-body { background: #020617; }
+.presenter-grid { height: 100%; padding: 1rem; display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 0.9rem; }
+.presenter-script { white-space: pre-wrap; line-height: 1.45; font-size: 1rem; }
+.meta { color: var(--muted); font-size: 0.96rem; }
+</style>
+</head>
+<body>
+  <main id="app"></main>
+  <script>window.SLIDE_DATA = {"title": "Synthetic Demo Deck", "subtitle": "Renderer smoke test", "generatedAt": "2026-05-16T00:00:00Z", "context": {"source": "test"}, "slides": [{"type": "title", "title": "Synthetic Demo Deck", "body": "Smoke test for generic renderer", "meta": ["2 content slides"], "timeline": [], "presenterNotes": "Open with the purpose of this test deck.", "status": "overview", "items": []}, {"type": "content", "title": "Slide Two", "body": "Main content here", "meta": ["meta line"], "timeline": [{"timestamp": "2026-05-15T10:00:00Z", "event": "created"}], "presenterNotes": "Discuss the event timeline.", "status": "in-progress", "items": ["Item A", "Item B"]}]};</script>
+  <script>(function () {
+  const deck = window.SLIDE_DATA || { slides: [] };
+  const slides = Array.isArray(deck.slides) ? deck.slides : [];
+  const app = document.getElementById("app");
+  const channelName = "generic-slideshow-sync";
+  const channel = typeof BroadcastChannel !== "undefined" ? new BroadcastChannel(channelName) : null;
+  const allowedLayouts = ["hero", "two-column", "timeline-focus", "chart-focus", "comparison", "dense-notes"];
+  const allowedVisuals = ["kpi-strip", "status-bars", "trend-line", "flow-nodes", "relationship-map", "risk-matrix"];
+  let index = 0;
+  let presenterWindow = null;
+
+  function esc(value) {
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
+  }
+
+  function emitState() {
+    const payload = { type: "slide-change", index };
+    if (channel) channel.postMessage(payload);
+    localStorage.setItem(channelName, JSON.stringify(payload));
+  }
+
+  function timelineMarkup(timeline, maxItems) {
+    const events = Array.isArray(timeline) ? timeline.slice(0, maxItems) : [];
+    if (!events.length) return '<div class="timeline-item">No timeline events.</div>';
+    return events.map((ev) => `<div class="timeline-item">${esc(ev.timestamp)} - ${esc(ev.event)}</div>`).join("");
+  }
+
+  function listMarkup(items, className, maxItems) {
+    if (!Array.isArray(items) || !items.length) return "";
+    return `<ul class="${className}">${items.slice(0, maxItems).map((i) => `<li>${esc(i)}</li>`).join("")}</ul>`;
+  }
+
+  function normalizedPlan(slide) {
+    const defaults = deck.renderDefaults || {};
+    const plan = slide.renderPlan || {};
+    const layout = allowedLayouts.includes(plan.layout) ? plan.layout : (allowedLayouts.includes(defaults.defaultLayout) ? defaults.defaultLayout : "two-column");
+    const visuals = Array.isArray(plan.visuals)
+      ? plan.visuals.filter((v) => v && allowedVisuals.includes(v.type)).slice(0, 3)
+      : [];
+    const constraints = {
+      maxMetaItems: Number(plan.constraints?.maxMetaItems ?? defaults.constraints?.maxMetaItems ?? 4),
+      maxTimelineItems: Number(plan.constraints?.maxTimelineItems ?? defaults.constraints?.maxTimelineItems ?? 5),
+      maxBulletItems: Number(plan.constraints?.maxBulletItems ?? defaults.constraints?.maxBulletItems ?? 6),
+    };
+    return {
+      layout,
+      regions: plan.regions && typeof plan.regions === "object" ? plan.regions : {},
+      visuals,
+      emphasis: Array.isArray(plan.emphasis) ? plan.emphasis : [],
+      constraints,
+    };
+  }
+
+  function statusCounts() {
+    return deck.context?.statusCounts && typeof deck.context.statusCounts === "object" ? deck.context.statusCounts : {};
+  }
+
+  function dayCounts() {
+    return deck.context?.dayCounts && typeof deck.context.dayCounts === "object" ? deck.context.dayCounts : {};
+  }
+
+  function renderBars(data) {
+    const entries = Object.entries(data);
+    if (!entries.length) return "";
+    const maxValue = Math.max(...entries.map(([, v]) => Number(v) || 0), 1);
+    return `<div class="viz-bars">${entries
+      .map(([name, value]) => {
+        const safeValue = Number(value) || 0;
+        const h = Math.max(10, Math.round((safeValue / maxValue) * 100));
+        return `<div class="bar-wrap"><div class="bar" style="height:${h}%"></div><span class="bar-label">${esc(name)}</span><span class="bar-value">${safeValue}</span></div>`;
+      })
+      .join("")}</div>`;
+  }
+
+  function renderTrend(data) {
+    const entries = Object.entries(data);
+    if (!entries.length) return "";
+    const maxValue = Math.max(...entries.map(([, v]) => Number(v) || 0), 1);
+    const width = 600;
+    const height = 180;
+    const step = entries.length === 1 ? 0 : (width - 40) / (entries.length - 1);
+    const points = entries
+      .map(([, v], i) => {
+        const x = 20 + i * step;
+        const y = height - 20 - ((Number(v) || 0) / maxValue) * (height - 40);
+        return `${x},${y}`;
+      })
+      .join(" ");
+    return `<svg class="viz-trend" viewBox="0 0 ${width} ${height}" role="img" aria-label="Activity trend">
+      <polyline points="${points}" />
+    </svg>`;
+  }
+
+  function renderFlowNodes(timeline) {
+    const total = Math.max(1, (Array.isArray(timeline) ? timeline.length : 0));
+    return `<div class="viz-flow">${Array.from({ length: total })
+      .map((_, i) => `<span class="flow-node ${i === total - 1 ? "flow-node-last" : ""}"></span>${i < total - 1 ? '<span class="flow-link"></span>' : ""}`)
+      .join("")}</div>`;
+  }
+
+  function renderRelationshipMap(meta, items) {
+    const nodes = [...(meta || []), ...(items || [])].slice(0, 5);
+    if (!nodes.length) return "";
+    return `<div class="viz-map">${nodes.map((n) => `<span class="map-node">${esc(n)}</span>`).join("")}</div>`;
+  }
+
+  function renderRiskMatrix(items, unresolvedCount) {
+    const risks = Array.isArray(items) ? items.slice(0, 4) : [];
+    const riskLevel = unresolvedCount > 0 ? "High" : "Low";
+    return `<div class="viz-risk"><div class="risk-header">Risk posture: ${riskLevel}</div>${risks.length ? `<ul>${risks.map((r) => `<li>${esc(r)}</li>`).join("")}</ul>` : "<p>No active risks listed.</p>"}</div>`;
+  }
+
+  function visualMarkup(slide, plan) {
+    if (!plan.visuals.length && slide.visual === "ticket-flow") {
+      return renderFlowNodes(slide.timeline);
+    }
+    const unresolvedCount = Number(deck.context?.unresolvedCount || 0);
+    return plan.visuals
+      .map((visual) => {
+        if (visual.type === "kpi-strip") {
+          const total = Number(deck.context?.ticketCount || 0);
+          const unresolved = unresolvedCount;
+          const resolved = Math.max(0, total - unresolved);
+          return `<div class="kpi-strip"><div class="kpi"><span>Total</span><strong>${total}</strong></div><div class="kpi"><span>Resolved</span><strong>${resolved}</strong></div><div class="kpi"><span>Unresolved</span><strong>${unresolved}</strong></div></div>`;
+        }
+        if (visual.type === "status-bars") return renderBars(statusCounts());
+        if (visual.type === "trend-line") return renderTrend(dayCounts());
+        if (visual.type === "flow-nodes") return renderFlowNodes(slide.timeline);
+        if (visual.type === "relationship-map") return renderRelationshipMap(slide.meta, slide.items);
+        if (visual.type === "risk-matrix") return renderRiskMatrix(slide.items, unresolvedCount);
+        return "";
+      })
+      .join("");
+  }
+
+  function render() {
+    if (!slides.length) {
+      app.innerHTML = '<section class="slide"><h1 class="title">No slides available</h1></section>';
+      return;
+    }
+
+    const s = slides[index];
+    const plan = normalizedPlan(s);
+    const metaItems = Array.isArray(s.meta) ? s.meta : [];
+    const status = s.status ? `<span class="status">Status: ${esc(s.status)}</span>` : "";
+    const emphasis = plan.emphasis.length ? `<div class="emphasis">${plan.emphasis.map((e) => `<span>${esc(e)}</span>`).join("")}</div>` : "";
+
+    app.innerHTML = `
+      <section class="slide layout-${plan.layout}">
+        <header>
+          <h1 class="title">${esc(s.title || "Untitled Slide")}</h1>
+          ${status}
+          ${emphasis}
+        </header>
+        <section class="card slide-main">
+          <div class="main-text"><p>${esc(s.body || "")}</p></div>
+          <div class="main-visuals">${visualMarkup(s, plan)}</div>
+          <div class="main-meta">${listMarkup(metaItems, "meta-list", plan.constraints.maxMetaItems)}</div>
+          <div class="main-timeline"><div class="timeline">${timelineMarkup(s.timeline, plan.constraints.maxTimelineItems)}</div></div>
+          <div class="main-items">${listMarkup(s.items, "item-list", plan.constraints.maxBulletItems)}</div>
+        </section>
+        <footer class="footer">Slide ${index + 1} / ${slides.length} | Keys: Left/Right, Home/End, F fullscreen, P presenter</footer>
+      </section>`;
+  }
+
+  function moveTo(nextIndex) {
+    if (!slides.length) return;
+    index = Math.max(0, Math.min(slides.length - 1, nextIndex));
+    render();
+    emitState();
+  }
+
+  function openPresenter() {
+    if (presenterWindow && !presenterWindow.closed) return presenterWindow.focus();
+    presenterWindow = window.open("presenter.html", "generic-slideshow-presenter", "width=1280,height=800");
+  }
+
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) return document.documentElement.requestFullscreen?.();
+    document.exitFullscreen?.();
+  }
+
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowRight") moveTo(index + 1);
+    if (e.key === "ArrowLeft") moveTo(index - 1);
+    if (e.key === "Home") moveTo(0);
+    if (e.key === "End") moveTo(slides.length - 1);
+    if (e.key.toLowerCase() === "f") toggleFullscreen();
+    if (e.key.toLowerCase() === "p") openPresenter();
+  });
+
+  window.addEventListener("storage", (event) => {
+    if (event.key !== channelName || !event.newValue) return;
+    try {
+      const payload = JSON.parse(event.newValue);
+      if (payload.type === "slide-change") moveTo(payload.index);
+    } catch (_) {}
+  });
+
+  render();
+  emitState();
+})();
+</script>
+</body>
+</html>

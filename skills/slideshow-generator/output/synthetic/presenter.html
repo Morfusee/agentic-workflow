@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Presenter View - Synthetic Demo Deck</title>
+  <style>:root {
+  --bg: #0f172a;
+  --panel: #111827;
+  --text: #f8fafc;
+  --muted: #cbd5e1;
+  --accent: #22d3ee;
+  --warn: #f59e0b;
+  --ok: #34d399;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--bg); color: var(--text); font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+#app, #presenter-app { width: 100%; height: 100%; }
+.slide { width: 100%; height: 100%; padding: 3rem 4rem; display: grid; grid-template-rows: auto 1fr auto; gap: 1.25rem; }
+.title { font-size: 2.2rem; font-weight: 700; line-height: 1.2; }
+.meta { color: var(--muted); font-size: 1.05rem; }
+.card { background: rgba(17, 24, 39, 0.92); border: 1px solid rgba(148, 163, 184, 0.35); border-radius: 14px; padding: 1rem 1.25rem; }
+.timeline { display: grid; gap: 0.55rem; }
+.timeline-item { font-size: 1rem; line-height: 1.35; }
+.status { display: inline-block; padding: 0.35rem 0.7rem; border-radius: 999px; border: 1px solid rgba(148, 163, 184, 0.45); font-size: 0.9rem; }
+.footer { color: var(--muted); font-size: 0.95rem; }
+.kpis { display: flex; gap: 1rem; flex-wrap: wrap; }
+.kpi { min-width: 180px; }
+.kpi .label { font-size: 0.9rem; color: var(--muted); }
+.kpi .value { font-size: 1.7rem; font-weight: 700; }
+.presenter-body { background: #020617; }
+.presenter-grid { height: 100%; padding: 1.2rem; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 1rem; }
+.presenter-script { white-space: pre-wrap; line-height: 1.45; font-size: 1.05rem; }
+.badge-ok { color: var(--ok); }
+.badge-warn { color: var(--warn); }
+</style>
+</head>
+<body class="presenter-body">
+  <main id="presenter-app"></main>
+  <script>window.SLIDE_DATA = {"title": "Synthetic Demo Deck", "subtitle": "Renderer smoke test", "generatedAt": "2026-05-16T00:00:00Z", "context": {"source": "test"}, "slides": [{"type": "title", "title": "Synthetic Demo Deck", "body": "Smoke test for generic renderer", "meta": ["2 content slides"], "timeline": [], "presenterNotes": "Open with the purpose of this test deck.", "status": "overview", "items": []}, {"type": "content", "title": "Slide Two", "body": "Main content here", "meta": ["meta line"], "timeline": [{"timestamp": "2026-05-15T10:00:00Z", "event": "created"}], "presenterNotes": "Discuss the event timeline.", "status": "in-progress", "items": ["Item A", "Item B"]}]};</script>
+  <script>(function () {
+  const deck = window.SLIDE_DATA || { slides: [] };
+  const slides = deck.slides || [];
+  const root = document.getElementById("presenter-app");
+  const channelName = "generic-slideshow-sync";
+  const channel = typeof BroadcastChannel !== "undefined" ? new BroadcastChannel(channelName) : null;
+  let index = 0;
+
+  function render() {
+    const current = slides[index] || {};
+    const next = slides[index + 1] || {};
+    root.innerHTML = `
+      <section class="presenter-grid">
+        <div class="card">
+          <h1>Presenter View</h1>
+          <p class="meta">Slide ${Math.min(index + 1, slides.length)} / ${slides.length}</p>
+          <h2>Script</h2>
+          <p class="presenter-script">${current.presenterNotes || "No presenter notes for this slide."}</p>
+        </div>
+        <div>
+          <div class="card"><h2>Current</h2><p>${current.title || "None"}</p></div>
+          <div class="card"><h2>Next</h2><p>${next.title || "None"}</p></div>
+          <div class="card"><p class="meta">Navigate from audience window with keyboard.</p></div>
+        </div>
+      </section>`;
+  }
+
+  function setIndex(i) {
+    index = Math.max(0, Math.min(slides.length - 1, i));
+    render();
+  }
+
+  if (channel) {
+    channel.onmessage = (event) => {
+      const payload = event.data || {};
+      if (payload.type === "slide-change") setIndex(payload.index);
+    };
+  }
+
+  window.addEventListener("storage", (event) => {
+    if (event.key !== channelName || !event.newValue) return;
+    try {
+      const payload = JSON.parse(event.newValue);
+      if (payload.type === "slide-change") setIndex(payload.index);
+    } catch (_) {}
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

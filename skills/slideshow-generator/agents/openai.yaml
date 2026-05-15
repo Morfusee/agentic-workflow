@@ -1,0 +1,4 @@
+interface:
+  display_name: "Slideshow Generator"
+  short_description: "Render a generic HTML slideshow and presenter view from JSON"
+  default_prompt: "Use $slideshow-generator to render a fullscreen HTML slideshow and synced presenter view from a normalized payload JSON file."

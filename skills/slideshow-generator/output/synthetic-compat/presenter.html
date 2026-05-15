@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Presenter View - Synthetic Demo Deck</title>
+  <style>:root {
+  --bg: #0b1220;
+  --panel: #101827;
+  --text: #f8fafc;
+  --muted: #cbd5e1;
+  --accent: #14b8a6;
+  --warn: #f59e0b;
+  --ok: #34d399;
+  --risk: #f87171;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: radial-gradient(circle at 15% 15%, #1e293b 0%, #0b1220 45%, #020617 100%); color: var(--text); font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+#app, #presenter-app { width: 100%; height: 100%; }
+.slide { width: 100%; height: 100%; padding: 2.5rem 3rem; display: grid; grid-template-rows: auto 1fr auto; gap: 1rem; }
+header { display: grid; gap: 0.5rem; }
+.title { margin: 0; font-size: 2.1rem; font-weight: 700; line-height: 1.15; }
+.status { display: inline-block; width: fit-content; padding: 0.3rem 0.65rem; border-radius: 999px; border: 1px solid rgba(148, 163, 184, 0.45); font-size: 0.88rem; }
+.emphasis { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.emphasis span { background: rgba(20, 184, 166, 0.16); border: 1px solid rgba(20, 184, 166, 0.5); border-radius: 999px; padding: 0.2rem 0.55rem; font-size: 0.8rem; text-transform: lowercase; }
+.card { background: rgba(16, 24, 39, 0.9); border: 1px solid rgba(148, 163, 184, 0.28); border-radius: 14px; padding: 1rem 1.1rem; min-height: 0; }
+.slide-main { display: grid; gap: 0.8rem; min-height: 0; overflow: hidden; }
+.main-text p { margin: 0; line-height: 1.4; font-size: 1.05rem; }
+.meta-list, .item-list { margin: 0; padding-left: 1.2rem; display: grid; gap: 0.35rem; }
+.timeline { display: grid; gap: 0.45rem; }
+.timeline-item { font-size: 0.98rem; line-height: 1.35; color: var(--muted); }
+.footer { color: var(--muted); font-size: 0.9rem; }
+
+.layout-hero .slide-main { grid-template-columns: 1fr; grid-template-rows: auto auto auto auto auto; }
+.layout-two-column .slide-main { grid-template-columns: 1.1fr 0.9fr; grid-template-rows: auto auto auto; }
+.layout-two-column .main-visuals { grid-column: 2; grid-row: 1 / span 3; }
+.layout-timeline-focus .slide-main { grid-template-columns: 1fr; grid-template-rows: auto auto auto auto auto; }
+.layout-chart-focus .slide-main { grid-template-columns: 0.8fr 1.2fr; grid-template-rows: auto auto auto; }
+.layout-chart-focus .main-visuals { grid-column: 2; grid-row: 1 / span 3; }
+.layout-comparison .slide-main { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto auto; }
+.layout-comparison .main-items { grid-column: 2; grid-row: 1 / span 3; }
+.layout-dense-notes .slide-main { grid-template-columns: 1fr; grid-template-rows: auto auto auto auto auto; }
+
+.kpi-strip { display: grid; grid-template-columns: repeat(3, minmax(120px, 1fr)); gap: 0.55rem; }
+.kpi { background: rgba(30, 41, 59, 0.65); border: 1px solid rgba(148, 163, 184, 0.24); border-radius: 10px; padding: 0.55rem; }
+.kpi span { display: block; color: var(--muted); font-size: 0.82rem; }
+.kpi strong { display: block; margin-top: 0.2rem; font-size: 1.35rem; }
+
+.viz-bars { height: 180px; display: flex; align-items: flex-end; gap: 0.5rem; }
+.bar-wrap { flex: 1; min-width: 60px; display: grid; justify-items: center; gap: 0.2rem; }
+.bar { width: 100%; max-width: 44px; border-radius: 8px 8px 0 0; background: linear-gradient(180deg, #22d3ee 0%, #0ea5e9 100%); }
+.bar-label, .bar-value { font-size: 0.72rem; color: var(--muted); text-align: center; }
+
+.viz-trend { width: 100%; max-width: 640px; height: auto; }
+.viz-trend polyline { fill: none; stroke: #14b8a6; stroke-width: 4; stroke-linejoin: round; stroke-linecap: round; }
+
+.viz-flow { display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap; }
+.flow-node { width: 14px; height: 14px; border-radius: 999px; background: #60a5fa; }
+.flow-node-last { background: #f59e0b; }
+.flow-link { width: 20px; height: 2px; background: #64748b; }
+
+.viz-map { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.map-node { border-radius: 999px; border: 1px solid rgba(45, 212, 191, 0.6); background: rgba(20, 184, 166, 0.14); padding: 0.22rem 0.6rem; font-size: 0.82rem; }
+
+.viz-risk { border: 1px solid rgba(248, 113, 113, 0.45); background: rgba(127, 29, 29, 0.2); border-radius: 10px; padding: 0.6rem; }
+.risk-header { color: #fca5a5; font-weight: 700; margin-bottom: 0.3rem; }
+.viz-risk ul { margin: 0; padding-left: 1.1rem; }
+.viz-risk p { margin: 0; color: var(--muted); }
+
+.presenter-body { background: #020617; }
+.presenter-grid { height: 100%; padding: 1rem; display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 0.9rem; }
+.presenter-script { white-space: pre-wrap; line-height: 1.45; font-size: 1rem; }
+.meta { color: var(--muted); font-size: 0.96rem; }
+</style>
+</head>
+<body class="presenter-body">
+  <main id="presenter-app"></main>
+  <script>window.SLIDE_DATA = {"title": "Synthetic Demo Deck", "subtitle": "Renderer smoke test", "generatedAt": "2026-05-16T00:00:00Z", "context": {"source": "test"}, "slides": [{"type": "title", "title": "Synthetic Demo Deck", "body": "Smoke test for generic renderer", "meta": ["2 content slides"], "timeline": [], "presenterNotes": "Open with the purpose of this test deck.", "status": "overview", "items": []}, {"type": "content", "title": "Slide Two", "body": "Main content here", "meta": ["meta line"], "timeline": [{"timestamp": "2026-05-15T10:00:00Z", "event": "created"}], "presenterNotes": "Discuss the event timeline.", "status": "in-progress", "items": ["Item A", "Item B"]}]};</script>
+  <script>(function () {
+  const deck = window.SLIDE_DATA || { slides: [] };
+  const slides = Array.isArray(deck.slides) ? deck.slides : [];
+  const root = document.getElementById("presenter-app");
+  const channelName = "generic-slideshow-sync";
+  const channel = typeof BroadcastChannel !== "undefined" ? new BroadcastChannel(channelName) : null;
+  let index = 0;
+
+  function esc(value) {
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
+  }
+
+  function render() {
+    const current = slides[index] || {};
+    const next = slides[index + 1] || {};
+    const layout = current.renderPlan?.layout || deck.renderDefaults?.defaultLayout || "two-column";
+    const visuals = Array.isArray(current.renderPlan?.visuals) ? current.renderPlan.visuals.map((v) => v.type).join(", ") : "legacy";
+    const emphasis = Array.isArray(current.renderPlan?.emphasis) ? current.renderPlan.emphasis.join(", ") : "none";
+
+    root.innerHTML = `
+      <section class="presenter-grid">
+        <div class="card">
+          <h1>Presenter View</h1>
+          <p class="meta">Slide ${Math.min(index + 1, Math.max(slides.length, 1))} / ${slides.length}</p>
+          <h2>Script</h2>
+          <p class="presenter-script">${esc(current.presenterNotes || "No presenter notes for this slide.")}</p>
+        </div>
+        <div>
+          <div class="card"><h2>Current</h2><p>${esc(current.title || "None")}</p></div>
+          <div class="card"><h2>Next</h2><p>${esc(next.title || "None")}</p></div>
+          <div class="card"><h2>Render Plan</h2><p class="meta">Layout: ${esc(layout)}</p><p class="meta">Visuals: ${esc(visuals)}</p><p class="meta">Emphasis: ${esc(emphasis)}</p></div>
+          <div class="card"><p class="meta">Navigate from audience window with keyboard.</p></div>
+        </div>
+      </section>`;
+  }
+
+  function setIndex(i) {
+    if (!slides.length) {
+      index = 0;
+      render();
+      return;
+    }
+    index = Math.max(0, Math.min(slides.length - 1, i));
+    render();
+  }
+
+  if (channel) {
+    channel.onmessage = (event) => {
+      const payload = event.data || {};
+      if (payload.type === "slide-change") setIndex(payload.index);
+    };
+  }
+
+  window.addEventListener("storage", (event) => {
+    if (event.key !== channelName || !event.newValue) return;
+    try {
+      const payload = JSON.parse(event.newValue);
+      if (payload.type === "slide-change") setIndex(payload.index);
+    } catch (_) {}
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

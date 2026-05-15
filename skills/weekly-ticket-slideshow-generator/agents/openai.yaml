@@ -1,0 +1,4 @@
+interface:
+  display_name: "Weekly Ticket Slideshow Generator"
+  short_description: "Build a weekly fullscreen HTML deck with synced presenter notes"
+  default_prompt: "Use $weekly-ticket-slideshow-generator to generate a weekly HTML slideshow and presenter view from ticket dumps, preserving each ticket's full activity flow across the week."

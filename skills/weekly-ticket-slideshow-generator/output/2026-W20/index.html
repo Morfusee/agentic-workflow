@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Weekly Ticket Flow Report - 2026-W20</title>
+  <style>:root {
+  --bg: #0f172a;
+  --panel: #111827;
+  --text: #f8fafc;
+  --muted: #cbd5e1;
+  --accent: #22d3ee;
+  --warn: #f59e0b;
+  --ok: #34d399;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--bg); color: var(--text); font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; }
+#app, #presenter-app { width: 100%; height: 100%; }
+.slide { width: 100%; height: 100%; padding: 3rem 4rem; display: grid; grid-template-rows: auto 1fr auto; gap: 1.25rem; }
+.title { font-size: 2.2rem; font-weight: 700; line-height: 1.2; }
+.meta { color: var(--muted); font-size: 1.05rem; }
+.card { background: rgba(17, 24, 39, 0.92); border: 1px solid rgba(148, 163, 184, 0.35); border-radius: 14px; padding: 1rem 1.25rem; }
+.timeline { display: grid; gap: 0.55rem; }
+.timeline-item { font-size: 1rem; line-height: 1.35; }
+.status { display: inline-block; padding: 0.35rem 0.7rem; border-radius: 999px; border: 1px solid rgba(148, 163, 184, 0.45); font-size: 0.9rem; }
+.footer { color: var(--muted); font-size: 0.95rem; }
+.kpis { display: flex; gap: 1rem; flex-wrap: wrap; }
+.kpi { min-width: 180px; }
+.kpi .label { font-size: 0.9rem; color: var(--muted); }
+.kpi .value { font-size: 1.7rem; font-weight: 700; }
+.presenter-body { background: #020617; }
+.presenter-grid { height: 100%; padding: 1.2rem; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 1rem; }
+.presenter-script { white-space: pre-wrap; line-height: 1.45; font-size: 1.05rem; }
+.badge-ok { color: var(--ok); }
+.badge-warn { color: var(--warn); }
+</style>
+</head>
+<body>
+  <main id="app"></main>
+  <script>window.SLIDE_DATA = {"title": "Weekly Ticket Flow Report - 2026-W20", "subtitle": "Generated from weekly ticket dumps", "generatedAt": "2026-05-16T01:23:43.191424", "context": {"week": "2026-W20", "ticketCount": 10, "unresolvedCount": 4}, "slides": [{"type": "title", "title": "Weekly Ticket Flow Report - 2026-W20", "body": "Weekly overview based on merged ticket activity flows.", "meta": ["Tickets: 10", "Resolved: 6", "Unresolved: 4"], "timeline": [], "presenterNotes": "Introduce weekly totals and call out unresolved work for follow-up.", "status": "overview", "items": []}, {"type": "content", "title": "NGN-561: Debounce Reporting search requests across all tables", "body": "Started with tested (2026-05-11T08:03:15.260Z). Current state: commented (2026-05-11T08:03:15.260Z) with status Done.", "meta": ["Role: tester-only", "URL: https://linear.app/ngnair/issue/NGN-561/debounce-reporting-search-requests-across-all-tables"], "timeline": [{"timestamp": "2026-05-11T08:03:15.260Z", "event": "tested"}, {"timestamp": "2026-05-11T08:03:15.260Z", "event": "commented"}], "presenterNotes": "This ticket started with tested on 2026-05-11T08:03:15.260Z. It is now at Done, latest update: commented on 2026-05-11T08:03:15.260Z.", "status": "Done", "items": []}, {"type": "content", "title": "NGN-589: Fix item price display on the Checkout Payment Complete page", "body": "Started with created (2026-05-12T06:35:48.945Z). Current state: tested (2026-05-14T11:44:04.813Z) with status Done.", "meta": ["Role: contributor", "URL: https://linear.app/ngnair/issue/NGN-589/fix-item-price-display-on-the-checkout-payment-complete-page"], "timeline": [{"timestamp": "2026-05-12T06:35:48.945Z", "event": "created"}, {"timestamp": "2026-05-14T11:44:04.813Z", "event": "tested"}], "presenterNotes": "This ticket started with created on 2026-05-12T06:35:48.945Z. It is now at Done, latest update: tested on 2026-05-14T11:44:04.813Z.", "status": "Done", "items": []}, {"type": "content", "title": "NGN-590: Keep Multi-Use Pay Links active and increment usage count correctly", "body": "Started with created (2026-05-12T07:18:00.630Z). Current state: created (2026-05-12T07:18:00.630Z) with status Done.", "meta": ["Role: contributor", "URL: https://linear.app/ngnair/issue/NGN-590/keep-multi-use-pay-links-active-and-increment-usage-count-correctly"], "timeline": [{"timestamp": "2026-05-12T07:18:00.630Z", "event": "created"}], "presenterNotes": "This ticket started with created on 2026-05-12T07:18:00.630Z. It is now at Done, latest update: created on 2026-05-12T07:18:00.630Z.", "status": "Done", "items": []}, {"type": "content", "title": "NGN-600: Prevent full page reload during Partner Users search", "body": "Started with created (2026-05-12T08:20:10.850Z). Current state: created (2026-05-12T08:20:10.850Z) with status Pending Review.", "meta": ["Role: contributor", "URL: https://linear.app/ngnair/issue/NGN-600/prevent-full-page-reload-during-partner-users-search"], "timeline": [{"timestamp": "2026-05-12T08:20:10.850Z", "event": "created"}], "presenterNotes": "This ticket started with created on 2026-05-12T08:20:10.850Z. It is now at Pending Review, latest update: created on 2026-05-12T08:20:10.850Z.", "status": "Pending Review", "items": []}, {"type": "content", "title": "NGN-624: Marketplace: Replace duplicate category slug Prisma error with user-friendly toast", "body": "Started with created (2026-05-14T04:18:43.923Z). Current state: commented (2026-05-14T05:20:32.390Z) with status Done.", "meta": ["Role: tester-only", "URL: https://linear.app/ngnair/issue/NGN-624/marketplace-replace-duplicate-category-slug-prisma-error-with-user"], "timeline": [{"timestamp": "2026-05-14T04:18:43.923Z", "event": "created"}, {"timestamp": "2026-05-14T05:20:32.390Z", "event": "commented"}], "presenterNotes": "This ticket started with created on 2026-05-14T04:18:43.923Z. It is now at Done, latest update: commented on 2026-05-14T05:20:32.390Z.", "status": "Done", "items": []}, {"type": "content", "title": "NGN-628: Marketplace: Fix App Installs GraphQL errors for environment and permissions", "body": "Started with created (2026-05-14T05:58:18.523Z). Current state: commented (2026-05-14T08:39:05.379Z) with status Done.", "meta": ["Role: tester-only", "URL: https://linear.app/ngnair/issue/NGN-628/marketplace-fix-app-installs-graphql-errors-for-environment-and"], "timeline": [{"timestamp": "2026-05-14T05:58:18.523Z", "event": "created"}, {"timestamp": "2026-05-14T08:39:05.379Z", "event": "commented"}], "presenterNotes": "This ticket started with created on 2026-05-14T05:58:18.523Z. It is now at Done, latest update: commented on 2026-05-14T08:39:05.379Z.", "status": "Done", "items": []}, {"type": "content", "title": "NGN-630: Marketplace: Refetch service providers list after provider creation", "body": "Started with created (2026-05-14T09:55:51.593Z). Current state: created (2026-05-14T09:55:51.593Z) with status Pending Review.", "meta": ["Role: tester-only", "URL: https://linear.app/ngnair/issue/NGN-630/marketplace-refetch-service-providers-list-after-provider-creation"], "timeline": [{"timestamp": "2026-05-14T09:55:51.593Z", "event": "created"}], "presenterNotes": "This ticket started with created on 2026-05-14T09:55:51.593Z. It is now at Pending Review, latest update: created on 2026-05-14T09:55:51.593Z.", "status": "Pending Review", "items": []}, {"type": "content", "title": "NGN-631: Customer: Allow clipboard copy from Customer Contacts email field", "body": "Started with created (2026-05-14T10:55:47.864Z). Current state: created (2026-05-14T10:55:47.864Z) with status Pending Review.", "meta": ["Role: tester-only", "URL: https://linear.app/ngnair/issue/NGN-631/customer-allow-clipboard-copy-from-customer-contacts-email-field"], "timeline": [{"timestamp": "2026-05-14T10:55:47.864Z", "event": "created"}], "presenterNotes": "This ticket started with created on 2026-05-14T10:55:47.864Z. It is now at Pending Review, latest update: created on 2026-05-14T10:55:47.864Z.", "status": "Pending Review", "items": []}, {"type": "content", "title": "NGN-632: Customer: Fix Customers table cutoff and add navigation for large result sets", "body": "Started with created (2026-05-14T11:07:26.261Z). Current state: created (2026-05-14T11:07:26.261Z) with status Pending Review.", "meta": ["Role: tester-only", "URL: https://linear.app/ngnair/issue/NGN-632/customer-fix-customers-table-cutoff-and-add-navigation-for-large"], "timeline": [{"timestamp": "2026-05-14T11:07:26.261Z", "event": "created"}], "presenterNotes": "This ticket started with created on 2026-05-14T11:07:26.261Z. It is now at Pending Review, latest update: created on 2026-05-14T11:07:26.261Z.", "status": "Pending Review", "items": []}, {"type": "content", "title": "NGN-562: Fix Transaction Details cost breakdown calculation for discounted Pay Links", "body": "Started with commented (2026-05-14T11:55:11.525Z). Current state: commented (2026-05-14T11:55:11.525Z) with status Done.", "meta": ["Role: tester-only", "URL: https://linear.app/ngnair/issue/NGN-562/fix-transaction-details-cost-breakdown-calculation-for-discounted-pay"], "timeline": [{"timestamp": "2026-05-14T11:55:11.525Z", "event": "commented"}], "presenterNotes": "This ticket started with commented on 2026-05-14T11:55:11.525Z. It is now at Done, latest update: commented on 2026-05-14T11:55:11.525Z.", "status": "Done", "items": []}, {"type": "closing", "title": "Risks and Follow-ups", "body": "Tickets still unresolved at the end of this weekly window.", "meta": ["Unresolved count: 4"], "timeline": [], "presenterNotes": "Review unresolved tickets and expected next actions.", "status": "risk", "items": ["NGN-600: Prevent full page reload during Partner Users search (Pending Review)", "NGN-630: Marketplace: Refetch service providers list after provider creation (Pending Review)", "NGN-631: Customer: Allow clipboard copy from Customer Contacts email field (Pending Review)", "NGN-632: Customer: Fix Customers table cutoff and add navigation for large result sets (Pending Review)"]}]};</script>
+  <script>(function () {
+  const deck = window.SLIDE_DATA || { slides: [] };
+  const slides = deck.slides || [];
+  const app = document.getElementById("app");
+  const channelName = "generic-slideshow-sync";
+  const channel = typeof BroadcastChannel !== "undefined" ? new BroadcastChannel(channelName) : null;
+  let index = 0;
+  let presenterWindow = null;
+
+  function emitState() {
+    const payload = { type: "slide-change", index };
+    if (channel) channel.postMessage(payload);
+    localStorage.setItem(channelName, JSON.stringify(payload));
+  }
+
+  function timelineMarkup(timeline) {
+    if (!timeline || !timeline.length) return "<div class=\"timeline-item\">No timeline events.</div>";
+    return timeline.map((ev) => `<div class=\"timeline-item\">${ev.timestamp} - ${ev.event}</div>`).join("");
+  }
+
+  function listMarkup(items) {
+    if (!items || !items.length) return "";
+    return `<ul>${items.map((i) => `<li>${i}</li>`).join("")}</ul>`;
+  }
+
+  function render() {
+    if (!slides.length) {
+      app.innerHTML = '<section class="slide"><h1 class="title">No slides available</h1></section>';
+      return;
+    }
+    const s = slides[index];
+    const meta = Array.isArray(s.meta) ? s.meta.map((m) => `<div class="meta">${m}</div>`).join("") : "";
+    const status = s.status ? `<span class=\"status\">Status: ${s.status}</span>` : "";
+
+    app.innerHTML = `
+      <section class="slide">
+        <header>
+          <h1 class="title">${s.title || "Untitled Slide"}</h1>
+          ${status}
+          ${meta}
+        </header>
+        <section class="card">
+          <p>${s.body || ""}</p>
+          ${listMarkup(s.items)}
+          <div class="timeline">${timelineMarkup(s.timeline)}</div>
+        </section>
+        <footer class="footer">Slide ${index + 1} / ${slides.length} | Keys: Left/Right, Home/End, F fullscreen, P presenter</footer>
+      </section>`;
+  }
+
+  function moveTo(nextIndex) {
+    if (!slides.length) return;
+    index = Math.max(0, Math.min(slides.length - 1, nextIndex));
+    render();
+    emitState();
+  }
+
+  function openPresenter() {
+    if (presenterWindow && !presenterWindow.closed) return presenterWindow.focus();
+    presenterWindow = window.open("presenter.html", "generic-slideshow-presenter", "width=1280,height=800");
+  }
+
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) return document.documentElement.requestFullscreen?.();
+    document.exitFullscreen?.();
+  }
+
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowRight") moveTo(index + 1);
+    if (e.key === "ArrowLeft") moveTo(index - 1);
+    if (e.key === "Home") moveTo(0);
+    if (e.key === "End") moveTo(slides.length - 1);
+    if (e.key.toLowerCase() === "f") toggleFullscreen();
+    if (e.key.toLowerCase() === "p") openPresenter();
+  });
+
+  window.addEventListener("storage", (event) => {
+    if (event.key !== channelName || !event.newValue) return;
+    try {
+      const payload = JSON.parse(event.newValue);
+      if (payload.type === "slide-change") moveTo(payload.index);
+    } catch (_) {}
+  });
+
+  render();
+  emitState();
+})();
+</script>
+</body>
+</html>
