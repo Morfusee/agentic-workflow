@@ -1,5 +1,10 @@
 set shell := ["powershell.exe", "-NoLogo", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command"]
 
+alias s := skills
+alias ss := skills-sync
+alias so := skills-open
+alias sw := skills-watch
+
 default:
   @just --list
 
