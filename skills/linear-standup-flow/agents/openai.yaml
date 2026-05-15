@@ -1,0 +1,4 @@
+interface:
+  display_name: "Linear Standup Flow"
+  short_description: "Run ticket dump creation and stand-up generation in sequence"
+  default_prompt: "Use $linear-standup-flow to orchestrate end-to-end stand-up prep by first running $linear-ticket-dump-creator and then $linear-ticket-dump-standup-generator."
