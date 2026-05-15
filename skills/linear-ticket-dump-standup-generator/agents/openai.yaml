@@ -1,0 +1,4 @@
+interface:
+  display_name: "Linear Ticket Dump Stand-up Generator"
+  short_description: "Generate stand-up script from latest ticket dump"
+  default_prompt: "Use $linear-ticket-dump-standup-generator to read my latest ticket dump, let me choose tickets, and finalize the stand-up script in that file."
