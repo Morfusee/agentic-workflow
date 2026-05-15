@@ -1,11 +1,10 @@
 (function () {
   const deck = window.SLIDE_DATA || { slides: [] };
   const slides = Array.isArray(deck.slides) ? deck.slides : [];
+  const policy = deck.presentationPolicy || {};
   const app = document.getElementById("app");
   const channelName = "generic-slideshow-sync";
   const channel = typeof BroadcastChannel !== "undefined" ? new BroadcastChannel(channelName) : null;
-  const allowedLayouts = ["hero", "two-column", "timeline-focus", "chart-focus", "comparison", "dense-notes"];
-  const allowedVisuals = ["kpi-strip", "status-bars", "trend-line", "flow-nodes", "relationship-map", "risk-matrix"];
   let index = 0;
   let presenterWindow = null;
 
@@ -18,154 +17,177 @@
       .replaceAll("'", "&#39;");
   }
 
+  function tokenize(value) {
+    return String(value || "")
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, " ")
+      .split(/\s+/)
+      .filter((t) => t.length > 2);
+  }
+
+  function overlapRatio(text, source) {
+    const textTokens = tokenize(text);
+    if (!textTokens.length) return 0;
+    const sourceSet = new Set(tokenize(source));
+    if (!sourceSet.size) return 0;
+    const matches = textTokens.filter((t) => sourceSet.has(t)).length;
+    return matches / textTokens.length;
+  }
+
+  function hasCausalValue(sentence) {
+    const text = String(sentence || "").toLowerCase();
+    const cues = [
+      "because",
+      "therefore",
+      "impact",
+      "risk",
+      "decision",
+      "next",
+      "block",
+      "dependency",
+      "if ",
+      "unless",
+      "due to",
+      "so that",
+    ];
+    return cues.some((cue) => text.includes(cue));
+  }
+
+  function antiRestatement(text, slide) {
+    if (!text) return "";
+    if (policy.textPolicy !== "strict-summary") return text;
+    const visible = [slide.title || "", slide.status || "", (slide.meta && JSON.stringify(slide.meta)) || ""].join(" ");
+    const sentences = String(text)
+      .split(/(?<=[.!?])\s+/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const kept = sentences.filter((sentence) => {
+      const ratio = overlapRatio(sentence, visible);
+      if (ratio < 0.7) return true;
+      return hasCausalValue(sentence);
+    });
+    if (kept.length) return kept.join(" ");
+    return hasCausalValue(text) ? text : "";
+  }
+
+  function shouldRenderDiagram(slide) {
+    const s = slide.signals || {};
+    const policyMatch = policy.diagramPolicy === "signal-required";
+    if (!policyMatch) return true;
+    return Boolean(s.hasBlocker || s.hasDependency || Number(s.statusTransitions || 0) >= 2 || Number(s.eventDepth || 0) >= 3);
+  }
+
+  function chipList(values) {
+    if (!Array.isArray(values) || !values.length) return "";
+    return `<div class="chip-list">${values.map((item) => `<span class="chip">${esc(item)}</span>`).join("")}</div>`;
+  }
+
+  function renderStateLaneFlow(slide) {
+    const steps = slide.visualSpec?.entities?.flowSteps || [];
+    if (!Array.isArray(steps) || !steps.length) return "";
+    const nodes = steps.slice(0, 5);
+    return `<div class="diagram state-lane">${nodes
+      .map((step, idx) => `<div class="lane-step"><span class="lane-index">${idx + 1}</span><p>${esc(step)}</p></div>${idx < nodes.length - 1 ? '<span class="lane-arrow">→</span>' : ""}`)
+      .join("")}</div>`;
+  }
+
+  function renderDependencyMap(slide) {
+    const deps = slide.visualSpec?.entities?.dependencies || [];
+    if (!Array.isArray(deps) || !deps.length) return "";
+    return `<div class="diagram dependency-map">${deps
+      .slice(0, 5)
+      .map((dep) => `<div class="dep-node"><h4>${esc(dep.from || "Current")}</h4><span>depends on</span><p>${esc(dep.to || "Unknown")}</p></div>`)
+      .join("")}</div>`;
+  }
+
+  function renderIssueImpactChain(slide) {
+    const chain = slide.visualSpec?.entities?.issueImpact || {};
+    return `<div class="diagram issue-chain">
+      <div><h4>Issue</h4><p>${esc(chain.issue || antiRestatement(slide.context || "", slide) || "No explicit issue detected.")}</p></div>
+      <div><h4>Impact</h4><p>${esc(chain.impact || antiRestatement(slide.decision || "", slide) || "Impact currently bounded.")}</p></div>
+      <div><h4>Mitigation</h4><p>${esc(chain.mitigation || (Array.isArray(slide.actions) ? slide.actions[0] : "") || "Continue active monitoring.")}</p></div>
+    </div>`;
+  }
+
+  function renderContextChips(slide) {
+    const chips = slide.visualSpec?.entities?.chips || [];
+    return `<div class="diagram context-chips">${chipList(chips)}</div>`;
+  }
+
+  function renderActionLadder(slide) {
+    const actions = Array.isArray(slide.actions) ? slide.actions.slice(0, 4) : [];
+    if (!actions.length) return "";
+    return `<ol class="diagram action-ladder">${actions.map((item) => `<li>${esc(item)}</li>`).join("")}</ol>`;
+  }
+
+  function renderVisualByType(slide, visualType) {
+    if (!visualType || visualType === "none") return "";
+    if (visualType === "state-lane-flow") return renderStateLaneFlow(slide);
+    if (visualType === "dependency-map") return renderDependencyMap(slide);
+    if (visualType === "issue-impact-chain") return renderIssueImpactChain(slide);
+    if (visualType === "context-chips") return renderContextChips(slide);
+    if (visualType === "action-ladder") return renderActionLadder(slide);
+    return "";
+  }
+
+  function renderPrimaryVisual(slide) {
+    const primary = slide.visualSpec?.primaryVisual || "none";
+    const secondary = slide.visualSpec?.secondaryVisual || "none";
+    const forceDiagram = shouldRenderDiagram(slide);
+    const primaryMarkup = renderVisualByType(slide, primary);
+    const secondaryMarkup = renderVisualByType(slide, secondary);
+
+    if (!forceDiagram && (primary === "state-lane-flow" || primary === "dependency-map" || primary === "issue-impact-chain")) {
+      return renderContextChips(slide) + secondaryMarkup;
+    }
+    return primaryMarkup + secondaryMarkup;
+  }
+
+  function renderContentSlide(slide, position, total) {
+    const insight = antiRestatement(slide.insight || "", slide);
+    const context = antiRestatement(slide.context || "", slide);
+    const decision = antiRestatement(slide.decision || "", slide);
+    const actions = Array.isArray(slide.actions) ? slide.actions : [];
+    const chips = [
+      `Risk: ${slide.signals?.riskLevel || "unknown"}`,
+      `Transitions: ${slide.signals?.statusTransitions ?? 0}`,
+      `Depth: ${slide.signals?.eventDepth ?? 0}`,
+    ];
+    if (slide.signals?.hasBlocker) chips.push("Blocker");
+    if (slide.signals?.hasDependency) chips.push("Dependency");
+
+    return `
+      <section class="slide content-slide">
+        <header>
+          <h1 class="title">${esc(slide.title || "Untitled")}</h1>
+          <div class="header-chips">${chipList(chips)}</div>
+        </header>
+        <section class="deck-grid">
+          <article class="card insight-card"><h3>Insight</h3><p>${esc(insight || "No non-obvious insight found.")}</p></article>
+          <article class="card context-card"><h3>Why This Matters</h3><p>${esc(context || "Context is stable; no escalation signal in this update.")}</p></article>
+          <article class="card decision-card"><h3>Decision Needed</h3><p>${esc(decision || "No immediate decision needed.")}</p></article>
+          <article class="card actions-card"><h3>Next Actions</h3><ul>${actions.slice(0, 4).map((item) => `<li>${esc(item)}</li>`).join("")}</ul></article>
+          <article class="card visual-card">${renderPrimaryVisual(slide)}</article>
+        </section>
+        <footer class="footer">Slide ${position} / ${total} | Left/Right move | F fullscreen | P presenter</footer>
+      </section>`;
+  }
+
+  function renderGenericSlide(slide, position, total) {
+    return `
+      <section class="slide">
+        <header><h1 class="title">${esc(slide.title || "Untitled")}</h1></header>
+        <section class="card intro-card">
+          <p>${esc(antiRestatement(slide.insight || slide.body || "", slide) || "No additional detail.")}</p>
+        </section>
+        <footer class="footer">Slide ${position} / ${total}</footer>
+      </section>`;
+  }
+
   function emitState() {
     const payload = { type: "slide-change", index };
     if (channel) channel.postMessage(payload);
     localStorage.setItem(channelName, JSON.stringify(payload));
-  }
-
-  function timelineMarkup(timeline, maxItems) {
-    const events = Array.isArray(timeline) ? timeline.slice(0, maxItems) : [];
-    if (!events.length) return '<div class="timeline-item">No timeline events.</div>';
-    return events.map((ev) => `<div class="timeline-item">${esc(ev.timestamp)} - ${esc(ev.event)}</div>`).join("");
-  }
-
-  function listMarkup(items, className, maxItems) {
-    if (!Array.isArray(items) || !items.length) return "";
-    return `<ul class="${className}">${items.slice(0, maxItems).map((i) => `<li>${esc(i)}</li>`).join("")}</ul>`;
-  }
-
-  function normalizedPlan(slide) {
-    const defaults = deck.renderDefaults || {};
-    const plan = slide.renderPlan || {};
-    const layout = allowedLayouts.includes(plan.layout) ? plan.layout : (allowedLayouts.includes(defaults.defaultLayout) ? defaults.defaultLayout : "two-column");
-    const visuals = Array.isArray(plan.visuals)
-      ? plan.visuals.filter((v) => v && allowedVisuals.includes(v.type)).slice(0, 3)
-      : [];
-    const constraints = {
-      maxMetaItems: Number(plan.constraints?.maxMetaItems ?? defaults.constraints?.maxMetaItems ?? 4),
-      maxTimelineItems: Number(plan.constraints?.maxTimelineItems ?? defaults.constraints?.maxTimelineItems ?? 5),
-      maxBulletItems: Number(plan.constraints?.maxBulletItems ?? defaults.constraints?.maxBulletItems ?? 6),
-    };
-    return {
-      layout,
-      regions: plan.regions && typeof plan.regions === "object" ? plan.regions : {},
-      visuals,
-      emphasis: Array.isArray(plan.emphasis) ? plan.emphasis : [],
-      constraints,
-    };
-  }
-
-  function statusCounts() {
-    return deck.context?.statusCounts && typeof deck.context.statusCounts === "object" ? deck.context.statusCounts : {};
-  }
-
-  function dayCounts() {
-    return deck.context?.dayCounts && typeof deck.context.dayCounts === "object" ? deck.context.dayCounts : {};
-  }
-
-  function renderBars(data) {
-    const entries = Object.entries(data);
-    if (!entries.length) return "";
-    const maxValue = Math.max(...entries.map(([, v]) => Number(v) || 0), 1);
-    return `<div class="viz-bars">${entries
-      .map(([name, value]) => {
-        const safeValue = Number(value) || 0;
-        const h = Math.max(10, Math.round((safeValue / maxValue) * 100));
-        return `<div class="bar-wrap"><div class="bar" style="height:${h}%"></div><span class="bar-label">${esc(name)}</span><span class="bar-value">${safeValue}</span></div>`;
-      })
-      .join("")}</div>`;
-  }
-
-  function renderTrend(data) {
-    const entries = Object.entries(data);
-    if (!entries.length) return "";
-    const maxValue = Math.max(...entries.map(([, v]) => Number(v) || 0), 1);
-    const width = 600;
-    const height = 180;
-    const step = entries.length === 1 ? 0 : (width - 40) / (entries.length - 1);
-    const points = entries
-      .map(([, v], i) => {
-        const x = 20 + i * step;
-        const y = height - 20 - ((Number(v) || 0) / maxValue) * (height - 40);
-        return `${x},${y}`;
-      })
-      .join(" ");
-    return `<svg class="viz-trend" viewBox="0 0 ${width} ${height}" role="img" aria-label="Activity trend">
-      <polyline points="${points}" />
-    </svg>`;
-  }
-
-  function renderFlowNodes(timeline) {
-    const total = Math.max(1, (Array.isArray(timeline) ? timeline.length : 0));
-    return `<div class="viz-flow">${Array.from({ length: total })
-      .map((_, i) => `<span class="flow-node ${i === total - 1 ? "flow-node-last" : ""}"></span>${i < total - 1 ? '<span class="flow-link"></span>' : ""}`)
-      .join("")}</div>`;
-  }
-
-  function renderRelationshipMap(meta, items) {
-    const nodes = [...(meta || []), ...(items || [])].slice(0, 5);
-    if (!nodes.length) return "";
-    return `<div class="viz-map">${nodes.map((n) => `<span class="map-node">${esc(n)}</span>`).join("")}</div>`;
-  }
-
-  function renderRiskMatrix(items, unresolvedCount) {
-    const risks = Array.isArray(items) ? items.slice(0, 4) : [];
-    const riskLevel = unresolvedCount > 0 ? "High" : "Low";
-    return `<div class="viz-risk"><div class="risk-header">Risk posture: ${riskLevel}</div>${risks.length ? `<ul>${risks.map((r) => `<li>${esc(r)}</li>`).join("")}</ul>` : "<p>No active risks listed.</p>"}</div>`;
-  }
-
-  function visualMarkup(slide, plan) {
-    if (!plan.visuals.length && slide.visual === "ticket-flow") {
-      return renderFlowNodes(slide.timeline);
-    }
-    const unresolvedCount = Number(deck.context?.unresolvedCount || 0);
-    return plan.visuals
-      .map((visual) => {
-        if (visual.type === "kpi-strip") {
-          const total = Number(deck.context?.ticketCount || 0);
-          const unresolved = unresolvedCount;
-          const resolved = Math.max(0, total - unresolved);
-          return `<div class="kpi-strip"><div class="kpi"><span>Total</span><strong>${total}</strong></div><div class="kpi"><span>Resolved</span><strong>${resolved}</strong></div><div class="kpi"><span>Unresolved</span><strong>${unresolved}</strong></div></div>`;
-        }
-        if (visual.type === "status-bars") return renderBars(statusCounts());
-        if (visual.type === "trend-line") return renderTrend(dayCounts());
-        if (visual.type === "flow-nodes") return renderFlowNodes(slide.timeline);
-        if (visual.type === "relationship-map") return renderRelationshipMap(slide.meta, slide.items);
-        if (visual.type === "risk-matrix") return renderRiskMatrix(slide.items, unresolvedCount);
-        return "";
-      })
-      .join("");
-  }
-
-  function render() {
-    if (!slides.length) {
-      app.innerHTML = '<section class="slide"><h1 class="title">No slides available</h1></section>';
-      return;
-    }
-
-    const s = slides[index];
-    const plan = normalizedPlan(s);
-    const metaItems = Array.isArray(s.meta) ? s.meta : [];
-    const status = s.status ? `<span class="status">Status: ${esc(s.status)}</span>` : "";
-    const emphasis = plan.emphasis.length ? `<div class="emphasis">${plan.emphasis.map((e) => `<span>${esc(e)}</span>`).join("")}</div>` : "";
-
-    app.innerHTML = `
-      <section class="slide layout-${plan.layout}">
-        <header>
-          <h1 class="title">${esc(s.title || "Untitled Slide")}</h1>
-          ${status}
-          ${emphasis}
-        </header>
-        <section class="card slide-main">
-          <div class="main-text"><p>${esc(s.body || "")}</p></div>
-          <div class="main-visuals">${visualMarkup(s, plan)}</div>
-          <div class="main-meta">${listMarkup(metaItems, "meta-list", plan.constraints.maxMetaItems)}</div>
-          <div class="main-timeline"><div class="timeline">${timelineMarkup(s.timeline, plan.constraints.maxTimelineItems)}</div></div>
-          <div class="main-items">${listMarkup(s.items, "item-list", plan.constraints.maxBulletItems)}</div>
-        </section>
-        <footer class="footer">Slide ${index + 1} / ${slides.length} | Keys: Left/Right, Home/End, F fullscreen, P presenter</footer>
-      </section>`;
   }
 
   function moveTo(nextIndex) {
@@ -183,6 +205,21 @@
   function toggleFullscreen() {
     if (!document.fullscreenElement) return document.documentElement.requestFullscreen?.();
     document.exitFullscreen?.();
+  }
+
+  function render() {
+    if (!slides.length) {
+      app.innerHTML = '<section class="slide"><h1 class="title">No slides available</h1></section>';
+      return;
+    }
+
+    const slide = slides[index];
+    const position = index + 1;
+    if (slide.type === "content") {
+      app.innerHTML = renderContentSlide(slide, position, slides.length);
+      return;
+    }
+    app.innerHTML = renderGenericSlide(slide, position, slides.length);
   }
 
   window.addEventListener("keydown", (e) => {

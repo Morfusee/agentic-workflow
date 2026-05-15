@@ -1,14 +1,13 @@
 ---
 name: slideshow-generator
-description: Render a generic fullscreen HTML slideshow plus synced presenter view from a normalized JSON payload. Use when you need an agnostic deck renderer with meaningful visual composition (not text restatement), keyboard navigation, and presenter notes that contain a clear speaking script.
+description: Render an insight-first fullscreen HTML slideshow with synced presenter view from a strict JSON payload. Use when decks must avoid obvious restatement, emphasize narrative-card visuals, apply signal-based diagram gating, and provide polished speaker scripts.
 ---
 
 # Slideshow Generator
 
-Render a domain-agnostic HTML slideshow from a JSON payload.
-Prioritize interpretive slides: summarize what happened, why it matters, and what to do next, instead of repeating raw input text.
+Render a domain-agnostic, insight-first HTML slideshow from a strict payload contract.
 
-## Input Contract
+## Input Contract (Hard Break)
 
 Provide a JSON file with this shape:
 
@@ -17,58 +16,70 @@ Provide a JSON file with this shape:
   "title": "Deck title",
   "subtitle": "Optional subtitle",
   "generatedAt": "ISO timestamp",
-  "context": {"key": "value"},
+  "presentationPolicy": {
+    "textPolicy": "strict-summary",
+    "diagramPolicy": "signal-required",
+    "styleProfile": "narrative-cards"
+  },
+  "context": {"week": "2026-W20"},
   "slides": [
     {
-      "type": "title|content|closing|empty",
+      "type": "content",
       "title": "Slide title",
-      "body": "Main text",
-      "meta": ["line 1", "line 2"],
-      "timeline": [{"timestamp": "...", "event": "..."}],
-      "presenterNotes": "Spoken script",
-      "status": "Optional status",
-      "items": ["Optional bullet item"],
-      "renderPlan": {
-        "layout": "hero|two-column|timeline-focus|chart-focus|comparison|dense-notes",
-        "regions": {"headline": "title", "timeline": "timeline"},
-        "visuals": [{"type": "kpi-strip|status-bars|trend-line|flow-nodes|relationship-map|risk-matrix"}],
-        "emphasis": ["risk", "momentum", "blockers"],
-        "constraints": {"maxMetaItems": 4, "maxTimelineItems": 5, "maxBulletItems": 6}
-      }
+      "status": "In Progress",
+      "insight": "Non-obvious takeaway",
+      "context": "Why this matters",
+      "decision": "Decision required now",
+      "actions": ["Action 1", "Action 2"],
+      "signals": {
+        "hasBlocker": true,
+        "hasDependency": false,
+        "statusTransitions": 2,
+        "riskLevel": "high",
+        "eventDepth": 4
+      },
+      "visualSpec": {
+        "primaryVisual": "issue-impact-chain",
+        "secondaryVisual": "action-ladder",
+        "entities": {}
+      },
+      "speakerScript": "Presenter-ready prose script"
     }
-  ],
-  "renderDefaults": {
-    "defaultLayout": "two-column",
-    "constraints": {"maxMetaItems": 4, "maxTimelineItems": 5, "maxBulletItems": 6}
-  }
+  ]
 }
 ```
 
-`renderPlan` is optional. When missing, `$slideshow-generator` falls back to legacy rendering behavior.
+Required per `content` slide:
+- `insight`
+- `context`
+- `decision`
+- `actions`
+- `signals`
+- `visualSpec`
+- `speakerScript`
 
-`presenterNotes` should be written as a line-by-line script the presenter can read naturally. Prefer sections such as:
-- `Slide goal:`
-- `Say:`
-- `What happened:`
-- `Issue:`
-- `Impact:`
-- `Next step:`
-- `Transition:`
+`visualSpec.primaryVisual` must be one of:
+- `state-lane-flow`
+- `dependency-map`
+- `issue-impact-chain`
+- `context-chips`
+- `action-ladder`
+- `none`
 
-## Execution Steps
+## Rendering Rules
 
-1. Read and validate payload file.
-2. Ensure required deck and slide fields exist, and validate optional `renderPlan` shape.
-3. Render:
-- `index.html` (audience)
-- `presenter.html` (presenter)
-- `slides.json` (copied payload)
-4. Resolve layout and visual composition deterministically from `renderPlan` with stable fallback order.
-5. Ensure each content slide includes interpretation-oriented structure (event flow, issue framing, impact, and next action), not only title/description restatement.
-6. Ensure presenter notes are usable as spoken script during reporting.
-7. Enable keys:
-- `ArrowLeft`, `ArrowRight`, `Home`, `End`, `F`, `P`
-8. Sync audience/presenter via `BroadcastChannel` with `localStorage` fallback.
+1. Enforce strict payload validation. Reject missing required content fields.
+2. Enforce strict anti-restatement when `presentationPolicy.textPolicy=strict-summary`.
+3. Build content slides with narrative cards:
+- Insight
+- Why This Matters
+- Decision Needed
+- Next Actions
+4. Gate heavy diagrams by signal policy:
+- render diagrams when blocker/dependency/churn/depth thresholds are met
+- otherwise render lightweight context visuals
+5. Keep presenter script readable and paragraph-preserving in presenter view.
+6. Keep audience/presenter synchronized through `BroadcastChannel` and `localStorage` fallback.
 
 ## Command
 

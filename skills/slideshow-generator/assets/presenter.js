@@ -15,12 +15,20 @@
       .replaceAll("'", "&#39;");
   }
 
+  function scriptMarkup(script) {
+    const lines = String(script || "")
+      .split(/\n+/)
+      .map((line) => line.trim())
+      .filter(Boolean);
+    if (!lines.length) return "<p class='presenter-script'>No script provided.</p>";
+    return `<div class="presenter-script">${lines.map((line) => `<p>${esc(line)}</p>`).join("")}</div>`;
+  }
+
   function render() {
     const current = slides[index] || {};
     const next = slides[index + 1] || {};
-    const layout = current.renderPlan?.layout || deck.renderDefaults?.defaultLayout || "two-column";
-    const visuals = Array.isArray(current.renderPlan?.visuals) ? current.renderPlan.visuals.map((v) => v.type).join(", ") : "legacy";
-    const emphasis = Array.isArray(current.renderPlan?.emphasis) ? current.renderPlan.emphasis.join(", ") : "none";
+    const signals = current.signals || {};
+    const visualSpec = current.visualSpec || {};
 
     root.innerHTML = `
       <section class="presenter-grid">
@@ -28,13 +36,24 @@
           <h1>Presenter View</h1>
           <p class="meta">Slide ${Math.min(index + 1, Math.max(slides.length, 1))} / ${slides.length}</p>
           <h2>Script</h2>
-          <p class="presenter-script">${esc(current.presenterNotes || "No presenter notes for this slide.")}</p>
+          ${scriptMarkup(current.speakerScript || current.presenterNotes)}
         </div>
         <div>
           <div class="card"><h2>Current</h2><p>${esc(current.title || "None")}</p></div>
           <div class="card"><h2>Next</h2><p>${esc(next.title || "None")}</p></div>
-          <div class="card"><h2>Render Plan</h2><p class="meta">Layout: ${esc(layout)}</p><p class="meta">Visuals: ${esc(visuals)}</p><p class="meta">Emphasis: ${esc(emphasis)}</p></div>
-          <div class="card"><p class="meta">Navigate from audience window with keyboard.</p></div>
+          <div class="card">
+            <h2>Slide Signals</h2>
+            <p class="meta">Risk: ${esc(signals.riskLevel || "unknown")}</p>
+            <p class="meta">Transitions: ${esc(signals.statusTransitions ?? 0)}</p>
+            <p class="meta">Depth: ${esc(signals.eventDepth ?? 0)}</p>
+            <p class="meta">Blocker: ${esc(Boolean(signals.hasBlocker))}</p>
+            <p class="meta">Dependency: ${esc(Boolean(signals.hasDependency))}</p>
+          </div>
+          <div class="card">
+            <h2>Visual Plan</h2>
+            <p class="meta">Primary: ${esc(visualSpec.primaryVisual || "none")}</p>
+            <p class="meta">Secondary: ${esc(visualSpec.secondaryVisual || "none")}</p>
+          </div>
         </div>
       </section>`;
   }

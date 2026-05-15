@@ -1,51 +1,50 @@
 ---
 name: weekly-ticket-slideshow-generator
-description: Build a weekly ticket-flow payload from dump files and render it through $slideshow-generator. Use when you need a weekly ticket presentation that preserves each ticket's full activity chain, adds interpretation-oriented visuals/diagrams, and provides presenter-ready speaking scripts in notes.
+description: Build a weekly insight-first ticket deck payload from dump files and render it through $slideshow-generator. Use when you need strict anti-restatement slides, signal-based diagrams, and polished presenter scripts.
 ---
 
-# Weekly Ticket Slideshow Generator (Wrapper)
+# Weekly Ticket Slideshow Generator
 
-Create a weekly ticket slideshow by preparing a normalized payload and delegating rendering to `$slideshow-generator`.
-
-This skill is domain-aware for ticket dumps. It acts as a harness that interprets ticket-flow signals and emits deterministic rendering directives for `$slideshow-generator`.
+Create a weekly ticket deck by synthesizing non-obvious insights and emitting the strict payload consumed by `$slideshow-generator`.
 
 ## Execution Steps
 
 1. Resolve target week under `memory/tickets/YYYY-W##/`.
 2. Parse `# All Scraped Tickets` from each daily dump.
-3. Merge same ticket IDs across the week and build chronological flows.
-4. Infer start, transitions, and current state per ticket.
-5. Emit normalized payload JSON (`weekly-ticket-slides.json`) that matches `$slideshow-generator` input contract, including `renderDefaults` and slide-level `renderPlan`.
-6. For each ticket slide, include interpretation blocks at minimum:
-- What happened
-- Issue
-- Impact
-- Next step
-7. Generate presenter notes as speaking script (line-by-line cues), not a generic summary paragraph.
-8. Invoke `$slideshow-generator` script to render:
-- `index.html`
-- `presenter.html`
-- `slides.json`
-9. Save outputs in the same week folder convention used by ticket dumps:
-- Root path: `memory/tickets/`
-- Week folder format: `YYYY-W##`
-- Week slideshow files:
-  - `YYYY-W##-weekly-ticket-slideshow.html`
-  - `YYYY-W##-weekly-ticket-slideshow-presenter.html`
-  - `YYYY-W##-weekly-ticket-slideshow.json`
+3. Merge same ticket IDs across the week and preserve chronological events.
+4. Synthesize content-slide fields:
+- `insight`
+- `context`
+- `decision`
+- `actions`
+- `signals`
+- `visualSpec`
+- `speakerScript`
+5. Apply strict suppression of obvious text repetition.
+6. Detect diagram-required signals from blockers, dependencies, status churn, and event depth.
+7. Emit the hard-break payload JSON (`YYYY-W##-weekly-ticket-slides.json`).
+8. Render output:
+- `--renderer reveal-single`: bundled one-file reveal deck (`YYYY-W##-weekly-ticket-slideshow-reveal.html`)
+- `--renderer legacy`: invoke `$slideshow-generator` and emit audience/presenter HTML pair
 
 ## Rules
 
-1. Keep wrapper focused on ticket parsing, deterministic flow inference, and deterministic render-plan hints only.
-2. For `--renderer reveal-single`, render a single bundled Reveal HTML file directly in this wrapper.
-3. For `--renderer legacy`, keep delegating to `$slideshow-generator`.
-4. Preserve full chronological ticket flow when middle events exist.
-5. Keep empty-week behavior explicit and informative.
-6. Encode layout and visual intent as `renderPlan` rather than hard-coding slide HTML.
-7. Avoid status-only graph slides by default; prefer explanatory visuals and flow diagrams that help humans interpret ticket movement and blockers.
+1. Do not emit legacy text-first fields as primary story content.
+2. Keep default `presentationPolicy` values:
+- `textPolicy=strict-summary`
+- `diagramPolicy=signal-required`
+- `styleProfile=narrative-cards`
+3. Use visual types that add interpretive context:
+- `state-lane-flow`
+- `dependency-map`
+- `issue-impact-chain`
+- `context-chips`
+- `action-ladder`
+4. Keep presenter scripts in freeform polished prose with natural pacing.
+5. Keep unresolved-risk closure actions explicit in the closing slide.
 
 ## Command
 
 ```powershell
-python skills/weekly-ticket-slideshow-generator/scripts/generate_weekly_slideshow.py --week 2026-W20
+python skills/weekly-ticket-slideshow-generator/scripts/generate_weekly_slideshow.py --week 2026-W20 --renderer reveal-single
 ```
