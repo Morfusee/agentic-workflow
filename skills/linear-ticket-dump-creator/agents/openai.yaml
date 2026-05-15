@@ -1,0 +1,4 @@
+interface:
+  display_name: "Linear Ticket Dump Creator"
+  short_description: "Collect Linear work and write a daily ticket dump"
+  default_prompt: "Use $linear-ticket-dump-creator to collect my relevant Linear activity and create today's dump file."
