@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Presenter View - Weekly Delivery Narrative - 2026-W20</title>
+  <style>
+    :root {
+      --bg: #181411;
+      --panel: #231d18;
+      --panel-2: #2d2620;
+      --ink: #f7f1ea;
+      --muted: #c3b4a6;
+      --line: rgba(255,255,255,0.10);
+      --accent: #c98a59;
+      --fit: 0.38;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: radial-gradient(circle at top left, #2b241d 0%, #181411 60%, #120f0d 100%);
+      color: var(--ink);
+      font-family: "Aptos", "Segoe UI Variable Text", sans-serif;
+    }
+    .app {
+      display: grid;
+      grid-template-columns: 1.06fr 0.94fr;
+      width: 100vw;
+      height: 100vh;
+      gap: 18px;
+      padding: 18px;
+    }
+    .panel {
+      background: rgba(35,29,24,0.90);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      overflow: hidden;
+      min-width: 0;
+      min-height: 0;
+      box-shadow: 0 18px 44px rgba(0,0,0,0.24);
+    }
+    .preview-panel {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+    .preview-head, .notes-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+    .preview-wrap {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent 30%);
+    }
+    .stage-shell {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 1920px;
+      height: 1080px;
+      transform: translate(-50%, -50%) scale(var(--fit));
+      transform-origin: center center;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 12px 34px rgba(0,0,0,0.28);
+    }
+    iframe {
+      width: 1920px;
+      height: 1080px;
+      border: 0;
+      display: block;
+      background: #fff;
+    }
+    .preview-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      border-top: 1px solid var(--line);
+    }
+    .nav {
+      display: flex;
+      gap: 8px;
+    }
+    .nav button {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: rgba(255,255,255,0.12);
+      color: var(--ink);
+      cursor: pointer;
+    }
+    .meta {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .notes-panel {
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      min-height: 0;
+    }
+    .notes-title {
+      padding: 20px 22px 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    .notes-title h1 {
+      margin: 0 0 8px 0;
+      font-family: "Georgia", serif;
+      font-size: 34px;
+      line-height: 1.02;
+    }
+    .notes-title p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.4;
+    }
+    .notes-body {
+      padding: 22px;
+      overflow: auto;
+      min-height: 0;
+      display: grid;
+      align-content: start;
+      gap: 14px;
+    }
+    .notes-body p {
+      margin: 0;
+      color: #f1e7dc;
+      font-size: 20px;
+      line-height: 1.65;
+    }
+    .status-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0 22px 14px;
+      color: var(--muted);
+      font-size: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+    @media (max-width: 1200px) {
+      .app { grid-template-columns: 1fr; grid-template-rows: 0.9fr 1.1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="panel preview-panel">
+      <div class="preview-head"><span>Presenter Preview</span><span id="counter">1 / 8</span></div>
+      <div class="preview-wrap">
+        <div class="stage-shell" id="stageShell">
+          <iframe id="slideFrame" src="./2026-W20-weekly-ticket-slideshow.html" title="Audience deck"></iframe>
+        </div>
+      </div>
+      <div class="preview-foot">
+        <div class="nav">
+          <button type="button" id="prev">Prev</button>
+          <button type="button" id="next">Next</button>
+        </div>
+        <div class="meta"><span id="slideLabel">Opening</span><span>Synced presenter notes</span></div>
+      </div>
+    </section>
+    <section class="panel notes-panel">
+      <div class="notes-head"><span>Speaker Script</span><span>Read as-is or adapt lightly</span></div>
+      <div class="notes-title">
+        <h1 id="notesTitle">Weekly Delivery Narrative</h1>
+        <p id="notesSubtitle">Opening overview for the week.</p>
+      </div>
+      <div class="status-line"><span id="slideTitleLine">Opening</span><span>2026-W20</span></div>
+      <div class="notes-body" id="notesBody"></div>
+    </section>
+  </div>
+  <script>
+    const slides = [
+      {
+        title: "Weekly Delivery Narrative",
+        noteTitle: "Opening",
+        noteSubtitle: "Start with the week in one sentence before moving into the themes.",
+        notes: `This week was mainly about fixing and checking user-facing behavior. We were not pushing a large new feature. Instead, the work improved how existing flows behave in practice. By the end of the week, six items were done and four were left in pending review. The important point is that the remaining work is already defined, so we are going into next week with a clear follow-up list rather than an open problem set.`
+      },
+      {
+        title: "The Week's Story",
+        noteTitle: "Story",
+        noteSubtitle: "Explain the three areas before anyone gets lost in ticket names.",
+        notes: `The clearest way to explain the week is to group it into three areas. First, we improved checkout accuracy, which matters because price and payment details need to be right when users finish a transaction. Second, we cleaned up marketplace admin behavior, especially around unclear errors and access issues. Third, we collected a set of smaller admin usability issues into a short review queue. That grouping is more useful than walking through every ticket one by one.`
+      },
+      {
+        title: "Executive Snapshot",
+        noteTitle: "Snapshot",
+        noteSubtitle: "Give the short readout and then connect it back to evidence.",
+        notes: `At a high level, the week ended in a better state than it started. The closed items were not only implemented but, in several cases, also verified in staging. That gives us more confidence than a raw status change alone. The remaining four items are not scattered across many teams or systems. They sit in a compact queue, which means next week can start with execution rather than re-analysis.`
+      },
+      {
+        title: "Activity Flow",
+        noteTitle: "Flow",
+        noteSubtitle: "Use this slide to describe how work moved, not just where it ended.",
+        notes: `This slide shows the pace of the work. The pattern was straightforward. Issues were first captured clearly, then moved into implementation or review, and then checked where possible. That matters because it shows the team was closing the loop on visible problems rather than only filing them. The carryover work also makes sense. It is mostly usability follow-through, not a sign that the week got stuck.`
+      },
+      {
+        title: "Priority Work",
+        noteTitle: "Priority tickets",
+        noteSubtitle: "Name only the items that best represent the week.",
+        notes: `If we only call out a few tickets, these are the right ones to use. The checkout items matter because they affect what users see after payment and in transaction details. The marketplace items matter because they replace unclear behavior with clearer admin feedback. The remaining pending-review tickets matter because they define the next week. Together, these tickets show both what was finished and what still needs to be closed.`
+      },
+      {
+        title: "What Changed",
+        noteTitle: "Impact",
+        noteSubtitle: "Shift from ticket reporting into product effect.",
+        notes: `The most important change is not the ticket count. It is that several workflows now behave more clearly from a user point of view. When values are correct, when error messages are readable, and when interactions do not break unexpectedly, the product becomes easier to use and easier to trust. That is the real result of the week's work, and it is the point I would emphasize most strongly.`
+      },
+      {
+        title: "Next-Week Commitments",
+        noteTitle: "Next week",
+        noteSubtitle: "Keep the closeout list practical and definite.",
+        notes: `Next week does not need a new discovery effort. The work is already identified. The main job is to move these four items through review, validation, and closure. That is a good position to be in, because it means the team can start the week with a clear list and a clear end state for each item.`
+      },
+      {
+        title: "Closing Position",
+        noteTitle: "Close",
+        noteSubtitle: "End with the result and the next starting point.",
+        notes: `The closing message is simple. The week reduced visible problems and confirmed several fixes, and it did so without leaving behind a messy follow-up story. The remaining work is short, specific, and ready to close. That is how I would end the presentation: the week produced concrete cleanup and set up a clear starting point for the next one.`
+      }
+    ];
+
+    const channelName = 'weekly-ticket-slideshow-2026-w20';
+    const channel = ('BroadcastChannel' in window) ? new BroadcastChannel(channelName) : null;
+    const slideFrame = document.getElementById('slideFrame');
+    const counter = document.getElementById('counter');
+    const slideLabel = document.getElementById('slideLabel');
+    const notesTitle = document.getElementById('notesTitle');
+    const notesSubtitle = document.getElementById('notesSubtitle');
+    const notesBody = document.getElementById('notesBody');
+    const slideTitleLine = document.getElementById('slideTitleLine');
+    const prev = document.getElementById('prev');
+    const next = document.getElementById('next');
+    let index = 0;
+
+    function fitPreview() {
+      const wrap = document.querySelector('.preview-wrap');
+      const scale = Math.min(wrap.clientWidth / 1920, wrap.clientHeight / 1080);
+      document.documentElement.style.setProperty('--fit', Math.max(scale, 0.2).toFixed(4));
+    }
+
+    function renderNotes() {
+      const slide = slides[index];
+      counter.textContent = `${index + 1} / ${slides.length}`;
+      slideLabel.textContent = slide.noteTitle;
+      notesTitle.textContent = slide.title;
+      notesSubtitle.textContent = slide.noteSubtitle;
+      slideTitleLine.textContent = slide.noteTitle;
+      notesBody.innerHTML = slide.notes.split(/\n\n+/).map(paragraph => `<p>${paragraph}</p>`).join('');
+      prev.disabled = index === 0;
+      next.disabled = index === slides.length - 1;
+      prev.style.opacity = prev.disabled ? '0.45' : '1';
+      next.style.opacity = next.disabled ? '0.45' : '1';
+    }
+
+    function sync(source) {
+      const payload = { index, source, at: Date.now() };
+      localStorage.setItem(channelName, JSON.stringify(payload));
+      if (channel) channel.postMessage(payload);
+    }
+
+    function setIndex(nextIndex, source, broadcast = true) {
+      index = Math.max(0, Math.min(slides.length - 1, nextIndex));
+      renderNotes();
+      if (slideFrame.contentWindow) {
+        slideFrame.contentWindow.postMessage({ type: 'set-index', index }, '*');
+      }
+      if (broadcast) sync(source);
+    }
+
+    prev.addEventListener('click', () => setIndex(index - 1, 'presenter'));
+    next.addEventListener('click', () => setIndex(index + 1, 'presenter'));
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight' || event.key === 'PageDown' || event.key === ' ') setIndex(index + 1, 'presenter');
+      if (event.key === 'ArrowLeft' || event.key === 'PageUp') setIndex(index - 1, 'presenter');
+    });
+    window.addEventListener('resize', fitPreview);
+    window.addEventListener('storage', (event) => {
+      if (event.key !== channelName || !event.newValue) return;
+      const payload = JSON.parse(event.newValue);
+      if (typeof payload.index === 'number' && payload.source !== 'presenter') {
+        setIndex(payload.index, 'presenter-mirror', false);
+      }
+    });
+    if (channel) {
+      channel.onmessage = (event) => {
+        const payload = event.data || {};
+        if (typeof payload.index === 'number' && payload.source !== 'presenter') {
+          setIndex(payload.index, 'presenter-mirror', false);
+        }
+      };
+    }
+    window.addEventListener('message', (event) => {
+      const payload = event.data || {};
+      if (payload.type === 'audience-index' && typeof payload.index === 'number') {
+        setIndex(payload.index, 'presenter-mirror', false);
+      }
+    });
+    slideFrame.addEventListener('load', () => {
+      setIndex(index, 'presenter-mirror', false);
+    });
+
+    fitPreview();
+    renderNotes();
+  </script>
+</body>
+</html>
