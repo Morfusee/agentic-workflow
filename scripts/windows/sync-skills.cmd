@@ -53,7 +53,9 @@ for %%T in ("%CODEX_SKILLS%") do (
     set "NAME=%%~nxD"
     set "LINK_PATH=%%~fT\!NAME!"
 
-    if exist "!LINK_PATH!" (
+    if exist "%%~fD\.codex-hidden" (
+      echo [HIDDEN] !NAME! ^(skipped for Codex^)
+    ) else if exist "!LINK_PATH!" (
       echo [SKIP] !NAME! ^(already exists^)
     ) else (
       cmd /c mklink /J "!LINK_PATH!" "%%~fD" >nul

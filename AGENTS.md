@@ -114,3 +114,9 @@ Add optional icon/color fields only when explicitly provided or available.
 ## Symlink Intent
 
 This repository is symlinked for skill usage. Treat local repo files as source of truth for all skill work.
+
+## Codex Visibility Control
+
+Place an empty `.codex-hidden` file inside any skill folder to prevent it from being symlinked into Codex's skills directory. The skill will still sync to OpenCode when `SYNC_OPENCODE=true`.
+
+Use this for skills that are opencode-specific or should not be exposed to other LLM agents.

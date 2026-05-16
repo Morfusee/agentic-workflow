@@ -61,10 +61,12 @@ function Link-SkillFolder {
   if (-not (Test-Path $SkillFolder -PathType Container)) { return }
 
   $name = Split-Path $SkillFolder -Leaf
+  $isHidden = Test-Path (Join-Path $SkillFolder ".codex-hidden")
 
   foreach ($target in $TargetSkills) {
     $linkPath = Join-Path $target $name
 
+    if ($isHidden -and ($target -eq $CodexSkills)) { continue }
     if (Test-Path $linkPath) { continue }
 
     $mk = "mklink /J `"$linkPath`" `"$SkillFolder`""
