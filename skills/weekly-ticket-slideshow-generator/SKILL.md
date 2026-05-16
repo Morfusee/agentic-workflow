@@ -1,11 +1,11 @@
 ---
 name: weekly-ticket-slideshow-generator
-description: Transform weekly ticket dumps and stand-up scripts into a presentation-grade Reveal.js deck. Use when weekly work needs to be interpreted into a clear story of what happened, why it mattered, what changed, what still needs attention, and what happens next, and have the LLM generate the final HTML directly.
+description: Transform weekly ticket dumps and stand-up scripts into an objective weekly presentation brief for $slideshow-generator. Use when weekly work needs to be pulled from dump files, normalized, and turned into clear presentation-ready information that shows what the user actually worked on last week without directly authoring the final slideshow HTML.
 ---
 
 # Weekly Ticket Slideshow Generator
 
-Transform weekly ticket evidence into a presentation-grade weekly deck and have the LLM generate the final Reveal-style HTML directly.
+Transform weekly ticket evidence into an objective weekly presentation brief and hand that brief to `$slideshow-generator`.
 
 ## Core Objective
 
@@ -15,20 +15,29 @@ Transform weekly ticket evidence into a presentation-grade weekly deck and have 
 - what changed because of the work
 - what still needs attention
 - what happens next
-2. Treat ticket dumps and stand-up scripts as evidence, not as slide copy.
-3. Build a deck that feels intentional, audience-friendly, and visually useful.
-4. Support spoken delivery instead of replacing it.
-5. Default to direct HTML generation by the LLM instead of deterministic script rendering.
+2. Show what the user actually worked on last week, using the dumps as the main evidence source.
+3. Treat ticket dumps and stand-up scripts as evidence, not as slide copy.
+4. Pull forward enough concrete ticket and task detail that the team can see the real work performed.
+5. Avoid flattening the week into only high-level themes when specific work detail is what gives the update value.
+3. Produce clear, usable presentation input rather than the final slide HTML.
+4. Keep the output objective, evidence-based, and easy for another skill to render.
+5. Leave slide layout, visual treatment, and final HTML composition to `$slideshow-generator`.
 
 ## Weekly Narrative Rules
 
 1. Infer the weekly story from repeated activity, status movement, comments, verification, blockers, dependencies, and follow-up work.
-2. Do not default to one slide per ticket.
-3. Group related tickets into themes, workflows, systems, outcomes, or follow-through areas.
-4. Prioritize tickets that show meaningful progress, repeated attention, QA validation, important investigation, cross-team dependency, or next-step relevance.
-5. Keep technical detail in `speakerScript` unless it is necessary for the audience to understand impact.
-6. Avoid making the deck sound like a Jira export, bug triage log, or stand-up transcript.
-7. Make every content slide communicate one clear message.
+2. Choose structure based on the requested depth instead of forcing a grouped-summary default.
+3. When the user asks for in-depth coverage of each ticket or task, preserve ticket-level sections and make those sections the primary shape of the brief.
+4. Group related tickets only when that grouping still preserves clear ticket-by-ticket visibility inside the section.
+5. Prioritize tickets that show meaningful progress, repeated attention, QA validation, important investigation, cross-team dependency, or next-step relevance.
+6. Keep technical detail in supporting notes unless it is necessary for the audience to understand the work performed, the decision made, or the outcome reached.
+7. Avoid making the brief sound like a Jira export, bug triage log, or stand-up transcript.
+8. Make every briefing section communicate one clear message.
+9. Avoid motivational, celebratory, persuasive, or inflated phrasing.
+10. Prefer factual framing over interpretive hype.
+11. When the week contains substantial concrete work, prefer a more detailed section over a vague summary.
+12. If a ticket has enough source material to explain the problem, the action taken, validation, and end state, include all four in the brief instead of collapsing that ticket into a one-line mention.
+13. If the week contains many distinct tickets, it is acceptable for the brief to use one primary section per ticket.
 
 ## Data Interpretation Rules
 
@@ -39,60 +48,103 @@ Transform weekly ticket evidence into a presentation-grade weekly deck and have 
 5. Treat todo tickets as upcoming work only when they connect directly to the week's narrative.
 6. Treat blockers and dependencies as context, not drama.
 7. Treat technical errors as supporting detail unless the main point of the work was investigation.
-8. If several tickets belong to the same product area or workflow, summarize them together.
-9. Make user impact explicit when the work affected experience, reliability, QA confidence, release readiness, or operational clarity.
-10. Include stand-up-only work only when it strengthens the narrative and does not contradict ticket evidence.
+8. Treat ticket descriptions, acceptance notes, reproductions, validations, and follow-up comments as evidence of what was actually done.
+9. If several tickets belong to the same product area or workflow, summarize them together, but preserve ticket-level detail inside that grouped section when it helps the audience see the actual work.
+10. Zoom in on specific tickets when any of the following is true:
+- the user spent repeated attention across the week on the same item
+- the work involved investigation, reproduction, validation, or technical clarification
+- the ticket changed state in a meaningful way because of the user's work
+- the ticket is needed to explain what was completed versus what is still pending
+- the ticket is representative of a broader cluster and makes the cluster easier to understand
+11. Make user impact explicit when the work affected experience, reliability, QA confidence, release readiness, or operational clarity.
+12. Include stand-up-only work only when it strengthens the narrative and does not contradict ticket evidence.
+13. Prefer evidence of work performed over broad labels such as `support`, `cleanup`, or `follow-up` unless the underlying detail is unavailable.
+14. For each prioritized ticket, capture:
+- the concrete problem or failure
+- what the user did with the ticket
+- what changed or was verified
+- what state the ticket ended in
+- what still needs to happen, if anything
+15. Do not downgrade a ticket with rich evidence into a short thematic mention when the audience would lose understanding of the actual work.
 
-## Recommended Deck Flow
+## Handoff Structure
 
-1. Title slide with week identifier and a concise subtitle summarizing the week's focus.
-2. Weekly story slide with one clear summary of what the week was mainly about.
-3. Executive snapshot slide with three to five concise activity themes.
-4. Activity flow slide showing movement through states such as Todo, In Progress, In Review, and Done.
-5. Priority work slide highlighting selected tickets that best represent the week.
-6. Impact or insight slide explaining the non-obvious takeaway from the week's work.
-7. Next-week commitments slide summarizing practical follow-through.
-8. Closing slide reinforcing weekly outcome and immediate priorities.
+1. Produce information that maps cleanly into:
+- title / subtitle
+- weekly story
+- executive snapshot
+- activity flow
+- priority work
+- impact or insight
+- next-week commitments
+- closing position
+2. Keep the structure explicit enough that `$slideshow-generator` can interpret it without re-reading raw dump files.
+3. Include enough ticket and task detail inside each section that `$slideshow-generator` can build a substantive deck instead of padding a thin summary.
+4. Include source-backed notes for each section so presenter script can be written from evidence rather than guesswork.
+5. For any section that references specific work, name the relevant tickets and state what was actually done on them.
+6. When using ticket-level sections, make the ticket ID and ticket title explicit in the section title or section summary.
 
-## Slide Construction Rules
+## Language Rules
 
-1. Keep slide text scannable within five to eight seconds.
-2. Use short, presentation-grade summaries instead of raw ticket wording.
-3. Ensure `speakerScript` explains the slide without restating its visible text.
-4. Prefer fewer, stronger slides over many weak slides.
-5. Avoid decorative charts or diagrams that add no explanatory value.
-6. Vary slide purpose and structure so the deck does not feel repetitive.
+1. Use plain, concrete, and neutral language.
+2. Avoid inspirational tone, inflated framing, or claims that overstate routine work.
+3. Prefer verbs such as `fixed`, `verified`, `clarified`, `moved to review`, `grouped`, `closed`, and `carried over`.
+4. Avoid language such as `transformative`, `major step`, `strong momentum`, `big win`, or similar framing unless the evidence clearly justifies it.
+5. Keep summaries concise and factual.
+6. Avoid polished or persuasive phrasing when a simpler sentence says the same thing.
+7. Prefer straightforward weekly-report wording over presentation-slogan wording.
+8. Prefer `worked on`, `checked`, `confirmed`, `documented`, `updated`, `reviewed`, `tested`, or `followed up` when those verbs describe the work more accurately than stronger wording.
+9. Do not hide concrete work behind abstract phrasing such as `advanced the initiative` or `supported progress`.
 
 ## Output Contract
 
-1. Generate the final slideshow HTML directly unless the user explicitly asks for an intermediate payload.
-2. Use Reveal.js structure and author slides as presentation-grade HTML sections.
-3. Include presenter notes or speaker-script support in the HTML when useful.
-4. Keep slide composition intentionally non-deterministic:
-- allow the LLM to choose layout emphasis
-- allow the LLM to vary slide composition by week
-- avoid locking the deck into a rigid template when the evidence suggests a better story shape
-5. If a structured intermediate representation is useful for reasoning, treat it as private working structure rather than the required final deliverable.
-6. Choose visuals only when they clarify sequence, grouping, dependency, impact, or next actions.
+1. Output a structured weekly presentation brief, not the final slideshow HTML.
+2. Make the brief usable as direct input to `$slideshow-generator`.
+3. For each section, provide:
+- section title
+- objective summary
+- why it matters
+- supporting evidence
+- work detail
+- suggested presenter notes
+- next action or takeaway when relevant
+4. Preserve week context and major activity signals in the handoff.
+5. Treat the handoff as the source-of-truth interpretation layer for the slideshow workflow.
+6. Follow the example handoff shape in [`references/weekly-brief-example.md`](references/weekly-brief-example.md).
+7. Write `suggested presenter notes` as readable paragraph prose, not bullet points.
+8. Keep `suggested presenter notes` simple and factual so `$slideshow-generator` can turn them into natural spoken script without adding hype.
+9. Use `work detail` to show the concrete tasks performed, validations made, findings recorded, or follow-through completed for the tickets in that section.
+10. Include ticket IDs inside `work detail` whenever that helps the audience map the work back to actual items.
+11. When a ticket is covered as its own section, structure `work detail` so it answers:
+- what broke or needed attention
+- what was done
+- how it was checked
+- what the current state is
 
 ## Execution Steps
 
 1. Resolve target week under `memory/tickets/YYYY-W##/`.
 2. Parse `# All Scraped Tickets` and stand-up script content from each daily dump.
 3. Merge same ticket IDs across the week and preserve chronological events.
-4. Identify the strongest weekly themes and the few tickets that best represent them.
-5. Build the deck as aggregate narrative content, not as a chronological ticket list.
-6. Write the final Reveal-style HTML directly.
-7. Keep wording objective, audience-safe, and outcome-focused.
-8. Use scripts, assets, or deterministic renderer paths only if the user explicitly asks for them or if direct HTML generation is blocked.
+4. Identify the strongest weekly themes and the tickets that best explain the actual work performed.
+5. Decide whether the requested output should stay grouped or move to ticket-level sections, and prefer ticket-level sections when the user asks for in-depth coverage.
+6. Build an objective weekly brief as structured narrative content, not as a chronological ticket list.
+7. Keep wording audience-safe, evidence-based, and non-promotional.
+8. Hand the resulting brief to `$slideshow-generator` for slide interpretation and HTML composition.
+9. Do not take over slide rendering responsibilities unless the user explicitly asks for a combined workflow.
 
 ## Rules
 
 1. Do not invent ticket facts that are not supported by the dumps or stand-up scripts.
-2. Do not copy raw ticket dumps into slide text.
-3. Do not let the deck collapse into ticket-by-ticket reporting unless the source week truly supports that shape.
-4. Prefer outcome-focused wording such as validated behavior, clarified workflow, prepared evidence, improved consistency, or moved toward review.
-5. Keep presenter scripts polished, natural, and useful for live delivery.
-6. Preserve original week context and chronology while summarizing aggressively.
+2. Do not copy raw ticket dumps into the handoff summary.
+3. Do not let the brief collapse into ticket-by-ticket reporting unless the source week truly supports that shape.
+4. Prefer objective wording such as validated behavior, clarified workflow, documented issue, fixed display, moved to review, or pending follow-through.
+5. Keep presenter-note inputs factual and readable.
+6. Preserve original week context and chronology while summarizing, but do not summarize away the work detail that gives the team visibility.
 7. Do not default to repository `scripts/`, `assets/`, or `output/` folders as the core mechanism.
-8. Treat deterministic rendering as an optional fallback, not as the primary workflow.
+8. Keep the role boundary clear:
+- `$weekly-ticket-slideshow-generator` interprets dumps into structured information
+- `$slideshow-generator` interprets structured information into slides
+9. If a grouped section becomes too vague, add more concrete ticket detail instead of adding hype.
+10. If a week contains several meaningful tickets in the same area, prefer a grouped section with detailed sub-work over a single bland summary sentence.
+11. If the user asks to cover each ticket or task in depth, do not compress the week into only grouped overview slides.

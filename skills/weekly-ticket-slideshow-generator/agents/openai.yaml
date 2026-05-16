@@ -1,4 +1,4 @@
 interface:
   display_name: "Weekly Ticket Slideshow Generator"
-  short_description: "Turn weekly ticket evidence into a story-driven HTML deck"
-  default_prompt: "Use $weekly-ticket-slideshow-generator to transform weekly ticket dumps and stand-up scripts into a story-driven Reveal-style HTML deck. Group work into themes instead of one slide per ticket, explain what happened and why it mattered, make changes and follow-through explicit, and let the LLM author the final slideshow HTML directly instead of relying on deterministic renderer scripts."
+  short_description: "Turn weekly ticket evidence into an objective, detailed slideshow brief"
+  default_prompt: "Use $weekly-ticket-slideshow-generator to read weekly ticket dumps and stand-up scripts, then turn them into an objective, structured weekly presentation brief for $slideshow-generator. Show what the user actually worked on last week, choose structure based on requested depth, preserve ticket-level sections when the user wants in-depth coverage for each ticket or task, capture the problem, action, validation, and current state for each prioritized ticket, keep evidence-backed presenter-note inputs written as readable paragraph prose, keep the tone plain and factual, and stop at the handoff layer rather than authoring the final slideshow HTML."

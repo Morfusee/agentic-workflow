@@ -1,4 +1,4 @@
 interface:
   display_name: "Slideshow Generator"
-  short_description: "Render concise narrative slides directly as HTML"
-  default_prompt: "Use $slideshow-generator to author a fullscreen narrative slideshow directly as HTML. Keep slides scannable, audience-friendly, and supportive of spoken delivery, use diagrams only when they clarify flow or impact, and prefer prompt-driven composition over deterministic payload rendering unless the user explicitly asks for a strict pipeline."
+  short_description: "Render slides from a structured weekly brief"
+  default_prompt: "Use $slideshow-generator to turn a structured presentation brief into audience and presenter HTML. Own slide composition, presenter view behavior, and presenter notes. Keep the deck inside a 1920x1080 stage that scales to the viewport, let text use the full space available inside its parent container, preserve ticket-level depth when the upstream brief asks for in-depth coverage, always include a presenter view that opens from the same deck with a keybind, and write presenter notes like a normal team member giving an internal weekly update: plain, direct, easy to read out loud, and not polished, dramatic, edgy, or marketing-like."
