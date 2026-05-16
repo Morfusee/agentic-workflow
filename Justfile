@@ -5,6 +5,7 @@ alias ss := skills-sync
 alias so := skills-open
 alias sw := skills-watch
 alias wo := weekly-open
+alias oco := opencode-config
 
 default:
   @just --list
@@ -26,6 +27,10 @@ skills-watch:
 skills:
   @cmd /c scripts\windows\sync-skills.cmd
   @powershell -ExecutionPolicy Bypass -File .\scripts\windows\watch-skills.ps1
+
+# Open opencode's config file in the default editor
+opencode-config:
+  @code "$env:USERPROFILE\.config\opencode\opencode.jsonc"
 
 # List latest 5 weeks, select one, and open its weekly slideshow HTML
 weekly-open:
