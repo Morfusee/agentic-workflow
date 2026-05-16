@@ -1,4 +1,4 @@
 interface:
   display_name: "Slideshow Generator"
-  short_description: "Render a generic HTML slideshow and presenter view from JSON"
-  default_prompt: "Use $slideshow-generator to render a fullscreen HTML slideshow and synced presenter view from a normalized payload JSON file."
+  short_description: "Render concise narrative slides directly as HTML"
+  default_prompt: "Use $slideshow-generator to author a fullscreen narrative slideshow directly as HTML. Keep slides scannable, audience-friendly, and supportive of spoken delivery, use diagrams only when they clarify flow or impact, and prefer prompt-driven composition over deterministic payload rendering unless the user explicitly asks for a strict pipeline."
