@@ -10,530 +10,102 @@
       --ink: #211b17;
       --muted: #655b52;
       --line: rgba(33,27,23,0.10);
-      --card: rgba(255,255,255,0.74);
+      --card: rgba(255,255,255,0.80);
       --accent: #b85b37;
       --accent2: #2f655d;
-      --accent3: #d3a34a;
-      --shadow: 0 20px 44px rgba(30, 22, 15, 0.10);
+      --warning: #7b5d27;
+      --shadow: 0 18px 40px rgba(30, 22, 15, 0.10);
       --fit: 1;
       --stage-w: 1920;
       --stage-h: 1080;
     }
     * { box-sizing: border-box; }
-    html, body {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background:
-        radial-gradient(circle at top left, #fff9f1 0%, #f4eee4 50%, #e9dece 100%);
-      color: var(--ink);
-      font-family: "Aptos", "Segoe UI Variable Text", "Trebuchet MS", sans-serif;
-    }
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background:
-        linear-gradient(130deg, rgba(184,91,55,0.08), transparent 34%),
-        linear-gradient(310deg, rgba(47,101,93,0.08), transparent 34%),
-        repeating-linear-gradient(90deg, rgba(33,27,23,0.016) 0 1px, transparent 1px 140px);
-    }
-    .viewport {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-    }
-    .stage-shell {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: calc(var(--stage-w) * 1px);
-      height: calc(var(--stage-h) * 1px);
-      transform: translate(-50%, -50%) scale(var(--fit));
-      transform-origin: center center;
-    }
-    .deck {
-      position: relative;
-      display: flex;
-      width: calc(var(--stage-w) * 1px);
-      height: calc(var(--stage-h) * 1px);
-      transition: transform 320ms ease;
-    }
-    .slide {
-      width: calc(var(--stage-w) * 1px);
-      height: calc(var(--stage-h) * 1px);
-      flex: 0 0 calc(var(--stage-w) * 1px);
-      padding: 50px;
-      display: grid;
-      grid-template-rows: auto auto 1fr auto;
-      gap: 20px;
-    }
-    .eyebrow {
-      font-size: 14px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      font-weight: 800;
-      color: var(--muted);
-    }
-    h1, h2 {
-      margin: 0;
-      line-height: 0.96;
-      font-family: "Georgia", "Iowan Old Style", serif;
-      font-weight: 700;
-      max-width: 13ch;
-    }
-    h1 { font-size: 78px; }
-    h2 { font-size: 52px; }
-    .subtitle {
-      font-size: 25px;
-      line-height: 1.3;
-      color: var(--muted);
-      max-width: 52rem;
-    }
-    .grid-2, .grid-3, .grid-4, .flow, .chain, .priority-list, .commitments {
-      display: grid;
-      gap: 16px;
-      align-content: start;
-    }
-    .grid-2 { grid-template-columns: 1.15fr 0.85fr; }
+    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: radial-gradient(circle at top left, #fff9f1 0%, #f4eee4 50%, #e9dece 100%); color: var(--ink); font-family: "Aptos", "Segoe UI Variable Text", "Trebuchet MS", sans-serif; }
+    body::before { content: ""; position: fixed; inset: 0; pointer-events: none; background: linear-gradient(130deg, rgba(184,91,55,0.07), transparent 34%), linear-gradient(310deg, rgba(47,101,93,0.07), transparent 34%), repeating-linear-gradient(90deg, rgba(33,27,23,0.016) 0 1px, transparent 1px 140px); }
+    .viewport { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
+    .stage-shell { position: absolute; left: 50%; top: 50%; width: calc(var(--stage-w) * 1px); height: calc(var(--stage-h) * 1px); transform: translate(-50%, -50%) scale(var(--fit)); transform-origin: center center; }
+    .deck { position: relative; display: flex; width: calc(var(--stage-w) * 1px); height: calc(var(--stage-h) * 1px); transition: transform 320ms ease; }
+    .slide { width: calc(var(--stage-w) * 1px); height: calc(var(--stage-h) * 1px); flex: 0 0 calc(var(--stage-w) * 1px); padding: 40px 44px 34px; display: grid; grid-template-rows: auto auto 1fr auto; gap: 14px; }
+    .eyebrow { font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 800; color: var(--muted); }
+    h1, h2 { margin: 0; line-height: 0.96; font-family: "Georgia", "Iowan Old Style", serif; font-weight: 700; }
+    h1 { font-size: 68px; }
+    h2 { font-size: 40px; }
+    .subtitle { font-size: 21px; line-height: 1.32; color: var(--muted); max-width: 1500px; }
+    .card, .metric, .ticket-box, .fact, .lane, .close-card { background: var(--card); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); backdrop-filter: blur(10px); }
+    .card, .metric, .ticket-box, .fact, .close-card { padding: 18px 20px; }
+    .grid-2, .grid-3, .grid-4, .ticket-grid, .facts-grid, .lane-wrap { display: grid; gap: 14px; align-content: start; }
+    .grid-2 { grid-template-columns: 1.1fr 0.9fr; }
     .grid-3 { grid-template-columns: repeat(3, 1fr); }
     .grid-4 { grid-template-columns: repeat(4, 1fr); }
-    .flow { grid-template-columns: repeat(5, 1fr); }
-    .chain { grid-template-columns: repeat(3, 1fr); align-items: stretch; }
-    .card, .theme, .metric, .step, .priority-item, .commitment-item, .lane {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-    }
-    .card, .theme, .metric, .step, .priority-item, .commitment-item { padding: 22px; }
-    .kicker {
-      font-size: 12px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-weight: 800;
-      color: var(--muted);
-      margin-bottom: 10px;
-    }
-    .big-copy {
-      font-size: 34px;
-      line-height: 1.08;
-      max-width: 18ch;
-    }
-    .support {
-      font-size: 20px;
-      line-height: 1.42;
-      color: var(--muted);
-      max-width: 58rem;
-    }
-    .theme { min-height: 156px; display: grid; gap: 8px; }
-    .theme-title { font-size: 25px; font-weight: 800; }
-    .theme-copy { font-size: 17px; line-height: 1.42; color: var(--muted); }
+    .ticket-grid { grid-template-columns: 1.15fr 0.85fr; }
+    .facts-grid { grid-template-columns: repeat(2, 1fr); }
+    .lane-wrap { grid-template-columns: repeat(2, 1fr); }
+    .kicker { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 800; color: var(--muted); margin-bottom: 10px; }
+    .big-copy { font-size: 28px; line-height: 1.08; }
+    .support { font-size: 17px; line-height: 1.42; color: var(--muted); }
+    .metric { min-height: 148px; display: flex; flex-direction: column; justify-content: space-between; }
+    .metric em { font-style: normal; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-weight: 800; }
+    .metric strong { font-size: 42px; line-height: 1; font-family: "Georgia", serif; }
+    .metric span { font-size: 16px; line-height: 1.34; color: var(--muted); }
     .status-row { display: flex; flex-wrap: wrap; gap: 10px; }
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      background: rgba(33,27,23,0.06);
-    }
-    .pill::before {
-      content: "";
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: currentColor;
-    }
+    .pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; background: rgba(33,27,23,0.06); }
+    .pill::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
     .done { color: var(--accent2); }
     .review { color: var(--accent); }
-    .mixed { color: #7b5d27; }
-    .metric {
-      min-height: 168px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    .metric em {
-      font-style: normal;
-      font-size: 12px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      font-weight: 800;
-    }
-    .metric strong {
-      font-size: 48px;
-      line-height: 1;
-      font-family: "Georgia", serif;
-    }
-    .metric span {
-      font-size: 17px;
-      line-height: 1.36;
-      color: var(--muted);
-    }
-    .step {
-      min-height: 196px;
-      position: relative;
-      display: grid;
-      gap: 10px;
-    }
-    .step:not(:last-child)::after {
-      content: "→";
-      position: absolute;
-      right: -14px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 26px;
-      color: var(--muted);
-    }
-    .step strong { font-size: 21px; }
-    .step p { margin: 0; font-size: 16px; line-height: 1.42; color: var(--muted); }
-    .lane-box { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
-    .lane { padding: 10px 14px; font-size: 15px; line-height: 1.35; }
-    .priority-item, .commitment-item { display: grid; gap: 7px; }
-    .priority-item strong, .commitment-item strong { font-size: 20px; }
-    .priority-item p, .commitment-item p { margin: 0; font-size: 16px; line-height: 1.4; color: var(--muted); }
-    .chain .card { min-height: 250px; position: relative; }
-    .chain .card:not(:last-child)::after {
-      content: "→";
-      position: absolute;
-      right: -17px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 30px;
-      color: var(--accent);
-    }
-    .footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 14px;
-      color: var(--muted);
-    }
-    .nav {
-      position: fixed;
-      right: 20px;
-      bottom: 18px;
-      display: flex;
-      gap: 8px;
-      z-index: 20;
-    }
-    .nav button {
-      border: 0;
-      border-radius: 999px;
-      padding: 10px 14px;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      background: rgba(33,27,23,0.88);
-      color: #fff;
-      cursor: pointer;
-    }
-    .counter {
-      position: fixed;
-      left: 20px;
-      bottom: 20px;
-      z-index: 20;
-      font-size: 14px;
-      color: var(--muted);
-    }
-    .hint {
-      position: fixed;
-      left: 20px;
-      top: 18px;
-      z-index: 20;
-      font-size: 13px;
-      color: var(--muted);
-      background: rgba(255,255,255,0.72);
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      padding: 8px 12px;
-      box-shadow: var(--shadow);
-    }
+    .mixed { color: var(--warning); }
+    .ticket-box { display: grid; grid-template-rows: auto auto 1fr; gap: 12px; min-height: 710px; }
+    .ticket-head { display: flex; justify-content: space-between; gap: 16px; align-items: start; }
+    .ticket-id { font-size: 28px; font-weight: 800; letter-spacing: 0.02em; }
+    .ticket-status { display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 999px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 800; background: rgba(33,27,23,0.06); }
+    .ticket-status::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: currentColor; }
+    .ticket-status.done { color: var(--accent2); }
+    .ticket-status.review { color: var(--accent); }
+    .ticket-status.mixed { color: var(--warning); }
+    .ticket-title { font-size: 30px; line-height: 1.08; font-weight: 700; font-family: "Georgia", serif; }
+    .ticket-summary { font-size: 17px; line-height: 1.42; color: var(--muted); }
+    .fact { min-height: 148px; display: grid; gap: 8px; align-content: start; }
+    .fact strong { font-size: 17px; }
+    .fact p { margin: 0; font-size: 15px; line-height: 1.42; color: var(--muted); }
+    .lane { padding: 16px 18px; font-size: 16px; line-height: 1.42; }
+    .lane strong { display: block; margin-bottom: 6px; font-size: 17px; }
+    .close-card { min-height: 230px; display: grid; gap: 10px; }
+    .footer { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--muted); }
+    .nav { position: fixed; right: 20px; bottom: 18px; display: flex; gap: 8px; z-index: 20; }
+    .nav button { border: 0; border-radius: 999px; padding: 10px 14px; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; background: rgba(33,27,23,0.88); color: #fff; cursor: pointer; }
+    .counter { position: fixed; left: 20px; bottom: 20px; z-index: 20; font-size: 14px; color: var(--muted); }
+    .hint { position: fixed; left: 20px; top: 18px; z-index: 20; font-size: 13px; color: var(--muted); background: rgba(255,255,255,0.72); border: 1px solid var(--line); border-radius: 999px; padding: 8px 12px; box-shadow: var(--shadow); }
   </style>
 </head>
 <body>
-  <div class="viewport">
-    <div class="stage-shell" id="stageShell">
-      <div class="deck" id="deck"></div>
-    </div>
-  </div>
+  <div class="viewport"><div class="stage-shell"><div class="deck" id="deck"></div></div></div>
   <div class="hint">Press <strong>P</strong> for presenter view</div>
-  <div class="counter" id="counter">1 / 8</div>
-  <div class="nav">
-    <button type="button" id="prev">Prev</button>
-    <button type="button" id="next">Next</button>
-  </div>
+  <div class="counter" id="counter">1 / 13</div>
+  <div class="nav"><button type="button" id="prev">Prev</button><button type="button" id="next">Next</button></div>
   <script>
     const slides = [
-      {
-        title: "Weekly Delivery Narrative",
-        noteTitle: "Opening",
-        body: `
-          <div class="eyebrow">2026-W20 Weekly Review</div>
-          <h1>Visible fixes closed the week, and the remaining work is clear.</h1>
-          <div class="subtitle">This week focused on admin usability, checkout accuracy, and marketplace admin behavior.</div>
-          <div class="grid-2">
-            <div class="card">
-              <div class="kicker">Week summary</div>
-              <div class="big-copy">We spent the week fixing behavior people can see and checking that the fixes actually worked.</div>
-            </div>
-            <div class="card">
-              <div class="kicker">End of week</div>
-              <div class="status-row">
-                <span class="pill done">6 Done</span>
-                <span class="pill review">4 Pending Review</span>
-                <span class="pill mixed">No major blockers</span>
-              </div>
-            </div>
-          </div>
-          <div class="footer"><span>Weekly Delivery Narrative</span><span>01</span></div>
-        `,
-        notes: `This week was mainly about fixing and checking user-facing behavior. We were not pushing a large new feature. Instead, the work improved how existing flows behave in practice. By the end of the week, six items were done and four were left in pending review. The important point is that the remaining work is already defined, so we are going into next week with a clear follow-up list rather than an open problem set.`
-      },
-      {
-        title: "The Week's Story",
-        noteTitle: "Story",
-        body: `
-          <div class="eyebrow">The Week's Story</div>
-          <h2>The work fits into three clear areas instead of a long ticket list.</h2>
-          <div class="grid-3">
-            <div class="theme">
-              <div class="theme-title">Checkout accuracy</div>
-              <div class="theme-copy">Receipt values, discount breakdowns, and pay-link behavior were corrected or confirmed.</div>
-            </div>
-            <div class="theme">
-              <div class="theme-title">Marketplace admin</div>
-              <div class="theme-copy">Error messages and access issues were made clearer, and fixes were checked in staging.</div>
-            </div>
-            <div class="theme">
-              <div class="theme-title">Admin usability</div>
-              <div class="theme-copy">Search, refresh, copy, and table behavior were narrowed into a focused review queue.</div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="kicker">Why this matters</div>
-            <div class="support">The common thread is simple: people get more accurate information and fewer confusing interactions in places they use often.</div>
-          </div>
-          <div class="footer"><span>Grouped by theme</span><span>02</span></div>
-        `,
-        notes: `The clearest way to explain the week is to group it into three areas. First, we improved checkout accuracy, which matters because price and payment details need to be right when users finish a transaction. Second, we cleaned up marketplace admin behavior, especially around unclear errors and access issues. Third, we collected a set of smaller admin usability issues into a short review queue. That grouping is more useful than walking through every ticket one by one.`
-      },
-      {
-        title: "Executive Snapshot",
-        noteTitle: "Snapshot",
-        body: `
-          <div class="eyebrow">Executive Snapshot</div>
-          <h2>The week shows checked fixes and a small amount of carryover.</h2>
-          <div class="grid-4">
-            <div class="metric"><em>Done</em><strong>6</strong><span>Fixes reached done by week close.</span></div>
-            <div class="metric"><em>Pending review</em><strong>4</strong><span>Remaining work is already narrowed and ready for follow-through.</span></div>
-            <div class="metric"><em>Main themes</em><strong>3</strong><span>The activity clustered in clear product areas.</span></div>
-            <div class="metric"><em>Checked</em><strong>Yes</strong><span>Several completed items were verified in staging.</span></div>
-          </div>
-          <div class="card">
-            <div class="kicker">Readout</div>
-            <div class="support">The useful takeaway is that this was not just ticket movement. Several changes were checked and confirmed, while the unfinished items remained manageable.</div>
-          </div>
-          <div class="footer"><span>Short read for stakeholders</span><span>03</span></div>
-        `,
-        notes: `At a high level, the week ended in a better state than it started. The closed items were not only implemented but, in several cases, also verified in staging. That gives us more confidence than a raw status change alone. The remaining four items are not scattered across many teams or systems. They sit in a compact queue, which means next week can start with execution rather than re-analysis.`
-      },
-      {
-        title: "Activity Flow",
-        noteTitle: "Flow",
-        body: `
-          <div class="eyebrow">Activity Flow</div>
-          <h2>Issues were captured, worked, checked, and then carried over only where needed.</h2>
-          <div class="flow">
-            <div class="step"><strong>Captured</strong><p>Problems were written up with enough detail to make handoff easier.</p></div>
-            <div class="step"><strong>Worked</strong><p>Fixes moved into staging-ready or review-ready states during the week.</p></div>
-            <div class="step"><strong>Checked</strong><p>Reporting search, transaction details, marketplace messaging, and app installs were verified.</p></div>
-            <div class="step"><strong>Queued</strong><p>Search, refresh, copy, and table issues remained as the short next list.</p></div>
-            <div class="step"><strong>Closed week</strong><p>The week ended with limited carryover and no major blocker driving the story.</p></div>
-          </div>
-          <div class="lane-box">
-            <div class="lane">Done: NGN-561, NGN-562, NGN-589, NGN-590, NGN-624, NGN-628</div>
-            <div class="lane">Pending Review: NGN-600, NGN-630, NGN-631, NGN-632</div>
-          </div>
-          <div class="footer"><span>Movement through the week</span><span>04</span></div>
-        `,
-        notes: `This slide shows the pace of the work. The pattern was straightforward. Issues were first captured clearly, then moved into implementation or review, and then checked where possible. That matters because it shows the team was closing the loop on visible problems rather than only filing them. The carryover work also makes sense. It is mostly usability follow-through, not a sign that the week got stuck.`
-      },
-      {
-        title: "Priority Work",
-        noteTitle: "Priority tickets",
-        body: `
-          <div class="eyebrow">Priority Work</div>
-          <h2>A few tickets explain the week better than the full list.</h2>
-          <div class="priority-list">
-            <div class="priority-item"><strong>NGN-589 · Done</strong><p>Item prices on the payment complete page now show correctly after Pay Link checkout.</p></div>
-            <div class="priority-item"><strong>NGN-562 · Done</strong><p>Discounted transaction details were checked so subtotal, discount, and total charge values line up.</p></div>
-            <div class="priority-item"><strong>NGN-624 and NGN-628 · Done</strong><p>Marketplace admin now gives clearer feedback and no longer shows the earlier access-related failure behavior.</p></div>
-            <div class="priority-item"><strong>NGN-600, NGN-630, NGN-631, NGN-632 · Pending Review</strong><p>The remaining queue covers search reloads, stale refresh behavior, clipboard copy, and customer table navigation.</p></div>
-          </div>
-          <div class="footer"><span>Representative work</span><span>05</span></div>
-        `,
-        notes: `If we only call out a few tickets, these are the right ones to use. The checkout items matter because they affect what users see after payment and in transaction details. The marketplace items matter because they replace unclear behavior with clearer admin feedback. The remaining pending-review tickets matter because they define the next week. Together, these tickets show both what was finished and what still needs to be closed.`
-      },
-      {
-        title: "What Changed",
-        noteTitle: "Impact",
-        body: `
-          <div class="eyebrow">What Changed</div>
-          <h2>The main change is that several common workflows now behave more clearly.</h2>
-          <div class="chain">
-            <div class="card"><div class="kicker">Before</div><div class="big-copy">People could run into wrong values, unclear errors, or interactions that broke their flow.</div></div>
-            <div class="card"><div class="kicker">This week</div><div class="big-copy">The team fixed visible problems and checked the results where the evidence mattered most.</div></div>
-            <div class="card"><div class="kicker">Now</div><div class="big-copy">Several checkout, reporting, and admin flows are easier to trust, and the remaining gaps are clearly named.</div></div>
-          </div>
-          <div class="footer"><span>Problem to result</span><span>06</span></div>
-        `,
-        notes: `The most important change is not the ticket count. It is that several workflows now behave more clearly from a user point of view. When values are correct, when error messages are readable, and when interactions do not break unexpectedly, the product becomes easier to use and easier to trust. That is the real result of the week's work, and it is the point I would emphasize most strongly.`
-      },
-      {
-        title: "Next-Week Commitments",
-        noteTitle: "Next week",
-        body: `
-          <div class="eyebrow">Next-Week Commitments</div>
-          <h2>The remaining work is small enough to push through review and close.</h2>
-          <div class="commitments">
-            <div class="commitment-item"><strong>NGN-600</strong><p>Finish the Partner Users search fix so typing is not interrupted by a full page reload.</p></div>
-            <div class="commitment-item"><strong>NGN-630</strong><p>Finish the service provider refresh fix so new providers appear without a manual reload.</p></div>
-            <div class="commitment-item"><strong>NGN-631</strong><p>Finish the clipboard copy fix in Customer Details so the copy action works cleanly.</p></div>
-            <div class="commitment-item"><strong>NGN-632</strong><p>Finish the customer table fix so larger result sets remain usable and visible.</p></div>
-          </div>
-          <div class="footer"><span>Clear follow-through</span><span>07</span></div>
-        `,
-        notes: `Next week does not need a new discovery effort. The work is already identified. The main job is to move these four items through review, validation, and closure. That is a good position to be in, because it means the team can start the week with a clear list and a clear end state for each item.`
-      },
-      {
-        title: "Closing Position",
-        noteTitle: "Close",
-        body: `
-          <div class="eyebrow">Closing Position</div>
-          <h2>The week ended with real fixes in place and a short next list.</h2>
-          <div class="grid-2">
-            <div class="card">
-              <div class="kicker">What is done</div>
-              <div class="big-copy">Several user-facing fixes were already verified in staging by week close.</div>
-            </div>
-            <div class="card">
-              <div class="kicker">What is next</div>
-              <div class="big-copy">Use the pending-review queue as the first execution target next week.</div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="kicker">Bottom line</div>
-            <div class="support">This was a solid maintenance and quality week. It reduced visible issues, confirmed several fixes, and left a manageable list to finish.</div>
-          </div>
-          <div class="footer"><span>Weekly Delivery Narrative · 2026-W20</span><span>08</span></div>
-        `,
-        notes: `The closing message is simple. The week reduced visible problems and confirmed several fixes, and it did so without leaving behind a messy follow-up story. The remaining work is short, specific, and ready to close. That is how I would end the presentation: the week produced concrete cleanup and set up a clear starting point for the next one.`
-      }
+      { body: `<div class="eyebrow">2026-W20 Weekly Review</div><h1>This deck goes ticket by ticket, not just theme by theme.</h1><div class="subtitle">The week covered ten tracked items: six ended done, four stayed in pending review, and several of the done items include explicit staging verification.</div><div class="grid-2"><div class="card"><div class="kicker">What changed in this version</div><div class="big-copy">Each ticket now gets its own coverage with the problem, the work captured this week, the evidence behind it, and the current state.</div></div><div class="card"><div class="kicker">Week close</div><div class="status-row"><span class="pill done">6 Done</span><span class="pill review">4 Pending Review</span><span class="pill mixed">10 Ticket Sections</span></div></div></div><div class="footer"><span>Weekly Delivery Narrative</span><span>01</span></div>` },
+      { body: `<div class="eyebrow">Weekly Map</div><h2>The week split between verified fixes and newly documented follow-up work.</h2><div class="grid-4"><div class="metric"><em>Verified</em><strong>4+</strong><span>NGN-561, NGN-562, NGN-624, NGN-628, and NGN-589 all include explicit staging or validation notes.</span></div><div class="metric"><em>Created</em><strong>7</strong><span>Most of the open queue and several of the completed items were first raised by you this week.</span></div><div class="metric"><em>Checkout</em><strong>4</strong><span>NGN-561, NGN-562, NGN-589, and NGN-590 covered search, receipts, transaction math, and pay-link behavior.</span></div><div class="metric"><em>Admin</em><strong>6</strong><span>NGN-600, NGN-624, NGN-628, NGN-630, NGN-631, and NGN-632 covered marketplace and customer admin flows.</span></div></div><div class="lane-wrap"><div class="lane"><strong>Closed this week</strong>NGN-561, NGN-562, NGN-589, NGN-590, NGN-624, and NGN-628 ended done.</div><div class="lane"><strong>Carried forward</strong>NGN-600, NGN-630, NGN-631, and NGN-632 stayed in pending review with clear next actions.</div></div><div class="footer"><span>Counts plus shape of the week</span><span>02</span></div>` },
+      { body: `<div class="eyebrow">NGN-561</div><h2>Reporting table searches were checked in staging and confirmed to debounce correctly.</h2><div class="subtitle">Role this week: tester-only. End state: done.</div><div class="ticket-grid"><div class="ticket-box"><div class="ticket-head"><div class="ticket-id">NGN-561</div><div class="ticket-status done">Done</div></div><div><div class="ticket-title">Debounce Reporting search requests across all tables</div><div class="ticket-summary">The original issue was that Transactions, Batches, Deposits, and Disputes fired GraphQL requests on every keystroke instead of waiting for the user to finish typing.</div></div><div class="facts-grid"><div class="fact"><div class="kicker">Problem</div><strong>Too many requests while typing</strong><p>The reporting search inputs were issuing raw per-keypress requests, which made the behavior noisy and less stable.</p></div><div class="fact"><div class="kicker">Work this week</div><strong>Validation across four tables</strong><p>You tested the behavior in staging and confirmed that all four reporting tables now wait for the debounce delay before sending the GraphQL request.</p></div><div class="fact"><div class="kicker">Evidence</div><strong>Explicit PASS result</strong><p>The ticket includes a staging comment with test scope, environment, and a passed result for Transactions, Batches, Deposits, and Disputes.</p></div><div class="fact"><div class="kicker">Current state</div><strong>Closed with verification</strong><p>This was not just marked done. The week includes concrete QA confirmation that the debounce behavior works as expected.</p></div></div></div><div class="card"><div class="kicker">Why it mattered</div><div class="support">This ticket shows one of the clearer examples of verification work in the week: the fix already existed, and your contribution was validating it thoroughly enough to close it with confidence.</div></div></div><div class="footer"><span>Reporting validation</span><span>03</span></div>` },
+      { body: `<div class="eyebrow">NGN-589</div><h2>The checkout success page no longer leaves receipt item prices incorrect or missing after Pay Link completion.</h2><div class="subtitle">Role this week: contributor. End state: done with staging verification.</div><div class="ticket-grid"><div class="ticket-box"><div class="ticket-head"><div class="ticket-id">NGN-589</div><div class="ticket-status done">Done</div></div><div><div class="ticket-title">Fix item price display on the Checkout Payment Complete page</div><div class="ticket-summary">The issue tracked incorrect item-level pricing on the Payment Complete page after successful Pay Link checkout.</div></div><div class="facts-grid"><div class="fact"><div class="kicker">Problem</div><strong>Receipt rows showed the wrong value</strong><p>After payment success, the completion page was not showing the real item prices for the checkout items.</p></div><div class="fact"><div class="kicker">Work this week</div><strong>Issue creation plus implementation follow-through</strong><p>You created the ticket, and later updates tied the fix to the success-state rendering fallback that uses unit price times quantity when item totals are missing.</p></div><div class="fact"><div class="kicker">Evidence</div><strong>Ready-for-verification note and PASS result</strong><p>The activity log includes a deployment note, a ready-for-verification comment, and a staging PASS confirming correct item-level prices on completed Pay Link checkouts.</p></div><div class="fact"><div class="kicker">Current state</div><strong>Closed after checked staging behavior</strong><p>By the end of the week, the issue was done and backed by explicit testing rather than only an implementation note.</p></div></div></div><div class="card"><div class="kicker">Why it mattered</div><div class="support">This ticket is a good example of end-to-end coverage in the week: the problem was documented, the fix path was captured, and the final behavior was verified in staging.</div></div></div><div class="footer"><span>Checkout receipt accuracy</span><span>04</span></div>` },
+      { body: `<div class="eyebrow">NGN-590</div><h2>The multi-use Pay Link flow was tracked so links do not get marked complete too early.</h2><div class="subtitle">Role this week: contributor. End state: done.</div><div class="ticket-grid"><div class="ticket-box"><div class="ticket-head"><div class="ticket-id">NGN-590</div><div class="ticket-status done">Done</div></div><div><div class="ticket-title">Keep Multi-Use Pay Links active and increment usage count correctly</div><div class="ticket-summary">The issue was that successful transactions were setting multi-use links to completed even when the usage limit had not been reached or no limit existed.</div></div><div class="facts-grid"><div class="fact"><div class="kicker">Problem</div><strong>Wrong lifecycle after successful use</strong><p>A link meant for repeated use was being moved to a completed state too early, which prevented reuse and broke usage counting.</p></div><div class="fact"><div class="kicker">Work this week</div><strong>Issue creation captured the failure clearly</strong><p>You created the ticket with a direct explanation of the broken behavior and the expected relationship between active status and usage count.</p></div><div class="fact"><div class="kicker">Evidence</div><strong>Creation evidence is the main source</strong><p>The weekly dump includes the problem statement and the final done status, but it does not include the same kind of staging comment that appears on some of the other completed tickets.</p></div><div class="fact"><div class="kicker">Current state</div><strong>Closed, but lightly documented in-week</strong><p>The item ended done, and the value of this ticket in the deck is that it shows a distinct checkout behavior problem that was addressed during the week.</p></div></div></div><div class="card"><div class="kicker">Why it mattered</div><div class="support">Even without a long comment trail, this ticket matters because it covers business logic in the pay-link lifecycle, not just UI polish. It explains part of the checkout work that would disappear in a broad summary.</div></div></div><div class="footer"><span>Pay-link lifecycle behavior</span><span>05</span></div>` },
+      { body: `<div class="eyebrow">NGN-600</div><h2>The Partner Users search flow was isolated as a pending review item because typing was triggering a full page reload.</h2><div class="subtitle">Role this week: contributor. End state: pending review.</div><div class="ticket-grid"><div class="ticket-box"><div class="ticket-head"><div class="ticket-id">NGN-600</div><div class="ticket-status review">Pending Review</div></div><div><div class="ticket-title">Prevent full page reload during Partner Users search</div><div class="ticket-summary">Searching under Manage > Users was reloading the whole iframe instead of only updating the table, which caused the input to lose focus while the user typed.</div></div><div class="facts-grid"><div class="fact"><div class="kicker">Problem</div><strong>Search interaction broke typing flow</strong><p>The whole view refreshed during Partner Users search, so the user could not type continuously without losing focus.</p></div><div class="fact"><div class="kicker">Work this week</div><strong>Created as a targeted usability issue</strong><p>You raised the ticket specifically to move the loading scope down to the table level and preserve typing behavior.</p></div><div class="fact"><div class="kicker">Evidence</div><strong>Problem statement and acceptance intent</strong><p>The dump records the broken search behavior, the affected area in admin, and the fact that the ticket stayed active rather than closing immediately.</p></div><div class="fact"><div class="kicker">Current state</div><strong>Still in the next queue</strong><p>This is one of the four items that carried into the next week. The task is defined clearly, but the week ends before closure or validation.</p></div></div></div><div class="card"><div class="kicker">Why it mattered</div><div class="support">This slide shows the kind of follow-through work that is easy to lose in a grouped recap. The issue is small in scope, but it has a direct effect on day-to-day admin usability and remains actionable.</div></div></div><div class="footer"><span>Admin search usability</span><span>06</span></div>` },
+      { body: `<div class="eyebrow">NGN-562</div><h2>The discounted transaction breakdown was verified in staging using a fresh Pay Link transaction.</h2><div class="subtitle">Role this week: tester-only. End state: done.</div><div class="ticket-grid"><div class="ticket-box"><div class="ticket-head"><div class="ticket-id">NGN-562</div><div class="ticket-status done">Done</div></div><div><div class="ticket-title">Fix Transaction Details cost breakdown calculation for discounted Pay Links</div><div class="ticket-summary">The ticket covered incorrect Subtotal and Discount values in the Transaction Details modal for discounted Pay Link transactions.</div></div><div class="facts-grid"><div class="fact"><div class="kicker">Problem</div><strong>Subtotal and discount math did not line up</strong><p>The transaction details view was not reflecting the full item cost before discount or the deducted amount correctly.</p></div><div class="fact"><div class="kicker">Work this week</div><strong>Fresh-transaction validation</strong><p>You tested the fix in staging against a newly created discounted Pay Link transaction instead of relying on older reference data.</p></div><div class="fact"><div class="kicker">Evidence</div><strong>PASS with caveat on stale historical data</strong><p>The comment explicitly says the new transaction showed correct Subtotal, Discount, and Total Charge values, while an older reference row could still appear stale because it predated the upstream fix.</p></div><div class="fact"><div class="kicker">Current state</div><strong>Closed with meaningful QA detail</strong><p>This ticket is valuable because it documents not just that the issue passed, but also the boundary of that verification and why some older data might still look off.</p></div></div></div><div class="card"><div class="kicker">Why it mattered</div><div class="support">This was one of the deeper verification items of the week. It did more than say fixed. It explained what was checked, how it was checked, and what caveat still applied to older data.</div></div></div><div class="footer"><span>Discount breakdown verification</span><span>07</span></div>` },
+      { body: `<div class="eyebrow">NGN-624</div><h2>The marketplace category form stopped surfacing the raw duplicate-slug database error.</h2><div class="subtitle">Role this week: creator and tester. End state: done.</div><div class="ticket-grid"><div class="ticket-box"><div class="ticket-head"><div class="ticket-id">NGN-624</div><div class="ticket-status done">Done</div></div><div><div class="ticket-title">Replace duplicate category slug Prisma error with user-friendly toast</div><div class="ticket-summary">Creating a category with an existing slug used to show a raw Prisma unique-constraint error instead of a readable validation message.</div></div><div class="facts-grid"><div class="fact"><div class="kicker">Problem</div><strong>Raw backend error leaked into the UI</strong><p>The marketplace category flow exposed an internal database-style error instead of an understandable message for the admin user.</p></div><div class="fact"><div class="kicker">Work this week</div><strong>Raised and verified in the same week</strong><p>You created the ticket and later added a staging comment confirming that duplicate slugs now show a readable validation message.</p></div><div class="fact"><div class="kicker">Evidence</div><strong>Same-day PASS result</strong><p>The weekly evidence includes both the issue creation and a passed staging verification note, which makes the work easy to follow from report to closure.</p></div><div class="fact"><div class="kicker">Current state</div><strong>Closed with user-facing clarity improved</strong><p>The fix does not just remove an error. It changes the admin experience from a confusing backend failure to a usable validation response.</p></div></div></div><div class="card"><div class="kicker">Why it mattered</div><div class="support">This ticket is a strong example of product-facing polish with clear QA evidence. It also shows that the week included work on error handling quality, not only on successful-path behavior.</div></div></div><div class="footer"><span>Marketplace validation feedback</span><span>08</span></div>` },
+      { body: `<div class="eyebrow">NGN-628</div><h2>The App Installs page was verified after the earlier environment and permissions errors were addressed.</h2><div class="subtitle">Role this week: creator and tester. End state: done.</div><div class="ticket-grid"><div class="ticket-box"><div class="ticket-head"><div class="ticket-id">NGN-628</div><div class="ticket-status done">Done</div></div><div><div class="ticket-title">Fix App Installs GraphQL errors for environment and permissions</div><div class="ticket-summary">The App Installs view in the Marketplace Admin Portal had been failing with GraphQL errors related to environment data and permissions.</div></div><div class="facts-grid"><div class="fact"><div class="kicker">Problem</div><strong>App Installs could not load cleanly</strong><p>The admin page was blocked by GraphQL failures instead of loading normally for the intended user flow.</p></div><div class="fact"><div class="kicker">Work this week</div><strong>Issue creation plus staging confirmation</strong><p>You documented the failure and then verified in staging that App Installs now loads for the tested user without the prior errors.</p></div><div class="fact"><div class="kicker">Evidence</div><strong>Explicit before-and-after signal</strong><p>The ticket records the original environment and permission errors and pairs them with a passed verification comment that says the view now loads correctly.</p></div><div class="fact"><div class="kicker">Current state</div><strong>Closed after access behavior check</strong><p>By week end, the issue was done and supported by a concrete staging result rather than only by status movement.</p></div></div></div><div class="card"><div class="kicker">Why it mattered</div><div class="support">This slide shows a separate class of work from the checkout tickets. The problem here was access and environment failure in admin tooling, and it was closed with a direct verification path.</div></div></div><div class="footer"><span>Marketplace access verification</span><span>09</span></div>` },
+      { body: `<div class="eyebrow">NGN-630</div><h2>The service provider list still needed a refetch after creation, so the new record would appear without a manual reload.</h2><div class="subtitle">Role this week: creator. End state: pending review.</div><div class="ticket-grid"><div class="ticket-box"><div class="ticket-head"><div class="ticket-id">NGN-630</div><div class="ticket-status review">Pending Review</div></div><div><div class="ticket-title">Refetch service providers list after provider creation</div><div class="ticket-summary">After creating a Service Provider in the Marketplace Admin Portal, the new provider did not appear in the Services list until the page was refreshed manually.</div></div><div class="facts-grid"><div class="fact"><div class="kicker">Problem</div><strong>List stayed stale after create</strong><p>The creation flow completed, but the surrounding list did not update itself, which left the UI looking wrong until a manual refresh.</p></div><div class="fact"><div class="kicker">Work this week</div><strong>Issue creation with reproducible behavior</strong><p>You logged the stale-list behavior clearly enough that it can be picked up as a focused follow-up item rather than rediscovered later.</p></div><div class="fact"><div class="kicker">Evidence</div><strong>No verification note yet</strong><p>The in-week evidence is the issue report itself and its pending-review state. There is no closing or staging comment in the weekly dump yet.</p></div><div class="fact"><div class="kicker">Current state</div><strong>Open and well defined</strong><p>The work remains in the next queue, but it is already narrowed to a specific refetch expectation after provider creation.</p></div></div></div><div class="card"><div class="kicker">Why it mattered</div><div class="support">This kind of follow-up ticket is important to keep visible because it is not a vague improvement item. It captures a specific stale-state behavior in a real admin workflow that still needs closure.</div></div></div><div class="footer"><span>Marketplace list refresh</span><span>10</span></div>` },
+      { body: `<div class="eyebrow">NGN-631</div><h2>The customer contact email copy flow was isolated as a permissions-policy issue instead of a generic copy failure.</h2><div class="subtitle">Role this week: creator. End state: pending review.</div><div class="ticket-grid"><div class="ticket-box"><div class="ticket-head"><div class="ticket-id">NGN-631</div><div class="ticket-status review">Pending Review</div></div><div><div class="ticket-title">Allow clipboard copy from Customer Contacts email field</div><div class="ticket-summary">Copying a contact email from the Customer Details modal was failing because the Clipboard API was blocked by the current permissions policy.</div></div><div class="facts-grid"><div class="fact"><div class="kicker">Problem</div><strong>Copy action failed at the policy layer</strong><p>This was not just a broken button. The issue was tied to the browser permissions setup around clipboard access in the current flow.</p></div><div class="fact"><div class="kicker">Work this week</div><strong>Issue captured with explicit reproduction</strong><p>You created the ticket with a clear description of the failure mode and the expected copy behavior inside Customer Details.</p></div><div class="fact"><div class="kicker">Evidence</div><strong>Actionable issue definition</strong><p>The weekly evidence is the problem statement and the open state. That is enough to show the real task and why it remained in the review queue.</p></div><div class="fact"><div class="kicker">Current state</div><strong>Pending review, ready for follow-through</strong><p>This item stayed open at the end of the week, but it was narrowed from a vague complaint into a precise clipboard-permissions problem.</p></div></div></div><div class="card"><div class="kicker">Why it mattered</div><div class="support">This ticket matters because it preserves technical specificity without becoming a jargon dump. The open work is not just copy failed. It is a defined permissions-policy issue that still needs a fix path.</div></div></div><div class="footer"><span>Customer clipboard behavior</span><span>11</span></div>` },
+      { body: `<div class="eyebrow">NGN-632</div><h2>The Customers table issue was narrowed to cutoff rows and missing navigation for larger result sets.</h2><div class="subtitle">Role this week: creator. End state: pending review.</div><div class="ticket-grid"><div class="ticket-box"><div class="ticket-head"><div class="ticket-id">NGN-632</div><div class="ticket-status review">Pending Review</div></div><div><div class="ticket-title">Fix Customers table cutoff and add navigation for large result sets</div><div class="ticket-summary">The Customers table cut off the last visible entry when many records were present, and it did not provide enough navigation controls to reach the rest of the results.</div></div><div class="facts-grid"><div class="fact"><div class="kicker">Problem</div><strong>Large result sets were not fully usable</strong><p>The table layout and navigation together made part of the customer list inaccessible or visually cut off.</p></div><div class="fact"><div class="kicker">Work this week</div><strong>Documented as a concrete UI task</strong><p>You raised the issue with enough detail to separate the visible cutoff problem from the broader need for better navigation controls.</p></div><div class="fact"><div class="kicker">Evidence</div><strong>Open queue item with clear behavior target</strong><p>The ticket stayed in pending review, but the dump shows a well-defined usability problem instead of an abstract note about table improvements.</p></div><div class="fact"><div class="kicker">Current state</div><strong>Still open, but not ambiguous</strong><p>This remains one of the four follow-up items for next week, with a clear focus on large-list usability in the customer view.</p></div></div></div><div class="card"><div class="kicker">Why it mattered</div><div class="support">This is another good example of why the deck needed ticket-level coverage. In a shallow summary, this would read like generic table polish, but the actual issue is about hidden data and missing navigation in a real workflow.</div></div></div><div class="footer"><span>Customer table usability</span><span>12</span></div>` },
+      { body: `<div class="eyebrow">Close</div><h2>The week ended with strong verification on several fixes and a small, explicit review queue.</h2><div class="grid-3"><div class="close-card"><div class="kicker">Closed with evidence</div><div class="big-copy">NGN-561, NGN-562, NGN-589, NGN-624, and NGN-628 all carry explicit validation details instead of only status changes.</div></div><div class="close-card"><div class="kicker">Closed with lighter trail</div><div class="big-copy">NGN-590 still matters because it covers multi-use Pay Link logic, even though the in-week documentation is thinner than the other done items.</div></div><div class="close-card"><div class="kicker">Next queue</div><div class="big-copy">NGN-600, NGN-630, NGN-631, and NGN-632 are already scoped well enough to pick up next without extra rediscovery.</div></div></div><div class="card"><div class="kicker">Bottom line</div><div class="support">The main improvement in this deck is that each ticket now shows the work behind the week instead of disappearing into a handful of broad themes. That makes the status update more honest and more useful.</div></div><div class="footer"><span>Defined finish and next step</span><span>13</span></div>` }
     ];
-
-    const deck = document.getElementById('deck');
-    const counter = document.getElementById('counter');
-    const prev = document.getElementById('prev');
-    const next = document.getElementById('next');
-    const channelName = 'weekly-ticket-slideshow-2026-w20';
-    const channel = ('BroadcastChannel' in window) ? new BroadcastChannel(channelName) : null;
-    let presenterWindow = null;
-    let index = 0;
-
-    slides.forEach((slide) => {
-      const section = document.createElement('section');
-      section.className = 'slide';
-      section.innerHTML = slide.body;
-      deck.appendChild(section);
-    });
-
-    function fitStage() {
-      const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
-      document.documentElement.style.setProperty('--fit', scale.toFixed(4));
-    }
-
-    function persist() {
-      const payload = { index, source: 'audience', at: Date.now() };
-      localStorage.setItem(channelName, JSON.stringify(payload));
-      if (channel) channel.postMessage(payload);
-      if (window.parent && window.parent !== window) {
-        window.parent.postMessage({ type: 'audience-index', index }, '*');
-      }
-    }
-
-    function render(skipSync = false) {
-      deck.style.transform = `translateX(-${index * 1920}px)`;
-      counter.textContent = `${index + 1} / ${slides.length}`;
-      prev.disabled = index === 0;
-      next.disabled = index === slides.length - 1;
-      prev.style.opacity = prev.disabled ? '0.45' : '1';
-      next.style.opacity = next.disabled ? '0.45' : '1';
-      if (!skipSync) persist();
-    }
-
-    function move(delta) {
-      index = Math.max(0, Math.min(slides.length - 1, index + delta));
-      render();
-    }
-
-    function openPresenterView() {
-      const presenterUrl = './2026-W20-weekly-ticket-slideshow-presenter.html';
-      if (presenterWindow && !presenterWindow.closed) {
-        presenterWindow.focus();
-      } else {
-        presenterWindow = window.open(presenterUrl, 'weekly-ticket-presenter', 'popup=yes,width=1600,height=900');
-      }
-      persist();
-    }
-
-    prev.addEventListener('click', () => move(-1));
-    next.addEventListener('click', () => move(1));
-    window.addEventListener('keydown', (event) => {
-        if (event.key === 'ArrowRight' || event.key === 'PageDown' || event.key === ' ') move(1);
-        if (event.key === 'ArrowLeft' || event.key === 'PageUp') move(-1);
-        if (event.key === 'p' || event.key === 'P') openPresenterView();
-    });
-    window.addEventListener('resize', fitStage);
-    window.addEventListener('message', (event) => {
-      const payload = event.data || {};
-      if (payload.type === 'set-index' && typeof payload.index === 'number') {
-        index = Math.max(0, Math.min(slides.length - 1, payload.index));
-        render(true);
-      }
-    });
-    window.addEventListener('storage', (event) => {
-      if (event.key !== channelName || !event.newValue) return;
-      const payload = JSON.parse(event.newValue);
-      if (typeof payload.index === 'number' && payload.source !== 'audience') {
-        index = Math.max(0, Math.min(slides.length - 1, payload.index));
-        render(true);
-      }
-    });
-    if (channel) {
-      channel.onmessage = (event) => {
-        const payload = event.data || {};
-        if (typeof payload.index === 'number' && payload.source !== 'audience') {
-          index = Math.max(0, Math.min(slides.length - 1, payload.index));
-          render(true);
-        }
-      };
-    }
-
-    fitStage();
-    render(true);
-    persist();
+    const deck = document.getElementById('deck'); const counter = document.getElementById('counter'); const prev = document.getElementById('prev'); const next = document.getElementById('next'); const channelName = 'weekly-ticket-slideshow-2026-w20'; const channel = ('BroadcastChannel' in window) ? new BroadcastChannel(channelName) : null; let presenterWindow = null; let index = 0;
+    slides.forEach((slide) => { const section = document.createElement('section'); section.className = 'slide'; section.innerHTML = slide.body; deck.appendChild(section); });
+    function fitStage() { const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080); document.documentElement.style.setProperty('--fit', scale.toFixed(4)); }
+    function persist() { const payload = { index, source: 'audience', at: Date.now() }; localStorage.setItem(channelName, JSON.stringify(payload)); if (channel) channel.postMessage(payload); if (window.parent && window.parent !== window) { window.parent.postMessage({ type: 'audience-index', index }, '*'); } }
+    function render(skipSync = false) { deck.style.transform = `translateX(-${index * 1920}px)`; counter.textContent = `${index + 1} / ${slides.length}`; prev.disabled = index === 0; next.disabled = index === slides.length - 1; prev.style.opacity = prev.disabled ? '0.45' : '1'; next.style.opacity = next.disabled ? '0.45' : '1'; if (!skipSync) persist(); }
+    function move(delta) { index = Math.max(0, Math.min(slides.length - 1, index + delta)); render(); }
+    function openPresenterView() { const presenterUrl = './2026-W20-weekly-ticket-slideshow-presenter.html'; if (presenterWindow && !presenterWindow.closed) { presenterWindow.focus(); } else { presenterWindow = window.open(presenterUrl, 'weekly-ticket-presenter', 'popup=yes,width=1600,height=900'); } persist(); }
+    prev.addEventListener('click', () => move(-1)); next.addEventListener('click', () => move(1)); window.addEventListener('keydown', (event) => { if (event.key === 'ArrowRight' || event.key === 'PageDown' || event.key === ' ') move(1); if (event.key === 'ArrowLeft' || event.key === 'PageUp') move(-1); if (event.key === 'p' || event.key === 'P') openPresenterView(); }); window.addEventListener('resize', fitStage); window.addEventListener('message', (event) => { const payload = event.data || {}; if (payload.type === 'set-index' && typeof payload.index === 'number') { index = Math.max(0, Math.min(slides.length - 1, payload.index)); render(true); } }); window.addEventListener('storage', (event) => { if (event.key !== channelName || !event.newValue) return; const payload = JSON.parse(event.newValue); if (typeof payload.index === 'number' && payload.source !== 'audience') { index = Math.max(0, Math.min(slides.length - 1, payload.index)); render(true); } }); if (channel) { channel.onmessage = (event) => { const payload = event.data || {}; if (typeof payload.index === 'number' && payload.source !== 'audience') { index = Math.max(0, Math.min(slides.length - 1, payload.index)); render(true); } }; }
+    fitStage(); render(true); persist();
   </script>
 </body>
 </html>
