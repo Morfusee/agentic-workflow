@@ -4,6 +4,7 @@ alias s := skills
 alias ss := skills-sync
 alias so := skills-open
 alias sw := skills-watch
+alias nl := nvim-link
 alias wo := weekly-open
 alias oco := opencode-config
 
@@ -27,6 +28,10 @@ skills-watch:
 skills:
   @cmd /c scripts\windows\sync-skills.cmd
   @powershell -ExecutionPolicy Bypass -File .\scripts\windows\watch-skills.ps1
+
+# Create a repo-side junction for LOCALAPPDATA nvim
+nvim-link:
+  @powershell -ExecutionPolicy Bypass -File .\scripts\windows\link-nvim.ps1
 
 # Open opencode's config file in the default editor
 opencode-config:
