@@ -9,21 +9,23 @@ alias wo := weekly-open
 default:
   @just --list
 
-# Sync existing repo skills into ~/.codex/skills using mklink /J
+# Bootstrap target folders from the single repo skills source
 skills-sync:
-  @cmd /c scripts\windows\sync-codex-skills.cmd
+  @cmd /c scripts\windows\sync-skills.cmd
 
-# Open ~/.codex/skills in File Explorer
+# Open mirrored target folders in File Explorer
 skills-open:
   @explorer "$env:USERPROFILE\.codex\skills"
+  @if ((Test-Path '.\.skills.env') -and ((Get-Content '.\.skills.env' | Where-Object { $_ -match '^\s*SYNC_OPENCODE\s*=\s*true\s*$' }).Count -gt 0)) { explorer "$env:USERPROFILE\.config\opencode\skills" }
 
-# Keep auto-linking newly created repo skills
+# Watch the single repo skills source and mirror new folders into selected targets
 skills-watch:
-  @powershell -ExecutionPolicy Bypass -File .\scripts\windows\watch-codex-skills.ps1
+  @powershell -ExecutionPolicy Bypass -File .\scripts\windows\watch-skills.ps1
 
-# One command for daily use: sync existing + watch future
-skills: skills-sync
-  @powershell -ExecutionPolicy Bypass -File .\scripts\windows\watch-codex-skills.ps1
+# One command for daily use: bootstrap selected targets, then keep them in sync
+skills:
+  @cmd /c scripts\windows\sync-skills.cmd
+  @powershell -ExecutionPolicy Bypass -File .\scripts\windows\watch-skills.ps1
 
 # List latest 5 weeks, select one, and open its weekly slideshow HTML
 weekly-open:

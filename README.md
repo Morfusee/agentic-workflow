@@ -2,7 +2,17 @@
 
 ## Codex Skills (Windows Only)
 
-Use this repo as the source of truth for custom Codex skills, then mirror each repo skill into `~/.codex/skills` with junctions (`mklink /J`).
+Use this repo `skills/` folder as the single source of truth for custom skills. The workflow can read a local `.skills.env` file so you can keep your OpenCode mirroring preference in config instead of repeating flags.
+
+### Local config
+
+Copy [`.skills.env.example`](C:/Users/mrqvp/Documents/Programming/agentic-workflow/.skills.env.example) to `.skills.env` and set:
+
+```dotenv
+SYNC_OPENCODE=true
+```
+
+Use `false` if you only want Codex mirroring. The local `.skills.env` file is gitignored.
 
 ### One-command workflow with `just` (recommended)
 
@@ -14,7 +24,9 @@ just skills
 
 What it does:
 1. Sync existing folders in `skills\` into `%USERPROFILE%\.codex\skills\` via `mklink /J`.
-2. Start a watcher that auto-links new skill folders you create later.
+2. Start one watcher that keeps the selected target folders mirrored from the same repo source.
+
+If `.skills.env` contains `SYNC_OPENCODE=true`, the same workflow also mirrors into `%USERPROFILE%\.config\opencode\skills`.
 
 Leave that terminal open to keep continuous linking active.
 
@@ -23,17 +35,12 @@ Leave that terminal open to keep continuous linking active.
 ```powershell
 just skills-sync
 just skills-watch
+just skills-open
 ```
 
 These map to:
-- [sync-codex-skills.cmd](C:/Users/mrqvp/Documents/Programming/agentic-workflow/scripts/windows/sync-codex-skills.cmd)
-- [watch-codex-skills.ps1](C:/Users/mrqvp/Documents/Programming/agentic-workflow/scripts/windows/watch-codex-skills.ps1)
-
-### Manual single skill link (optional)
-
-```cmd
-mklink /J "%USERPROFILE%\.codex\skills\linear-standup-prep" "C:\Users\mrqvp\Documents\Programming\agentic-workflow\skills\linear-standup-prep"
-```
+- [sync-skills.cmd](C:/Users/mrqvp/Documents/Programming/agentic-workflow/scripts/windows/sync-skills.cmd)
+- [watch-skills.ps1](C:/Users/mrqvp/Documents/Programming/agentic-workflow/scripts/windows/watch-skills.ps1)
 
 ### Required skill structure
 
