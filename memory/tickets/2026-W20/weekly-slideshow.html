@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weekly Delivery Narrative - 2026-W20</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 100%; height: 100%;
+    background: #1a1a2e;
+    color: #e8e8e8;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    overflow: hidden;
+  }
+
+  /* ================= AUDIENCE DECK ================= */
+  #stage {
+    width: 1920px; height: 1080px;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(var(--scale, 1));
+    transform-origin: center center;
+    background: #16213e;
+    overflow: hidden;
+    box-shadow: 0 0 60px rgba(0,0,0,0.5);
+  }
+  .slide {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    padding: 80px 120px;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+  }
+  .slide.active {
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 2;
+  }
+
+  h1 { font-size: 72px; font-weight: 700; line-height: 1.1; color: #ffffff; margin-bottom: 20px; }
+  h2 { font-size: 56px; font-weight: 600; line-height: 1.15; color: #ffffff; margin-bottom: 40px; }
+  h3 { font-size: 32px; font-weight: 600; line-height: 1.3; color: #e94560; margin-bottom: 16px; }
+  p, li { font-size: 28px; line-height: 1.5; color: #d1d1d1; }
+  .subtitle { font-size: 32px; color: #a0a0b0; margin-bottom: 60px; }
+  .meta { font-size: 22px; color: #8888a0; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px; }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+    margin-top: 20px;
+  }
+  .card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 36px;
+  }
+  .card h4 { font-size: 26px; font-weight: 600; color: #e94560; margin-bottom: 12px; }
+  .card p, .card li { font-size: 22px; color: #c8c8d8; line-height: 1.5; }
+  .card ul { padding-left: 24px; }
+  .card li { margin-bottom: 8px; }
+
+  .stats-row { display: flex; gap: 48px; margin: 40px 0; }
+  .stat {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 40px 48px;
+    min-width: 280px;
+    text-align: center;
+  }
+  .stat .number { font-size: 80px; font-weight: 700; color: #e94560; line-height: 1; margin-bottom: 12px; }
+  .stat .label { font-size: 22px; color: #a0a0b0; text-transform: uppercase; letter-spacing: 1px; }
+
+  .flow-container { display: flex; align-items: center; gap: 20px; margin-top: 30px; flex-wrap: wrap; }
+  .flow-box {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 24px 32px;
+    font-size: 22px;
+    color: #c8c8d8;
+    min-width: 180px;
+    text-align: center;
+  }
+  .flow-arrow { font-size: 28px; color: #e94560; }
+
+  .ticket-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 20px; }
+  .ticket-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 32px;
+  }
+  .ticket-card .ticket-id { font-size: 18px; font-weight: 700; color: #e94560; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+  .ticket-card h4 { font-size: 22px; font-weight: 600; color: #ffffff; margin-bottom: 14px; line-height: 1.3; }
+  .ticket-card p { font-size: 18px; color: #b0b0c0; line-height: 1.5; }
+  .badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+  .badge-done { background: rgba(46, 204, 113, 0.15); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.3); }
+  .badge-review { background: rgba(241, 196, 15, 0.15); color: #f1c40f; border: 1px solid rgba(241, 196, 15, 0.3); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 20px; }
+  .col {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 36px;
+  }
+  .col h4 { font-size: 24px; font-weight: 600; color: #e94560; margin-bottom: 16px; }
+  .col p, .col li { font-size: 20px; color: #c8c8d8; line-height: 1.55; }
+  .col ul { padding-left: 22px; margin-top: 10px; }
+  .col li { margin-bottom: 10px; }
+
+  .plain-list { list-style: none; padding: 0; margin-top: 20px; }
+  .plain-list li { padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 24px; }
+  .plain-list li:last-child { border-bottom: none; }
+
+  #progress { position: absolute; bottom: 0; left: 0; height: 4px; background: #e94560; transition: width 0.3s ease; z-index: 10; }
+  #counter { position: absolute; bottom: 24px; right: 40px; font-size: 16px; color: #666680; z-index: 10; }
+  #controls-hint { position: absolute; bottom: 24px; left: 40px; font-size: 14px; color: #444460; z-index: 10; }
+
+  /* ================= PRESENTER VIEW ================= */
+  body.presenter-mode {
+    background: #0f0f1a;
+    overflow: auto;
+  }
+  body.presenter-mode #stage { display: none; }
+  body.presenter-mode #progress { display: none; }
+  body.presenter-mode #counter { display: none; }
+  body.presenter-mode #controls-hint { display: none; }
+
+  #pv-container {
+    display: none;
+    width: 100%; height: 100vh;
+    grid-template-columns: 1fr 400px;
+    gap: 0;
+  }
+  body.presenter-mode #pv-container { display: grid; }
+
+  .pv-main {
+    display: flex;
+    flex-direction: column;
+    padding: 32px;
+    border-right: 1px solid rgba(255,255,255,0.06);
+    min-width: 0;
+  }
+  .pv-current-wrap {
+    flex: 1;
+    background: #16213e;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    min-height: 0;
+  }
+  .pv-current-wrap #stage {
+    display: block !important;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(var(--pv-scale, 0.55));
+    transform-origin: center center;
+  }
+  .pv-current-wrap #progress,
+  .pv-current-wrap #counter,
+  .pv-current-wrap #controls-hint { display: none; }
+
+  .pv-sidebar {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    gap: 20px;
+    overflow-y: auto;
+  }
+  .pv-next-box {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .pv-next-box .label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #666680; margin-bottom: 8px; }
+  .pv-next-box .title { font-size: 18px; color: #c8c8d8; line-height: 1.4; }
+  .pv-timer-box {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+  }
+  .pv-timer-box .label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #666680; margin-bottom: 8px; }
+  .pv-timer-box .time { font-size: 42px; font-weight: 300; color: #ffffff; font-variant-numeric: tabular-nums; }
+  .pv-notes-box {
+    flex: 1;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 24px;
+    overflow-y: auto;
+    min-height: 180px;
+  }
+  .pv-notes-box h4 { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: #e94560; margin-bottom: 14px; }
+  .pv-notes-box p { font-size: 17px; line-height: 1.65; color: #c8c8d8; white-space: pre-wrap; }
+  .pv-controls {
+    display: flex; gap: 10px;
+  }
+  .pv-btn {
+    flex: 1; padding: 14px; border-radius: 8px;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    color: #d1d1d1; font-size: 15px; cursor: pointer; text-align: center;
+    user-select: none;
+  }
+  .pv-btn:hover { background: rgba(255,255,255,0.1); }
+  .pv-status { font-size: 13px; color: #444460; text-align: center; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<!-- ================= AUDIENCE DECK ================= -->
+<div id="stage">
+  <div id="progress"></div>
+  <div id="counter"></div>
+  <div id="controls-hint">Arrow keys to navigate &middot; P for presenter view</div>
+
+  <!-- Slide 1: Title -->
+  <section class="slide active" data-notes="On this slide, I am covering the week of May 11 through May 15. The week was concentrated in checkout accuracy, reporting performance, marketplace admin fixes, and some admin usability follow-through. We had active ticket work on Monday, Tuesday, and Thursday, with Wednesday and Friday showing no qualifying activity. I will walk through what was completed, what was checked, and what remains in the queue.">
+    <div class="meta">2026-W20 &middot; May 11 – May 15</div>
+    <h1>Weekly Delivery Narrative</h1>
+    <div class="subtitle">Checkout accuracy, reporting debounce, marketplace admin fixes, and admin usability follow-through</div>
+    <div class="stats-row">
+      <div class="stat"><div class="number">6</div><div class="label">Done</div></div>
+      <div class="stat"><div class="number">4</div><div class="label">Pending Review</div></div>
+      <div class="stat"><div class="number">0</div><div class="label">Blockers</div></div>
+    </div>
+    <p style="font-size: 22px; color: #8888a0; margin-top: 20px;">Active days: Monday, Tuesday, Thursday</p>
+  </section>
+
+  <!-- Slide 2: The Week's Story -->
+  <section class="slide" data-notes="Here is how the week breaks down. On the checkout side, we corrected item prices on the Payment Complete page and verified discounted transaction detail values. We also created a ticket to fix how Multi-Use Pay Links behave after a successful payment so they do not get marked completed too early. On the reporting side, we verified that search inputs across Transactions, Batches, Deposits, and Disputes now use a debounce instead of firing on every keystroke. For marketplace admin, we fixed the duplicate category slug error message and resolved the GraphQL errors that were blocking access to App Installs. The remaining work is a focused set of admin usability issues that are already in review. That is the shape of the week in four areas.">
+    <div class="meta">Overview</div>
+    <h2>The Week's Story</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h4>Checkout Accuracy</h4>
+        <ul>
+          <li>Fixed item price display on Payment Complete page</li>
+          <li>Verified discounted transaction detail values</li>
+          <li>Created ticket for Multi-Use Pay Link lifecycle</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>Reporting Performance</h4>
+        <ul>
+          <li>Verified debounced search across all four Reporting tables</li>
+          <li>Eliminated excessive GraphQL requests on keystrokes</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>Marketplace Admin</h4>
+        <ul>
+          <li>Replaced raw Prisma error with user-friendly validation toast</li>
+          <li>Fixed App Installs GraphQL environment and permissions errors</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>Admin Usability</h4>
+        <ul>
+          <li>Partner Users search reload behavior</li>
+          <li>Service provider list refresh after creation</li>
+          <li>Clipboard copy from Customer Contacts</li>
+          <li>Customers table cutoff and navigation</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 3: Executive Snapshot -->
+  <section class="slide" data-notes="The week ended with six done items and four in pending review. The done items were all verified in staging with explicit PASS results, which means the fixes were checked rather than just deployed. The pending-review items are all admin usability issues with clear reproduction steps and acceptance criteria already defined. No major blockers were recorded in the stand-up notes across the week. The active ticket work happened on Monday, Tuesday, and Thursday. Next, I will walk through how the tickets moved through the week.">
+    <div class="meta">Status</div>
+    <h2>Executive Snapshot</h2>
+    <div class="stats-row" style="justify-content: center;">
+      <div class="stat"><div class="number">6</div><div class="label">Done</div></div>
+      <div class="stat"><div class="number">4</div><div class="label">Pending Review</div></div>
+    </div>
+    <ul class="plain-list" style="max-width: 900px; margin: 30px auto 0;">
+      <li>All done items verified in staging with PASS results</li>
+      <li>Pending-review items have concrete scope and reproduction steps</li>
+      <li>No major blockers recorded</li>
+      <li>Active days: Monday, Tuesday, Thursday</li>
+    </ul>
+  </section>
+
+  <!-- Slide 4: Activity Flow -->
+  <section class="slide" data-notes="On Monday, NGN-561 moved through validation. We tested the debounced search behavior across all four Reporting tables in staging and confirmed it passed. On Tuesday, we created three tickets: NGN-589 for checkout item prices, NGN-590 for Multi-Use Pay Link lifecycle, and NGN-600 for Partner Users search reload behavior. NGN-589 was later verified in staging on Thursday. On Thursday, we tested and verified NGN-562 for discounted transaction details, created and verified NGN-624 and NGN-628 for marketplace admin issues, and created NGN-630, NGN-631, and NGN-632 for the remaining admin usability items. Wednesday and Friday had no qualifying ticket activity. By the end of the week, six items were done and four were in review.">
+    <div class="meta">Timeline</div>
+    <h2>Activity Flow</h2>
+    <div style="margin-top: 30px;">
+      <div style="display: flex; gap: 16px; margin-bottom: 36px; align-items: center;">
+        <div style="font-size: 22px; font-weight: 600; color: #e94560; min-width: 110px;">Mon</div>
+        <div class="flow-box" style="flex:1; text-align:left;">NGN-561 validated in staging</div>
+      </div>
+      <div style="display: flex; gap: 16px; margin-bottom: 36px; align-items: center;">
+        <div style="font-size: 22px; font-weight: 600; color: #e94560; min-width: 110px;">Tue</div>
+        <div class="flow-box" style="flex:1; text-align:left;">NGN-589, NGN-590, NGN-600 created</div>
+      </div>
+      <div style="display: flex; gap: 16px; margin-bottom: 36px; align-items: center;">
+        <div style="font-size: 22px; font-weight: 600; color: #666680; min-width: 110px;">Wed</div>
+        <div class="flow-box" style="flex:1; text-align:left; opacity: 0.4;">No qualifying activity</div>
+      </div>
+      <div style="display: flex; gap: 16px; margin-bottom: 36px; align-items: center;">
+        <div style="font-size: 22px; font-weight: 600; color: #e94560; min-width: 110px;">Thu</div>
+        <div class="flow-box" style="flex:1; text-align:left;">NGN-562, NGN-624, NGN-628 verified; NGN-630, NGN-631, NGN-632 created</div>
+      </div>
+      <div style="display: flex; gap: 16px; align-items: center;">
+        <div style="font-size: 22px; font-weight: 600; color: #666680; min-width: 110px;">Fri</div>
+        <div class="flow-box" style="flex:1; text-align:left; opacity: 0.4;">No qualifying activity</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 5: Priority Work - Done Part 1 -->
+  <section class="slide" data-notes="This covers the completed work from the week. NGN-561 was about the Reporting table search inputs firing a GraphQL request on every keystroke. We added a 300 millisecond debounce and verified it in staging across Transactions, Batches, Deposits, and Disputes. The result was PASS. NGN-589 fixed the item price display on the Checkout Payment Complete page after a Pay Link checkout. Instead of showing zero dollars, it now shows the correct item price, with a fallback to unit price times quantity when item total is missing. NGN-562 verified the Transaction Details cost breakdown for discounted Pay Links. On freshly created transactions, the Subtotal, Discount, and Total Charge values are now correct in staging. These three items all went through explicit staging verification.">
+    <div class="meta">Completed Work</div>
+    <h2>Priority Work &mdash; Done</h2>
+    <div class="ticket-grid">
+      <div class="ticket-card">
+        <div class="ticket-id">NGN-561</div>
+        <span class="badge badge-done">Done</span>
+        <h4>Debounce Reporting Search</h4>
+        <p>Verified 300ms debounce across Transactions, Batches, Deposits, and Disputes tables in staging. Result: PASS.</p>
+      </div>
+      <div class="ticket-card">
+        <div class="ticket-id">NGN-589</div>
+        <span class="badge badge-done">Done</span>
+        <h4>Fix Item Price on Payment Complete</h4>
+        <p>Corrected $0 display after Pay Link checkout. Falls back to unitPrice x quantity when item.total is missing.</p>
+      </div>
+      <div class="ticket-card">
+        <div class="ticket-id">NGN-562</div>
+        <span class="badge badge-done">Done</span>
+        <h4>Discounted Transaction Details</h4>
+        <p>Verified Subtotal, Discount, and Total Charge values are correct on freshly created discounted Pay Links in staging.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 6: Priority Work - Done Part 2 -->
+  <section class="slide" data-notes="Here are the other completed items. NGN-590 was created to track the correction of Multi-Use Pay Link behavior. The problem was that completing a transaction updated the link status to completed even when the usage limit had not been reached. This ticket captures the fix scope so that usage counts increment correctly and the link stays active. NGN-624 addressed the marketplace duplicate category slug issue. Instead of showing a raw Prisma unique constraint error, the admin now sees a readable validation toast. NGN-628 fixed the App Installs GraphQL errors in the marketplace admin portal. The page was failing with null environment and permission errors, and now it loads correctly. Both NGN-624 and NGN-628 were verified in staging with PASS results.">
+    <div class="meta">Completed Work</div>
+    <h2>Priority Work &mdash; Done</h2>
+    <div class="ticket-grid">
+      <div class="ticket-card">
+        <div class="ticket-id">NGN-590</div>
+        <span class="badge badge-done">Done</span>
+        <h4>Multi-Use Pay Link Lifecycle</h4>
+        <p>Created ticket to prevent premature COMPLETED state. Usage counts should increment correctly instead of closing the link early.</p>
+      </div>
+      <div class="ticket-card">
+        <div class="ticket-id">NGN-624</div>
+        <span class="badge badge-done">Done</span>
+        <h4>Duplicate Category Slug Error</h4>
+        <p>Replaced raw Prisma error with user-friendly validation toast in staging. Result: PASS.</p>
+      </div>
+      <div class="ticket-card">
+        <div class="ticket-id">NGN-628</div>
+        <span class="badge badge-done">Done</span>
+        <h4>App Installs GraphQL Errors</h4>
+        <p>Fixed environment and permissions errors blocking App Installs in marketplace admin. Verified in staging. Result: PASS.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 7: Priority Work - Pending Review -->
+  <section class="slide" data-notes="These four items are in pending review. NGN-600 covers the Partner Users search under Manage Users, where the entire iframe reloads instead of just updating the table, causing the search input to lose focus while typing. NGN-630 covers the marketplace service providers list not refreshing after a new provider is created, so the user has to manually refresh the page to see it. NGN-631 covers the clipboard copy failure in Customer Contacts, where copying an email is blocked by the current permissions policy. NGN-632 covers the Customers table cutting off the last visible entry when there are too many records, plus missing navigation controls. All four have clear reproduction steps and acceptance criteria already defined.">
+    <div class="meta">In Review</div>
+    <h2>Priority Work &mdash; Pending Review</h2>
+    <div class="ticket-grid">
+      <div class="ticket-card">
+        <div class="ticket-id">NGN-600</div>
+        <span class="badge badge-review">Pending Review</span>
+        <h4>Partner Users Search Reload</h4>
+        <p>Searching reloads the full iframe instead of the table only, causing the search input to lose focus.</p>
+      </div>
+      <div class="ticket-card">
+        <div class="ticket-id">NGN-630</div>
+        <span class="badge badge-review">Pending Review</span>
+        <h4>Service Provider List Refresh</h4>
+        <p>Newly created providers do not appear until the page is manually refreshed.</p>
+      </div>
+      <div class="ticket-card">
+        <div class="ticket-id">NGN-631</div>
+        <span class="badge badge-review">Pending Review</span>
+        <h4>Clipboard Copy in Customer Contacts</h4>
+        <p>Copying a contact email fails because the Clipboard API is blocked by the permissions policy.</p>
+      </div>
+      <div class="ticket-card" style="grid-column: span 1;">
+        <div class="ticket-id">NGN-632</div>
+        <span class="badge badge-review">Pending Review</span>
+        <h4>Customers Table Cutoff &amp; Navigation</h4>
+        <p>Table cuts off the last entry for large result sets and lacks sufficient navigation controls.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 8: What Changed -->
+  <section class="slide" data-notes="Here is what changed because of the work this week. Reporting table searches no longer fire excessive GraphQL requests on every keystroke, which makes the interface more responsive and reduces server load. Checkout values and transaction details were corrected or verified for Pay Link flows, so users see accurate prices and breakdowns on the Payment Complete page and in the Transaction Details modal. Marketplace admin error handling was clarified, so admins see readable messages instead of raw database errors, and App Installs is accessible again. The remaining usability issues were isolated into specific review-ready tasks with clear acceptance criteria, rather than staying as broad complaints. That gives us a cleaner queue and clearer next steps.">
+    <div class="meta">Outcomes</div>
+    <h2>What Changed</h2>
+    <div class="two-col" style="margin-top: 30px;">
+      <div class="col">
+        <h4>Fixed or Verified</h4>
+        <ul>
+          <li>Reporting searches now debounced; fewer GraphQL requests</li>
+          <li>Checkout item prices display correctly after Pay Link payment</li>
+          <li>Discounted transaction breakdown values are accurate</li>
+          <li>Marketplace admin errors are readable, not raw Prisma output</li>
+          <li>App Installs loads without GraphQL blocking errors</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h4>Defined for Review</h4>
+        <ul>
+          <li>Partner Users search scoped to table-only updates</li>
+          <li>Service provider list refresh after creation</li>
+          <li>Clipboard API permissions for contact email copy</li>
+          <li>Customer table pagination and cutoff fixes</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 9: Next-Week Commitments -->
+  <section class="slide" data-notes="Next week starts with four known review items rather than new intake. Each one already has a clear behavior to validate or close. NGN-600 is the Partner Users search reload fix. NGN-630 is the service provider list refresh. NGN-631 is the clipboard copy behavior in Customer Contacts. NGN-632 is the customer table navigation and cutoff. The queue is concentrated in admin usability follow-through. No major blockers were reported that would prevent these from moving forward. That is the full picture for next week.">
+    <div class="meta">Forward</div>
+    <h2>Next-Week Commitments</h2>
+    <div style="margin-top: 40px;">
+      <div class="flow-container" style="justify-content: center; margin-bottom: 40px;">
+        <div class="flow-box" style="min-width: 240px;"><strong>NGN-600</strong><br><span style="font-size: 18px; color: #b0b0c0;">Partner Users search reload</span></div>
+        <div class="flow-arrow">&#8594;</div>
+        <div class="flow-box" style="min-width: 240px;"><strong>NGN-630</strong><br><span style="font-size: 18px; color: #b0b0c0;">Service provider refresh</span></div>
+        <div class="flow-arrow">&#8594;</div>
+        <div class="flow-box" style="min-width: 240px;"><strong>NGN-631</strong><br><span style="font-size: 18px; color: #b0b0c0;">Clipboard copy fix</span></div>
+        <div class="flow-arrow">&#8594;</div>
+        <div class="flow-box" style="min-width: 240px;"><strong>NGN-632</strong><br><span style="font-size: 18px; color: #b0b0c0;">Table cutoff &amp; nav</span></div>
+      </div>
+      <ul class="plain-list" style="max-width: 900px; margin: 0 auto;">
+        <li>Four known review items with clear scope</li>
+        <li>No new intake required to start the week</li>
+        <li>Concentrated in admin usability follow-through</li>
+        <li>No major blockers reported</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Slide 10: Closing -->
+  <section class="slide" data-notes="To close, this week we completed six items with staging verification and left four usability items in review with clear scope. The work was concentrated in checkout accuracy, reporting performance, and marketplace admin fixes. There were no major blockers. Next week we will pick up the four pending review items. That is the status for 2026-W20. Any questions?">
+    <div class="meta">2026-W20</div>
+    <h1>Closing</h1>
+    <div class="subtitle">Completed fixes, verified checks, and a short open queue</div>
+    <div class="stats-row" style="justify-content: center; margin-top: 60px;">
+      <div class="stat"><div class="number">6</div><div class="label">Done &amp; Verified</div></div>
+      <div class="stat"><div class="number">4</div><div class="label">In Review</div></div>
+      <div class="stat"><div class="number">0</div><div class="label">Blockers</div></div>
+    </div>
+    <p style="text-align: center; margin-top: 60px; font-size: 24px; color: #8888a0;">Next week: validate or close the four pending admin usability items.</p>
+  </section>
+</div>
+
+<!-- ================= PRESENTER VIEW ================= -->
+<div id="pv-container">
+  <div class="pv-main">
+    <div class="pv-current-wrap" id="pv-current-wrap"></div>
+  </div>
+  <div class="pv-sidebar">
+    <div class="pv-next-box">
+      <div class="label">Next Slide</div>
+      <div class="title" id="pv-next-title">&mdash;</div>
+    </div>
+    <div class="pv-timer-box">
+      <div class="label">Elapsed</div>
+      <div class="time" id="pv-timer">00:00</div>
+    </div>
+    <div class="pv-notes-box">
+      <h4>Presenter Notes</h4>
+      <p id="pv-notes-text">&mdash;</p>
+    </div>
+    <div class="pv-controls">
+      <div class="pv-btn" id="pv-btn-prev">&#9664; Prev</div>
+      <div class="pv-btn" id="pv-btn-next">Next &#9654;</div>
+    </div>
+    <div class="pv-status" id="pv-status">Presenter window &middot; Deck sync active</div>
+  </div>
+</div>
+
+<script>
+  /* ================= SHARED DATA ================= */
+  const slides = document.querySelectorAll('#stage .slide');
+  const total = slides.length;
+  let current = 0;
+  let pvWin = null;
+  let timerInterval = null;
+  let elapsedSeconds = 0;
+  const isPresenter = new URLSearchParams(location.search).get('view') === 'presenter';
+
+  /* ================= SYNC CHANNEL ================= */
+  let channel = null;
+  if (typeof BroadcastChannel !== 'undefined') {
+    channel = new BroadcastChannel('slideshow-sync');
+  }
+
+  function broadcast(msg) {
+    if (channel) channel.postMessage(msg);
+    // Fallback: localStorage events for same-origin tabs without BroadcastChannel
+    try { localStorage.setItem('slideshow-sync', JSON.stringify({...msg, _t: Date.now()})); } catch(e){}
+  }
+
+  function onSyncMessage(fn) {
+    if (channel) channel.onmessage = (e) => fn(e.data);
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'slideshow-sync') {
+        try { fn(JSON.parse(e.newValue)); } catch(err){}
+      }
+    });
+  }
+
+  /* ================= DECK LOGIC ================= */
+  function updateScale() {
+    const stage = document.getElementById('stage');
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const scale = Math.min(vw / 1920, vh / 1080);
+    stage.style.setProperty('--scale', scale);
+  }
+
+  function updatePresenterScale() {
+    const wrap = document.getElementById('pv-current-wrap');
+    if (!wrap) return;
+    const w = wrap.clientWidth;
+    const h = wrap.clientHeight;
+    const scale = Math.min(w / 1920, h / 1080) * 0.96;
+    document.getElementById('stage').style.setProperty('--pv-scale', scale);
+  }
+
+  function showSlide(index, skipBroadcast) {
+    if (index < 0) index = 0;
+    if (index >= total) index = total - 1;
+    current = index;
+    slides.forEach((slide, i) => slide.classList.toggle('active', i === current));
+
+    const progress = document.getElementById('progress');
+    if (progress) progress.style.width = ((current + 1) / total * 100) + '%';
+    const counter = document.getElementById('counter');
+    if (counter) counter.textContent = (current + 1) + ' / ' + total;
+
+    // Update presenter view elements if this is the presenter window
+    updatePresenterUI();
+
+    if (!skipBroadcast) broadcast({ type: 'slide', index: current });
+  }
+
+  function nextSlide() { showSlide(current + 1); }
+  function prevSlide() { showSlide(current - 1); }
+
+  /* ================= PRESENTER UI ================= */
+  function updatePresenterUI() {
+    const notesEl = document.getElementById('pv-notes-text');
+    const nextTitleEl = document.getElementById('pv-next-title');
+    if (!notesEl && !nextTitleEl) return; // not in presenter mode
+
+    const notes = slides[current]?.dataset.notes || '';
+    if (notesEl) notesEl.textContent = notes;
+
+    const nextTitle = current + 1 < total
+      ? (slides[current + 1].querySelector('h1, h2')?.textContent || 'Next slide')
+      : 'End of deck';
+    if (nextTitleEl) nextTitleEl.textContent = nextTitle;
+  }
+
+  /* ================= TIMER ================= */
+  function startTimer() {
+    if (timerInterval) return;
+    timerInterval = setInterval(() => {
+      elapsedSeconds++;
+      const m = String(Math.floor(elapsedSeconds / 60)).padStart(2, '0');
+      const s = String(elapsedSeconds % 60).padStart(2, '0');
+      const timerEl = document.getElementById('pv-timer');
+      if (timerEl) timerEl.textContent = m + ':' + s;
+    }, 1000);
+  }
+
+  /* ================= OPEN / CLOSE PRESENTER ================= */
+  function openPresenterWindow() {
+    if (pvWin && !pvWin.closed) {
+      pvWin.focus();
+      return;
+    }
+    const url = location.pathname + '?view=presenter';
+    pvWin = window.open(url, 'presenterView', 'width=1200,height=800,menubar=no,toolbar=no,location=no,status=no');
+    if (!pvWin) {
+      alert('Popup blocked. Please allow popups for this site to open the presenter view.');
+    }
+  }
+
+  /* ================= KEYBOARD ================= */
+  document.addEventListener('keydown', (e) => {
+    if (isPresenter) {
+      // Presenter window controls both windows via broadcast
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault(); nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault(); prevSlide();
+      } else if (e.key === 'Home') {
+        e.preventDefault(); showSlide(0);
+      } else if (e.key === 'End') {
+        e.preventDefault(); showSlide(total - 1);
+      }
+      return;
+    }
+
+    // Audience deck
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+      e.preventDefault(); nextSlide();
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault(); prevSlide();
+    } else if (e.key === 'p' || e.key === 'P') {
+      e.preventDefault(); openPresenterWindow();
+    } else if (e.key === 'Home') {
+      e.preventDefault(); showSlide(0);
+    } else if (e.key === 'End') {
+      e.preventDefault(); showSlide(total - 1);
+    }
+  });
+
+  // Click on stage to advance / go back (audience only)
+  if (!isPresenter) {
+    document.getElementById('stage').addEventListener('click', (e) => {
+      const rect = document.getElementById('stage').getBoundingClientRect();
+      const scale = parseFloat(getComputedStyle(document.getElementById('stage')).getPropertyValue('--scale')) || 1;
+      const x = (e.clientX - rect.left) / scale;
+      if (x > 960) nextSlide(); else prevSlide();
+    });
+  }
+
+  // Presenter window buttons
+  if (isPresenter) {
+    document.getElementById('pv-btn-next')?.addEventListener('click', nextSlide);
+    document.getElementById('pv-btn-prev')?.addEventListener('click', prevSlide);
+  }
+
+  /* ================= SYNC RECEIVE ================= */
+  onSyncMessage((data) => {
+    if (data && data.type === 'slide' && typeof data.index === 'number') {
+      showSlide(data.index, true);
+    }
+  });
+
+  /* ================= INIT ================= */
+  if (isPresenter) {
+    document.body.classList.add('presenter-mode');
+    // Move stage into presenter preview area
+    const wrap = document.getElementById('pv-current-wrap');
+    const stage = document.getElementById('stage');
+    if (wrap && stage) wrap.appendChild(stage);
+    startTimer();
+    updatePresenterScale();
+    window.addEventListener('resize', updatePresenterScale);
+  } else {
+    window.addEventListener('resize', updateScale);
+    updateScale();
+  }
+
+  showSlide(0, true);
+</script>
+</body>
+</html>
