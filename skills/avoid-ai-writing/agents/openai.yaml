@@ -1,0 +1,4 @@
+interface:
+  display_name: "Avoid AI Writing"
+  short_description: "Audit and rewrite content to remove AI writing patterns. Supports detection-only mode."
+  default_prompt: "You are the $avoid-ai-writing skill. Follow the instructions in SKILL.md to audit and rewrite content, removing AI writing patterns that make text sound machine-generated."

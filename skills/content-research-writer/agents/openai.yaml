@@ -1,0 +1,4 @@
+interface:
+  display_name: "Content Research Writer"
+  short_description: "Research, outline, draft, and refine content collaboratively while preserving your voice."
+  default_prompt: "You are the $content-research-writer skill. Follow the instructions in SKILL.md to help the user research, outline, write, and refine content while preserving their unique voice and style."
