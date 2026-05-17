@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TestDino vs Playwright + Allure</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface-light: #334155;
+    --text: #f1f5f9;
+    --text-muted: #94a3b8;
+    --accent: #38bdf8;
+    --accent-dim: #0ea5e9;
+    --green: #34d399;
+    --amber: #fbbf24;
+    --red: #f87171;
+    --border: #475569;
+  }
+
+  /* ================= AUDIENCE DECK ================= */
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  #stage {
+    width: 1920px; height: 1080px;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(var(--scale, 1));
+    transform-origin: center center;
+    background: var(--bg);
+    overflow: hidden;
+  }
+
+  .slide {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    padding: 80px 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+  }
+  .slide.active { opacity: 1; pointer-events: auto; z-index: 2; }
+
+  .slide--title { align-items: center; text-align: center; }
+
+  .slide--title h1 {
+    font-size: 72px; font-weight: 700; letter-spacing: -0.02em;
+    line-height: 1.15; margin-bottom: 20px; color: #ffffff;
+  }
+  .slide--title h1 span { color: var(--accent); }
+  .slide--title .subtitle {
+    font-size: 32px; color: var(--text-muted); max-width: 800px; line-height: 1.5; margin-bottom: 40px;
+  }
+  .slide--title .badge {
+    display: inline-block; padding: 10px 24px; border-radius: 999px;
+    background: var(--surface-light); border: 1px solid var(--border);
+    font-size: 22px; color: var(--amber); font-weight: 500;
+  }
+
+  .section-label {
+    font-size: 20px; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--accent); font-weight: 600; margin-bottom: 12px;
+  }
+
+  .slide h2 {
+    font-size: 56px; font-weight: 600; margin-bottom: 40px; color: #ffffff;
+  }
+  .slide h2 .num { color: var(--accent); margin-right: 16px; font-weight: 700; }
+
+  .cards { display: grid; gap: 32px; }
+  .cards--two { grid-template-columns: 1fr 1fr; }
+  .cards--three { grid-template-columns: 1fr 1fr 1fr; }
+
+  .card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px; padding: 36px;
+  }
+  .card h3 {
+    font-size: 28px; font-weight: 600; margin-bottom: 16px;
+    display: flex; align-items: center; gap: 12px; color: #ffffff;
+  }
+  .card h3 .icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .icon--green { background: rgba(52,211,153,0.15); color: var(--green); }
+  .icon--red { background: rgba(248,113,113,0.15); color: var(--red); }
+  .icon--blue { background: rgba(56,189,248,0.15); color: var(--accent); }
+  .icon--amber { background: rgba(251,191,36,0.15); color: var(--amber); }
+
+  .card ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .card li {
+    font-size: 22px; line-height: 1.55; color: #c8c8d8;
+    padding-left: 22px; position: relative;
+  }
+  .card li::before {
+    content: ""; position: absolute; left: 0; top: 11px;
+    width: 8px; height: 8px; border-radius: 50%; background: var(--border);
+  }
+  .card--pros li::before { background: var(--green); }
+  .card--cons li::before { background: var(--red); }
+
+  .chip-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+  .chip {
+    display: inline-block; padding: 6px 16px; border-radius: 999px;
+    font-size: 18px; font-weight: 500; border: 1px solid var(--border);
+    background: var(--surface-light); color: var(--text-muted);
+  }
+  .chip--accent { border-color: var(--accent-dim); color: var(--accent); }
+
+  .flow {
+    display: flex; align-items: center; gap: 0; flex-wrap: wrap; margin-top: 30px;
+  }
+  .flow-step {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px; padding: 24px 32px; font-size: 22px;
+    color: #c8c8d8; text-align: center; min-width: 180px;
+  }
+  .flow-step strong { display: block; color: #ffffff; font-size: 24px; margin-bottom: 6px; }
+  .flow-arrow { font-size: 32px; color: var(--accent); padding: 0 12px; flex-shrink: 0; }
+
+  .table-wrap { overflow-x: auto; margin-top: 24px; }
+  table { width: 100%; border-collapse: collapse; font-size: 22px; }
+  th {
+    text-align: left; padding: 14px 20px; background: rgba(255,255,255,0.04);
+    border-bottom: 2px solid var(--accent-dim); color: #ffffff; font-weight: 600;
+  }
+  td { padding: 14px 20px; border-bottom: 1px solid rgba(255,255,255,0.06); color: #c8c8d8; vertical-align: top; }
+  td.cost { font-weight: 600; color: var(--green); }
+
+  .highlight-box {
+    background: rgba(255,255,255,0.03); border-left: 4px solid var(--accent);
+    border-radius: 0 12px 12px 0; padding: 28px 36px; margin-top: 32px;
+    font-size: 24px; line-height: 1.6; color: #c8c8d8;
+  }
+  .highlight-box strong { color: #ffffff; }
+
+  .checklist { list-style: none; display: flex; flex-direction: column; gap: 16px; margin-top: 24px; }
+  .checklist li { display: flex; align-items: flex-start; gap: 14px; font-size: 24px; line-height: 1.5; color: #c8c8d8; }
+  .check {
+    width: 28px; height: 28px; border-radius: 8px; border: 2px solid var(--green);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 2px; color: var(--green); font-size: 14px;
+  }
+
+  #progress { position: absolute; bottom: 0; left: 0; height: 4px; background: var(--accent); transition: width 0.3s ease; z-index: 10; }
+  #counter { position: absolute; bottom: 24px; right: 40px; font-size: 16px; color: #666680; z-index: 10; }
+  #controls-hint { position: absolute; bottom: 24px; left: 40px; font-size: 14px; color: #444460; z-index: 10; }
+
+  /* ================= PRESENTER VIEW ================= */
+  body.presenter-mode { background: #0f0f1a; overflow: auto; }
+  body.presenter-mode #stage { display: none; }
+  body.presenter-mode #progress { display: none; }
+  body.presenter-mode #counter { display: none; }
+  body.presenter-mode #controls-hint { display: none; }
+
+  #pv-container {
+    display: none; width: 100%; height: 100vh;
+    grid-template-columns: 1fr 400px; gap: 0;
+  }
+  body.presenter-mode #pv-container { display: grid; }
+
+  .pv-main {
+    display: flex; flex-direction: column; padding: 32px;
+    border-right: 1px solid rgba(255,255,255,0.06); min-width: 0;
+  }
+  .pv-current-wrap {
+    flex: 1; background: var(--bg); border-radius: 12px;
+    overflow: hidden; position: relative; min-height: 0;
+  }
+  .pv-current-wrap #stage {
+    display: block !important; position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(var(--pv-scale, 0.55));
+    transform-origin: center center;
+  }
+  .pv-current-wrap #progress,
+  .pv-current-wrap #counter,
+  .pv-current-wrap #controls-hint { display: none; }
+
+  .pv-sidebar {
+    display: flex; flex-direction: column; padding: 24px; gap: 20px; overflow-y: auto;
+  }
+  .pv-next-box {
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px; padding: 20px;
+  }
+  .pv-next-box .label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #666680; margin-bottom: 8px; }
+  .pv-next-box .title { font-size: 18px; color: #c8c8d8; line-height: 1.4; }
+  .pv-timer-box {
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px; padding: 20px; text-align: center;
+  }
+  .pv-timer-box .label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #666680; margin-bottom: 8px; }
+  .pv-timer-box .time { font-size: 42px; font-weight: 300; color: #ffffff; font-variant-numeric: tabular-nums; }
+  .pv-notes-box {
+    flex: 1; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px; padding: 24px; overflow-y: auto; min-height: 180px;
+  }
+  .pv-notes-box h4 { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-bottom: 14px; }
+  .pv-notes-box p { font-size: 17px; line-height: 1.65; color: #c8c8d8; white-space: pre-wrap; }
+  .pv-controls { display: flex; gap: 10px; }
+  .pv-btn {
+    flex: 1; padding: 14px; border-radius: 8px;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    color: #d1d1d1; font-size: 15px; cursor: pointer; text-align: center; user-select: none;
+  }
+  .pv-btn:hover { background: rgba(255,255,255,0.1); }
+  .pv-status { font-size: 13px; color: #444460; text-align: center; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<!-- ================= AUDIENCE DECK ================= -->
+<div id="stage">
+  <div id="progress"></div>
+  <div id="counter"></div>
+  <div id="controls-hint">Arrow keys to navigate &middot; P for presenter view</div>
+
+  <!-- SLIDE 1: Title -->
+  <section class="slide slide--title active" data-notes="We evaluated whether to replace Ghost Inspector for production monitoring checks. This became a broader question about how we store historical results, view dashboards, trigger scheduled runs, and deliver failure alerts without creating too much maintenance overhead. This deck walks through the two options we compared and the recommendation.">
+    <div class="section-label">Decision Recommendation</div>
+    <h1>TestDino vs Self-Hosted<br><span>Playwright + Allure</span></h1>
+    <div class="subtitle">Decision recommendation for scheduled monitoring and historical test runs</div>
+    <div class="badge">Proceed with Caveats</div>
+  </section>
+
+  <!-- SLIDE 2: Context -->
+  <section class="slide" data-notes="The team is looking at replacing or reducing Ghost Inspector usage for production-style monitoring checks. The decision shifted from a simple tool comparison into a broader architecture question. We need to figure out how historical results are stored, how dashboards are viewed, how scheduled runs are triggered, and how failure alerts are delivered without creating excessive maintenance overhead. This document compares TestDino against a self-hosted Playwright and Allure setup.">
+    <div class="section-label">Context</div>
+    <h2><span class="num">01</span> What We're Deciding</h2>
+    <div class="cards cards--two">
+      <div class="card">
+        <h3><span class="icon icon--blue">?</span> The Question</h3>
+        <ul>
+          <li>Replace or reduce Ghost Inspector for monitoring checks</li>
+          <li>How to store historical results and view dashboards</li>
+          <li>How to trigger scheduled runs and deliver failure alerts</li>
+          <li>Keep maintenance overhead low</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="icon icon--amber">!</span> Two Paths</h3>
+        <ul>
+          <li><strong>TestDino</strong> — hosted dashboard, fast historical visibility</li>
+          <li><strong>Playwright + Allure</strong> — self-hosted, full control over runtime and persistence</li>
+        </ul>
+        <div class="chip-row">
+          <span class="chip chip--accent">Cost</span>
+          <span class="chip chip--accent">Dashboard</span>
+          <span class="chip chip--accent">Alerting</span>
+          <span class="chip chip--accent">Ownership</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 3: Decision Summary -->
+  <section class="slide" data-notes="Here is the decision summary across the key areas. Functionally, Playwright can cover everything we need — page loads, element checks, CTA clicks, form submissions, authenticated flows, screenshots, traces, and cross-browser checks. For dashboards, we should evaluate TestDino and self-hosted Allure side by side. TestDino is faster for historical visibility while Allure is more controllable but needs persistence and history handling. The runtime model should be Docker-first for the self-hosted path, deployed on VPS or EC2 rather than GitHub Actions only. We need to persist run metadata separately in a datastore. For alerting, custom alerting gives more flexibility since TestDino alerts require a paid tier. The overall recommendation is to proceed with caveats — the technical path is feasible but we need to validate ownership, reliability, and maintenance during the POC.">
+    <div class="section-label">Decision Summary</div>
+    <h2><span class="num">02</span> Key Decisions at a Glance</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Area</th><th>Direction</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>Functional coverage</td><td>Playwright is feasible</td><td>Covers page loads, element checks, forms, auth flows, screenshots, traces</td></tr>
+          <tr><td>Dashboard</td><td>Evaluate both side by side</td><td>TestDino is faster; Allure needs persistence work</td></tr>
+          <tr><td>Runtime</td><td>Docker-first on VPS/EC2</td><td>Not GitHub Actions only</td></tr>
+          <tr><td>Historical data</td><td>Persist metadata separately</td><td>Store pass/fail, timestamp, environment, failure point, report links</td></tr>
+          <tr><td>Alerting</td><td>Custom alerting preferred</td><td>TestDino alerts need paid tier; self-hosted can hit Slack, Chat, email directly</td></tr>
+          <tr><td>Recommendation</td><td class="cost">Proceed with caveats</td><td>Validate ownership and maintenance during POC</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SLIDE 4: TestDino -->
+  <section class="slide" data-notes="On this slide we look at TestDino. It is attractive because it already provides a hosted dashboard and historical run visibility out of the box. The free tier includes 5,000 test executions per month which should be enough for a small monitoring suite if the execution counting model works in our favor. The main limitation is that alerts require the paid tier at around 49 dollars per month, and the free tier appears to have a one-team-member limitation which could limit shared visibility. It is faster to evaluate than a fully self-hosted stack and can act as a bridge option before committing to owning infrastructure. But if execution relies on GitHub Actions, those limits and billing still matter, and the platform creates some vendor dependency.">
+    <div class="section-label">Option A</div>
+    <h2><span class="num">03</span> TestDino</h2>
+    <div class="cards cards--two">
+      <div class="card card--pros">
+        <h3><span class="icon icon--green">+</span> Pros</h3>
+        <ul>
+          <li>Historical visibility without building a dashboard</li>
+          <li>5,000 executions/month on free tier</li>
+          <li>Faster to evaluate than self-hosted</li>
+          <li>Bridge option before owning infrastructure</li>
+        </ul>
+      </div>
+      <div class="card card--cons">
+        <h3><span class="icon icon--red">−</span> Cons</h3>
+        <ul>
+          <li>Alerts require paid plan (~$49/mo)</li>
+          <li>Free tier may limit to one team member</li>
+          <li>GitHub Actions dependency if used for scheduling</li>
+          <li>Vendor dependency for history and dashboard UX</li>
+        </ul>
+      </div>
+    </div>
+    <div class="highlight-box">
+      <strong>Best fit:</strong> Use TestDino if the team wants the fastest path to historical visibility and is comfortable validating free-tier constraints during the POC.
+    </div>
+  </section>
+
+  <!-- SLIDE 5: Self-Hosted -->
+  <section class="slide" data-notes="Next is the self-hosted path using Playwright for test execution, Allure for report generation, Docker for deployment, and a metadata datastore for historical pass/fail records. This gives the team stronger control over runtime, persistence, alerts, and deployment but introduces more operational responsibility. Full control over how tests run and where they run is the biggest advantage. A datastore container can persist structured run metadata and alerts can be sent directly to Google Chat, Slack, or email without vendor dependency. The tradeoff is that Allure is not a full historical analytics platform by default so the team must store structured metadata separately. There are more moving parts to maintain and initial setup is more complex than TestDino. Artifact growth from screenshots, videos, and traces can become a storage problem so retention and cleanup policies are needed.">
+    <div class="section-label">Option B</div>
+    <h2><span class="num">04</span> Self-Hosted Playwright + Allure</h2>
+    <div class="cards cards--two">
+      <div class="card card--pros">
+        <h3><span class="icon icon--green">+</span> Pros</h3>
+        <ul>
+          <li>Full control over runtime and scheduling</li>
+          <li>Datastore persists structured run metadata</li>
+          <li>Custom alerts to Slack, Chat, or email</li>
+          <li>Lower vendor lock-in, portable Docker stack</li>
+        </ul>
+      </div>
+      <div class="card card--cons">
+        <h3><span class="icon icon--red">−</span> Cons</h3>
+        <ul>
+          <li>Allure is not a full historical analytics platform</li>
+          <li>More moving parts to maintain</li>
+          <li>Initial setup more complex than TestDino</li>
+          <li>Artifact storage needs retention policies</li>
+        </ul>
+      </div>
+    </div>
+    <div class="highlight-box">
+      <strong>Best fit:</strong> Use the self-hosted path if the team wants a deployable monitoring service it can own, customize, and run on a VPS or EC2 instance using Docker Compose.
+    </div>
+  </section>
+
+  <!-- SLIDE 6: Cost -->
+  <section class="slide" data-notes="Here is the cost comparison. Both options can be materially cheaper than Ghost Inspector which currently costs around 109 dollars per month. TestDino free tier is essentially zero dollars but limited by execution volume, collaboration, and alerting constraints. TestDino with alerts is around 49 dollars per month which is lower than Ghost Inspector but you are paying mainly to unlock alerting and platform convenience. The self-hosted path can be close to zero to 5 dollars per month on an existing server, 5 to 25 dollars on a small VPS, or 15 to 40 dollars on EC2. The cost difference is not only the monthly bill — it also includes the time required to operate the monitoring workflow, maintain selectors, manage credentials, and respond to noisy failures.">
+    <div class="section-label">Cost</div>
+    <h2><span class="num">05</span> Monthly Cost Comparison</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Setup</th><th>Est. Monthly Cost</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>TestDino Free Tier</td><td class="cost">~$0</td><td>Limited by execution volume, collaboration, alerting</td></tr>
+          <tr><td>TestDino with Alerts</td><td class="cost">~$49/mo</td><td>Lower than Ghost Inspector; paid mainly for alerting</td></tr>
+          <tr><td>Self-hosted (existing server)</td><td class="cost">~$0–$5/mo</td><td>Mainly storage and maintenance</td></tr>
+          <tr><td>Self-hosted (small VPS)</td><td class="cost">~$5–$25/mo</td><td>Docker runner, datastore, report server</td></tr>
+          <tr><td>Self-hosted (EC2)</td><td class="cost">~$15–$40/mo</td><td>Preferred if AWS governance is needed</td></tr>
+          <tr><td>Ghost Inspector (reference)</td><td style="color:var(--red);font-weight:600;">~$109/mo</td><td>Current paid reference point</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="highlight-box">
+      Both paths stay below Ghost Inspector pricing. Self-hosted carries more operational ownership; TestDino trades cost for convenience.
+    </div>
+  </section>
+
+  <!-- SLIDE 7: Architecture -->
+  <section class="slide" data-notes="For the self-hosted architecture, the approach should be Docker-first. The Playwright runner should not be the only source of persistence. A datastore container should store structured metadata while Allure serves as the human-readable report layer. The components are: a Playwright runner container that executes monitoring tests and generates results, a metadata datastore container using PostgreSQL for the POC that persists pass/fail status and report links, Allure report output for the latest human-readable report, a report server using nginx to serve the Allure dashboard, a scheduler using host cron or a scheduler container, and an alerting integration that sends failure notifications to the team's preferred channels.">
+    <div class="section-label">Architecture</div>
+    <h2><span class="num">06</span> Self-Hosted Stack</h2>
+    <div class="flow">
+      <div class="flow-step"><strong>Scheduler</strong>cron / container</div>
+      <div class="flow-arrow">&#8594;</div>
+      <div class="flow-step"><strong>Playwright Runner</strong>executes checks</div>
+      <div class="flow-arrow">&#8594;</div>
+      <div class="flow-step"><strong>Datastore</strong>PostgreSQL metadata</div>
+      <div class="flow-arrow">&#8594;</div>
+      <div class="flow-step"><strong>Allure</strong>report generation</div>
+      <div class="flow-arrow">&#8594;</div>
+      <div class="flow-step"><strong>Alerting</strong>Slack / Chat / email</div>
+    </div>
+    <div class="cards cards--three" style="margin-top: 36px;">
+      <div class="card">
+        <h3><span class="icon icon--blue">1</span> Runner</h3>
+        <ul>
+          <li>Executes monitoring tests</li>
+          <li>Captures evidence on failure</li>
+          <li>Writes run metadata</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="icon icon--blue">2</span> Datastore</h3>
+        <ul>
+          <li>Persists pass/fail, timestamp, environment</li>
+          <li>Stores failure point and report links</li>
+          <li>PostgreSQL for POC</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="icon icon--blue">3</span> Reports + Alerts</h3>
+        <ul>
+          <li>Allure serves human-readable reports</li>
+          <li>nginx hosts the dashboard</li>
+          <li>Webhooks notify on failure</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 8: POC Scope -->
+  <section class="slide" data-notes="The POC should validate the decision, not build the full production platform. It should prove that the team can run the same checks, see historical status, review useful reports, and receive alerts when failures occur. We need 2 to 3 Playwright checks covering page load, element verification, CTA interaction, and one form or critical flow. Both TestDino and the self-hosted path should be evaluated with the same checks. The success criteria are: the same core checks execute reliably in Playwright, the team can view historical run information beyond the latest report, a failed run produces a clear alert with diagnostic context, estimated monthly cost remains below Ghost Inspector, and the team can choose TestDino, self-hosted, or hybrid based on evidence.">
+    <div class="section-label">POC</div>
+    <h2><span class="num">07</span> POC Scope &amp; Success Criteria</h2>
+    <div class="cards cards--two">
+      <div class="card">
+        <h3><span class="icon icon--blue">&#9881;</span> What to Build</h3>
+        <ul>
+          <li>2–3 Playwright checks (page load, element verify, CTA, form flow)</li>
+          <li>TestDino evaluation against free-tier limits</li>
+          <li>Dockerized runner + Compose + datastore + Allure</li>
+          <li>Failure alert to Slack, Chat, or email</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="icon icon--green">&#10003;</span> Success Criteria</h3>
+        <ul class="checklist">
+          <li><span class="check">&#10003;</span> Same checks run reliably in Playwright</li>
+          <li><span class="check">&#10003;</span> Historical run info visible beyond latest report</li>
+          <li><span class="check">&#10003;</span> Failed run produces clear alert with context</li>
+          <li><span class="check">&#10003;</span> Monthly cost stays below Ghost Inspector</li>
+          <li><span class="check">&#10003;</span> Team can decide based on evidence</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 9: Risks -->
+  <section class="slide" data-notes="Here are the key risks and how we mitigate them. GitHub Actions dependency for TestDino execution could introduce separate limits and billing concerns — we should validate the execution model during POC and estimate actual monthly runner usage. Alerting cost or complexity is a risk since TestDino paid alerts add cost while custom alerts add maintenance — we should compare the paid alert tier against a small webhook-based alert path. Allure historical limitations mean it may not behave like a complete historical analytics dashboard out of the box — we should persist structured metadata separately and use Allure primarily for report details. Flaky tests and selector maintenance can cause false alerts that reduce trust — we need stable selectors, a retry strategy, clear ownership, and triage rules. Storage growth from screenshots, videos, traces, and reports can consume disk quickly — we should start with metadata-first persistence and define cleanup rules for large artifacts.">
+    <div class="section-label">Risks</div>
+    <h2><span class="num">08</span> Key Risks &amp; Mitigations</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Risk</th><th>Impact</th><th>Mitigation</th></tr></thead>
+        <tbody>
+          <tr><td>GitHub Actions dependency</td><td>Separate limits and billing</td><td>Validate execution model during POC; estimate runner usage</td></tr>
+          <tr><td>Alerting cost / complexity</td><td>Paid tier vs. custom maintenance</td><td>Compare paid tier against webhook-based alert path</td></tr>
+          <tr><td>Allure historical limits</td><td>Not a full analytics dashboard</td><td>Persist metadata separately; use Allure for report details</td></tr>
+          <tr><td>Flaky tests</td><td>False alerts reduce trust</td><td>Stable selectors, retries, ownership, triage rules</td></tr>
+          <tr><td>Storage growth</td><td>Disk fills with artifacts</td><td>Metadata-first persistence; define cleanup rules</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SLIDE 10: Recommendation -->
+  <section class="slide slide--title" data-notes="The final recommendation is to proceed with a POC and decide after side-by-side validation. TestDino is the faster path to historical visibility and may be enough if the free tier and collaboration limits are acceptable. The self-hosted Playwright and Allure path is stronger for Docker deployment, custom alerts, persistence, and long-term ownership but it has higher implementation and maintenance responsibility. We should validate both paths with the same small monitoring suite before committing. If the team wants the fastest usable dashboard, TestDino should be tested first. If the team wants a deployable, owned monitoring service with persistence and custom alerting, the Dockerized Playwright and Allure path is the better long-term direction.">
+    <div class="section-label">Recommendation</div>
+    <h1>POC First, <span>Decide After</span></h1>
+    <div class="subtitle" style="margin-top: 20px;">Run both paths with the same small monitoring suite. Compare ease of operation, cost, dashboard quality, alerting, and long-term ownership before committing.</div>
+    <div class="cards cards--two" style="margin-top: 40px; max-width: 1100px; width: 100%;">
+      <div class="card" style="border-color: var(--accent-dim);">
+        <h3><span class="icon icon--blue">&#9889;</span> Fastest Path</h3>
+        <p style="color: var(--text-muted); font-size: 22px; line-height: 1.55;">TestDino — test first if the team wants the fastest usable dashboard and can accept free-tier limits.</p>
+      </div>
+      <div class="card" style="border-color: var(--green);">
+        <h3><span class="icon icon--green">&#9881;</span> Long-Term Path</h3>
+        <p style="color: var(--text-muted); font-size: 22px; line-height: 1.55;">Self-hosted Playwright + Allure — better if the team wants an owned, deployable monitoring service with custom alerting.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= PRESENTER VIEW ================= -->
+<div id="pv-container">
+  <div class="pv-main">
+    <div class="pv-current-wrap" id="pv-current-wrap"></div>
+  </div>
+  <div class="pv-sidebar">
+    <div class="pv-next-box">
+      <div class="label">Next Slide</div>
+      <div class="title" id="pv-next-title">&mdash;</div>
+    </div>
+    <div class="pv-timer-box">
+      <div class="label">Elapsed</div>
+      <div class="time" id="pv-timer">00:00</div>
+    </div>
+    <div class="pv-notes-box">
+      <h4>Presenter Notes</h4>
+      <p id="pv-notes-text">&mdash;</p>
+    </div>
+    <div class="pv-controls">
+      <div class="pv-btn" id="pv-btn-prev">&#9664; Prev</div>
+      <div class="pv-btn" id="pv-btn-next">Next &#9654;</div>
+    </div>
+    <div class="pv-status" id="pv-status">Presenter window &middot; Deck sync active</div>
+  </div>
+</div>
+
+<script>
+  /* ================= SHARED DATA ================= */
+  const slides = document.querySelectorAll('#stage .slide');
+  const total = slides.length;
+  let current = 0;
+  let pvWin = null;
+  let timerInterval = null;
+  let elapsedSeconds = 0;
+  const isPresenter = new URLSearchParams(location.search).get('view') === 'presenter';
+
+  /* ================= SYNC CHANNEL ================= */
+  let channel = null;
+  if (typeof BroadcastChannel !== 'undefined') {
+    channel = new BroadcastChannel('slideshow-sync');
+  }
+
+  function broadcast(msg) {
+    if (channel) channel.postMessage(msg);
+    try { localStorage.setItem('slideshow-sync', JSON.stringify({...msg, _t: Date.now()})); } catch(e){}
+  }
+
+  function onSyncMessage(fn) {
+    if (channel) channel.onmessage = (e) => fn(e.data);
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'slideshow-sync') {
+        try { fn(JSON.parse(e.newValue)); } catch(err){}
+      }
+    });
+  }
+
+  /* ================= DECK LOGIC ================= */
+  function updateScale() {
+    const stage = document.getElementById('stage');
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const scale = Math.min(vw / 1920, vh / 1080);
+    stage.style.setProperty('--scale', scale);
+  }
+
+  function updatePresenterScale() {
+    const wrap = document.getElementById('pv-current-wrap');
+    if (!wrap) return;
+    const w = wrap.clientWidth;
+    const h = wrap.clientHeight;
+    const scale = Math.min(w / 1920, h / 1080) * 0.96;
+    document.getElementById('stage').style.setProperty('--pv-scale', scale);
+  }
+
+  function showSlide(index, skipBroadcast) {
+    if (index < 0) index = 0;
+    if (index >= total) index = total - 1;
+    current = index;
+    slides.forEach((slide, i) => slide.classList.toggle('active', i === current));
+
+    const progress = document.getElementById('progress');
+    if (progress) progress.style.width = ((current + 1) / total * 100) + '%';
+    const counter = document.getElementById('counter');
+    if (counter) counter.textContent = (current + 1) + ' / ' + total;
+
+    updatePresenterUI();
+
+    if (!skipBroadcast) broadcast({ type: 'slide', index: current });
+  }
+
+  function nextSlide() { showSlide(current + 1); }
+  function prevSlide() { showSlide(current - 1); }
+
+  /* ================= PRESENTER UI ================= */
+  function updatePresenterUI() {
+    const notesEl = document.getElementById('pv-notes-text');
+    const nextTitleEl = document.getElementById('pv-next-title');
+    if (!notesEl && !nextTitleEl) return;
+
+    const notes = slides[current]?.dataset.notes || '';
+    if (notesEl) notesEl.textContent = notes;
+
+    const nextTitle = current + 1 < total
+      ? (slides[current + 1].querySelector('h1, h2')?.textContent || 'Next slide')
+      : 'End of deck';
+    if (nextTitleEl) nextTitleEl.textContent = nextTitle;
+  }
+
+  /* ================= TIMER ================= */
+  function startTimer() {
+    if (timerInterval) return;
+    timerInterval = setInterval(() => {
+      elapsedSeconds++;
+      const m = String(Math.floor(elapsedSeconds / 60)).padStart(2, '0');
+      const s = String(elapsedSeconds % 60).padStart(2, '0');
+      const timerEl = document.getElementById('pv-timer');
+      if (timerEl) timerEl.textContent = m + ':' + s;
+    }, 1000);
+  }
+
+  /* ================= OPEN / CLOSE PRESENTER ================= */
+  function openPresenterWindow() {
+    if (pvWin && !pvWin.closed) {
+      pvWin.focus();
+      return;
+    }
+    const url = location.pathname + '?view=presenter';
+    pvWin = window.open(url, 'presenterView', 'width=1200,height=800,menubar=no,toolbar=no,location=no,status=no');
+    if (!pvWin) {
+      alert('Popup blocked. Please allow popups for this site to open the presenter view.');
+    }
+  }
+
+  /* ================= KEYBOARD ================= */
+  document.addEventListener('keydown', (e) => {
+    if (isPresenter) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault(); nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault(); prevSlide();
+      } else if (e.key === 'Home') {
+        e.preventDefault(); showSlide(0);
+      } else if (e.key === 'End') {
+        e.preventDefault(); showSlide(total - 1);
+      }
+      return;
+    }
+
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+      e.preventDefault(); nextSlide();
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault(); prevSlide();
+    } else if (e.key === 'p' || e.key === 'P') {
+      e.preventDefault(); openPresenterWindow();
+    } else if (e.key === 'Home') {
+      e.preventDefault(); showSlide(0);
+    } else if (e.key === 'End') {
+      e.preventDefault(); showSlide(total - 1);
+    }
+  });
+
+  if (!isPresenter) {
+    document.getElementById('stage').addEventListener('click', (e) => {
+      const rect = document.getElementById('stage').getBoundingClientRect();
+      const scale = parseFloat(getComputedStyle(document.getElementById('stage')).getPropertyValue('--scale')) || 1;
+      const x = (e.clientX - rect.left) / scale;
+      if (x > 960) nextSlide(); else prevSlide();
+    });
+  }
+
+  if (isPresenter) {
+    document.getElementById('pv-btn-next')?.addEventListener('click', nextSlide);
+    document.getElementById('pv-btn-prev')?.addEventListener('click', prevSlide);
+  }
+
+  /* ================= SYNC RECEIVE ================= */
+  onSyncMessage((data) => {
+    if (data && data.type === 'slide' && typeof data.index === 'number') {
+      showSlide(data.index, true);
+    }
+  });
+
+  /* ================= INIT ================= */
+  if (isPresenter) {
+    document.body.classList.add('presenter-mode');
+    const wrap = document.getElementById('pv-current-wrap');
+    const stage = document.getElementById('stage');
+    if (wrap && stage) wrap.appendChild(stage);
+    startTimer();
+    updatePresenterScale();
+    window.addEventListener('resize', updatePresenterScale);
+  } else {
+    window.addEventListener('resize', updateScale);
+    updateScale();
+  }
+
+  showSlide(0, true);
+</script>
+</body>
+</html>

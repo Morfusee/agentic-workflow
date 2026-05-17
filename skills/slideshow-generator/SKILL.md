@@ -40,10 +40,33 @@ Treat this skill as the presentation layer only:
 7. Use diagrams, flows, cards, and chips only when they clarify the story.
 8. If a structured payload or weekly brief is provided, treat it as the interpretation source-of-truth and focus on slide composition, pacing, and notes.
 9. Preserve the depth requested by the upstream brief: if the brief is ticket-specific, keep the deck ticket-specific unless the user asks for compression.
-10. Generate a presenter view together with the audience deck by default.
-11. Put the presenter view behind a keybind on the main deck so it can be opened from the same presentation file.
-12. Follow the script guidance in [`references/presentation-script-guidance.md`](references/presentation-script-guidance.md).
-13. Treat presenter notes as normal spoken delivery for an internal team update, not as a polished performance script.
+10. Follow the script guidance in [`references/presentation-script-guidance.md`](references/presentation-script-guidance.md).
+11. Treat presenter notes as normal spoken delivery for an internal team update, not as a polished performance script.
+
+## Presenter View Contract
+
+1. Use a single HTML file for both audience and presenter views.
+2. Detect presenter mode via `?view=presenter` URL query parameter.
+3. Apply a `presenter-mode` class to `<body>` when in presenter mode to hide the audience stage and show the presenter layout.
+4. The presenter layout is a split-screen grid:
+   - Left column: current slide preview (move the `#stage` element into a `.pv-current-wrap` container, scaled to fit).
+   - Right column sidebar: next slide title, elapsed timer, presenter notes box, prev/next buttons, status line.
+5. Use `BroadcastChannel` named `slideshow-sync` for real-time slide sync between audience and presenter windows, with `localStorage` event fallback.
+6. Both windows call `showSlide()` on sync messages; the sender passes `skipBroadcast: true` to avoid echo loops.
+7. The audience deck opens the presenter window via `window.open(location.pathname + '?view=presenter', ...)`.
+8. Keyboard controls:
+   - Both windows: Arrow keys, Page Up/Down, Home, End navigate slides.
+   - Audience deck: `P` opens presenter window.
+   - Presenter window: prev/next buttons in sidebar also navigate.
+9. Store presenter notes in `data-notes` attribute on each slide element.
+10. The presenter sidebar shows: next slide title, elapsed presentation timer, current slide's `data-notes` content, and navigation buttons.
+
+## Output Location
+
+1. Write the generated HTML file to `memory/presentations/[presentation-name]/index.html` by default.
+2. Derive `[presentation-name]` from the presentation title or brief topic, using lowercase letters, digits, and hyphens only.
+3. If the user explicitly requests a different path or filename, honor that instead.
+4. If the target directory does not exist, create it before writing.
 
 ## Rendering Rules
 
@@ -59,24 +82,23 @@ Treat this skill as the presentation layer only:
 - impact chains for problem-to-outcome stories
 - action ladders for commitments and handoffs
 5. Avoid decorative visual noise, repeated slide patterns, and text-heavy fallback layouts when a simpler card is clearer.
-6. Do not default to repository `scripts/`, `assets/`, or `output/` folders as the primary workflow.
-7. Use deterministic renderer code only when the user explicitly asks for that tradeoff.
-8. Respect role boundaries:
+6. Use deterministic renderer code only when the user explicitly asks for that tradeoff.
+7. Respect role boundaries:
 - upstream skills gather and normalize source evidence
 - `$slideshow-generator` turns that normalized information into audience and presenter experiences
-9. Fit the deck inside a virtual `1920x1080` stage and scale it to the viewport.
-10. Let text use the space available inside its parent container; do not set narrow width caps that force early wrapping unless the layout clearly requires it.
-11. Keep the language on slides and in presenter notes simple and direct; do not use flowery or inflated wording.
-12. Write presenter notes as full paragraph script that can be read aloud without the presenter having to invent transitions between bullet points.
-13. Write presenter notes in normal spoken language for an internal weekly review:
+8. Fit the deck inside a virtual `1920x1080` stage and scale it to the viewport.
+9. Let text use the space available inside its parent container; do not set narrow width caps that force early wrapping unless the layout clearly requires it.
+10. Keep the language on slides and in presenter notes simple and direct; do not use flowery or inflated wording.
+11. Write presenter notes as full paragraph script that can be read aloud without the presenter having to invent transitions between bullet points.
+12. Write presenter notes in normal spoken language for an internal weekly review:
 - use simple transitions
 - sound like a normal team member giving a status update
 - do not sound like a keynote speaker
 - do not sound edgy, dramatic, clever, or performative
 - do not sound like marketing copy, an influencer, or a motivational speaker
 - do not overstate routine work
-14. Use plain verbs in notes, such as `worked on`, `checked`, `verified`, `updated`, `fixed`, `reviewed`, `moved`, `left open`, and `followed up`.
-15. Use plain transitions in notes, such as `On this slide`, `Here`, `Next`, `After that`, `The next step is`, and `By the end of the week`.
-16. Use slides as cues and notes as explanation; do not write notes that simply read the slide aloud.
-17. Keep notes fuller than slides, but still natural enough to read out loud without sounding written for a stage talk.
-18. When the brief includes one section per ticket, keep each ticket legible on its own slide or panel and show the concrete problem, action, validation, and state without flattening it into a theme-only summary.
+13. Use plain verbs in notes, such as `worked on`, `checked`, `verified`, `updated`, `fixed`, `reviewed`, `moved`, `left open`, and `followed up`.
+14. Use plain transitions in notes, such as `On this slide`, `Here`, `Next`, `After that`, `The next step is`, and `By the end of the week`.
+15. Use slides as cues and notes as explanation; do not write notes that simply read the slide aloud.
+16. Keep notes fuller than slides, but still natural enough to read out loud without sounding written for a stage talk.
+17. When the brief includes one section per ticket, keep each ticket legible on its own slide or panel and show the concrete problem, action, validation, and state without flattening it into a theme-only summary.
