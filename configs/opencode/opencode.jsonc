@@ -37,7 +37,7 @@
       "taskkill /f *": "deny",
       "node *": "ask",
       "python *": "ask",
-      "git push *": "ask",
+      "git push *": "allow",
       "git reset --hard *": "ask",
       "git clean *": "ask",
       "rm -rf *": "ask",
