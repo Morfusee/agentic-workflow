@@ -7,6 +7,10 @@ description: Read the latest ticket dump Markdown file, let the user choose tick
 
 Read the latest compatible ticket dump, collect a selection from the user, generate a natural stand-up script, and finalize the same dump file in place.
 
+## Prerequisites
+
+- A Linear integration (MCP server, plugin, or agent harness connector) must be active so Linear issue, comment, and status tools are available to the agent.
+
 Use the dump file as source of truth. Do not query Linear unless the user explicitly asks.
 
 ## Agent Execution Contract

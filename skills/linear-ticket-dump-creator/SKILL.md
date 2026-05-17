@@ -7,6 +7,10 @@ description: Scrape and organize relevant Linear ticket activity into a daily Ma
 
 Create one daily Markdown dump of relevant Linear ticket activity and print a concise grouped summary.
 
+## Prerequisites
+
+- A Linear integration (MCP server, plugin, or agent harness connector) must be active so Linear issue, comment, and status tools are available to the agent.
+
 Use Linear plugin/tools as source of truth. Do not infer or fabricate ticket facts.
 
 ## Agent Execution Contract
