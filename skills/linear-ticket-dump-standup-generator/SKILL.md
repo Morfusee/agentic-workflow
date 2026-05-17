@@ -1,6 +1,6 @@
 ---
 name: linear-ticket-dump-standup-generator
-description: Read the latest ticket dump Markdown file, let the user choose tickets, generate a spoken stand-up script, and update the same dump file in place. Use when the user asks to prepare stand-up from existing dump data, select tickets for stand-up, or finalize a ticket dump with a script.
+description: Read the latest ticket dump Markdown file, let the user choose tickets, generate a spoken stand-up script, and update the same dump file in place. Use when the user asks to prepare stand-up from existing dump data, select tickets for stand-up, or finalize a ticket dump with a script. Requires an existing dump file from $linear-ticket-dump-creator. For the full dump-plus-standup workflow in one step, use $linear-standup-flow instead.
 ---
 
 # Ticket Dump Stand-up Script Generator
@@ -9,7 +9,7 @@ Read the latest compatible ticket dump, collect a selection from the user, gener
 
 ## Prerequisites
 
-- A Linear integration (MCP server, plugin, or agent harness connector) must be active so Linear issue, comment, and status tools are available to the agent.
+- A compatible ticket dump file must exist under `memory/tickets/`. Run the ticket dump creator skill first if no dump is available.
 
 Use the dump file as source of truth. Do not query Linear unless the user explicitly asks.
 

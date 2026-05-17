@@ -7,9 +7,7 @@ description: Orchestrate the Linear stand-up workflow end-to-end by first creati
 
 Run the two project skills in order and keep orchestration minimal.
 
-## Prerequisites
-
-- A Linear integration (MCP server, plugin, or agent harness connector) must be active so Linear issue, comment, and status tools are available to the agent.
+This skill is a convenience wrapper that chains `$linear-ticket-dump-creator` followed by `$linear-ticket-dump-standup-generator`. It adds no filtering, generation, or parsing logic of its own. If you prefer manual control, invoke the two skills directly in sequence.
 
 Do not reimplement ticket filtering or stand-up generation logic here. Delegate execution to the existing skills.
 

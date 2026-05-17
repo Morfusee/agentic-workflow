@@ -1,6 +1,6 @@
 ---
 name: linear-ticket-dump-creator
-description: Scrape and organize relevant Linear ticket activity into a daily Markdown dump file for later automation. Use when the user asks to collect ticket activity, create a ticket dump, summarize work by date and status, or save a reusable activity snapshot from Linear for stand-up prep. Include only tickets where the user's own activity falls in the requested date range.
+description: Scrape and organize relevant Linear ticket activity into a daily Markdown dump file for later automation. Use when the user asks to collect ticket activity, create a ticket dump, summarize work by date and status, or save a reusable activity snapshot from Linear. Include only tickets where the user's own activity falls in the requested date range. For stand-up script generation, use $linear-ticket-dump-standup-generator next. For the full stand-up workflow in one step, use $linear-standup-flow instead.
 ---
 
 # Linear Ticket Roundup and Dump Creator
