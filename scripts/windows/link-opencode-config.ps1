@@ -1,7 +1,7 @@
 #Requires -Version 5.1
 <#
 .SYNOPSIS
-  Symlinks the repo's .opencode/opencode.jsonc into ~/.config/opencode/opencode.jsonc
+  Symlinks the repo's configs/opencode/opencode.jsonc into ~/.config/opencode/opencode.jsonc
   so the single source-of-truth lives in agentic-workflow.
 .DESCRIPTION
   - Backs up an existing real file (not symlink) before replacing it.
@@ -13,7 +13,7 @@
 $ErrorActionPreference = "Stop"
 
 $repoRoot = Split-Path -Parent $PSScriptRoot | Split-Path -Parent
-$repoConfig = Join-Path -Path (Join-Path -Path $repoRoot -ChildPath ".opencode") -ChildPath "opencode.jsonc"
+$repoConfig = Join-Path -Path (Join-Path -Path (Join-Path -Path $repoRoot -ChildPath "configs") -ChildPath "opencode") -ChildPath "opencode.jsonc"
 $globalDir = Join-Path -Path (Join-Path -Path $env:USERPROFILE -ChildPath ".config") -ChildPath "opencode"
 $globalConfig = Join-Path -Path $globalDir -ChildPath "opencode.jsonc"
 
