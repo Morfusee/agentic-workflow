@@ -5,7 +5,7 @@ description: Read the latest ticket dump Markdown file, let the user choose tick
 
 # Ticket Dump Stand-up Script Generator
 
-Read the latest compatible ticket dump, collect a selection from the user, generate a natural stand-up script, and finalize the same dump file in place.
+Read the latest compatible ticket dump, collect a selection from the user including optional manual tasks not tracked in Linear, generate a natural stand-up script, and finalize the same dump file in place.
 
 ## Prerequisites
 
@@ -29,20 +29,26 @@ Use the dump file as source of truth. Do not query Linear unless the user explic
 - Inside that folder, prefer the most recent `YYYY-MM-DD-ticket-dump.md`.
 - If none exists, report the missing dump and ask the user to run the dump creator skill first.
 
-2. Show source file and available tickets.
+2. Show source file and available items.
 - Print the dump file path that will be used.
 - Parse the `# All Scraped Tickets` section for the full ticket pool.
+- Parse the `# Manual Tasks` section for existing manual tasks.
 - If `# Selected Tickets` exists, parse it as the selected-ticket index for reruns, then resolve full details from `# All Scraped Tickets`.
 - Display a numbered list with ticket ID, title, status, and activity date.
+- Display manual tasks in the same numbered list with a `[Manual]` prefix and auto-generated ID.
 
 3. Ask for selection with this exact prompt.
-- `Which tickets do you want to include in your stand-up? You can reply with ticket numbers, ticket IDs, or all.`
+- `Which tickets do you want to include in your stand-up? You can reply with ticket numbers, ticket IDs, or all. To add a manual task not tracked in Linear, describe it as "Manual: [task title] -- [Done / In Progress / To Do] [optional description]".`
 
-4. Interpret ticket selection.
-- Accept `all`.
+4. Interpret selection including manual tasks.
+- Accept `all` (includes existing manual tasks).
 - Accept numeric list matching displayed numbers.
 - Accept ticket IDs.
 - Accept clear natural-language selections.
+- Parse manual task entries prefixed with `Manual:` using the format `Manual: [title] -- [status] [description]`.
+- Auto-generate a manual task ID as `MANUAL-###` using the next available number.
+- Status defaults to `Done` if omitted; description defaults to `No description provided.` if omitted.
+- Activity date defaults to the dump file date.
 - If ambiguous, ask a short clarification and do not guess.
 
 5. Generate stand-up script from selected tickets only.
@@ -74,6 +80,9 @@ Use the dump file as source of truth. Do not query Linear unless the user explic
 - Keep structure simple:
 - Start with `Yesterday, I ...`.
 - Walk ticket-by-ticket in chronological order using selected tickets.
+- Include manual tasks in chronological order alongside tickets.
+- Narrate manual tasks directly from their title, status, and activity notes without fabricating details.
+- Keep manual task narration brief: state what was done, the outcome, and current status.
 - Do not use ticket numbers or unique identifiers in the spoken script.
 - Apply blocker rule:
 - Default blocker line: `No major blockers right now.`
@@ -85,7 +94,8 @@ Use the dump file as source of truth. Do not query Linear unless the user explic
 - Do not duplicate full ticket description/comments/timeline in `# Selected Tickets`.
 - Keep full `# All Scraped Tickets` section containing selected and unselected tickets.
 - Preserve original scraped ticket history.
-- If selection is `all`, include all tickets in the selected reference list.
+- Append new manual tasks to the `# Manual Tasks` section. Preserve existing manual tasks; do not remove or rewrite them.
+- If selection is `all`, include all tickets and manual tasks in the selected reference list.
 
 ## Updated Dump Contract
 
@@ -110,6 +120,30 @@ No major blockers right now.
   - URL: [Linear URL]
   - Reference: `# All Scraped Tickets` -> `## [TICKET-ID]: [Ticket title]`
   - Stand-up relevance: [Why this ticket was selected for stand-up]
+
+- [MANUAL-###]: [Task title]
+  - Status: [status]
+  - Activity date: [YYYY-MM-DD]
+  - Reference: `# Manual Tasks` -> `## [MANUAL-###]: [Task title]`
+  - Stand-up relevance: [Why this manual task was selected for stand-up]
+
+---
+
+# Manual Tasks
+
+[Keep all manual tasks here. Append new entries; preserve existing ones.]
+
+## [MANUAL-###]: [Task title]
+
+Status: [Done / In Progress / To Do]
+Activity date: [YYYY-MM-DD]
+My role: dev-owner
+
+### Description
+[Task description or "No description provided."]
+
+### Activity Notes
+[Brief factual summary of work performed.]
 
 ---
 
@@ -137,3 +171,8 @@ No major blockers right now.
 15. Never attribute implementation/fix work to the user without explicit per-ticket dev-action evidence.
 16. For tester-only tickets, narration must stay in testing/verification terms and must not claim the user implemented or fixed the ticket.
 17. In parent-orchestrated single-date mode, do not spawn nested agents unless explicitly requested.
+18. Manual task IDs use the pattern `MANUAL-###` where `###` is the next sequential number not already present in the dump.
+19. When appending new manual tasks, never remove or rewrite existing manual task entries.
+20. When listing items for selection, display manual tasks interleaved with tickets in a single numbered list, with `[Manual]` prefix on the ID.
+21. Narrate manual tasks in the stand-up script using only their title, status, and activity notes. Do not fabricate activity timeline or comments for manual tasks.
+22. Keep manual task narration factual and brief: state what was done and the current status in one or two sentences.

@@ -62,6 +62,7 @@ sections:
       - "NGN-561 and NGN-562 moved through validation on payment-related behavior."
       - "NGN-624 and NGN-628 closed marketplace admin issues after follow-through."
       - "NGN-600, NGN-630, NGN-631, and NGN-632 formed the review queue for remaining admin usability work."
+      - "MANUAL-001: updated internal deployment documentation was done as a side task without a Linear ticket."
     presenter_notes: "Describe how tickets moved through the week, then point to the tickets that closed versus the tickets that stayed in review so the flow is tied back to actual work."
     takeaway: "The week ended with a small amount of open work, not with open uncertainty."
   - key: "priority-work"
@@ -125,3 +126,4 @@ closing:
 3. Give `$slideshow-generator` enough information to compose slides without re-reading raw dump files.
 4. Use `work_detail` to preserve the ticket and task visibility that would be lost in a thin summary.
 5. When the user asks for in-depth coverage, expand the `sections` list so individual tickets can become their own sections instead of being flattened into grouped summaries.
+6. Manual task IDs use the `MANUAL-###` prefix. Treat them alongside tickets in all sections, using only title, status, and activity notes as evidence. Keep manual task narration factual and brief.

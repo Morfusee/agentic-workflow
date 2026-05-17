@@ -71,6 +71,7 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 15. Do not downgrade a ticket with rich evidence into a short thematic mention when the audience would lose understanding of the actual work.
 16. Discard any daily dump entries that state inactivity, no progress, or absence of work. Do not let them enter the brief.
 17. When merging ticket activity across days, preserve only events that represent actual work, state change, or meaningful update.
+18. Treat manual tasks from the `# Manual Tasks` section as work evidence with the same weight as tickets. Include them in the weekly narrative when they represent meaningful work, using only title, status, and activity notes as evidence.
 
 ## Handoff Structure
 
@@ -129,9 +130,9 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 ## Execution Steps
 
 1. Resolve target week under `memory/tickets/YYYY-W##/`.
-2. Parse `# All Scraped Tickets` and stand-up script content from each daily dump.
+2. Parse `# All Scraped Tickets`, `# Manual Tasks`, and stand-up script content from each daily dump.
 3. Filter out any daily entries that describe inactivity, no progress, or no work performed. Drop them entirely before merging.
-4. Merge same ticket IDs across the week and preserve chronological events.
+4. Merge same ticket IDs and manual task IDs across the week and preserve chronological events.
 5. Identify the strongest weekly themes and the tickets that best explain the actual work performed.
 6. Decide whether the requested output should stay grouped or move to ticket-level sections, and prefer ticket-level sections when the user asks for in-depth coverage.
 7. Build an objective weekly brief as structured narrative content, not as a chronological ticket list.
@@ -141,7 +142,7 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 
 ## Rules
 
-1. Do not invent ticket facts that are not supported by the dumps or stand-up scripts.
+1. Do not invent ticket or task facts that are not supported by the dumps or stand-up scripts.
 2. Do not copy raw ticket dumps into the handoff summary.
 3. Do not let the brief collapse into ticket-by-ticket reporting unless the source week truly supports that shape.
 4. Prefer objective wording such as validated behavior, clarified workflow, documented issue, fixed display, moved to review, or pending follow-through.
@@ -156,3 +157,6 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 11. If the user asks to cover each ticket or task in depth, do not compress the week into only grouped overview slides.
 12. Never mention days of inactivity, no progress, or absence of work in any section, note, or summary.
 13. Do not use inactive days as contrast, pacing, or narrative framing. Remove them at the ingestion step.
+14. Treat manual tasks from the `# Manual Tasks` section as equal work evidence alongside scraped tickets.
+15. When manual tasks share a theme or area with tickets, group them together in the same brief section.
+16. Keep manual task narrative in the brief factual and brief, using only title, status, and activity notes as evidence.

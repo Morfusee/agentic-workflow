@@ -135,6 +135,24 @@ Dump file date: [YYYY-MM-DD]
 
 ---
 
+# Manual Tasks
+
+Entries here are not tracked in Linear. Add tasks directly during stand-up selection. The dump creator writes this section empty; the stand-up generator appends tasks here.
+
+## [TASK-ID]: [Task title]
+
+Status: [Done / In Progress / To Do]
+Activity date: [YYYY-MM-DD]
+My role: dev-owner
+
+### Description
+[Task description or "No description provided."]
+
+### Activity Notes
+[Brief factual summary of work performed.]
+
+---
+
 # All Scraped Tickets
 
 ## [TICKET-ID]: [Ticket title]
