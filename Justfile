@@ -7,6 +7,7 @@ alias sw := skills-watch
 alias nl := nvim-link
 alias wo := weekly-open
 alias oco := opencode-config
+alias ol := opencode-link
 
 default:
   @just --list
@@ -36,6 +37,10 @@ nvim-link:
 # Open opencode's config file in the default editor
 opencode-config:
   @code "$env:USERPROFILE\.config\opencode\opencode.jsonc"
+
+# Symlink repo .opencode/opencode.jsonc to ~/.config/opencode/opencode.jsonc
+opencode-link:
+  @powershell -ExecutionPolicy Bypass -File .\scripts\windows\link-opencode-config.ps1
 
 # List latest 5 weeks, select one, and open its weekly slideshow HTML
 weekly-open:
