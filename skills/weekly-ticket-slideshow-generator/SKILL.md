@@ -38,6 +38,9 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 11. When the week contains substantial concrete work, prefer a more detailed section over a vague summary.
 12. If a ticket has enough source material to explain the problem, the action taken, validation, and end state, include all four in the brief instead of collapsing that ticket into a one-line mention.
 13. If the week contains many distinct tickets, it is acceptable for the brief to use one primary section per ticket.
+14. Never include dates, days, or periods of inactivity (e.g., "Friday inactive", "no progress", "no activity", or similar).
+15. Exclude any mention of days where no work occurred. The brief must represent only actual work performed.
+16. Do not use inactivity as a narrative device, contrast, or framing. Only active work items belong in the brief.
 
 ## Data Interpretation Rules
 
@@ -66,6 +69,8 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 - what state the ticket ended in
 - what still needs to happen, if anything
 15. Do not downgrade a ticket with rich evidence into a short thematic mention when the audience would lose understanding of the actual work.
+16. Discard any daily dump entries that state inactivity, no progress, or absence of work. Do not let them enter the brief.
+17. When merging ticket activity across days, preserve only events that represent actual work, state change, or meaningful update.
 
 ## Handoff Structure
 
@@ -125,13 +130,14 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 
 1. Resolve target week under `memory/tickets/YYYY-W##/`.
 2. Parse `# All Scraped Tickets` and stand-up script content from each daily dump.
-3. Merge same ticket IDs across the week and preserve chronological events.
-4. Identify the strongest weekly themes and the tickets that best explain the actual work performed.
-5. Decide whether the requested output should stay grouped or move to ticket-level sections, and prefer ticket-level sections when the user asks for in-depth coverage.
-6. Build an objective weekly brief as structured narrative content, not as a chronological ticket list.
-7. Keep wording audience-safe, evidence-based, and non-promotional.
-8. Hand the resulting brief to `$slideshow-generator` for slide interpretation and HTML composition.
-9. Do not take over slide rendering responsibilities unless the user explicitly asks for a combined workflow.
+3. Filter out any daily entries that describe inactivity, no progress, or no work performed. Drop them entirely before merging.
+4. Merge same ticket IDs across the week and preserve chronological events.
+5. Identify the strongest weekly themes and the tickets that best explain the actual work performed.
+6. Decide whether the requested output should stay grouped or move to ticket-level sections, and prefer ticket-level sections when the user asks for in-depth coverage.
+7. Build an objective weekly brief as structured narrative content, not as a chronological ticket list.
+8. Keep wording audience-safe, evidence-based, and non-promotional.
+9. Hand the resulting brief to `$slideshow-generator` for slide interpretation and HTML composition.
+10. Do not take over slide rendering responsibilities unless the user explicitly asks for a combined workflow.
 
 ## Rules
 
@@ -148,3 +154,5 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 9. If a grouped section becomes too vague, add more concrete ticket detail instead of adding hype.
 10. If a week contains several meaningful tickets in the same area, prefer a grouped section with detailed sub-work over a single bland summary sentence.
 11. If the user asks to cover each ticket or task in depth, do not compress the week into only grouped overview slides.
+12. Never mention days of inactivity, no progress, or absence of work in any section, note, or summary.
+13. Do not use inactive days as contrast, pacing, or narrative framing. Remove them at the ingestion step.
