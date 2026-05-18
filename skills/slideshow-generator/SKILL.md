@@ -89,16 +89,19 @@ Treat this skill as the presentation layer only:
 8. Fit the deck inside a virtual `1920x1080` stage and scale it to the viewport.
 9. Let text use the space available inside its parent container; do not set narrow width caps that force early wrapping unless the layout clearly requires it.
 10. Keep the language on slides and in presenter notes simple and direct; do not use flowery or inflated wording.
-11. Write presenter notes as full paragraph script that can be read aloud without the presenter having to invent transitions between bullet points.
-12. Write presenter notes in normal spoken language for an internal weekly review:
+11. Write presenter notes as substantive spoken paragraphs rich enough to deliver real information to the audience. Each note must cover what the slide shows, why it matters, and what the audience should take away.
+12. Do not write short one-sentence or two-sentence notes. A slide note that takes less than ten seconds to read aloud is too short to be useful as a presenter script. Target twenty to forty seconds of spoken content per slide note.
+13. Write presenter notes in normal spoken language for an internal weekly review:
 - use simple transitions
 - sound like a normal team member giving a status update
 - do not sound like a keynote speaker
 - do not sound edgy, dramatic, clever, or performative
 - do not sound like marketing copy, an influencer, or a motivational speaker
 - do not overstate routine work
-13. Use plain verbs in notes, such as `worked on`, `checked`, `verified`, `updated`, `fixed`, `reviewed`, `moved`, `left open`, and `followed up`.
-14. Use plain transitions in notes, such as `On this slide`, `Here`, `Next`, `After that`, `The next step is`, and `By the end of the week`.
-15. Use slides as cues and notes as explanation; do not write notes that simply read the slide aloud.
-16. Keep notes fuller than slides, but still natural enough to read out loud without sounding written for a stage talk.
-17. When the brief includes one section per ticket, keep each ticket legible on its own slide or panel and show the concrete problem, action, validation, and state without flattening it into a theme-only summary.
+13. When naming specific tickets in notes, provide context: what the ticket address, what was done, how it was checked, and the current state. Do not just name a ticket ID without explaining why the audience should care.
+14. Use plain verbs in notes, such as `worked on`, `checked`, `verified`, `updated`, `fixed`, `reviewed`, `moved`, `left open`, and `followed up`.
+15. Use plain transitions in notes, such as `On this slide`, `Here`, `Next`, `After that`, `The next step is`, and `By the end of the week`.
+16. Do not repeat one lead-in across every slide note. Vary openings naturally and skip lead-ins when the sentence works better without one.
+17. Use slides as cues and notes as explanation; do not write notes that simply read the slide aloud.
+18. Keep notes substantially fuller than slides. Each note should add context, evidence, and interpretation that the audience cannot get from reading the slide alone.
+19. When the brief includes one section per ticket, keep each ticket legible on its own slide or panel and show the concrete problem, action, validation, and state without flattening it into a theme-only summary.
