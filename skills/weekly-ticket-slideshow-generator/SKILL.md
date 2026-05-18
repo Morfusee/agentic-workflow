@@ -117,8 +117,9 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 4. Preserve week context and major activity signals in the handoff.
 5. Treat the handoff as the source-of-truth interpretation layer for the slideshow workflow.
 6. Follow the example handoff shape in [`references/weekly-brief-example.md`](references/weekly-brief-example.md).
-7. Write `suggested presenter notes` as readable paragraph prose, not bullet points.
-8. Keep `suggested presenter notes` simple and factual so `$slideshow-generator` can turn them into natural spoken script without adding hype.
+7. Write `suggested presenter notes` as substantive spoken paragraphs, not bullet points. Each note block must contain enough detail that a presenter can deliver real information to the audience without needing to invent material on the spot.
+8. Do not write short one-sentence suggested notes. Target three to five sentences per note block. Cover what the section shows, why it matters, the evidence behind it, and the takeaway.
+9. Keep `suggested presenter notes` factual and information-rich so `$slideshow-generator` can turn them into natural spoken script without adding hype or padding thin input.
 9. Use `work detail` to show the concrete tasks performed, validations made, findings recorded, or follow-through completed for the tickets in that section.
 10. Include ticket IDs inside `work detail` whenever that helps the audience map the work back to actual items.
 11. When a ticket is covered as its own section, structure `work detail` so it answers:
