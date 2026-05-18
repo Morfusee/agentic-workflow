@@ -21,23 +21,32 @@ If confidence is low, ask one focused clarification.
 
 ## ClickUp Ticket Format Convention
 
-When creating or drafting ClickUp tickets (whether directly or via `$issue-drafter`), use the workspace's recurring description format observed across Sprint-list tickets:
+When creating or drafting ClickUp tickets (whether directly or via `$issue-drafter`), apply the following formatting rules derived from the workspace's Sprint-list ticket conventions.
+
+### Ticket Naming
+
+- Use imperative, action-oriented titles: verb-first, concise, no trailing period.
+- Examples: `Implement email header template`, `Analyze Lambda Function Errors in Enrollment Workflows`, `Define Traffic Light Thresholds for Operational KPIs`.
+
+### Description Format
 
 ```
-Description
+## Description
 <1-2 sentence purpose and context>
 
-Scope
+## Scope
 - actionable work item
 - actionable work item
 
-Deliverable
+## Deliverable
 - concrete acceptance criteria / definition of done
 ```
 
-- **Description**: what the ticket is about, brief context. Keep to 1-2 sentences.
-- **Scope**: bullet list of specific work items to complete. Use imperative action verbs.
-- **Deliverable**: bullet list of concrete acceptance criteria. These answer "how do we know this is done?"
+- **## Description**: what the ticket is about, brief context. Keep to 1-2 sentences.
+- **## Scope**: bullet list of specific work items to complete. Use imperative action verbs.
+- **## Deliverable**: bullet list of concrete acceptance criteria. These answer "how do we know this is done?"
+- Use `##` (H2) for all section headers in the description body. Do not use `**bold**` headers.
+- Separate sections with a blank line.
 
 ## Agent Execution Contract
 
