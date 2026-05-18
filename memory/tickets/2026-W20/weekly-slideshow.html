@@ -234,22 +234,22 @@
   <div id="counter"></div>
   <div id="controls-hint">Arrow keys to navigate &middot; P for presenter view</div>
 
-  <!-- Slide 1: Title -->
-  <section class="slide active" data-notes="On this slide, I am covering the week of May 11 through May 15. The week was concentrated in checkout accuracy, reporting performance, marketplace admin fixes, and some admin usability follow-through. I will walk through what was completed, what was checked, and what remains in the queue.">
-    <div class="meta">2026-W20 &middot; May 11 – May 15</div>
+  <!-- Slide 1: This Week -->
+  <section class="slide active" data-notes="I am covering the week of May 11 through May 15. The work concentrated in four areas: checkout accuracy, reporting search behavior, marketplace admin fixes, and admin usability follow-through. By the numbers, we closed six items with staging verification, left four open items in a clearly scoped queue, and recorded zero blockers that changed the plan. I will walk through what moved across the week, what actually changed in the product and admin tools, and exactly what is next on the queue.">
+    <div class="meta">This Week</div>
     <h1>Weekly Delivery Narrative</h1>
     <div class="subtitle">Checkout accuracy, reporting debounce, marketplace admin fixes, and admin usability follow-through</div>
     <div class="stats-row">
       <div class="stat"><div class="number">6</div><div class="label">Done</div></div>
-      <div class="stat"><div class="number">4</div><div class="label">Pending Review</div></div>
+      <div class="stat"><div class="number">4</div><div class="label">Open Items</div></div>
       <div class="stat"><div class="number">0</div><div class="label">Blockers</div></div>
     </div>
   </section>
 
-  <!-- Slide 2: The Week's Story -->
-  <section class="slide" data-notes="Here is how the week breaks down. On the checkout side, we corrected item prices on the Payment Complete page and verified discounted transaction detail values. We also created a ticket to fix how Multi-Use Pay Links behave after a successful payment so they do not get marked completed too early. On the reporting side, we verified that search inputs across Transactions, Batches, Deposits, and Disputes now use a debounce instead of firing on every keystroke. For marketplace admin, we fixed the duplicate category slug error message and resolved the GraphQL errors that were blocking access to App Installs. The remaining work is a focused set of admin usability issues that are already in review. That is the shape of the week in four areas.">
-    <div class="meta">Overview</div>
-    <h2>The Week's Story</h2>
+  <!-- Slide 2: This Week -->
+  <section class="slide" data-notes="This slide shows where the effort went. On checkout accuracy, we corrected the Payment Complete page so item prices no longer show zero dollars after Pay Link checkout, verified that discounted transaction breakdowns are accurate in staging, and created a follow-up ticket to fix Multi-Use Pay Link lifecycle behavior so links do not close before usage limits are reached. On reporting performance, we validated that search inputs now use a 300-millisecond debounce instead of firing a GraphQL request on every keystroke, which was tested across all four reporting tables in staging. On marketplace admin, we replaced a raw Prisma unique-constraint error with a readable validation toast when a duplicate category slug is entered, and we fixed the GraphQL environment and permission errors that were blocking App Installs access entirely. The remaining scope is a compact usability queue: Partner Users search reload, service provider list refresh after creation, clipboard copy in Customer Contacts, and customer table cutoff with missing navigation controls. All four have concrete reproduction steps.">
+    <div class="meta">This Week</div>
+    <h2>This Week</h2>
     <div class="card-grid">
       <div class="card">
         <h4>Checkout Accuracy</h4>
@@ -262,19 +262,19 @@
       <div class="card">
         <h4>Reporting Performance</h4>
         <ul>
-          <li>Verified debounced search across all four Reporting tables</li>
-          <li>Eliminated excessive GraphQL requests on keystrokes</li>
+          <li>Verified debounced search across all four reporting tables</li>
+          <li>Reduced GraphQL request volume during typing</li>
         </ul>
       </div>
       <div class="card">
         <h4>Marketplace Admin</h4>
         <ul>
-          <li>Replaced raw Prisma error with user-friendly validation toast</li>
+          <li>Replaced raw Prisma error with validation toast</li>
           <li>Fixed App Installs GraphQL environment and permissions errors</li>
         </ul>
       </div>
       <div class="card">
-        <h4>Admin Usability</h4>
+        <h4>Open Usability Queue</h4>
         <ul>
           <li>Partner Users search reload behavior</li>
           <li>Service provider list refresh after creation</li>
@@ -285,25 +285,10 @@
     </div>
   </section>
 
-  <!-- Slide 3: Executive Snapshot -->
-  <section class="slide" data-notes="The week ended with six done items and four in pending review. The done items were all verified in staging with explicit PASS results, which means the fixes were checked rather than just deployed. The pending-review items are all admin usability issues with clear reproduction steps and acceptance criteria already defined. No major blockers were recorded in the stand-up notes across the week. Next, I will walk through how the tickets moved through the week.">
-    <div class="meta">Status</div>
-    <h2>Executive Snapshot</h2>
-    <div class="stats-row" style="justify-content: center;">
-      <div class="stat"><div class="number">6</div><div class="label">Done</div></div>
-      <div class="stat"><div class="number">4</div><div class="label">Pending Review</div></div>
-    </div>
-    <ul class="plain-list" style="max-width: 900px; margin: 30px auto 0;">
-      <li>All done items verified in staging with PASS results</li>
-      <li>Pending-review items have concrete scope and reproduction steps</li>
-      <li>No major blockers recorded</li>
-    </ul>
-  </section>
-
-  <!-- Slide 4: Activity Flow -->
-  <section class="slide" data-notes="Here is how the tickets moved through the week. We started with validation of the Reporting debounce fix across all four tables. Then we created checkout and usability tickets to track the remaining fixes. After that, we verified the discounted transaction details and the two marketplace admin issues in staging. The admin usability items were carried into review with clear reproduction steps. By the end of the week, six items were done and four were in review.">
-    <div class="meta">Timeline</div>
-    <h2>Activity Flow</h2>
+  <!-- Slide 3: What Moved -->
+  <section class="slide" data-notes="Here is how tickets moved through the week. We started with validation: NGN-561, the reporting debounce fix, was tested across Transactions, Batches, Deposits, and Disputes in staging and confirmed as PASS. From there, we moved into creation: NGN-589 tracked the item price display correction on Payment Complete, NGN-590 scoped the Multi-Use Pay Link lifecycle fix, and NGN-600 documented the Partner Users search reload issue so it had clean tracking. Then we shifted into verification: NGN-562 checked discounted transaction detail breakdowns on fresh Pay Link transactions in staging, while NGN-624 and NGN-628 confirmed that marketplace admin fixes for duplicate slug errors and App Installs access were working. By the end of the week, the open items, NGN-630, NGN-631, and NGN-632, were carried into the review queue as scoped usability follow-through. The flow is clean: validate, create, verify, and queue, with most items reaching done and the remaining few already defined.">
+    <div class="meta">What Moved</div>
+    <h2>What Moved</h2>
     <div style="margin-top: 40px;">
       <div style="display: flex; gap: 16px; margin-bottom: 36px; align-items: center;">
         <div style="font-size: 22px; font-weight: 600; color: #e94560; min-width: 140px;">Validate</div>
@@ -324,10 +309,10 @@
     </div>
   </section>
 
-  <!-- Slide 5: Priority Work - Done Part 1 -->
-  <section class="slide" data-notes="This covers the completed work from the week. NGN-561 was about the Reporting table search inputs firing a GraphQL request on every keystroke. We added a 300 millisecond debounce and verified it in staging across Transactions, Batches, Deposits, and Disputes. The result was PASS. NGN-589 fixed the item price display on the Checkout Payment Complete page after a Pay Link checkout. Instead of showing zero dollars, it now shows the correct item price, with a fallback to unit price times quantity when item total is missing. NGN-562 verified the Transaction Details cost breakdown for discounted Pay Links. On freshly created transactions, the Subtotal, Discount, and Total Charge values are now correct in staging. These three items all went through explicit staging verification.">
-    <div class="meta">Completed Work</div>
-    <h2>Priority Work &mdash; Done</h2>
+  <!-- Slide 4: What Changed -->
+  <section class="slide" data-notes="These three completed tickets changed reporting and checkout behavior in a measurable way, and all three were validated in staging with explicit pass outcomes. NGN-561 confirmed the 300-millisecond debounce on search inputs across Transactions, Batches, Deposits, and Disputes. Before this fix, every keystroke was firing a separate GraphQL request, which created unnecessary load and made the interface feel sluggish. After the debounce was applied and verified, the requests are now throttled to a reasonable rate and the result was PASS across all four tables. NGN-589 fixed the Payment Complete item price display after Pay Link checkout. Users were seeing zero dollars instead of the actual item price because the item total field was missing in certain checkout flows. The fix adds a fallback that multiplies unit price by quantity when item total is not present, so the correct price always shows. NGN-562 verified the Transaction Details cost breakdown for discounted Pay Links. On freshly created transactions in staging, the Subtotal, Discount, and Total Charge values are now correct, which means the discount logic is applying properly end to end. These were not assumed fixes. They were checked.">
+    <div class="meta">What Changed</div>
+    <h2>What Changed</h2>
     <div class="ticket-grid">
       <div class="ticket-card">
         <div class="ticket-id">NGN-561</div>
@@ -350,10 +335,10 @@
     </div>
   </section>
 
-  <!-- Slide 6: Priority Work - Done Part 2 -->
-  <section class="slide" data-notes="Here are the other completed items. NGN-590 was created to track the correction of Multi-Use Pay Link behavior. The problem was that completing a transaction updated the link status to completed even when the usage limit had not been reached. This ticket captures the fix scope so that usage counts increment correctly and the link stays active. NGN-624 addressed the marketplace duplicate category slug issue. Instead of showing a raw Prisma unique constraint error, the admin now sees a readable validation toast. NGN-628 fixed the App Installs GraphQL errors in the marketplace admin portal. The page was failing with null environment and permission errors, and now it loads correctly. Both NGN-624 and NGN-628 were verified in staging with PASS results.">
-    <div class="meta">Completed Work</div>
-    <h2>Priority Work &mdash; Done</h2>
+  <!-- Slide 5: What Changed -->
+  <section class="slide" data-notes="These three completed items improved marketplace admin reliability and clarified follow-up scope for pay link behavior. NGN-590 scoped the Multi-Use Pay Link lifecycle correction. The problem was that completing a single transaction was marking the link as completed even when the usage limit had not been reached. The ticket captures the correct behavior: usage counts should increment until the limit is met, and only then should the link close. This ticket creates the fix scope so it can be implemented without ambiguity. NGN-624 addressed the marketplace duplicate category slug issue. Before, entering a duplicate slug would throw a raw Prisma unique-constraint error that was unreadable to admins. Now the admin sees a clear validation toast explaining that the slug is already in use. This was verified in staging with a PASS result. NGN-628 fixed the App Installs GraphQL errors in the marketplace admin portal. The page was failing to load entirely because of null environment references and permission check errors in the GraphQL layer. After the fix, App Installs loads correctly and is accessible again. Also verified in staging with PASS. Both marketplace admin tickets went through explicit staging checks before being marked done.">
+    <div class="meta">What Changed</div>
+    <h2>What Changed</h2>
     <div class="ticket-grid">
       <div class="ticket-card">
         <div class="ticket-id">NGN-590</div>
@@ -376,41 +361,41 @@
     </div>
   </section>
 
-  <!-- Slide 7: Priority Work - Pending Review -->
-  <section class="slide" data-notes="These four items are in pending review. NGN-600 covers the Partner Users search under Manage Users, where the entire iframe reloads instead of just updating the table, causing the search input to lose focus while typing. NGN-630 covers the marketplace service providers list not refreshing after a new provider is created, so the user has to manually refresh the page to see it. NGN-631 covers the clipboard copy failure in Customer Contacts, where copying an email is blocked by the current permissions policy. NGN-632 covers the Customers table cutting off the last visible entry when there are too many records, plus missing navigation controls. All four have clear reproduction steps and acceptance criteria already defined.">
-    <div class="meta">In Review</div>
-    <h2>Priority Work &mdash; Pending Review</h2>
+  <!-- Slide 6: What's Next -->
+  <section class="slide" data-notes="These four tickets are the open items from this week, and they are also the immediate next actions. Each one has concrete scope and clear reproduction steps, so next week can start with direct validation and closure rather than new intake. NGN-600 covers the Partner Users search behavior under Manage Users. When an admin types into the search field, the entire iframe reloads instead of just updating the table, which causes the search input to lose focus mid-typing. The fix should scope the reload to the table level only. NGN-630 covers the service provider list not refreshing after a new provider is created in the marketplace admin portal. The creation flow completes, but the surrounding list stays stale until the page is manually refreshed. The expected behavior is an automatic refetch after create. NGN-631 covers clipboard copy failure in Customer Contacts. When an admin tries to copy a contact email from the Customer Details modal, the action fails because the Clipboard API is blocked by the current permissions policy. The fix needs to adjust the policy to allow clipboard access in that context. NGN-632 covers the Customers table cutting off the last visible entry when there are many records and lacking sufficient navigation controls to reach all results. The fix involves both pagination behavior and making the full result set navigable. I list the queue in full detail only on this slide to avoid repeating the same ticket list later.">
+    <div class="meta">What's Next</div>
+    <h2>What's Next</h2>
     <div class="ticket-grid">
       <div class="ticket-card">
         <div class="ticket-id">NGN-600</div>
-        <span class="badge badge-review">Pending Review</span>
+        <span class="badge badge-review">Open Item</span>
         <h4>Partner Users Search Reload</h4>
         <p>Searching reloads the full iframe instead of the table only, causing the search input to lose focus.</p>
       </div>
       <div class="ticket-card">
         <div class="ticket-id">NGN-630</div>
-        <span class="badge badge-review">Pending Review</span>
+        <span class="badge badge-review">Open Item</span>
         <h4>Service Provider List Refresh</h4>
         <p>Newly created providers do not appear until the page is manually refreshed.</p>
       </div>
       <div class="ticket-card">
         <div class="ticket-id">NGN-631</div>
-        <span class="badge badge-review">Pending Review</span>
+        <span class="badge badge-review">Open Item</span>
         <h4>Clipboard Copy in Customer Contacts</h4>
         <p>Copying a contact email fails because the Clipboard API is blocked by the permissions policy.</p>
       </div>
       <div class="ticket-card" style="grid-column: span 1;">
         <div class="ticket-id">NGN-632</div>
-        <span class="badge badge-review">Pending Review</span>
+        <span class="badge badge-review">Open Item</span>
         <h4>Customers Table Cutoff &amp; Navigation</h4>
         <p>Table cuts off the last entry for large result sets and lacks sufficient navigation controls.</p>
       </div>
     </div>
   </section>
 
-  <!-- Slide 8: What Changed -->
-  <section class="slide" data-notes="Here is what changed because of the work this week. Reporting table searches no longer fire excessive GraphQL requests on every keystroke, which makes the interface more responsive and reduces server load. Checkout values and transaction details were corrected or verified for Pay Link flows, so users see accurate prices and breakdowns on the Payment Complete page and in the Transaction Details modal. Marketplace admin error handling was clarified, so admins see readable messages instead of raw database errors, and App Installs is accessible again. The remaining usability issues were isolated into specific review-ready tasks with clear acceptance criteria, rather than staying as broad complaints. That gives us a cleaner queue and clearer next steps.">
-    <div class="meta">Outcomes</div>
+  <!-- Slide 7: What Changed -->
+  <section class="slide" data-notes="Here is the net effect of the week, organized by what changed in the product and what changed operationally for the team. On the product side, reporting search behavior now avoids excessive per-keystroke request traffic, which makes the interface faster for admins and reduces unnecessary backend load. Checkout values on the Payment Complete page are now accurate after Pay Link checkout, so users see the correct item price instead of zero dollars. Discounted transaction breakdowns have been verified in staging with correct Subtotal, Discount, and Total Charge values displayed. Marketplace admin error handling is now readable: admins see a validation toast instead of a raw Prisma error when entering a duplicate category slug, and App Installs loads correctly instead of failing on GraphQL environment and permission errors. On the execution side, the open queue is limited to four usability items, each with concrete reproduction scope. No blockers were recorded that would slow down next-week follow-through. The team can start next week by validating and closing known items rather than spending time on discovery or triage.">
+    <div class="meta">What Changed</div>
     <h2>What Changed</h2>
     <div class="two-col" style="margin-top: 30px;">
       <div class="col">
@@ -424,7 +409,7 @@
         </ul>
       </div>
       <div class="col">
-        <h4>Defined for Review</h4>
+        <h4>Open Items Ready</h4>
         <ul>
           <li>Partner Users search scoped to table-only updates</li>
           <li>Service provider list refresh after creation</li>
@@ -435,40 +420,17 @@
     </div>
   </section>
 
-  <!-- Slide 9: Next-Week Commitments -->
-  <section class="slide" data-notes="Next week starts with four known review items rather than new intake. Each one already has a clear behavior to validate or close. NGN-600 is the Partner Users search reload fix. NGN-630 is the service provider list refresh. NGN-631 is the clipboard copy behavior in Customer Contacts. NGN-632 is the customer table navigation and cutoff. The queue is concentrated in admin usability follow-through. No major blockers were reported that would prevent these from moving forward. That is the full picture for next week.">
-    <div class="meta">Forward</div>
-    <h2>Next-Week Commitments</h2>
-    <div style="margin-top: 40px;">
-      <div class="flow-container" style="justify-content: center; margin-bottom: 40px;">
-        <div class="flow-box" style="min-width: 240px;"><strong>NGN-600</strong><br><span style="font-size: 18px; color: #b0b0c0;">Partner Users search reload</span></div>
-        <div class="flow-arrow">&#8594;</div>
-        <div class="flow-box" style="min-width: 240px;"><strong>NGN-630</strong><br><span style="font-size: 18px; color: #b0b0c0;">Service provider refresh</span></div>
-        <div class="flow-arrow">&#8594;</div>
-        <div class="flow-box" style="min-width: 240px;"><strong>NGN-631</strong><br><span style="font-size: 18px; color: #b0b0c0;">Clipboard copy fix</span></div>
-        <div class="flow-arrow">&#8594;</div>
-        <div class="flow-box" style="min-width: 240px;"><strong>NGN-632</strong><br><span style="font-size: 18px; color: #b0b0c0;">Table cutoff &amp; nav</span></div>
-      </div>
-      <ul class="plain-list" style="max-width: 900px; margin: 0 auto;">
-        <li>Four known review items with clear scope</li>
-        <li>No new intake required to start the week</li>
-        <li>Concentrated in admin usability follow-through</li>
-        <li>No major blockers reported</li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- Slide 10: Closing -->
-  <section class="slide" data-notes="To close, this week we completed six items with staging verification and left four usability items in review with clear scope. The work was concentrated in checkout accuracy, reporting performance, and marketplace admin fixes. There were no major blockers. Next week we will pick up the four pending review items. That is the status for 2026-W20. Any questions?">
-    <div class="meta">2026-W20</div>
-    <h1>Closing</h1>
-    <div class="subtitle">Completed fixes, verified checks, and a short open queue</div>
+  <!-- Slide 8: What's Next -->
+  <section class="slide" data-notes="To close, we finished verified fixes across reporting, checkout, and marketplace admin this week. Six items are done with staging validation, and four open items sit in a clearly defined queue. The open work is concentrated in admin usability follow-through: NGN-600 for Partner Users search reload, NGN-630 for service provider list refresh, NGN-631 for clipboard copy permissions, and NGN-632 for customer table navigation and cutoff. Each has concrete reproduction steps and clear acceptance scope, so the handoff is straightforward. The next step is to validate or close each of these four items with targeted testing. No blockers were recorded that would change this plan. That is the status for 2026-W20.">
+    <div class="meta">What's Next</div>
+    <h1>What's Next</h1>
+    <div class="subtitle">Verified fixes complete, open queue clear, next actions defined</div>
     <div class="stats-row" style="justify-content: center; margin-top: 60px;">
       <div class="stat"><div class="number">6</div><div class="label">Done &amp; Verified</div></div>
-      <div class="stat"><div class="number">4</div><div class="label">In Review</div></div>
+      <div class="stat"><div class="number">4</div><div class="label">Open Items</div></div>
       <div class="stat"><div class="number">0</div><div class="label">Blockers</div></div>
     </div>
-    <p style="text-align: center; margin-top: 60px; font-size: 24px; color: #8888a0;">Next week: validate or close the four pending admin usability items.</p>
+    <p style="text-align: center; margin-top: 60px; font-size: 24px; color: #8888a0;">This week: validate or close NGN-600, NGN-630, NGN-631, and NGN-632.</p>
   </section>
 </div>
 
