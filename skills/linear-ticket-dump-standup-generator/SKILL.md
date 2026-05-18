@@ -1,101 +1,63 @@
 ---
 name: linear-ticket-dump-standup-generator
-description: Read the latest ticket dump Markdown file, let the user choose tickets, generate a spoken stand-up script, and update the same dump file in place. Use when the user asks to prepare stand-up from existing dump data, select tickets for stand-up, or finalize a ticket dump with a script. Requires an existing dump file from $linear-ticket-dump-creator. For the full dump-plus-standup workflow in one step, use $linear-standup-flow instead.
+description: Read the latest Linear ticket dump Markdown file, let the user choose tickets, generate a spoken stand-up script, and update the same dump file in place. Use when the user wants stand-up generation specifically from `memory/tickets/` dump files. This skill is a specialized superset wrapper over $standup-generator.
 ---
 
-# Ticket Dump Stand-up Script Generator
+# Linear Ticket Dump Stand-up Generator
 
-Read the latest compatible ticket dump, collect a selection from the user including optional manual tasks not tracked in Linear, generate a natural stand-up script, and finalize the same dump file in place.
+Use this skill as a wrapper around `$standup-generator`. Keep all base stand-up principles from `$standup-generator`, then add Linear dump-specific selection and file update behavior.
+
+## Wrapper Contract
+
+1. Delegate script-generation principles to `$standup-generator`.
+2. Add source-specific behavior for Linear dump discovery, ticket/manual-task selection, and in-place dump updates.
+3. If wrapper behavior conflicts with base principles, preserve base principles and ask one focused clarification.
 
 ## Prerequisites
 
-- A compatible ticket dump file must exist under `memory/tickets/`. Run the ticket dump creator skill first if no dump is available.
-
-Use the dump file as source of truth. Do not query Linear unless the user explicitly asks.
-
-## Agent Execution Contract
-
-- Default behavior: spawn one new agent per requested date and run those per-date agents in parallel.
-- Single-date request: spawn one agent.
-- Date-range request: expand to daily dates and spawn one agent per date in parallel.
-- Pass through model and reasoning effort per agent from user input when provided, otherwise use current thread defaults.
-- Parent-orchestrated mode: if invoked by `$linear-standup-flow` with an explicit single-date handoff and dump path, do not spawn another agent; execute inline for that single date only.
+- A compatible dump file exists under `memory/tickets/`.
+- Prefer the latest ISO week folder `YYYY-W##` and latest `YYYY-MM-DD-ticket-dump.md`.
+- If no compatible dump exists, report that and instruct the user to run `$linear-ticket-dump-creator`.
 
 ## Execution Steps
 
-1. Locate the latest compatible dump file.
-- Search under `memory/tickets/`.
-- Prefer the latest ISO week folder `YYYY-W##`.
-- Inside that folder, prefer the most recent `YYYY-MM-DD-ticket-dump.md`.
-- If none exists, report the missing dump and ask the user to run the dump creator skill first.
+1. Resolve dump file.
+- Print the exact dump path used.
+- Parse `# All Scraped Tickets` and `# Manual Tasks`.
+- If present, parse `# Selected Tickets` as rerun index only.
 
-2. Show source file and available items.
-- Print the dump file path that will be used.
-- Parse the `# All Scraped Tickets` section for the full ticket pool.
-- Parse the `# Manual Tasks` section for existing manual tasks.
-- If `# Selected Tickets` exists, parse it as the selected-ticket index for reruns, then resolve full details from `# All Scraped Tickets`.
-- Display a numbered list with ticket ID, title, status, and activity date.
-- Display manual tasks in the same numbered list with a `[Manual]` prefix and auto-generated ID.
+2. Present selectable items.
+- Show one numbered list with scraped tickets and manual tasks.
+- For manual tasks, prefix ID display with `[Manual]`.
 
-3. Ask for selection with this exact prompt.
+3. Collect selection with this exact prompt.
 - `Which tickets do you want to include in your stand-up? You can reply with ticket numbers, ticket IDs, or all. To add a manual task not tracked in Linear, describe it as "Manual: [task title] -- [Done / In Progress / To Do] [optional description]".`
 
-4. Interpret selection including manual tasks.
-- Accept `all` (includes existing manual tasks).
-- Accept numeric list matching displayed numbers.
-- Accept ticket IDs.
-- Accept clear natural-language selections.
-- Parse manual task entries prefixed with `Manual:` using the format `Manual: [title] -- [status] [description]`.
-- Auto-generate a manual task ID as `MANUAL-###` using the next available number.
-- Status defaults to `Done` if omitted; description defaults to `No description provided.` if omitted.
-- Activity date defaults to the dump file date.
-- If ambiguous, ask a short clarification and do not guess.
+4. Interpret selection.
+- Accept `all`, numeric indexes, ticket IDs, and clear natural-language selections.
+- Parse new manual tasks from `Manual: [title] -- [status] [description]`.
+- Assign next manual ID as `MANUAL-###`.
+- Default status to `Done` and description to `No description provided.` when omitted.
+- If ambiguous, ask one short clarification.
 
-5. Generate stand-up script from selected tickets only.
-- Treat existing `# Stand-up Script` text as output-only; never use it as input evidence.
-- Build the script from selected ticket sections and their activity flow/comments.
-- Use selected-ticket data as the only evidence source, including attribution metadata such as `My role`, `Initial dev assignee`, and testing/verification events.
-- For each selected ticket, infer and state:
-- Starting point: how/why the ticket began from the earliest relevant activity and notes.
-- Current state: where the ticket stands now based on latest status and latest meaningful activity, blended naturally into the same paragraph.
-- Keep chronology strict per ticket; use `Activity flow` itself as the narrative backbone and include all meaningful middle steps.
-- Keep phrasing role-consistent per ticket while preserving chronology.
-- Write objective statements from explicit data points (status, activity date, timeline events, comments, activity notes, test results), while allowing practical wording that makes the update clear to listeners.
-- Prefer concrete action wording tied to evidence and transform event types into spoken updates:
-- Ticket creation: use natural non-identifier phrasing such as `I created a ticket to address [issue]` or `I created a ticket for [problem area]`.
-- Comments: never narrate as `I posted/commented`; instead state the content/update directly.
-- Testing: narrate as `I tested ...` and include the concrete result.
-- Cancel/revise/scope/status change events: state plainly that the ticket was cancelled/revised/re-scoped/moved and include the stated reason/details when present.
-- Include comment content and relevant details matter-of-factly; do not omit important specifics.
-- Attribution guardrails:
-- If `My role` and activity evidence indicate tester-only involvement for a ticket, use testing/verification language only and do not claim implementation/fix ownership.
-- Use implementation/fix wording for the user only when explicit ticket evidence shows user dev actions on that ticket.
-- If implementation/fix was done by others (or is unattributed), describe outcome neutrally without claiming the user performed it.
-- For `Done` tickets with verification evidence:
-- If the ticket is bug-oriented (fix/error/issue/broken/incorrect), describe outcome as fixed.
-- If the ticket is feature/enhancement-oriented (add/implement/enable/new behavior), describe outcome as implemented.
-- Avoid repetitive phrasing like `current state is ...`; weave outcome/state into the ticket narrative sentence.
-- If data is missing for a step, state only what is known and continue; do not fill gaps.
-- Keep language conversational but factual; avoid fluff, hype, and report-style labels.
-- Keep structure simple:
-- Start with `Yesterday, I ...`.
-- Walk ticket-by-ticket in chronological order using selected tickets.
-- Include manual tasks in chronological order alongside tickets.
-- Narrate manual tasks directly from their title, status, and activity notes without fabricating details.
-- Keep manual task narration brief: state what was done, the outcome, and current status.
-- Do not use ticket numbers or unique identifiers in the spoken script.
-- Apply blocker rule:
-- Default blocker line: `No major blockers right now.`
-- Replace only when blockers are explicitly provided by the user or clearly indicated by selected ticket context.
+5. Build normalized input for `$standup-generator`.
+- Convert each selected ticket/manual task into source-agnostic work-item evidence:
+- title, status, activity date
+- role/ownership metadata
+- chronology evidence (activity flow, notes, comments, test results)
+- Pass only selected items as evidence.
+- Treat existing `# Stand-up Script` prose as output-only, never evidence.
 
-6. Update the same dump file in place.
-- Add stand-up section at the top as the finalized signal.
-- Keep a lightweight `# Selected Tickets` section as references only.
-- Do not duplicate full ticket description/comments/timeline in `# Selected Tickets`.
-- Keep full `# All Scraped Tickets` section containing selected and unselected tickets.
-- Preserve original scraped ticket history.
-- Append new manual tasks to the `# Manual Tasks` section. Preserve existing manual tasks; do not remove or rewrite them.
-- If selection is `all`, include all tickets and manual tasks in the selected reference list.
+6. Generate script via base principles.
+- Apply all `$standup-generator` narrative, chronology, attribution, and blocker rules.
+- Keep script conversational and factual.
+- Do not speak ticket IDs unless the user explicitly asks.
+
+7. Update dump file in place.
+- Write `# Stand-up Script` at top.
+- Keep `# Selected Tickets` as a lightweight reference/index.
+- Preserve full `# All Scraped Tickets` section unchanged as historical source.
+- Append new entries to `# Manual Tasks`; never remove/rewrite existing entries.
 
 ## Updated Dump Contract
 
@@ -104,9 +66,7 @@ Use this structure:
 ```md
 # Stand-up Script
 
-Yesterday, I [state only actions supported by selected-ticket data, in chronological order].
-
-I also [continue with remaining selected tickets using explicit actions and outcomes from selected-ticket data only].
+Yesterday, I [evidence-based narrative generated from selected items].
 
 No major blockers right now.
 
@@ -119,31 +79,19 @@ No major blockers right now.
   - Activity date: [YYYY-MM-DD]
   - URL: [Linear URL]
   - Reference: `# All Scraped Tickets` -> `## [TICKET-ID]: [Ticket title]`
-  - Stand-up relevance: [Why this ticket was selected for stand-up]
+  - Stand-up relevance: [Why selected]
 
 - [MANUAL-###]: [Task title]
   - Status: [status]
   - Activity date: [YYYY-MM-DD]
   - Reference: `# Manual Tasks` -> `## [MANUAL-###]: [Task title]`
-  - Stand-up relevance: [Why this manual task was selected for stand-up]
+  - Stand-up relevance: [Why selected]
 
 ---
 
 # Manual Tasks
 
 [Keep all manual tasks here. Append new entries; preserve existing ones.]
-
-## [MANUAL-###]: [Task title]
-
-Status: [Done / In Progress / To Do]
-Activity date: [YYYY-MM-DD]
-My role: dev-owner
-
-### Description
-[Task description or "No description provided."]
-
-### Activity Notes
-[Brief factual summary of work performed.]
 
 ---
 
@@ -154,25 +102,10 @@ My role: dev-owner
 
 ## Rules
 
-1. Keep this skill standalone as long as a compatible dump exists.
-2. Preserve structure so downstream skills can parse reliably.
-3. Do not remove, truncate, or rewrite factual ticket history.
-4. If context is incomplete, state limitation briefly and ask only necessary clarification.
-5. Keep selected and unselected tickets preserved in the updated file.
-6. Use `# Selected Tickets` as a reference/index layer only; keep full ticket payload only in `# All Scraped Tickets`.
-7. Do not collapse a ticket to only its most recent activity when earlier same-range activities exist.
-8. Keep selected-ticket activity flow chronological and complete at a practical stand-up level.
-9. Do not over-compress the stand-up narrative when multiple ticket activities exist; include a clear walkthrough of what happened.
-10. Prefer detail over brevity by default, unless the user explicitly asks for a shorter script.
-11. On reruns, avoid recency bias by ignoring previous script prose and re-deriving narrative from selected-ticket references plus `# All Scraped Tickets` data only.
-12. For each selected ticket, preserve the complete practical activity chain in spoken form; never omit known middle steps between start and current state.
-13. Keep inference limited to start/current-state framing and event-to-speech conversion grounded in selected-ticket evidence; when uncertain, stay literal to ticket data.
-14. On reruns, ignore all prior stand-up prose and regenerate from selected-ticket evidence plus attribution metadata (`My role`, `Initial dev assignee`, testing/verification events).
-15. Never attribute implementation/fix work to the user without explicit per-ticket dev-action evidence.
-16. For tester-only tickets, narration must stay in testing/verification terms and must not claim the user implemented or fixed the ticket.
-17. In parent-orchestrated single-date mode, do not spawn nested agents unless explicitly requested.
-18. Manual task IDs use the pattern `MANUAL-###` where `###` is the next sequential number not already present in the dump.
-19. When appending new manual tasks, never remove or rewrite existing manual task entries.
-20. When listing items for selection, display manual tasks interleaved with tickets in a single numbered list, with `[Manual]` prefix on the ID.
-21. Narrate manual tasks in the stand-up script using only their title, status, and activity notes. Do not fabricate activity timeline or comments for manual tasks.
-22. Keep manual task narration factual and brief: state what was done and the current status in one or two sentences.
+1. Keep this skill standalone whenever a compatible dump exists.
+2. Keep this skill as a specialized superset wrapper of `$standup-generator`.
+3. Never query Linear unless the user explicitly asks.
+4. Preserve structure so downstream skills can parse reliably.
+5. Do not remove, truncate, or rewrite factual ticket history.
+6. On reruns, re-derive from selected-item evidence plus `# All Scraped Tickets`; ignore old stand-up prose.
+7. In parent-orchestrated single-date mode from `$linear-standup-flow`, execute inline and do not spawn nested agents unless explicitly requested.

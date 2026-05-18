@@ -1,0 +1,4 @@
+interface:
+  display_name: "Standup Generator"
+  short_description: "Generate an evidence-based stand-up script"
+  default_prompt: "Use $standup-generator to generate a spoken stand-up script from my selected work items and evidence."
