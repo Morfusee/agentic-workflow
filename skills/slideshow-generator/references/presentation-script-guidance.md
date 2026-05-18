@@ -40,7 +40,9 @@ The goal is to sound like a normal team member walking through weekly work in an
 2. Add the evidence or explanation the audience cannot get from the slide alone.
 3. End with a simple transition or takeaway.
 4. Write full paragraph notes that can be read aloud, but keep them conversational enough that they do not sound scripted in a stiff way.
-5. Keep notes fuller than slides, but do not let them become essays.
+5. Keep notes substantially fuller than slides. Each note must give the presenter enough material to speak for twenty to forty seconds without reading the slide back.
+6. Short one-sentence notes are useless as presenter scripts. If a note takes less than ten seconds to read aloud, expand it with context, evidence, or next-step information until it is genuinely helpful to the person delivering the presentation.
+7. Do not let notes become essays, but do not mistake brevity for clarity. A note that says nothing useful is worse than a longer note that equips the presenter.
 
 ## Slide-to-Script Relationship
 
@@ -66,6 +68,7 @@ Use simple bridges such as:
 - `The next step is`
 
 Do not force transitions to sound polished or clever.
+Do not reuse one opener across every slide. Vary lead-ins naturally, and skip a lead-in when a direct sentence is clearer.
 
 ## Delivery Check
 
