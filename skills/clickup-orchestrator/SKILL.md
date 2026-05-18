@@ -34,18 +34,17 @@ When creating or drafting ClickUp tickets (whether directly or via `$issue-draft
 **Description**
 <1-2 sentence purpose and context>
 **Scope**
-actionable work item
-actionable work item
+- actionable work item
+- actionable work item
 **Deliverable**
-concrete acceptance criteria / definition of done
+- concrete acceptance criteria / definition of done
 ```
 
 - **Description**: what the ticket is about, brief context. Keep to 1-2 sentences.
-- **Scope**: list of specific work items to complete, one per line. Use imperative action verbs.
-- **Deliverable**: list of concrete acceptance criteria, one per line. These answer "how do we know this is done?"
+- **Scope**: bullet list of specific work items to complete. Use `- ` markers. Imperative action verbs.
+- **Deliverable**: bullet list of concrete acceptance criteria. Use `- ` markers. These answer "how do we know this is done?"
 - Use `**Bold**` for section headers. Do NOT use `##`/`###` — ClickUp `##` headings always insert a blank line after the header.
-- Do NOT use `-` or `*` bullet markers — they trigger unwanted `\n\n` spacing.
-- No blank lines anywhere: headers flow directly to content, content flows directly to next header.
+- No blank lines anywhere: headers flow directly to content, bullets flow directly to next header.
 
 ## Agent Execution Contract
 
