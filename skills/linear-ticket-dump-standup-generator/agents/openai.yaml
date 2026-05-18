@@ -1,4 +1,0 @@
-interface:
-  display_name: "Linear Ticket Dump Stand-up Generator"
-  short_description: "Specialized stand-up wrapper for Linear dumps"
-  default_prompt: "Use $linear-ticket-dump-standup-generator as a wrapper over $standup-generator to read my latest dump, let me choose tickets, and finalize the stand-up script in that file."
