@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Weekly Delivery Narrative - 2026-W20</title>
+<title>Weekly Delivery Narrative &mdash; 2026-W20</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
@@ -14,7 +14,6 @@
     overflow: hidden;
   }
 
-  /* ================= AUDIENCE DECK ================= */
   #stage {
     width: 1920px; height: 1080px;
     position: absolute;
@@ -78,19 +77,6 @@
   .stat .number { font-size: 80px; font-weight: 700; color: #e94560; line-height: 1; margin-bottom: 12px; }
   .stat .label { font-size: 22px; color: #a0a0b0; text-transform: uppercase; letter-spacing: 1px; }
 
-  .flow-container { display: flex; align-items: center; gap: 20px; margin-top: 30px; flex-wrap: wrap; }
-  .flow-box {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 12px;
-    padding: 24px 32px;
-    font-size: 22px;
-    color: #c8c8d8;
-    min-width: 180px;
-    text-align: center;
-  }
-  .flow-arrow { font-size: 28px; color: #e94560; }
-
   .ticket-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 20px; }
   .ticket-card {
     background: rgba(255,255,255,0.04);
@@ -126,19 +112,15 @@
   .col ul { padding-left: 22px; margin-top: 10px; }
   .col li { margin-bottom: 10px; }
 
-  .plain-list { list-style: none; padding: 0; margin-top: 20px; }
-  .plain-list li { padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 24px; }
-  .plain-list li:last-child { border-bottom: none; }
+  .flow-row { display: flex; gap: 16px; margin-bottom: 36px; align-items: center; }
+  .flow-label { font-size: 22px; font-weight: 600; color: #e94560; min-width: 140px; }
+  .flow-detail { flex: 1; text-align: left; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 24px 32px; font-size: 22px; color: #c8c8d8; }
 
   #progress { position: absolute; bottom: 0; left: 0; height: 4px; background: #e94560; transition: width 0.3s ease; z-index: 10; }
   #counter { position: absolute; bottom: 24px; right: 40px; font-size: 16px; color: #666680; z-index: 10; }
   #controls-hint { position: absolute; bottom: 24px; left: 40px; font-size: 14px; color: #444460; z-index: 10; }
 
-  /* ================= PRESENTER VIEW ================= */
-  body.presenter-mode {
-    background: #0f0f1a;
-    overflow: auto;
-  }
+  body.presenter-mode { background: #0f0f1a; overflow: auto; }
   body.presenter-mode #stage { display: none; }
   body.presenter-mode #progress { display: none; }
   body.presenter-mode #counter { display: none; }
@@ -213,9 +195,7 @@
   }
   .pv-notes-box h4 { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: #e94560; margin-bottom: 14px; }
   .pv-notes-box p { font-size: 17px; line-height: 1.65; color: #c8c8d8; white-space: pre-wrap; }
-  .pv-controls {
-    display: flex; gap: 10px;
-  }
+  .pv-controls { display: flex; gap: 10px; }
   .pv-btn {
     flex: 1; padding: 14px; border-radius: 8px;
     background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
@@ -228,14 +208,13 @@
 </head>
 <body>
 
-<!-- ================= AUDIENCE DECK ================= -->
 <div id="stage">
   <div id="progress"></div>
   <div id="counter"></div>
   <div id="controls-hint">Arrow keys to navigate &middot; P for presenter view</div>
 
-  <!-- Slide 1: This Week -->
-  <section class="slide active" data-notes="I am covering the week of May 11 through May 15. The work concentrated in four areas: checkout accuracy, reporting search behavior, marketplace admin fixes, and admin usability follow-through. By the numbers, we closed six items with staging verification, left four open items in a clearly scoped queue, and recorded zero blockers that changed the plan. I will walk through what moved across the week, what actually changed in the product and admin tools, and exactly what is next on the queue.">
+  <!-- SLIDE 1: Title (light) -->
+  <section class="slide active" data-notes="The work this week covered four areas: checkout accuracy, reporting search performance, marketplace admin fixes, and admin usability follow-through. Six items were completed with staging verification and four remain in a clearly scoped review queue. No blockers were recorded.">
     <div class="meta">This Week</div>
     <h1>Weekly Delivery Narrative</h1>
     <div class="subtitle">Checkout accuracy, reporting debounce, marketplace admin fixes, and admin usability follow-through</div>
@@ -246,8 +225,8 @@
     </div>
   </section>
 
-  <!-- Slide 2: This Week -->
-  <section class="slide" data-notes="This slide shows where the effort went. On checkout accuracy, we corrected the Payment Complete page so item prices no longer show zero dollars after Pay Link checkout, verified that discounted transaction breakdowns are accurate in staging, and created a follow-up ticket to fix Multi-Use Pay Link lifecycle behavior so links do not close before usage limits are reached. On reporting performance, we validated that search inputs now use a 300-millisecond debounce instead of firing a GraphQL request on every keystroke, which was tested across all four reporting tables in staging. On marketplace admin, we replaced a raw Prisma unique-constraint error with a readable validation toast when a duplicate category slug is entered, and we fixed the GraphQL environment and permission errors that were blocking App Installs access entirely. The remaining scope is a compact usability queue: Partner Users search reload, service provider list refresh after creation, clipboard copy in Customer Contacts, and customer table cutoff with missing navigation controls. All four have concrete reproduction steps.">
+  <!-- SLIDE 2: This Week (standard) -->
+  <section class="slide" data-notes="On checkout, the Payment Complete page now shows correct item prices after Pay Link checkout instead of zero dollars. Discounted transaction breakdowns were verified in staging, and the Multi-Use Pay Link lifecycle issue was scoped for correction. On reporting, the 300-millisecond search debounce was confirmed across all four reporting tables, which cuts down GraphQL request volume during typing. On marketplace admin, a raw Prisma error is now a readable validation toast for duplicate category slugs, and App Installs loads without the previous GraphQL errors. The remaining open items are Partner Users search reload, service provider list refresh, clipboard copy in Customer Contacts, and customer table cutoff. Each has concrete reproduction steps.">
     <div class="meta">This Week</div>
     <h2>This Week</h2>
     <div class="card-grid">
@@ -256,25 +235,25 @@
         <ul>
           <li>Fixed item price display on Payment Complete page</li>
           <li>Verified discounted transaction detail values</li>
-          <li>Created ticket for Multi-Use Pay Link lifecycle</li>
+          <li>Scoped Multi-Use Pay Link lifecycle correction</li>
         </ul>
       </div>
       <div class="card">
         <h4>Reporting Performance</h4>
         <ul>
-          <li>Verified debounced search across all four reporting tables</li>
-          <li>Reduced GraphQL request volume during typing</li>
+          <li>Verified 300ms debounce across Transactions, Batches, Deposits, and Disputes</li>
+          <li>Reduced per-keystroke GraphQL request volume</li>
         </ul>
       </div>
       <div class="card">
         <h4>Marketplace Admin</h4>
         <ul>
-          <li>Replaced raw Prisma error with validation toast</li>
+          <li>Replaced raw Prisma error with readable validation toast</li>
           <li>Fixed App Installs GraphQL environment and permissions errors</li>
         </ul>
       </div>
       <div class="card">
-        <h4>Open Usability Queue</h4>
+        <h4>Usability Queue</h4>
         <ul>
           <li>Partner Users search reload behavior</li>
           <li>Service provider list refresh after creation</li>
@@ -285,84 +264,84 @@
     </div>
   </section>
 
-  <!-- Slide 3: What Moved -->
-  <section class="slide" data-notes="Here is how tickets moved through the week. We started with validation: NGN-561, the reporting debounce fix, was tested across Transactions, Batches, Deposits, and Disputes in staging and confirmed as PASS. From there, we moved into creation: NGN-589 tracked the item price display correction on Payment Complete, NGN-590 scoped the Multi-Use Pay Link lifecycle fix, and NGN-600 documented the Partner Users search reload issue so it had clean tracking. Then we shifted into verification: NGN-562 checked discounted transaction detail breakdowns on fresh Pay Link transactions in staging, while NGN-624 and NGN-628 confirmed that marketplace admin fixes for duplicate slug errors and App Installs access were working. By the end of the week, the open items, NGN-630, NGN-631, and NGN-632, were carried into the review queue as scoped usability follow-through. The flow is clean: validate, create, verify, and queue, with most items reaching done and the remaining few already defined.">
+  <!-- SLIDE 3: What Moved (standard) -->
+  <section class="slide" data-notes="Tickets moved through four stages. Validation: NGN-561 was tested across all reporting tables and confirmed as PASS in staging. Creation: NGN-589, NGN-590, and NGN-600 were opened to document checkout and usability issues. Verification: NGN-562, NGN-624, and NGN-628 were checked in staging for discounted transaction breakdowns, duplicate slug handling, and App Installs access. All three passed. Review: NGN-630, NGN-631, and NGN-632 were scoped and queued for service provider refresh, clipboard copy, and customer table navigation.">
     <div class="meta">What Moved</div>
     <h2>What Moved</h2>
-    <div style="margin-top: 40px;">
-      <div style="display: flex; gap: 16px; margin-bottom: 36px; align-items: center;">
-        <div style="font-size: 22px; font-weight: 600; color: #e94560; min-width: 140px;">Validate</div>
-        <div class="flow-box" style="flex:1; text-align:left;">NGN-561 &mdash; Reporting debounce tested across all tables in staging</div>
+    <div style="margin-top: 30px;">
+      <div class="flow-row">
+        <div class="flow-label">Validate</div>
+        <div class="flow-detail">NGN-561: Reporting debounce tested across all tables in staging</div>
       </div>
-      <div style="display: flex; gap: 16px; margin-bottom: 36px; align-items: center;">
-        <div style="font-size: 22px; font-weight: 600; color: #e94560; min-width: 140px;">Create</div>
-        <div class="flow-box" style="flex:1; text-align:left;">NGN-589, NGN-590, NGN-600 &mdash; Checkout and usability issues documented</div>
+      <div class="flow-row">
+        <div class="flow-label">Create</div>
+        <div class="flow-detail">NGN-589, NGN-590, NGN-600: Checkout fix, pay-link lifecycle, and partner search documented</div>
       </div>
-      <div style="display: flex; gap: 16px; margin-bottom: 36px; align-items: center;">
-        <div style="font-size: 22px; font-weight: 600; color: #e94560; min-width: 140px;">Verify</div>
-        <div class="flow-box" style="flex:1; text-align:left;">NGN-562, NGN-624, NGN-628 &mdash; Discounted transactions and marketplace admin fixes checked in staging</div>
+      <div class="flow-row">
+        <div class="flow-label">Verify</div>
+        <div class="flow-detail">NGN-562, NGN-624, NGN-628: Discounted transactions and marketplace admin fixes checked in staging</div>
       </div>
-      <div style="display: flex; gap: 16px; align-items: center;">
-        <div style="font-size: 22px; font-weight: 600; color: #e94560; min-width: 140px;">Review</div>
-        <div class="flow-box" style="flex:1; text-align:left;">NGN-630, NGN-631, NGN-632 &mdash; Admin usability items scoped and queued</div>
+      <div class="flow-row">
+        <div class="flow-label">Review</div>
+        <div class="flow-detail">NGN-630, NGN-631, NGN-632: Admin usability items scoped and queued</div>
       </div>
     </div>
   </section>
 
-  <!-- Slide 4: What Changed -->
-  <section class="slide" data-notes="These three completed tickets changed reporting and checkout behavior in a measurable way, and all three were validated in staging with explicit pass outcomes. NGN-561 confirmed the 300-millisecond debounce on search inputs across Transactions, Batches, Deposits, and Disputes. Before this fix, every keystroke was firing a separate GraphQL request, which created unnecessary load and made the interface feel sluggish. After the debounce was applied and verified, the requests are now throttled to a reasonable rate and the result was PASS across all four tables. NGN-589 fixed the Payment Complete item price display after Pay Link checkout. Users were seeing zero dollars instead of the actual item price because the item total field was missing in certain checkout flows. The fix adds a fallback that multiplies unit price by quantity when item total is not present, so the correct price always shows. NGN-562 verified the Transaction Details cost breakdown for discounted Pay Links. On freshly created transactions in staging, the Subtotal, Discount, and Total Charge values are now correct, which means the discount logic is applying properly end to end. These were not assumed fixes. They were checked.">
+  <!-- SLIDE 4: Checkout & Reporting (heavy) -->
+  <section class="slide" data-notes="NGN-561 confirmed the reporting search debounce works across Transactions, Batches, Deposits, and Disputes. Tested in staging with PASS. The fix throttles GraphQL requests at 300 milliseconds instead of firing on every keystroke. NGN-589 fixed the Payment Complete page so item prices show the actual cost instead of zero dollars after a Pay Link checkout. It falls back to unit price times quantity when the item total field is missing. Verified in staging with PASS. NGN-562 checked discounted Pay Link transaction breakdowns. On a freshly created discounted transaction in staging, Subtotal, Discount, and Total Charge all matched expected values. An older reference transaction may still show stale values since it predates the fix.">
     <div class="meta">What Changed</div>
-    <h2>What Changed</h2>
+    <h2>Checkout &amp; Reporting</h2>
     <div class="ticket-grid">
       <div class="ticket-card">
         <div class="ticket-id">NGN-561</div>
         <span class="badge badge-done">Done</span>
         <h4>Debounce Reporting Search</h4>
-        <p>Verified 300ms debounce across Transactions, Batches, Deposits, and Disputes tables in staging. Result: PASS.</p>
+        <p>Verified 300ms debounce across all four reporting tables in staging. Result: PASS.</p>
       </div>
       <div class="ticket-card">
         <div class="ticket-id">NGN-589</div>
         <span class="badge badge-done">Done</span>
         <h4>Fix Item Price on Payment Complete</h4>
-        <p>Corrected $0 display after Pay Link checkout. Falls back to unitPrice x quantity when item.total is missing.</p>
+        <p>Corrected zero-dollar display after Pay Link checkout. Falls back to unitPrice times quantity when item total is missing.</p>
       </div>
       <div class="ticket-card">
         <div class="ticket-id">NGN-562</div>
         <span class="badge badge-done">Done</span>
         <h4>Discounted Transaction Details</h4>
-        <p>Verified Subtotal, Discount, and Total Charge values are correct on freshly created discounted Pay Links in staging.</p>
+        <p>Verified Subtotal, Discount, and Total Charge are correct on freshly created discounted Pay Links in staging.</p>
       </div>
     </div>
   </section>
 
-  <!-- Slide 5: What Changed -->
-  <section class="slide" data-notes="These three completed items improved marketplace admin reliability and clarified follow-up scope for pay link behavior. NGN-590 scoped the Multi-Use Pay Link lifecycle correction. The problem was that completing a single transaction was marking the link as completed even when the usage limit had not been reached. The ticket captures the correct behavior: usage counts should increment until the limit is met, and only then should the link close. This ticket creates the fix scope so it can be implemented without ambiguity. NGN-624 addressed the marketplace duplicate category slug issue. Before, entering a duplicate slug would throw a raw Prisma unique-constraint error that was unreadable to admins. Now the admin sees a clear validation toast explaining that the slug is already in use. This was verified in staging with a PASS result. NGN-628 fixed the App Installs GraphQL errors in the marketplace admin portal. The page was failing to load entirely because of null environment references and permission check errors in the GraphQL layer. After the fix, App Installs loads correctly and is accessible again. Also verified in staging with PASS. Both marketplace admin tickets went through explicit staging checks before being marked done.">
+  <!-- SLIDE 5: Marketplace & Pay Lifecycle (heavy) -->
+  <section class="slide" data-notes="NGN-624 replaced the raw Prisma unique constraint error for duplicate category slugs with a user friendly validation toast. Verified in staging with PASS. NGN-628 fixed the GraphQL environment and permissions errors that were preventing App Installs from loading in the marketplace admin portal. Restored access and verified in staging with PASS. NGN-590 scoped the Multi-Use Pay Link lifecycle correction: completing a single transaction was marking the link as COMPLETED even when the usage limit had not been reached. The ticket captures the correct behavior so usage counts increment until the limit is met before the link closes. This is in done state as a scoping item, with implementation to follow.">
     <div class="meta">What Changed</div>
-    <h2>What Changed</h2>
+    <h2>Marketplace &amp; Pay Lifecycle</h2>
     <div class="ticket-grid">
-      <div class="ticket-card">
-        <div class="ticket-id">NGN-590</div>
-        <span class="badge badge-done">Done</span>
-        <h4>Multi-Use Pay Link Lifecycle</h4>
-        <p>Created ticket to prevent premature COMPLETED state. Usage counts should increment correctly instead of closing the link early.</p>
-      </div>
       <div class="ticket-card">
         <div class="ticket-id">NGN-624</div>
         <span class="badge badge-done">Done</span>
         <h4>Duplicate Category Slug Error</h4>
-        <p>Replaced raw Prisma error with user-friendly validation toast in staging. Result: PASS.</p>
+        <p>Replaced raw Prisma error with readable validation toast. Verified in staging. Result: PASS.</p>
       </div>
       <div class="ticket-card">
         <div class="ticket-id">NGN-628</div>
         <span class="badge badge-done">Done</span>
         <h4>App Installs GraphQL Errors</h4>
-        <p>Fixed environment and permissions errors blocking App Installs in marketplace admin. Verified in staging. Result: PASS.</p>
+        <p>Fixed environment and permissions errors blocking App Installs. Verified in staging. Result: PASS.</p>
+      </div>
+      <div class="ticket-card">
+        <div class="ticket-id">NGN-590</div>
+        <span class="badge badge-done">Done</span>
+        <h4>Multi-Use Pay Link Lifecycle</h4>
+        <p>Scoped ticket to prevent premature COMPLETED state. Usage counts should increment until limit is reached.</p>
       </div>
     </div>
   </section>
 
-  <!-- Slide 6: What's Next -->
-  <section class="slide" data-notes="These four tickets are the open items from this week, and they are also the immediate next actions. Each one has concrete scope and clear reproduction steps, so next week can start with direct validation and closure rather than new intake. NGN-600 covers the Partner Users search behavior under Manage Users. When an admin types into the search field, the entire iframe reloads instead of just updating the table, which causes the search input to lose focus mid-typing. The fix should scope the reload to the table level only. NGN-630 covers the service provider list not refreshing after a new provider is created in the marketplace admin portal. The creation flow completes, but the surrounding list stays stale until the page is manually refreshed. The expected behavior is an automatic refetch after create. NGN-631 covers clipboard copy failure in Customer Contacts. When an admin tries to copy a contact email from the Customer Details modal, the action fails because the Clipboard API is blocked by the current permissions policy. The fix needs to adjust the policy to allow clipboard access in that context. NGN-632 covers the Customers table cutting off the last visible entry when there are many records and lacking sufficient navigation controls to reach all results. The fix involves both pagination behavior and making the full result set navigable. I list the queue in full detail only on this slide to avoid repeating the same ticket list later.">
+  <!-- SLIDE 6: What's Next (heavy) -->
+  <section class="slide" data-notes="Four open items carry forward. NGN-600: searching Partner Users under Manage Users reloads the full iframe instead of updating only the table, which causes the search input to lose focus mid typing. The fix should scope the reload to the table level. NGN-630: newly created service providers in the marketplace admin portal do not appear in the list until the page is manually refreshed. Expected behavior is an automatic refetch after creation. NGN-631: copying a contact email from the Customer Details modal fails because the Clipboard API is blocked by the current permissions policy. The fix needs to allow clipboard access in that context. NGN-632: the Customers table cuts off the last entry for large result sets and lacks enough navigation controls. The fix involves both pagination behavior and making the full result set navigable.">
     <div class="meta">What's Next</div>
     <h2>What's Next</h2>
     <div class="ticket-grid">
@@ -370,7 +349,7 @@
         <div class="ticket-id">NGN-600</div>
         <span class="badge badge-review">Open Item</span>
         <h4>Partner Users Search Reload</h4>
-        <p>Searching reloads the full iframe instead of the table only, causing the search input to lose focus.</p>
+        <p>Searching reloads the full iframe instead of the table only, causing focus loss.</p>
       </div>
       <div class="ticket-card">
         <div class="ticket-id">NGN-630</div>
@@ -384,7 +363,7 @@
         <h4>Clipboard Copy in Customer Contacts</h4>
         <p>Copying a contact email fails because the Clipboard API is blocked by the permissions policy.</p>
       </div>
-      <div class="ticket-card" style="grid-column: span 1;">
+      <div class="ticket-card">
         <div class="ticket-id">NGN-632</div>
         <span class="badge badge-review">Open Item</span>
         <h4>Customers Table Cutoff &amp; Navigation</h4>
@@ -393,48 +372,49 @@
     </div>
   </section>
 
-  <!-- Slide 7: What Changed -->
-  <section class="slide" data-notes="Here is the net effect of the week, organized by what changed in the product and what changed operationally for the team. On the product side, reporting search behavior now avoids excessive per-keystroke request traffic, which makes the interface faster for admins and reduces unnecessary backend load. Checkout values on the Payment Complete page are now accurate after Pay Link checkout, so users see the correct item price instead of zero dollars. Discounted transaction breakdowns have been verified in staging with correct Subtotal, Discount, and Total Charge values displayed. Marketplace admin error handling is now readable: admins see a validation toast instead of a raw Prisma error when entering a duplicate category slug, and App Installs loads correctly instead of failing on GraphQL environment and permission errors. On the execution side, the open queue is limited to four usability items, each with concrete reproduction scope. No blockers were recorded that would slow down next-week follow-through. The team can start next week by validating and closing known items rather than spending time on discovery or triage.">
-    <div class="meta">What Changed</div>
+  <!-- SLIDE 7: What Changed (standard) -->
+  <section class="slide" data-notes="On the product side, reporting searches are now debounced, checkout item prices display correctly, and discounted transaction breakdowns are accurate. Marketplace admin errors show readable validation messages instead of raw database output, and App Installs loads without blocking errors. On the execution side, the open queue is limited to four usability items with concrete reproduction scope. The Multi-Use Pay Link lifecycle correction has been scoped. No blockers were recorded.">
+    <div class="meta">Net Effect</div>
     <h2>What Changed</h2>
     <div class="two-col" style="margin-top: 30px;">
       <div class="col">
         <h4>Fixed or Verified</h4>
         <ul>
-          <li>Reporting searches now debounced; fewer GraphQL requests</li>
+          <li>Reporting searches debounced; fewer GraphQL requests</li>
           <li>Checkout item prices display correctly after Pay Link payment</li>
-          <li>Discounted transaction breakdown values are accurate</li>
+          <li>Discounted transaction breakdown values are accurate in staging</li>
           <li>Marketplace admin errors are readable, not raw Prisma output</li>
           <li>App Installs loads without GraphQL blocking errors</li>
         </ul>
       </div>
       <div class="col">
-        <h4>Open Items Ready</h4>
+        <h4>Carried Forward</h4>
         <ul>
           <li>Partner Users search scoped to table-only updates</li>
           <li>Service provider list refresh after creation</li>
           <li>Clipboard API permissions for contact email copy</li>
           <li>Customer table pagination and cutoff fixes</li>
+          <li>Multi-Use Pay Link lifecycle correction scoped</li>
         </ul>
       </div>
     </div>
   </section>
 
-  <!-- Slide 8: What's Next -->
-  <section class="slide" data-notes="To close, we finished verified fixes across reporting, checkout, and marketplace admin this week. Six items are done with staging validation, and four open items sit in a clearly defined queue. The open work is concentrated in admin usability follow-through: NGN-600 for Partner Users search reload, NGN-630 for service provider list refresh, NGN-631 for clipboard copy permissions, and NGN-632 for customer table navigation and cutoff. Each has concrete reproduction steps and clear acceptance scope, so the handoff is straightforward. The next step is to validate or close each of these four items with targeted testing. No blockers were recorded that would change this plan. That is the status for 2026-W20.">
-    <div class="meta">What's Next</div>
+  <!-- SLIDE 8: Closing (light) -->
+  <section class="slide" data-notes="Six items completed with staging verification and four open items in a clearly defined queue. Zero blockers. The open work is NGN-600, NGN-630, NGN-631, and NGN-632, each with concrete reproduction steps. Next step is to validate or close each item with targeted testing.">
+    <div class="meta">Closing</div>
     <h1>What's Next</h1>
     <div class="subtitle">Verified fixes complete, open queue clear, next actions defined</div>
-    <div class="stats-row" style="justify-content: center; margin-top: 60px;">
+    <div class="stats-row" style="justify-content: center; margin-top: 50px;">
       <div class="stat"><div class="number">6</div><div class="label">Done &amp; Verified</div></div>
       <div class="stat"><div class="number">4</div><div class="label">Open Items</div></div>
       <div class="stat"><div class="number">0</div><div class="label">Blockers</div></div>
     </div>
-    <p style="text-align: center; margin-top: 60px; font-size: 24px; color: #8888a0;">This week: validate or close NGN-600, NGN-630, NGN-631, and NGN-632.</p>
+    <p style="text-align: center; margin-top: 50px; font-size: 24px; color: #8888a0;">Next: validate or close NGN-600, NGN-630, NGN-631, and NGN-632.</p>
   </section>
 </div>
 
-<!-- ================= PRESENTER VIEW ================= -->
+<!-- PRESENTER VIEW -->
 <div id="pv-container">
   <div class="pv-main">
     <div class="pv-current-wrap" id="pv-current-wrap"></div>
@@ -461,7 +441,6 @@
 </div>
 
 <script>
-  /* ================= SHARED DATA ================= */
   const slides = document.querySelectorAll('#stage .slide');
   const total = slides.length;
   let current = 0;
@@ -470,7 +449,6 @@
   let elapsedSeconds = 0;
   const isPresenter = new URLSearchParams(location.search).get('view') === 'presenter';
 
-  /* ================= SYNC CHANNEL ================= */
   let channel = null;
   if (typeof BroadcastChannel !== 'undefined') {
     channel = new BroadcastChannel('slideshow-sync');
@@ -478,7 +456,6 @@
 
   function broadcast(msg) {
     if (channel) channel.postMessage(msg);
-    // Fallback: localStorage events for same-origin tabs without BroadcastChannel
     try { localStorage.setItem('slideshow-sync', JSON.stringify({...msg, _t: Date.now()})); } catch(e){}
   }
 
@@ -491,7 +468,6 @@
     });
   }
 
-  /* ================= DECK LOGIC ================= */
   function updateScale() {
     const stage = document.getElementById('stage');
     const vw = window.innerWidth;
@@ -520,7 +496,6 @@
     const counter = document.getElementById('counter');
     if (counter) counter.textContent = (current + 1) + ' / ' + total;
 
-    // Update presenter view elements if this is the presenter window
     updatePresenterUI();
 
     if (!skipBroadcast) broadcast({ type: 'slide', index: current });
@@ -529,11 +504,10 @@
   function nextSlide() { showSlide(current + 1); }
   function prevSlide() { showSlide(current - 1); }
 
-  /* ================= PRESENTER UI ================= */
   function updatePresenterUI() {
     const notesEl = document.getElementById('pv-notes-text');
     const nextTitleEl = document.getElementById('pv-next-title');
-    if (!notesEl && !nextTitleEl) return; // not in presenter mode
+    if (!notesEl && !nextTitleEl) return;
 
     const notes = slides[current]?.dataset.notes || '';
     if (notesEl) notesEl.textContent = notes;
@@ -544,7 +518,6 @@
     if (nextTitleEl) nextTitleEl.textContent = nextTitle;
   }
 
-  /* ================= TIMER ================= */
   function startTimer() {
     if (timerInterval) return;
     timerInterval = setInterval(() => {
@@ -556,7 +529,6 @@
     }, 1000);
   }
 
-  /* ================= OPEN / CLOSE PRESENTER ================= */
   function openPresenterWindow() {
     if (pvWin && !pvWin.closed) {
       pvWin.focus();
@@ -569,10 +541,8 @@
     }
   }
 
-  /* ================= KEYBOARD ================= */
   document.addEventListener('keydown', (e) => {
     if (isPresenter) {
-      // Presenter window controls both windows via broadcast
       if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
         e.preventDefault(); nextSlide();
       } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
@@ -585,7 +555,6 @@
       return;
     }
 
-    // Audience deck
     if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
       e.preventDefault(); nextSlide();
     } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
@@ -599,7 +568,6 @@
     }
   });
 
-  // Click on stage to advance / go back (audience only)
   if (!isPresenter) {
     document.getElementById('stage').addEventListener('click', (e) => {
       const rect = document.getElementById('stage').getBoundingClientRect();
@@ -609,23 +577,19 @@
     });
   }
 
-  // Presenter window buttons
   if (isPresenter) {
     document.getElementById('pv-btn-next')?.addEventListener('click', nextSlide);
     document.getElementById('pv-btn-prev')?.addEventListener('click', prevSlide);
   }
 
-  /* ================= SYNC RECEIVE ================= */
   onSyncMessage((data) => {
     if (data && data.type === 'slide' && typeof data.index === 'number') {
       showSlide(data.index, true);
     }
   });
 
-  /* ================= INIT ================= */
   if (isPresenter) {
     document.body.classList.add('presenter-mode');
-    // Move stage into presenter preview area
     const wrap = document.getElementById('pv-current-wrap');
     const stage = document.getElementById('stage');
     if (wrap && stage) wrap.appendChild(stage);
