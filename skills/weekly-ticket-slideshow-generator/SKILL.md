@@ -137,7 +137,7 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 6. Decide whether the requested output should stay grouped or move to ticket-level sections, and prefer ticket-level sections when the user asks for in-depth coverage.
 7. Build an objective weekly brief as structured narrative content, not as a chronological ticket list.
 8. Keep wording audience-safe, evidence-based, and non-promotional.
-9. Hand the resulting brief to `$slideshow-generator` for slide interpretation and HTML composition.
+9. Hand the resulting brief to `$slideshow-generator` for slide interpretation and HTML composition. Inject the output path `memory/tickets/YYYY-W##/weekly-slideshow.html` so the generated file lands alongside the ticket dumps for that week.
 10. Do not take over slide rendering responsibilities unless the user explicitly asks for a combined workflow.
 
 ## Rules
