@@ -1,0 +1,4 @@
+interface:
+  display_name: "Issue Drafter"
+  short_description: "Draft technical issues from bug reports and publish to Linear"
+  default_prompt: "Use $issue-drafter to convert this report into a structured technical issue."
