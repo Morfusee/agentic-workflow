@@ -38,8 +38,8 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 11. When the week contains substantial concrete work, prefer a more detailed section over a vague summary.
 12. If a ticket has enough source material to explain the problem, the action taken, validation, and end state, include all four in the brief instead of collapsing that ticket into a one-line mention.
 13. If the week contains many distinct tickets, it is acceptable for the brief to use one primary section per ticket.
-14. Never include dates, days, or periods of inactivity (e.g., "Friday inactive", "no progress", "no activity", or similar).
-15. Exclude any mention of days where no work occurred. The brief must represent only actual work performed.
+14. Never include dates, days of the week, or temporal markers of any kind in the brief. This is a weekly summary report. Do not reference specific dates (e.g., "May 11", "2026-05-11"), days of the week (e.g., "Monday", "Friday"), or relative time anchors (e.g., "on the first day", "earlier this week"). The brief communicates what happened, not when it happened. This rule applies to all section content, presenter notes, work detail, and supporting evidence.
+15. Exclude any mention of days where no work occurred. The brief must represent only actual work performed. Drop inactive days entirely at the ingestion step.
 16. Do not use inactivity as a narrative device, contrast, or framing. Only active work items belong in the brief.
 
 ## Data Interpretation Rules
@@ -101,6 +101,7 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 7. Prefer straightforward weekly-report wording over presentation-slogan wording.
 8. Prefer `worked on`, `checked`, `confirmed`, `documented`, `updated`, `reviewed`, `tested`, or `followed up` when those verbs describe the work more accurately than stronger wording.
 9. Do not hide concrete work behind abstract phrasing such as `advanced the initiative` or `supported progress`.
+10. Before finalizing the brief, pass all presenter notes, objective summaries, and narrative content through `$avoid-ai-writing` in detect mode at the `blog` context profile. Fix every P0 and P1 flag (chatbot artifacts, word-list violations, significance inflation, template phrases, `let's` constructions, bold overuse in notes, em dashes, generic closers, hedge-stacked predictions, promotional language, real/actual adjective inflation, future-narrative closers). P2 flags (transition overuse, uniform sentence length, copula avoidance, numbered-list inflation, rhetorical question openers) should be checked and fixed when the pattern is unambiguous. The brief must read as factual internal reporting, not as AI-generated prose.
 
 ## Output Contract
 
@@ -118,7 +119,10 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 5. Treat the handoff as the source-of-truth interpretation layer for the slideshow workflow.
 6. Follow the example handoff shape in [`references/weekly-brief-example.md`](references/weekly-brief-example.md).
 7. Write `suggested presenter notes` as substantive spoken paragraphs, not bullet points. Each note block must contain enough detail that a presenter can deliver real information to the audience without needing to invent material on the spot.
-8. Do not write short one-sentence suggested notes. Target three to five sentences per note block. Cover what the section shows, why it matters, the evidence behind it, and the takeaway.
+8. Vary presenter note length based on the section's purpose and information density. Do not force every note to the same length:
+- **Light sections** (title slide, executive snapshot, closing position, simple stat summaries): write 1-3 sentences. These slides are visual cues that need brief context, not extended narration. Do not pad thin content.
+- **Standard sections** (weekly story overview, activity flow, net effect summary): write 2-4 sentences covering what the section shows, why it matters, and the key takeaway.
+- **Heavy sections** (detailed ticket breakdowns, priority work with multiple tickets, impact analysis): write 3-5 sentences covering the problem, the action taken, the validation or result, the current state, and what comes next. These slides carry the most evidence and need the most context.
 9. Keep `suggested presenter notes` factual and information-rich so `$slideshow-generator` can turn them into natural spoken script without adding hype or padding thin input.
 9. Use `work detail` to show the concrete tasks performed, validations made, findings recorded, or follow-through completed for the tickets in that section.
 10. Include ticket IDs inside `work detail` whenever that helps the audience map the work back to actual items.
@@ -131,15 +135,16 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 ## Execution Steps
 
 1. Resolve target week under `memory/tickets/YYYY-W##/`.
-2. Parse `# All Scraped Tickets`, `# Manual Tasks`, and stand-up script content from each daily dump.
+2. Parse `# All Scraped Tickets`, `# Selected Tickets`, `# Manual Tasks`, and stand-up script content from each daily dump. When any dump in the week contains a `# Selected Tickets` section, use the selected ticket IDs as an inclusion filter — only tickets that appear in at least one `# Selected Tickets` section across the week are included in the brief. When no `# Selected Tickets` section exists in any dump, fall back to including all tickets from `# All Scraped Tickets`. Never include tickets listed only in `# Unselected Tickets` unless they also appear in `# Selected Tickets`.
 3. Filter out any daily entries that describe inactivity, no progress, or no work performed. Drop them entirely before merging.
 4. Merge same ticket IDs and manual task IDs across the week and preserve chronological events.
 5. Identify the strongest weekly themes and the tickets that best explain the actual work performed.
 6. Decide whether the requested output should stay grouped or move to ticket-level sections, and prefer ticket-level sections when the user asks for in-depth coverage.
 7. Build an objective weekly brief as structured narrative content, not as a chronological ticket list.
 8. Keep wording audience-safe, evidence-based, and non-promotional.
-9. Hand the resulting brief to `$slideshow-generator` for slide interpretation and HTML composition. Inject the output path `memory/tickets/YYYY-W##/weekly-slideshow.html` so the generated file lands alongside the ticket dumps for that week.
-10. Do not take over slide rendering responsibilities unless the user explicitly asks for a combined workflow.
+9. Run all presenter notes, summaries, and narrative prose through `$avoid-ai-writing` in detect mode at the `blog` context profile. Fix every P0 and P1 flag before finalizing. Check P2 flags and fix unambiguous patterns. Remove chatbot artifacts, word-list violations (`delve`, `leverage`, `robust`, `seamless`, etc.), significance inflation, template phrases, `let's` constructions, generic closers, hedge-stacked predictions, and promotional language. The brief must read as plain factual internal reporting.
+10. Hand the resulting brief to `$slideshow-generator` for slide interpretation and HTML composition. Inject the output path `memory/tickets/YYYY-W##/weekly-slideshow.html` so the generated file lands alongside the ticket dumps for that week.
+11. Do not take over slide rendering responsibilities unless the user explicitly asks for a combined workflow.
 
 ## Rules
 
@@ -161,3 +166,4 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 14. Treat manual tasks from the `# Manual Tasks` section as equal work evidence alongside scraped tickets.
 15. When manual tasks share a theme or area with tickets, group them together in the same brief section.
 16. Keep manual task narrative in the brief factual and brief, using only title, status, and activity notes as evidence.
+17. Vary presenter note depth proportionally to the section. Light overview sections get short, direct notes. Heavy ticket-breakdown sections get fuller notes with context, evidence, and resolution. Do not write a long note for a thin slide or a thin note for an evidence-rich slide.

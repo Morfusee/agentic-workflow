@@ -218,16 +218,23 @@ Read latest dump, let user choose items, generate spoken stand-up via `$standup-
 - Prefer latest ISO week folder `YYYY-W##` and latest `YYYY-MM-DD-ticket-dump.md`.
 - If no compatible dump exists, report that and instruct user to run dump creation.
 
+### Unselected Ticket Carry-Over
+
+Tickets not selected for stand-up persist across days. Any ticket in `# Unselected Tickets` of a previous dump reappears as a selectable item in future stand-up prompts until the user selects it.
+
 ### Execution Steps
 
 1. Resolve dump file.
 - Print exact dump path used.
-- Parse `# All Scraped Tickets` and `# Manual Tasks`.
+- Parse `# All Scraped Tickets`, `# Manual Tasks`, and `# Unselected Tickets`.
 - If present, parse `# Selected Tickets` as rerun index only.
+- Also scan the most recent previous dump file (previous day or earlier in the same week folder) for `# Unselected Tickets`. Merge those carry-over tickets into the selectable list so nothing falls through the cracks across days.
 
 2. Present selectable items.
-- Show one numbered list with scraped tickets and manual tasks.
+- Show one numbered list with scraped tickets, manual tasks, and carry-over unselected tickets.
 - For manual tasks, prefix ID display with `[Manual]`.
+- For carry-over unselected tickets from previous dumps, prefix ID display with `[Carry-over]`.
+- Group visually: current dump's tickets first, then carry-over tickets.
 
 3. Collect selection with exact prompt.
 - `Which tickets do you want to include in your stand-up? You can reply with ticket numbers, ticket IDs, or all. To add a manual task not tracked in Linear, describe it as "Manual: [task title] -- [Done / In Progress / To Do] [optional description]".`
@@ -255,6 +262,7 @@ Read latest dump, let user choose items, generate spoken stand-up via `$standup-
 7. Update dump file in place.
 - Write `# Stand-up Script` at top.
 - Keep `# Selected Tickets` as a lightweight reference/index.
+- Write `# Unselected Tickets` with all tickets not selected this run (from both current dump and carry-over pool). Each entry records the source dump date, status as of that date, role, and activity notes. This section replaces any previous `# Unselected Tickets` — selected items are removed, unselected items carry forward.
 - Preserve full `# All Scraped Tickets` unchanged as historical source.
 - Append new entries to `# Manual Tasks`; never remove/rewrite existing entries.
 
@@ -285,6 +293,18 @@ No major blockers right now.
   - Activity date: [YYYY-MM-DD]
   - Reference: `# Manual Tasks` -> `## [MANUAL-###]: [Task title]`
   - Stand-up relevance: [Why selected]
+
+---
+
+# Unselected Tickets
+
+Carry-over tickets not yet included in a stand-up. These reappear as selectable items in future stand-up prompts.
+
+- [TICKET-ID]: [Ticket title]
+  - Source dump: [YYYY-MM-DD]
+  - Status as of [YYYY-MM-DD]: [status]
+  - Role: [dev-owner / contributor / tester-only]
+  - Activity notes: [Brief summary of work done]
 
 ---
 

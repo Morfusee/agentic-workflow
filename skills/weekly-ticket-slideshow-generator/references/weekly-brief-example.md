@@ -36,7 +36,7 @@ sections:
       - "NGN-562: checked discounted transaction details on fresh transactions and confirmed expected values."
       - "NGN-624 and NGN-628: handled marketplace admin error and access issues."
       - "NGN-600, NGN-630, NGN-631, and NGN-632: carried usability issues into review with concrete follow-through items."
-    presenter_notes: "Start with the three work areas, then name the tickets that best show the work in each area. Keep the explanation simple and use the ticket detail to show what was done rather than speaking only in themes."
+    presenter_notes: "The work this week fell into three areas: checkout accuracy, marketplace admin fixes, and admin usability follow-through. I will walk through each one with the specific tickets that represent the actual work done."
     takeaway: "The week was concentrated in a few visible workflows, with concrete ticket work in each one."
   - key: "executive-snapshot"
     title: "Executive Snapshot"
@@ -49,7 +49,7 @@ sections:
       - "Done items included checkout, reporting, and marketplace admin fixes."
       - "Pending-review items focused on admin usability rather than new investigation."
       - "Validation activity showed up in both ticket movement and staging notes."
-    presenter_notes: "Use the counts as a quick summary, but immediately connect them to the type of work behind them so the audience hears more than just numbers."
+    presenter_notes: "Six items were completed with staging verification, and four remain in the review queue with clear scope. No blockers were recorded."
     takeaway: "The week ended with checked fixes and a short open list."
   - key: "activity-flow"
     title: "Activity Flow"
@@ -63,7 +63,7 @@ sections:
       - "NGN-624 and NGN-628 closed marketplace admin issues after follow-through."
       - "NGN-600, NGN-630, NGN-631, and NGN-632 formed the review queue for remaining admin usability work."
       - "MANUAL-001: updated internal deployment documentation was done as a side task without a Linear ticket."
-    presenter_notes: "Describe how tickets moved through the week, then point to the tickets that closed versus the tickets that stayed in review so the flow is tied back to actual work."
+    presenter_notes: "Tickets moved through several stages during the week: initial validation, ticket creation, verification in staging, and finally the review queue for remaining items. The flow shows progress rather than just end-state counts."
     takeaway: "The week ended with a small amount of open work, not with open uncertainty."
   - key: "priority-work"
     title: "Priority Work"
@@ -83,7 +83,7 @@ sections:
       - "NGN-630: followed up on service provider refresh behavior after create."
       - "NGN-631: followed up on contact email copy behavior in customer details."
       - "NGN-632: followed up on customer table navigation and cutoff behavior."
-    presenter_notes: "Spend more time here than on the other sections. Name the tickets, state what was done on each one in plain language, and separate completed work from the review queue."
+    presenter_notes: "On priority work, NGN-589 fixed the item price display on the Payment Complete page so users see the actual item cost instead of zero dollars after a Pay Link checkout. The fix uses a fallback that multiplies unit price by quantity when the item total field is missing in the success-state response. NGN-562 verified the Transaction Details cost breakdown for discounted Pay Links in staging, confirming the Subtotal, Discount, and Total Charge values are correct on freshly created transactions. NGN-624 and NGN-628 improved marketplace admin behavior: the duplicate category slug now shows a readable validation toast instead of a raw Prisma error, and App Installs loads without the previous GraphQL environment and permissions errors. Both were verified in staging. NGN-600, NGN-630, NGN-631, and NGN-632 remain in pending review for admin usability follow-through: Partner Users search reload, service provider list refresh, clipboard copy, and customer table navigation."
     takeaway: "The priority set should show both completed fixes and pending follow-through."
   - key: "impact"
     title: "What Changed"
@@ -97,7 +97,7 @@ sections:
       - "Completed checkout tickets reduced incorrect or unclear payment details."
       - "Marketplace admin tickets removed or clarified error cases."
       - "The remaining usability items were narrowed into specific review-ready tasks instead of broad complaints."
-    presenter_notes: "Explain what changed because of the ticket work, but keep it plain. The point is to connect the work to visible outcomes, not to oversell it."
+    presenter_notes: "The main results this week: checkout values and transaction details are now correct or verified, marketplace admin errors are readable instead of raw output, and the remaining queue is four specific usability items rather than open-ended investigation."
     takeaway: "The main result is clearer workflow behavior and a cleaner remaining queue."
   - key: "next-week"
     title: "Next-Week Commitments"
@@ -112,11 +112,11 @@ sections:
       - "The next week starts with four known review items rather than new intake."
       - "Each item already has a clear behavior to validate or close."
       - "The queue is concentrated in admin usability follow-through."
-    presenter_notes: "Close with the specific open items and what needs to happen on them. Keep this section practical and direct."
+    presenter_notes: "Next week starts with four open items already scoped: Partner Users search reload, service provider list refresh, clipboard copy, and customer table navigation. Each has concrete reproduction steps and clear acceptance criteria. No blockers in the way."
     takeaway: "Next week starts with a short, specific queue."
 closing:
   objective: "The week covered completed fixes, completed checks, and a short list of remaining follow-through."
-  presenter_notes: "Close by restating what was completed, what was checked, and what remains in the queue. Keep the ending plain and definite."
+  presenter_notes: "Six items done with staging verification, four open items with clear scope, and zero blockers. The open queue is concentrated in admin usability follow-through with concrete reproduction steps on each item."
 ```
 
 ## Notes
@@ -127,3 +127,4 @@ closing:
 4. Use `work_detail` to preserve the ticket and task visibility that would be lost in a thin summary.
 5. When the user asks for in-depth coverage, expand the `sections` list so individual tickets can become their own sections instead of being flattened into grouped summaries.
 6. Manual task IDs use the `MANUAL-###` prefix. Treat them alongside tickets in all sections, using only title, status, and activity notes as evidence. Keep manual task narration factual and brief.
+7. Never include dates, days of the week, or temporal markers in any section, presenter note, or work detail field. This is a weekly summary report. The brief communicates what happened, not when it happened.
