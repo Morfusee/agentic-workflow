@@ -33,11 +33,9 @@ When creating or drafting ClickUp tickets (whether directly or via `$issue-draft
 ```
 ## Description
 <1-2 sentence purpose and context>
-
 ## Scope
 - actionable work item
 - actionable work item
-
 ## Deliverable
 - concrete acceptance criteria / definition of done
 ```
@@ -46,7 +44,7 @@ When creating or drafting ClickUp tickets (whether directly or via `$issue-draft
 - **## Scope**: bullet list of specific work items to complete. Use imperative action verbs.
 - **## Deliverable**: bullet list of concrete acceptance criteria. These answer "how do we know this is done?"
 - Use `##` (H2) for all section headers in the description body. Do not use `**bold**` headers.
-- Separate sections with a blank line.
+- No blank line between a `##` header and its content. Sections flow directly from header to content line.
 
 ## Agent Execution Contract
 
