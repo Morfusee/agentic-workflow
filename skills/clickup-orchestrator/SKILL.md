@@ -14,10 +14,30 @@ Infer intent heuristically and route to one branch:
 1. `dump-creation`: collect ClickUp activity and write a ticket dump.
 2. `standup-from-dump`: read dump, select tickets, generate spoken stand-up, update dump.
 3. `full-flow`: run dump creation then stand-up from that dump.
-4. `issue-draft`: route to `$issue-drafter` only when request is clearly ClickUp-contextual.
+4. `issue-draft`: route to `$issue-drafter` only when request is clearly ClickUp-contextual. Instruct `$issue-drafter` to output the final draft in the ClickUp ticket format convention defined below (Description → Scope → Deliverable) instead of the default bug-report format.
 5. `qa-comment`: route to `$qa-comment-formatter` when the user provides QA results, pass/fail checks, or test observations to format into a ClickUp ticket comment. If the request includes a ClickUp task ID or task URL, pass it through as `clickup_task_id` so the formatter publishes directly to that task.
 
 If confidence is low, ask one focused clarification.
+
+## ClickUp Ticket Format Convention
+
+When creating or drafting ClickUp tickets (whether directly or via `$issue-drafter`), use the workspace's recurring description format observed across Sprint-list tickets:
+
+```
+Description
+<1-2 sentence purpose and context>
+
+Scope
+- actionable work item
+- actionable work item
+
+Deliverable
+- concrete acceptance criteria / definition of done
+```
+
+- **Description**: what the ticket is about, brief context. Keep to 1-2 sentences.
+- **Scope**: bullet list of specific work items to complete. Use imperative action verbs.
+- **Deliverable**: bullet list of concrete acceptance criteria. These answer "how do we know this is done?"
 
 ## Agent Execution Contract
 
