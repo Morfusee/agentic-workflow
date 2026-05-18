@@ -115,6 +115,10 @@ Add optional icon/color fields only when explicitly provided or available.
 
 This repository is symlinked for skill usage. Treat local repo files as source of truth for all skill work.
 
+## Commit Convention
+
+All commits in this repository must follow [Conventional Commits v1.0.0](https://www.conventionalcommits.org/en/v1.0.0/) as defined in [`CONTRIBUTING.md`](CONTRIBUTING.md). Before committing, read `CONTRIBUTING.md` and apply its rules: valid types (`feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`), optional scope in parentheses, imperative mood, lowercase description, no trailing period, and under 72 characters.
+
 ## Codex Visibility Control
 
 Place an empty `.codex-hidden` file inside any skill folder to prevent it from being symlinked into Codex's skills directory. The skill will still sync to OpenCode when `SYNC_OPENCODE=true`.
