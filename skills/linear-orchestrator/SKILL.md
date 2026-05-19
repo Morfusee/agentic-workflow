@@ -94,7 +94,7 @@ Create one daily Markdown dump of relevant Linear ticket activity and print a co
 - Group by activity date `YYYY-MM-DD`, then by status.
 
 7. Build output path and prevent overwrite.
-- Root path: `memory/tickets/linear/` under the tool's memory directory.
+- Root path: `memory/tickets/linear/`.
 - Week folder: `YYYY-W##` (ISO week).
 - File format: `YYYY-MM-DD-ticket-dump.md`.
 - Create missing directories.
@@ -214,7 +214,7 @@ Read latest dump, let user choose items, generate spoken stand-up via `$standup-
 
 ### Prerequisites
 
-- A compatible dump file exists under the tool-local `memory/tickets/linear/`.
+- A compatible dump file exists under `memory/tickets/linear/`.
 - Prefer latest ISO week folder `YYYY-W##` and latest `YYYY-MM-DD-ticket-dump.md`.
 - If no compatible dump exists, report that and instruct user to run dump creation.
 
