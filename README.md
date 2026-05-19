@@ -1,49 +1,74 @@
 # agentic-workflow
 
-## Codex Skills (Windows Only)
+## Windows setup
 
-Use this repo `skills/` folder as the single source of truth for custom skills. The workflow can read a local `.skills.env` file so you can keep your OpenCode mirroring preference in config instead of repeating flags.
+This repo is the source of truth for Neovim, OpenCode, memory, and skills.
 
-### Local config
+### 1. Link Neovim
 
-Copy [`.skills.env.example`](C:/Users/mrqvp/Documents/Programming/agentic-workflow/.skills.env.example) to `.skills.env` and set:
+Run:
+
+```powershell
+just nvim-link
+```
+
+This creates `configs\nvim` as a junction to `%LOCALAPPDATA%\nvim`.
+
+### 2. Link OpenCode config
+
+Run:
+
+```powershell
+just opencode-link
+```
+
+This links `configs\opencode\opencode.jsonc` and `configs\opencode\AGENTS.md` into `%USERPROFILE%\.config\opencode\`.
+
+If you want to open the config after linking, run:
+
+```powershell
+just opencode-config
+```
+
+### 3. Link memory
+
+Run:
+
+```powershell
+just memory-sync
+```
+
+This junctions `memory\` into:
+
+1. `%USERPROFILE%\.config\opencode\memory`
+2. `%USERPROFILE%\.codex\memory`
+
+### 4. Set up skills
+
+If you want OpenCode skill mirroring, copy `.skills.env.example` to `.skills.env` and set:
 
 ```dotenv
 SYNC_OPENCODE=true
 ```
 
-Use `false` if you only want Codex mirroring. The local `.skills.env` file is gitignored.
-
-### One-command workflow with `just` (recommended)
-
-Run:
+Then run:
 
 ```powershell
 just skills
 ```
 
-What it does:
-1. Sync existing folders in `skills\` into `%USERPROFILE%\.codex\skills\` via `mklink /J`.
-2. Start one watcher that keeps the selected target folders mirrored from the same repo source.
+`just skills` bootstraps `skills\` into `%USERPROFILE%\.codex\skills\`, then keeps watching for new skill folders. If `SYNC_OPENCODE=true`, it also mirrors into `%USERPROFILE%\.config\opencode\skills`.
 
-If `.skills.env` contains `SYNC_OPENCODE=true`, the same workflow also mirrors into `%USERPROFILE%\.config\opencode\skills`.
+Leave that terminal open while developing skills.
 
-Leave that terminal open to keep continuous linking active.
+## Daily use
 
-### Optional `just` targets
+1. Put each new skill in `skills\<skill-name>\`.
+2. Keep `just skills` running while you add or edit skills.
+3. Rerun `just opencode-link` or `just memory-sync` if you change those sources.
 
-```powershell
-just skills-sync
-just skills-watch
-just skills-open
-```
+## Troubleshooting
 
-These map to:
-- [sync-skills.cmd](C:/Users/mrqvp/Documents/Programming/agentic-workflow/scripts/windows/sync-skills.cmd)
-- [watch-skills.ps1](C:/Users/mrqvp/Documents/Programming/agentic-workflow/scripts/windows/watch-skills.ps1)
-
-### Required skill structure
-
-Each skill folder must contain:
-
-`<skill-name>\SKILL.md`
+1. If `just nvim-link` says `%LOCALAPPDATA%\nvim` is missing, create that folder first.
+2. If `just opencode-link` or `just memory-sync` hit an existing real file or directory, move it aside and rerun the command.
+3. If Windows blocks OpenCode symlinks, the script will fall back to hard links when possible.

@@ -3,11 +3,11 @@ set shell := ["powershell.exe", "-NoLogo", "-NoProfile", "-ExecutionPolicy", "By
 alias s := skills
 alias ss := skills-sync
 alias so := skills-open
-alias sw := skills-watch
 alias nl := nvim-link
 alias wo := weekly-open
 alias oco := opencode-config
 alias ol := opencode-link
+alias ms := memory-sync
 
 default:
   @just --list
@@ -20,10 +20,6 @@ skills-sync:
 skills-open:
   @explorer "$env:USERPROFILE\.codex\skills"
   @if ((Test-Path '.\.skills.env') -and ((Get-Content '.\.skills.env' | Where-Object { $_ -match '^\s*SYNC_OPENCODE\s*=\s*true\s*$' }).Count -gt 0)) { explorer "$env:USERPROFILE\.config\opencode\skills" }
-
-# Watch the single repo skills source and mirror new folders into selected targets
-skills-watch:
-  @powershell -ExecutionPolicy Bypass -File .\scripts\windows\watch-skills.ps1
 
 # One command for daily use: bootstrap selected targets, then keep them in sync
 skills:
@@ -38,9 +34,13 @@ nvim-link:
 opencode-config:
   @& "$env:LOCALAPPDATA\Programs\Microsoft VS Code\bin\code.cmd" "$env:USERPROFILE\.config\opencode\opencode.jsonc"
 
-# Symlink repo .opencode/opencode.jsonc to ~/.config/opencode/opencode.jsonc
+# Link repo configs/opencode/* into ~/.config/opencode/
 opencode-link:
   @powershell -ExecutionPolicy Bypass -File .\scripts\windows\link-opencode-config.ps1
+
+# Junction the repo memory folder into OpenCode and Codex
+memory-sync:
+  @powershell -ExecutionPolicy Bypass -File .\scripts\windows\link-memory.ps1
 
 # List latest 5 weeks, select one, and open its weekly slideshow HTML
 weekly-open:
