@@ -14,6 +14,9 @@
     }
   },
   "permission": {
+    "external_directory": {
+      "C:/Users/*/Documents/Programming/**": "allow"
+    },
     "edit": {
       "C:/Users/*/Documents/Programming/**": "allow"
     },
