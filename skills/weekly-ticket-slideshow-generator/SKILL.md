@@ -134,7 +134,7 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 
 ## Execution Steps
 
-1. Resolve target week under `memory/tickets/linear/YYYY-W##/`.
+1. Resolve target week under the tool-local `memory/tickets/linear/YYYY-W##/`.
 2. Parse `# All Scraped Tickets`, `# Selected Tickets`, `# Manual Tasks`, and stand-up script content from each daily dump. When any dump in the week contains a `# Selected Tickets` section, use the selected ticket IDs as an inclusion filter — only tickets that appear in at least one `# Selected Tickets` section across the week are included in the brief. When no `# Selected Tickets` section exists in any dump, fall back to including all tickets from `# All Scraped Tickets`. Never include tickets listed only in `# Unselected Tickets` unless they also appear in `# Selected Tickets`.
 3. Filter out any daily entries that describe inactivity, no progress, or no work performed. Drop them entirely before merging.
 4. Merge same ticket IDs and manual task IDs across the week and preserve chronological events.
@@ -143,7 +143,7 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 7. Build an objective weekly brief as structured narrative content, not as a chronological ticket list.
 8. Keep wording audience-safe, evidence-based, and non-promotional.
 9. Run all presenter notes, summaries, and narrative prose through `$avoid-ai-writing` in detect mode at the `blog` context profile. Fix every P0 and P1 flag before finalizing. Check P2 flags and fix unambiguous patterns. Remove chatbot artifacts, word-list violations (`delve`, `leverage`, `robust`, `seamless`, etc.), significance inflation, template phrases, `let's` constructions, generic closers, hedge-stacked predictions, and promotional language. The brief must read as plain factual internal reporting.
-10. Hand the resulting brief to `$slideshow-generator` for slide interpretation and HTML composition. Inject the output path `memory/tickets/linear/YYYY-W##/weekly-slideshow.html` so the generated file lands alongside the ticket dumps for that week.
+10. Hand the resulting brief to `$slideshow-generator` for slide interpretation and HTML composition. Inject the tool-local output path `memory/tickets/linear/YYYY-W##/weekly-slideshow.html` so the generated file lands alongside the ticket dumps for that week.
 11. Do not take over slide rendering responsibilities unless the user explicitly asks for a combined workflow.
 
 ## Rules

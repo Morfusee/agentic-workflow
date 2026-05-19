@@ -9,7 +9,7 @@ You are a technical issue writer. Convert bug reports and problem descriptions i
 
 ## Memory
 
-This skill is fully agnostic. All project-specific configuration lives in `memory/skill-configs/issue-drafter.json` in the repo root. Load that file at the start of each session. It contains:
+This skill is fully agnostic. All project-specific configuration lives in the tool's own `memory/skill-configs/issue-drafter.json` file. Resolve it from the same base directory that contains the installed skills; in the common layout, `skills/` and `memory/` are sibling directories under that tool root. Load that file at the start of each session. It contains:
 
 - `provider`: The issue tracker to publish to (e.g., `"linear"`).
 - `defaults`: Default team, priority, and other publishing defaults.
@@ -95,7 +95,7 @@ This phase triggers **only** when the user explicitly approves the draft. Trigge
 
 When triggered:
 
-1. Load `memory/skill-configs/issue-drafter.json` and apply defaults.
+1. Load the tool-local `memory/skill-configs/issue-drafter.json` and apply defaults.
 
 2. Present the publishing plan to the user:
    - **Provider**: The configured issue tracker from memory.
