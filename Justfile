@@ -36,7 +36,7 @@ nvim-link:
 
 # Open opencode's config file in the default editor
 opencode-config:
-  @code "$env:USERPROFILE\.config\opencode\opencode.jsonc"
+  @& "$env:LOCALAPPDATA\Programs\Microsoft VS Code\bin\code.cmd" "$env:USERPROFILE\.config\opencode\opencode.jsonc"
 
 # Symlink repo .opencode/opencode.jsonc to ~/.config/opencode/opencode.jsonc
 opencode-link:
