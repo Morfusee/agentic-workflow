@@ -12,4 +12,4 @@ Workflow
 4. Run automated checks where possible (tsconfig strict mode, test files/coverage, common anti-patterns).
 5. Produce a detailed report with file paths, line numbers, code snippets, and fixes.
 
-Use the full checklist and output format in `skills/react-quality-review/references/react-quality-review-checklist.md`.
+Use the full checklist and output format in `references/react-quality-review-checklist.md`.

@@ -34,8 +34,8 @@ This skill acts as your writing partner, helping you research, outline, draft, a
 
 Create a dedicated folder for your article:
 ```
-mkdir ~/writing/my-article-title
-cd ~/writing/my-article-title
+mkdir memory/writing/my-article-title
+cd memory/writing/my-article-title
 ```
 
 Create your draft file:
@@ -494,7 +494,7 @@ Ready for the next section!
 Recommended structure for writing projects:
 
 ```
-~/writing/article-name/
+memory/writing/article-name/
 ├── outline.md          # Your outline
 ├── research.md         # All research and citations
 ├── draft-v1.md         # First draft
