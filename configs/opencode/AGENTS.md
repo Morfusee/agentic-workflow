@@ -38,6 +38,10 @@ Avoid formatting-only churn outside the touched area.
 
 Do not perform opportunistic cleanup unless explicitly requested.
 
+## Complex Task Orchestration
+
+For large-scale work spanning 3+ files, architectural redesign, multi-step builds, or any task that has been ongoing for 3 minutes, load `$skill-orchestrator-go` before delegating to subagents. Do not load it for single-file edits, quick audits, or simple fixes.
+
 ## Required Workflow Before Editing
 
 Before making code changes:
