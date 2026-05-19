@@ -1,0 +1,4 @@
+interface:
+  display_name: "React Quality Review"
+  short_description: "Comprehensive React/TypeScript code quality review"
+  default_prompt: "Use $react-quality-review to review React/TypeScript code against CODE_STANDARDS.md."
