@@ -1,3 +1,38 @@
+<!-- BEGIN AGENT NOTICE -->
+<!-- Every agent reading this repository must honor the following rules. -->
+
+# AGENT NOTICE — CRITICAL PATH RULES
+
+## Rule 1: Canonical Memory Root
+
+All memory-backed workflows in this repository resolve under this exact path:
+
+```
+${HOME}/Documents/Programming/agentic-workflow/memory
+```
+
+This is the **only** authoritative location for memory reads and writes.  
+Do not create alternate memory roots. Do not write memory data elsewhere.
+
+## Rule 2: Do Not Edit Mirrored / Junctioned Paths
+
+This repository uses Windows junctions and symlinks for daily use:
+
+| Source (edit here) | Mirrored to (do NOT edit here) |
+|---|---|
+| `memory/` | `%USERPROFILE%\.config\opencode\memory` |
+| `memory/` | `%USERPROFILE%\.codex\memory` |
+| `configs/opencode/` | `%USERPROFILE%\.config\opencode\` |
+| `skills/` | `%USERPROFILE%\.codex\skills\` |
+| `skills/` | `%USERPROFILE%\.config\opencode\skills\` (when `SYNC_OPENCODE=true`) |
+
+**Always edit files in this repository's working tree.**  
+Changes made in mirrored/junctioned target locations will be overwritten or lost.
+
+<!-- END AGENT NOTICE -->
+
+---
+
 # agentic-workflow
 
 ## Windows setup
