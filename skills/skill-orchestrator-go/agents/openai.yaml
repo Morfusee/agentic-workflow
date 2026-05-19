@@ -1,0 +1,4 @@
+interface:
+  display_name: "Skill Orchestrator Go"
+  short_description: "Coordinate cheap subagents under main-agent control"
+  default_prompt: "Use $skill-orchestrator-go to supervise small parallel subagent tasks while keeping planning, review, and final decisions in the main agent."
