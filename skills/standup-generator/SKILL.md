@@ -1,6 +1,6 @@
 ---
 name: standup-generator
-description: Generate a spoken stand-up script from structured work items and explicit evidence, with strict attribution and chronology rules. Use when the user wants an agnostic stand-up script from tickets, tasks, notes, or mixed sources without source-specific assumptions.
+description: Generate a spoken stand-up script from structured work items, explicit next-day plans, and explicit evidence, with strict attribution and chronology rules. Use when the user wants an agnostic stand-up script from tickets, tasks, notes, or mixed sources without source-specific assumptions.
 ---
 
 # Stand-up Generator
@@ -10,6 +10,7 @@ Generate stand-up narration from selected work items only. Stay source-agnostic 
 ## Inputs
 
 - Require selected work items plus supporting evidence for each item.
+- Require an explicit next-day plan when the user wants a forward-looking section.
 - Accept mixed sources (tickets, docs, manual tasks, notes) as long as each item has a title, status, activity date, and evidence notes.
 - If evidence is missing for material claims, ask one focused clarification instead of guessing.
 
@@ -25,6 +26,7 @@ Generate stand-up narration from selected work items only. Stay source-agnostic 
 ## Output Contract
 
 - Start with `Yesterday, I ...`.
+- Include an explicit `Today, I plan to ...` line only from user-provided plan text or other explicit plan evidence.
 - Walk selected items in chronological order.
 - Avoid internal IDs in spoken narration unless the user explicitly asks.
 - End with blocker line:
@@ -36,5 +38,7 @@ Generate stand-up narration from selected work items only. Stay source-agnostic 
 1. Never fabricate missing actions, ownership, reasons, or outcomes.
 2. Prefer detail over over-compression when several meaningful steps exist.
 3. Keep uncertain statements literal and scoped to known facts.
-4. If rerunning, ignore old script text and regenerate from selected evidence.
-5. Allow wrappers (for specific data sources) to add formatting/selection behavior while preserving these principles.
+4. Never infer next-day plans from remaining open work, unselected work, or carry-over items.
+5. If a next-day plan is requested but not supplied, ask one focused clarification instead of guessing.
+6. If rerunning, ignore old script text and regenerate from selected evidence.
+7. Allow wrappers (for specific data sources) to add formatting/selection behavior while preserving these principles.

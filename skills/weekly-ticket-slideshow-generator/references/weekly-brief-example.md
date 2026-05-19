@@ -17,7 +17,7 @@ title: "Weekly Delivery Narrative - 2026-W20"
 subtitle: "Admin usability, checkout accuracy, and marketplace admin behavior"
 summary:
   objective: "The week covered checkout fixes, marketplace admin issues, and admin usability follow-through."
-  why_it_matters: "The brief shows the work completed, the items that were checked, and the small set still moving through review."
+  why_it_matters: "The brief shows the work completed, the items that were checked, and the small set still open."
   evidence:
     - "6 tickets were done by week close."
     - "4 tickets remained in pending review."
@@ -36,7 +36,7 @@ sections:
       - "NGN-562: checked discounted transaction details on fresh transactions and confirmed expected values."
       - "NGN-624 and NGN-628: handled marketplace admin error and access issues."
       - "NGN-600, NGN-630, NGN-631, and NGN-632: carried usability issues into review with concrete follow-through items."
-    presenter_notes: "The work this week fell into three areas: checkout accuracy, marketplace admin fixes, and admin usability follow-through. I will walk through each one with the specific tickets that represent the actual work done."
+    presenter_notes: "The work this week fell into three areas: checkout accuracy, marketplace admin fixes, and admin usability follow-through. This section covers each one with the specific tickets that represent the actual work done."
     takeaway: "The week was concentrated in a few visible workflows, with concrete ticket work in each one."
   - key: "executive-snapshot"
     title: "Executive Snapshot"
@@ -67,7 +67,7 @@ sections:
     takeaway: "The week ended with a small amount of open work, not with open uncertainty."
   - key: "priority-work"
     title: "Priority Work"
-    objective_summary: "A smaller set of tickets captures the work completed, the checks performed, and the remaining follow-through."
+    objective_summary: "A smaller set of tickets captures the work completed, the checks performed, and the remaining open items."
     why_it_matters: "These items show the work with enough detail for team visibility without listing every ticket."
     supporting_evidence:
       - "NGN-589 corrected item prices on the payment complete page."
@@ -84,10 +84,10 @@ sections:
       - "NGN-631: followed up on contact email copy behavior in customer details."
       - "NGN-632: followed up on customer table navigation and cutoff behavior."
     presenter_notes: "On priority work, NGN-589 fixed the item price display on the Payment Complete page so users see the actual item cost instead of zero dollars after a Pay Link checkout. The fix uses a fallback that multiplies unit price by quantity when the item total field is missing in the success-state response. NGN-562 verified the Transaction Details cost breakdown for discounted Pay Links in staging, confirming the Subtotal, Discount, and Total Charge values are correct on freshly created transactions. NGN-624 and NGN-628 improved marketplace admin behavior: the duplicate category slug now shows a readable validation toast instead of a raw Prisma error, and App Installs loads without the previous GraphQL environment and permissions errors. Both were verified in staging. NGN-600, NGN-630, NGN-631, and NGN-632 remain in pending review for admin usability follow-through: Partner Users search reload, service provider list refresh, clipboard copy, and customer table navigation."
-    takeaway: "The priority set should show both completed fixes and pending follow-through."
+    takeaway: "The priority set should show both completed fixes and pending open items."
   - key: "impact"
     title: "What Changed"
-    objective_summary: "Several common workflows now return clearer results or have a defined next step."
+    objective_summary: "Several common workflows now return clearer results or have a defined open item."
     why_it_matters: "This ties the ticket work back to what changed in the product or in the work queue."
     supporting_evidence:
       - "Checkout values and transaction details were corrected or verified."
@@ -99,9 +99,9 @@ sections:
       - "The remaining usability items were narrowed into specific review-ready tasks instead of broad complaints."
     presenter_notes: "The main results this week: checkout values and transaction details are now correct or verified, marketplace admin errors are readable instead of raw output, and the remaining queue is four specific usability items rather than open-ended investigation."
     takeaway: "The main result is clearer workflow behavior and a cleaner remaining queue."
-  - key: "next-week"
-    title: "Next-Week Commitments"
-    objective_summary: "The remaining work can move through review and closure next week."
+  - key: "open-items"
+    title: "Open Items"
+    objective_summary: "The remaining work is already defined in the queue."
     why_it_matters: "The open queue is already defined."
     supporting_evidence:
       - "NGN-600 covers Partner Users search reload behavior."
@@ -109,13 +109,13 @@ sections:
       - "NGN-631 covers clipboard copy behavior."
       - "NGN-632 covers customer table navigation and cutoff behavior."
     work_detail:
-      - "The next week starts with four known review items rather than new intake."
+      - "The queue starts with four known review items rather than new intake."
       - "Each item already has a clear behavior to validate or close."
       - "The queue is concentrated in admin usability follow-through."
-    presenter_notes: "Next week starts with four open items already scoped: Partner Users search reload, service provider list refresh, clipboard copy, and customer table navigation. Each has concrete reproduction steps and clear acceptance criteria. No blockers in the way."
-    takeaway: "Next week starts with a short, specific queue."
+    presenter_notes: "The open queue has four scoped items: Partner Users search reload, service provider list refresh, clipboard copy, and customer table navigation. Each has concrete reproduction steps and clear acceptance criteria. No blockers are in the way."
+    takeaway: "The queue remains short and specific."
 closing:
-  objective: "The week covered completed fixes, completed checks, and a short list of remaining follow-through."
+  objective: "The week covered completed fixes, completed checks, and a short list of remaining open items."
   presenter_notes: "Six items done with staging verification, four open items with clear scope, and zero blockers. The open queue is concentrated in admin usability follow-through with concrete reproduction steps on each item."
 ```
 

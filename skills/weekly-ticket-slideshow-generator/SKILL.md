@@ -13,8 +13,8 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 - what happened this week
 - why it mattered
 - what changed because of the work
-- what still needs attention
-- what happens next
+- what remains open
+- what is still being tracked
 2. Show what the user actually worked on last week, using the dumps as the main evidence source.
 3. Treat ticket dumps and stand-up scripts as evidence, not as slide copy.
 4. Pull forward enough concrete ticket and task detail that the team can see the real work performed.
@@ -25,11 +25,11 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 
 ## Weekly Narrative Rules
 
-1. Infer the weekly story from repeated activity, status movement, comments, verification, blockers, dependencies, and follow-up work.
+1. Infer the weekly story from repeated activity, status movement, comments, verification, blockers, dependencies, and carried-over work.
 2. Choose structure based on the requested depth instead of forcing a grouped-summary default.
 3. When the user asks for in-depth coverage of each ticket or task, preserve ticket-level sections and make those sections the primary shape of the brief.
 4. Group related tickets only when that grouping still preserves clear ticket-by-ticket visibility inside the section.
-5. Prioritize tickets that show meaningful progress, repeated attention, QA validation, important investigation, cross-team dependency, or next-step relevance.
+5. Prioritize tickets that show meaningful progress, repeated attention, QA validation, important investigation, cross-team dependency, or open-item relevance.
 6. Keep technical detail in supporting notes unless it is necessary for the audience to understand the work performed, the decision made, or the outcome reached.
 7. Avoid making the brief sound like a Jira export, bug triage log, or stand-up transcript.
 8. Make every briefing section communicate one clear message.
@@ -48,7 +48,7 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 2. Treat completed tickets as outcome evidence.
 3. Treat in-review tickets as validation or handoff evidence.
 4. Treat in-progress tickets as active execution.
-5. Treat todo tickets as upcoming work only when they connect directly to the week's narrative.
+5. Treat todo tickets as incomplete work only when they connect directly to the week's narrative.
 6. Treat blockers and dependencies as context, not drama.
 7. Treat technical errors as supporting detail unless the main point of the work was investigation.
 8. Treat ticket descriptions, acceptance notes, reproductions, validations, and follow-up comments as evidence of what was actually done.
@@ -67,7 +67,7 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 - what the user did with the ticket
 - what changed or was verified
 - what state the ticket ended in
-- what still needs to happen, if anything
+- what remains open, if anything
 15. Do not downgrade a ticket with rich evidence into a short thematic mention when the audience would lose understanding of the actual work.
 16. Discard any daily dump entries that state inactivity, no progress, or absence of work. Do not let them enter the brief.
 17. When merging ticket activity across days, preserve only events that represent actual work, state change, or meaningful update.
@@ -82,7 +82,7 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 - activity flow
 - priority work
 - impact or insight
-- next-week commitments
+- open items
 - closing position
 2. Keep the structure explicit enough that `$slideshow-generator` can interpret it without re-reading raw dump files.
 3. Include enough ticket and task detail inside each section that `$slideshow-generator` can build a substantive deck instead of padding a thin summary.
@@ -114,7 +114,7 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 - supporting evidence
 - work detail
 - suggested presenter notes
-- next action or takeaway when relevant
+- takeaway when relevant
 4. Preserve week context and major activity signals in the handoff.
 5. Treat the handoff as the source-of-truth interpretation layer for the slideshow workflow.
 6. Follow the example handoff shape in [`references/weekly-brief-example.md`](references/weekly-brief-example.md).
@@ -122,7 +122,7 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 8. Vary presenter note length based on the section's purpose and information density. Do not force every note to the same length:
 - **Light sections** (title slide, executive snapshot, closing position, simple stat summaries): write 1-3 sentences. These slides are visual cues that need brief context, not extended narration. Do not pad thin content.
 - **Standard sections** (weekly story overview, activity flow, net effect summary): write 2-4 sentences covering what the section shows, why it matters, and the key takeaway.
-- **Heavy sections** (detailed ticket breakdowns, priority work with multiple tickets, impact analysis): write 3-5 sentences covering the problem, the action taken, the validation or result, the current state, and what comes next. These slides carry the most evidence and need the most context.
+- **Heavy sections** (detailed ticket breakdowns, priority work with multiple tickets, impact analysis): write 3-5 sentences covering the problem, the action taken, the validation or result, the current state, and what remains open. These slides carry the most evidence and need the most context.
 9. Keep `suggested presenter notes` factual and information-rich so `$slideshow-generator` can turn them into natural spoken script without adding hype or padding thin input.
 9. Use `work detail` to show the concrete tasks performed, validations made, findings recorded, or follow-through completed for the tickets in that section.
 10. Include ticket IDs inside `work detail` whenever that helps the audience map the work back to actual items.

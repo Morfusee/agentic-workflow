@@ -12,7 +12,7 @@ Route and execute ClickUp workflows from one entry point.
 Infer intent heuristically and route to one branch:
 
 1. `dump-creation`: collect ClickUp activity and write a ticket dump.
-2. `standup-from-dump`: read dump, select tickets, generate spoken stand-up, update dump.
+2. `standup-from-dump`: read dump, select tickets, capture an explicit next-day plan if provided, generate spoken stand-up, update dump.
 3. `full-flow`: run dump creation then stand-up from that dump.
 4. `issue-draft`: route to `$issue-drafter` only when request is clearly ClickUp-contextual. Instruct `$issue-drafter` to output the final draft in the ClickUp ticket format convention defined below (Description → Scope → Deliverable) instead of the default bug-report format.
 5. `qa-comment`: route to `$qa-comment-formatter` when the user provides QA results, pass/fail checks, or test observations to format into a ClickUp ticket comment. If the request includes a ClickUp task ID or task URL, pass it through as `clickup_task_id` so the formatter publishes directly to that task.
@@ -263,11 +263,12 @@ Tasks not selected for stand-up persist across days. Any task in `# Unselected T
    - Group visually: current dump's tasks first, then carry-over tasks.
 
 3. Collect selection with exact prompt.
-   - `Which tasks do you want to include in your stand-up? You can reply with task numbers, task IDs, or all. To add a manual task not tracked in ClickUp, describe it as "Manual: [task title] -- [Done / In Progress / To Do] [optional description]".`
+   - `Which tasks do you want to include in your stand-up? You can reply with task numbers, task IDs, or all. To add a manual task not tracked in ClickUp, describe it as "Manual: [task title] -- [Done / In Progress / To Do] [optional description]". To add a next-day plan, describe it as "Plan: [what you intend to work on next]".`
 
 4. Interpret selection.
    - Accept `all`, numeric indexes, task IDs, and clear natural-language selections.
    - Parse new manual tasks from `Manual: [title] -- [status] [description]`.
+   - Parse explicit next-day plan from `Plan: [what you intend to work on next]`.
    - Assign next manual ID as `MANUAL-###`.
    - Default status to `Done` and description to `No description provided.` when omitted.
    - If ambiguous, ask one short clarification.
@@ -277,6 +278,8 @@ Tasks not selected for stand-up persist across days. Any task in `# Unselected T
      - title, status, activity date
      - role/ownership metadata
      - chronology evidence (activity flow, notes, comments, test results)
+   - Pass the explicit next-day plan only if the user provides it.
+   - Do not infer next-day plans from open, remaining, or unselected work.
    - Pass only selected items as evidence.
    - Treat existing `# Stand-up Script` prose as output-only, never evidence.
 
@@ -300,6 +303,8 @@ Use this structure:
 # Stand-up Script
 
 Yesterday, I [evidence-based narrative generated from selected items].
+
+Today, I plan to [explicit plan provided by the user].
 
 No major blockers right now.
 

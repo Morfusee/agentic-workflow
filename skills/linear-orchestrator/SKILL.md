@@ -12,7 +12,7 @@ Route and execute Linear workflows from one entry point.
 Infer intent heuristically and route to one branch:
 
 1. `dump-creation`: collect Linear activity and write a ticket dump.
-2. `standup-from-dump`: read dump, select tickets, generate spoken stand-up, update dump.
+2. `standup-from-dump`: read dump, select tickets, capture an explicit next-day plan if provided, generate spoken stand-up, update dump.
 3. `full-flow`: run dump creation then stand-up from that dump.
 4. `issue-draft`: route to `$issue-drafter` only when request is clearly Linear-contextual.
 5. `weekly-slideshow`: route to `$weekly-ticket-slideshow-generator` only when request is clearly Linear-contextual.
@@ -237,11 +237,12 @@ Tickets not selected for stand-up persist across days. Any ticket in `# Unselect
 - Group visually: current dump's tickets first, then carry-over tickets.
 
 3. Collect selection with exact prompt.
-- `Which tickets do you want to include in your stand-up? You can reply with ticket numbers, ticket IDs, or all. To add a manual task not tracked in Linear, describe it as "Manual: [task title] -- [Done / In Progress / To Do] [optional description]".`
+- `Which tickets do you want to include in your stand-up? You can reply with ticket numbers, ticket IDs, or all. To add a manual task not tracked in Linear, describe it as "Manual: [task title] -- [Done / In Progress / To Do] [optional description]". To add a next-day plan, describe it as "Plan: [what you intend to work on next]".`
 
 4. Interpret selection.
 - Accept `all`, numeric indexes, ticket IDs, and clear natural-language selections.
 - Parse new manual tasks from `Manual: [title] -- [status] [description]`.
+- Parse explicit next-day plan from `Plan: [what you intend to work on next]`.
 - Assign next manual ID as `MANUAL-###`.
 - Default status to `Done` and description to `No description provided.` when omitted.
 - If ambiguous, ask one short clarification.
@@ -251,6 +252,8 @@ Tickets not selected for stand-up persist across days. Any ticket in `# Unselect
 - title, status, activity date
 - role/ownership metadata
 - chronology evidence (activity flow, notes, comments, test results)
+- Pass the explicit next-day plan only if the user provides it.
+- Do not infer next-day plans from open, remaining, or unselected work.
 - Pass only selected items as evidence.
 - Treat existing `# Stand-up Script` prose as output-only, never evidence.
 
@@ -274,6 +277,8 @@ Use this structure:
 # Stand-up Script
 
 Yesterday, I [evidence-based narrative generated from selected items].
+
+Today, I plan to [explicit plan provided by the user].
 
 No major blockers right now.
 
