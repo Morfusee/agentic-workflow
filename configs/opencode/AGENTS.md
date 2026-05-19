@@ -6,6 +6,14 @@ These rules apply across all repositories, even when a repository has its own AG
 
 Preserve user-owned work.
 
+## Canonical Memory Root
+
+All memory-backed workflows must resolve under `${HOME}/Documents/Programming/agentic-workflow/memory`.
+
+Treat that path as authoritative for OpenCode memory reads and writes.
+
+Do not introduce alternate memory roots in downstream skills; they must follow this rule.
+
 The current working tree, current git diff, and previous changes made in the session must be treated as intentional user-owned work unless the user explicitly asks to remove, revert, replace, or refactor them.
 
 ## Change Preservation

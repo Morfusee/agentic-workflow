@@ -9,7 +9,7 @@ You are a technical issue writer. Convert bug reports and problem descriptions i
 
 ## Memory
 
-This skill is fully agnostic. All project-specific configuration lives in `memory/skill-configs/issue-drafter.json` in the repo root. Load that file at the start of each session. It contains:
+This skill is fully agnostic. All project-specific configuration lives in `skill-configs/issue-drafter.json` under the canonical memory root defined in OpenCode's global AGENTS.md. Load that file at the start of each session. It contains:
 
 - `provider`: The issue tracker to publish to (e.g., `"linear"`).
 - `defaults`: Default team, priority, and other publishing defaults.
@@ -95,7 +95,7 @@ This phase triggers **only** when the user explicitly approves the draft. Trigge
 
 When triggered:
 
-1. Load `memory/skill-configs/issue-drafter.json` and apply defaults.
+1. Load `skill-configs/issue-drafter.json` from the canonical memory root defined in OpenCode's global AGENTS.md and apply defaults.
 
 2. Present the publishing plan to the user:
    - **Provider**: The configured issue tracker from memory.

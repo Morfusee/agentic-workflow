@@ -94,7 +94,8 @@ Create one daily Markdown dump of relevant Linear ticket activity and print a co
 - Group by activity date `YYYY-MM-DD`, then by status.
 
 7. Build output path and prevent overwrite.
-- Root path: `memory/tickets/linear/`.
+- Root path: follow the canonical memory root defined in OpenCode's global AGENTS.md.
+- All Linear dump and stand-up memory interactions must stay under the canonical memory root defined in OpenCode's global AGENTS.md; never write elsewhere.
 - Week folder: `YYYY-W##` (ISO week).
 - File format: `YYYY-MM-DD-ticket-dump.md`.
 - Create missing directories.
@@ -110,7 +111,19 @@ Create one daily Markdown dump of relevant Linear ticket activity and print a co
 
 9. Print grouped summary to chat and confirm saved file path.
 
-10. Use fallback-safe Linear retrieval strategy.
+10. Prompt stand-up ticket selection immediately after dump creation.
+- Keep the grouped summary and saved path output unchanged.
+- Unless user explicitly asked for dump-only behavior, immediately present a selectable list in the same run.
+- Build selectable list from:
+  - current dump `# All Scraped Tickets`
+  - current dump `# Manual Tasks`
+  - carry-over tickets from `# Unselected Tickets` in the most recent previous dump (previous day or earlier in the same ISO week folder)
+- Show one numbered list, grouped visually: current dump items first, then carry-over items.
+- Prefix carry-over entries with `[Carry-over]`.
+- After listing items, ask the exact stand-up selection prompt:
+- `Which tickets do you want to include in your stand-up? You can reply with ticket numbers, ticket IDs, or all. To add a manual task not tracked in Linear, describe it as "Manual: [task title] -- [Done / In Progress / To Do] [optional description]". To add a next-day plan, describe it as "Plan: [what you intend to work on next]".`
+
+11. Use fallback-safe Linear retrieval strategy.
 - Resolve current user via `get_user` with `me` and store user id/email.
 - Collect candidate issues without assignee bias:
 - `list_issues` with `createdAt` at range start
@@ -214,7 +227,7 @@ Read latest dump, let user choose items, generate spoken stand-up via `$standup-
 
 ### Prerequisites
 
-- A compatible dump file exists under `memory/tickets/linear/`.
+- A compatible dump file exists under the canonical Linear dump path defined in OpenCode's global AGENTS.md.
 - Prefer latest ISO week folder `YYYY-W##` and latest `YYYY-MM-DD-ticket-dump.md`.
 - If no compatible dump exists, report that and instruct user to run dump creation.
 
