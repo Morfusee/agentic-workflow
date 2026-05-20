@@ -14,6 +14,16 @@ all skill authoring and updates must be written in this repository.
 - If asked for no location, still write to this repo.
 - If asked for a different location, confirm intent before writing outside this repo.
 
+## Approved Generated Artifact Locations
+
+Use these canonical subpaths under `${HOME}/Documents/Programming/agentic-workflow/memory`:
+
+- `memory/tickets/linear/YYYY-W##/` for Linear ticket dumps and weekly Linear ticket artifacts.
+- `memory/tickets/clickup/YYYY-W##/` for ClickUp ticket dumps and weekly ClickUp ticket artifacts.
+- `memory/presentations/[presentation-name]/` for slideshow generator output.
+
+Before creating a new directory or file in one of these locations, check whether an existing implementation already exists in the target location and reuse it if present.
+
 ## Skill Creation Standard
 
 Follow the Skill Creator process in order:

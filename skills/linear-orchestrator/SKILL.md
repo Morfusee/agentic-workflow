@@ -95,7 +95,8 @@ Create one daily Markdown dump of relevant Linear ticket activity and print a co
 
 7. Build output path and prevent overwrite.
 - Root path: follow the canonical memory root defined in OpenCode's global AGENTS.md.
-- All Linear dump and stand-up memory interactions must stay under the canonical memory root defined in OpenCode's global AGENTS.md; never write elsewhere.
+- Use `memory/tickets/linear/YYYY-W##/` for Linear dumps and stand-up outputs.
+- Before creating a new week folder or file, check whether an existing implementation already exists in the target location and reuse it if present.
 - Week folder: `YYYY-W##` (ISO week).
 - File format: `YYYY-MM-DD-ticket-dump.md`.
 - Create missing directories.
@@ -244,10 +245,11 @@ Tickets not selected for stand-up persist across days. Any ticket in `# Unselect
 - Also scan the most recent previous dump file (previous day or earlier in the same week folder) for `# Unselected Tickets`. Merge those carry-over tickets into the selectable list so nothing falls through the cracks across days.
 
 2. Present selectable items.
-- Show one numbered list with scraped tickets, manual tasks, and carry-over unselected tickets.
+- Show current dump tickets and manual tasks as a numbered list.
+- Show carry-over unselected tickets from previous dumps as bullets.
 - For manual tasks, prefix ID display with `[Manual]`.
 - For carry-over unselected tickets from previous dumps, prefix ID display with `[Carry-over]`.
-- Group visually: current dump's tickets first, then carry-over tickets.
+- Group visually: current dump's tickets first, then carry-over bullets.
 
 3. Collect selection with exact prompt.
 - `Which tickets do you want to include in your stand-up? You can reply with ticket numbers, ticket IDs, or all. To add a manual task not tracked in Linear, describe it as "Manual: [task title] -- [Done / In Progress / To Do] [optional description]". To add a next-day plan, describe it as "Plan: [what you intend to work on next]".`

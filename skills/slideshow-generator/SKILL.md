@@ -63,10 +63,11 @@ Treat this skill as the presentation layer only:
 
 ## Output Location
 
-1. Write the generated HTML file to `presentations/[presentation-name]/index.html` under the canonical memory root defined in OpenCode's global AGENTS.md by default.
+1. Write the generated HTML file to `memory/presentations/[presentation-name]/index.html` under the canonical memory root defined in OpenCode's global AGENTS.md by default.
 2. Derive `[presentation-name]` from the presentation title or brief topic, using lowercase letters, digits, and hyphens only.
-3. If the user explicitly requests a different path or filename, honor that instead.
-4. If the target directory does not exist, create it before writing.
+3. Before creating a new presentation directory, check whether an existing implementation already exists in the target location and reuse it if present.
+4. If the user explicitly requests a different path or filename, honor that instead.
+5. If the target directory does not exist, create it before writing.
 
 ## Rendering Rules
 

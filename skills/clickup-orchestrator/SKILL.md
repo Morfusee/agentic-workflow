@@ -121,7 +121,8 @@ Create one daily Markdown dump of relevant ClickUp task activity and print a con
 
 7. Build output path and prevent overwrite.
    - Root path: follow the canonical memory root defined in OpenCode's global AGENTS.md.
-   - All ClickUp dump and stand-up memory interactions must stay under the canonical memory root defined in OpenCode's global AGENTS.md; never write elsewhere.
+   - Use `memory/tickets/clickup/YYYY-W##/` for ClickUp dumps and stand-up outputs.
+   - Before creating a new week folder or file, check whether an existing implementation already exists in the target location and reuse it if present.
    - Week folder: `YYYY-W##` (ISO week).
    - File format: `YYYY-MM-DD-ticket-dump.md`.
    - Create missing directories.
