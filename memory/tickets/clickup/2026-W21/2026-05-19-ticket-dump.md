@@ -2,7 +2,7 @@
 
 Yesterday, I presented the Playwright + Allure vs TestDino comparison as alternatives to Ghost Inspector. I walked through the comparison deck, covering the key tool tradeoffs between the two approaches. Then I showed both POCs during the presentation — first the Playwright + Allure POC, then the TestDino POC — so the team could see how each tool handles the workflow. After wrapping up the presentation, I shifted over to the Email Template Footer. I started the initial draft and reached out to sir Isaias for clarification on where the footer should be placed. The remaining step there is to gather the required assets so I can finalize the draft.
 
-Today, I plan to request those design assets for the email template footer. That is my top priority so I can move forward with the task.
+Today, I plan to request the design assets for the email template footer. That is my top priority for today so I can move forward with the task.
 
 No major blockers right now.
 
