@@ -31,8 +31,8 @@ Carry-over tickets not yet included in a stand-up. These reappear as selectable 
 - NGN-604: Customer: Fix updateCustomer bad request for newly created customers
   - Source dump: 2026-05-18
   - Status as of 2026-05-18: Done
-  - Role: dev-owner
-  - Activity notes: Implemented fix, QA'd on STAGING, moved to Done
+  - Role: tester-only
+  - Activity notes: QA tested the updateCustomer fix on STAGING; PASS result
 - NGN-632: Customer: Fix Customers table cutoff and add navigation for large result sets
   - Source dump: 2026-05-18
   - Status as of 2026-05-18: In Review
@@ -92,10 +92,10 @@ Activity date: 2026-05-18
 URL: https://linear.app/ngnair/issue/NGN-604/customer-fix-updatecustomer-bad-request-for-newly-created-customers
 Initial dev assignee: mark.valenzuela@ngnair.com
 Testing actors: mark.valenzuela@ngnair.com
-My role for this ticket: dev-owner
+My role for this ticket: tester-only
 
 ### Why this ticket was included
-commented by me, moved to Done by me
+commented on by me
 
 ### Description
 ### The Problem

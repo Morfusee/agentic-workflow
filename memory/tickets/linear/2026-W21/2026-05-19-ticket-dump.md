@@ -49,8 +49,8 @@ Carry-over tickets not yet included in a stand-up. These reappear as selectable 
 - NGN-604: Customer: Fix updateCustomer bad request for newly created customers
   - Source dump: 2026-05-18
   - Status as of 2026-05-18: Done
-  - Role: dev-owner
-  - Activity notes: Implemented fix, QA'd on STAGING, moved to Done
+  - Role: tester-only
+  - Activity notes: QA tested the updateCustomer fix on STAGING; PASS result
 
 ---
 
