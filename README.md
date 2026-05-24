@@ -171,3 +171,7 @@ This links `~/.config/nvim` to `configs/nvim/` (repo is source of truth).
 2. On Windows, if symlink creation fails, the script falls back to junctions (directories) or hard links (files). Enable Windows Developer Mode for true symlinks.
 3. On macOS/Linux, symlinks are created directly.
 4. If `python` is not on your PATH, install Python 3.8+ or use your package manager.
+5. On Linux, Homebrew may install `python3` without a `python` symlink. Fix with:
+   ```sh
+   ln -s /home/linuxbrew/.linuxbrew/bin/python3 /home/linuxbrew/.linuxbrew/bin/python
+   ```
