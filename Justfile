@@ -36,9 +36,9 @@ sync-nvim:
 # Open mirrored skills folders in File Explorer
 [windows]
 skills-open:
-  @powershell -NoLogo -NoProfile -ExecutionPolicy Bypass -Command "$codex = Join-Path $env:USERPROFILE '.codex\skills'; explorer $codex; if ((Test-Path '.\.skills.env') -and ((Get-Content '.\.skills.env' | Where-Object { $_ -match '^\s*SYNC_OPENCODE\s*=\s*true\s*$' }).Count -gt 0)) { $open = Join-Path $env:USERPROFILE '.config\opencode\skills'; explorer $open }"
+  @powershell -NoLogo -NoProfile -ExecutionPolicy Bypass -Command '$codex = Join-Path $env:USERPROFILE ".codex\skills"; explorer $codex; if ((Test-Path ".\.skills.env") -and ((Get-Content ".\.skills.env" | Where-Object { $_ -match "^\s*SYNC_OPENCODE\s*=\s*true\s*$" }).Count -gt 0)) { $open = Join-Path $env:USERPROFILE ".config\opencode\skills"; explorer $open }'
 
 # Open opencode's config file in the default editor
 [windows]
 opencode-config:
-  @powershell -NoLogo -NoProfile -ExecutionPolicy Bypass -Command "$code = Join-Path $env:LOCALAPPDATA 'Programs\Microsoft VS Code\bin\code.cmd'; $target = Join-Path $env:USERPROFILE '.config\opencode\opencode.jsonc'; & $code $target"
+  @powershell -NoLogo -NoProfile -ExecutionPolicy Bypass -Command '$code = Join-Path $env:LOCALAPPDATA "Programs\Microsoft VS Code\bin\code.cmd"; $target = Join-Path $env:USERPROFILE ".config\opencode\opencode.jsonc"; & $code $target'
