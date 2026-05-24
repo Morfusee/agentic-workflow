@@ -39,24 +39,28 @@ Changes made in mirrored/linked target locations will be overwritten or lost.
 
 - **Python 3.8+** on all platforms (for `scripts/sync_environment.py`)
 - **just** command runner (cross-platform)
-- **Neovim** setup is Windows-specific (see below)
 
 ## Setup
 
 ### Windows
 
-#### 1. Link Neovim
+#### 1. Sync everything (recommended)
 
 ```powershell
-just nvim-link
+just sync-environment
 ```
 
-This creates `configs\nvim` as a junction to `%LOCALAPPDATA%\nvim`.
+This is the canonical command and syncs:
 
-#### 2. Link OpenCode config
+1. `memory/` -> `%USERPROFILE%\.config\opencode\memory` and `%USERPROFILE%\.codex\memory`
+2. `configs/opencode/*` -> `%USERPROFILE%\.config\opencode/`
+3. `skills/` -> `%USERPROFILE%\.codex\skills/` (and optionally OpenCode)
+4. `configs/nvim/` -> `%LOCALAPPDATA%\nvim`
+
+#### 2. Sync only OpenCode config
 
 ```powershell
-just opencode-link
+just sync-opencode
 ```
 
 This links `configs\opencode\opencode.jsonc` and `configs\opencode\AGENTS.md` into `%USERPROFILE%\.config\opencode\`.
@@ -67,10 +71,10 @@ If you want to open the config after linking, run:
 just opencode-config
 ```
 
-#### 3. Link memory
+#### 3. Sync only memory
 
 ```powershell
-just memory-sync
+just sync-memory
 ```
 
 This symlinks `memory\` into:
@@ -78,7 +82,7 @@ This symlinks `memory\` into:
 1. `%USERPROFILE%\.config\opencode\memory`
 2. `%USERPROFILE%\.codex\memory`
 
-#### 4. Set up skills
+#### 4. Sync only skills
 
 If you want OpenCode skill mirroring, copy `.skills.env.example` to `.skills.env` and set:
 
@@ -89,25 +93,41 @@ SYNC_OPENCODE=true
 Then run:
 
 ```powershell
-just skills
+just sync-skills
 ```
 
-`just skills` bootstraps `skills\` into `%USERPROFILE%\.codex\skills\`. If `SYNC_OPENCODE=true`, it also mirrors into `%USERPROFILE%\.config\opencode\skills`.
+`just sync-skills` bootstraps `skills\` into `%USERPROFILE%\.codex\skills\`. If `SYNC_OPENCODE=true`, it also mirrors into `%USERPROFILE%\.config\opencode\skills`.
+
+#### 5. Sync only Neovim config
+
+```powershell
+just sync-nvim
+```
+
+This links `%LOCALAPPDATA%\nvim` to `configs\nvim\` (repo is source of truth).
 
 ### macOS / Linux
 
-#### 1. Link OpenCode config
+#### 1. Sync everything (recommended)
 
 ```sh
-just opencode-link
+just sync-environment
+```
+
+This is the canonical command and syncs memory, OpenCode config, skills, and Neovim.
+
+#### 2. Sync only OpenCode config
+
+```sh
+just sync-opencode
 ```
 
 This symlinks `configs/opencode/opencode.jsonc` and `configs/opencode/AGENTS.md` into `~/.config/opencode/`.
 
-#### 2. Link memory
+#### 3. Sync only memory
 
 ```sh
-just memory-sync
+just sync-memory
 ```
 
 This symlinks `memory/` into:
@@ -115,10 +135,10 @@ This symlinks `memory/` into:
 1. `~/.config/opencode/memory`
 2. `~/.codex/memory`
 
-#### 3. Set up skills
+#### 4. Sync only skills
 
 ```sh
-just skills
+just sync-skills
 ```
 
 This symlinks each `skills/<name>/` folder into `~/.codex/skills/` (skipping folders with `.codex-hidden`).
@@ -129,12 +149,20 @@ To also mirror into OpenCode, copy `.skills.env.example` to `.skills.env` and se
 SYNC_OPENCODE=true
 ```
 
-Then run `just skills` again.
+Then run `just sync-skills` again.
+
+#### 5. Sync only Neovim config
+
+```sh
+just sync-nvim
+```
+
+This links `~/.config/nvim` to `configs/nvim/` (repo is source of truth).
 
 ## Daily use
 
 1. Put each new skill in `skills/<skill-name>/`.
-2. Run `just skills` to sync new skill folders.
+2. Run `just sync-skills` to sync new skill folders.
 3. Run `just sync-environment` to sync everything at once.
 
 ## Troubleshooting

@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""
-Cross-platform environment sync script.
+"""Cross-platform environment sync script.
 
-Symlinks repo files and directories (memory, configs/opencode, skills)
-into tool config paths (~/.config/opencode/, ~/.codex/).
+Symlinks repo files and directories (memory, configs/opencode, skills, nvim)
+into tool config paths (~/.config/opencode/, ~/.codex/, nvim config home).
 
 Works on Windows, macOS, and Linux without WSL.
 """
@@ -16,6 +15,7 @@ import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
+from typing import Optional
 
 # ---------------------------------------------------------------------------
 # Path resolution
@@ -27,6 +27,7 @@ REPO_ROOT = SCRIPT_DIR.parent
 MEMORY_SOURCE = REPO_ROOT / "memory"
 CONFIG_DIR = REPO_ROOT / "configs" / "opencode"
 SKILLS_SOURCE = REPO_ROOT / "skills"
+NVIM_SOURCE = REPO_ROOT / "configs" / "nvim"
 ENV_FILE = REPO_ROOT / ".skills.env"
 
 OPENCODE_DIR = Path.home() / ".config" / "opencode"
@@ -58,7 +59,7 @@ def error(message: str) -> None:
     print(f"[  ERROR] {message}", file=sys.stderr)
 
 
-def load_env_toggle(key: str = "SYNC_OPENCODE") -> str | None:
+def load_env_toggle(key: str = "SYNC_OPENCODE") -> Optional[str]:
     if not ENV_FILE.is_file():
         return None
     try:
@@ -79,6 +80,15 @@ def load_env_toggle(key: str = "SYNC_OPENCODE") -> str | None:
 
 def ensure_parent_dir(path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
+
+
+def get_nvim_target() -> Path:
+    if platform.system() == "Windows":
+        local_app_data = os.environ.get("LOCALAPPDATA")
+        if local_app_data:
+            return Path(local_app_data) / "nvim"
+        return Path.home() / "AppData" / "Local" / "nvim"
+    return Path.home() / ".config" / "nvim"
 
 
 def path_kind(path: Path) -> str:
@@ -316,6 +326,15 @@ def sync_skills(dry_run: bool = False) -> bool:
     return all_ok
 
 
+def sync_nvim(dry_run: bool = False) -> bool:
+    if not NVIM_SOURCE.is_dir():
+        error(f"Neovim source not found: {NVIM_SOURCE}")
+        return False
+
+    target = get_nvim_target()
+    return _sync_link(target, NVIM_SOURCE, is_dir=True, dry_run=dry_run)
+
+
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
@@ -327,7 +346,7 @@ def main() -> None:
     parser.add_argument(
         "targets",
         nargs="*",
-        choices=["memory", "opencode", "skills", "all"],
+        choices=["memory", "opencode", "skills", "nvim", "all"],
         default=["all"],
         help="Which targets to sync (default: all).",
     )
@@ -345,11 +364,11 @@ def main() -> None:
     args = parser.parse_args()
 
     if "all" in args.targets:
-        targets_to_run = ["memory", "opencode", "skills"]
+        targets_to_run = ["memory", "opencode", "skills", "nvim"]
     else:
         targets_to_run = args.targets
 
-    results: dict[str, bool] = {}
+    results = {}
     for target in targets_to_run:
         if target == "memory":
             results["memory"] = sync_memory(dry_run=args.dry_run)
@@ -357,6 +376,8 @@ def main() -> None:
             results["opencode"] = sync_opencode_config(dry_run=args.dry_run)
         elif target == "skills":
             results["skills"] = sync_skills(dry_run=args.dry_run)
+        elif target == "nvim":
+            results["nvim"] = sync_nvim(dry_run=args.dry_run)
 
     print()
     all_ok = all(results.values())
