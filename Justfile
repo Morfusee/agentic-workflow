@@ -33,12 +33,21 @@ sync-nvim:
 # Windows-only recipes
 # -----------------------------------------------------------------------
 
-# Open mirrored skills folders in File Explorer
-[windows]
+# Open mirrored skills folders in default file manager
 skills-open:
-  @powershell -NoLogo -NoProfile -ExecutionPolicy Bypass -Command '$codex = Join-Path $env:USERPROFILE ".codex\skills"; explorer $codex; if ((Test-Path ".\.skills.env") -and ((Get-Content ".\.skills.env" | Where-Object { $_ -match "^\s*SYNC_OPENCODE\s*=\s*true\s*$" }).Count -gt 0)) { $open = Join-Path $env:USERPROFILE ".config\opencode\skills"; explorer $open }'
+  @if [ "{{ os() }}" == "windows" ]; then \
+    powershell -NoLogo -NoProfile -ExecutionPolicy Bypass -Command '$$codex = Join-Path $$env:USERPROFILE ".codex\skills"; explorer $$codex; if ((Test-Path ".\.skills.env") -and ((Get-Content ".\.skills.env" | Where-Object { $$_ -match "^\s*SYNC_OPENCODE\s*=\s*true\s*$$" }).Count -gt 0)) { $$open = Join-Path $$env:USERPROFILE ".config\opencode\skills"; explorer $$open }'; \
+  else \
+    xdg-open ~/.codex/skills 2>/dev/null; \
+    if [ -f .skills.env ] && grep -qi '^\s*SYNC_OPENCODE\s*=\s*true\s*$' .skills.env 2>/dev/null; then \
+      xdg-open ~/.config/opencode/skills 2>/dev/null; \
+    fi; \
+  fi
 
 # Open opencode's config file in the default editor
-[windows]
 opencode-config:
-  @powershell -NoLogo -NoProfile -ExecutionPolicy Bypass -Command '$code = Join-Path $env:LOCALAPPDATA "Programs\Microsoft VS Code\bin\code.cmd"; $target = Join-Path $env:USERPROFILE ".config\opencode\opencode.jsonc"; & $code $target'
+  @if [ "{{ os() }}" == "windows" ]; then \
+    powershell -NoLogo -NoProfile -ExecutionPolicy Bypass -Command '$$code = Join-Path $$env:LOCALAPPDATA "Programs\Microsoft VS Code\bin\code.cmd"; $$target = Join-Path $$env:USERPROFILE ".config\opencode\opencode.jsonc"; & $$code $$target'; \
+  else \
+    ${EDITOR:-nano} ~/.config/opencode/opencode.jsonc; \
+  fi
