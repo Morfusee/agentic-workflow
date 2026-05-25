@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weekly Delivery Narrative - 2026-W21</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #0f1117; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; color: #e6e8ec; }
+
+#stage-wrap { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+#stage { width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0f1117; transform-origin: center center; }
+
+.slide { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 100px 140px; opacity: 0; pointer-events: none; transition: opacity 0.35s ease; }
+.slide.active { opacity: 1; pointer-events: auto; }
+
+.slide-title { position: absolute; top: 0; left: 0; right: 0; }
+.slide-meta { font-size: 18px; color: #6b7280; padding: 40px 0 0 140px; text-align: left; letter-spacing: 0.02em; }
+
+h1 { font-size: 64px; font-weight: 700; line-height: 1.15; color: #ffffff; margin-bottom: 24px; }
+h2 { font-size: 42px; font-weight: 600; line-height: 1.2; color: #ffffff; margin-bottom: 32px; }
+h3 { font-size: 26px; font-weight: 600; color: #d1d5db; margin-bottom: 12px; }
+
+.subtitle { font-size: 28px; color: #9ca3af; font-weight: 400; margin-bottom: 16px; }
+.stat-number { font-size: 96px; font-weight: 800; color: #22c55e; line-height: 1; }
+.stat-label { font-size: 22px; color: #9ca3af; margin-top: 8px; }
+.stat-number.warn { color: #f59e0b; }
+
+.cards { display: flex; gap: 24px; flex-wrap: wrap; }
+.card { flex: 1; min-width: 280px; background: #1a1d27; border: 1px solid #2a2d37; border-radius: 12px; padding: 32px 28px; }
+.card h3 { font-size: 22px; color: #e6e8ec; margin-bottom: 10px; }
+.card p { font-size: 17px; color: #9ca3af; line-height: 1.5; }
+.card .ticket-id { font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace; font-size: 15px; color: #60a5fa; display: inline-block; margin-right: 8px; }
+
+.stats-row { display: flex; gap: 60px; align-items: center; justify-content: center; margin: 40px 0; }
+.stat-block { text-align: center; }
+.stat-block.done .stat-number { color: #22c55e; }
+.stat-block.pending .stat-number { color: #f59e0b; }
+.stat-block.blocked .stat-number { color: #6b7280; }
+
+.flow-row { display: flex; gap: 16px; margin: 32px 0; align-items: flex-start; }
+.flow-col { flex: 1; }
+.flow-col h4 { font-size: 16px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; font-weight: 500; }
+.flow-item { background: #1a1d27; border: 1px solid #2a2d37; border-radius: 8px; padding: 14px 18px; margin-bottom: 10px; font-size: 16px; color: #d1d5db; line-height: 1.4; }
+.flow-item .tid { color: #60a5fa; font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace; font-size: 14px; }
+.badge { display: inline-block; font-size: 13px; font-weight: 600; padding: 2px 10px; border-radius: 100px; margin-left: 6px; }
+.badge.done { background: #14532d; color: #22c55e; }
+.badge.pending { background: #451a03; color: #f59e0b; }
+.badge.fail { background: #450a0a; color: #f87171; }
+
+.impact-list { display: flex; flex-direction: column; gap: 20px; margin-top: 16px; }
+.impact-item { display: flex; gap: 16px; align-items: flex-start; }
+.impact-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+.impact-icon.green { background: #14532d; color: #22c55e; }
+.impact-icon.blue { background: #1e3a5f; color: #60a5fa; }
+.impact-text { font-size: 18px; color: #d1d5db; line-height: 1.5; }
+.impact-text .tid { color: #60a5fa; font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace; font-size: 14px; font-weight: 500; }
+
+.closing-box { text-align: center; max-width: 800px; margin: 0 auto; }
+.closing-box h2 { margin-bottom: 20px; }
+.closing-box p { font-size: 22px; color: #9ca3af; line-height: 1.6; margin-bottom: 12px; }
+
+.open-item { background: #1a1d27; border: 1px solid #2a2d37; border-radius: 12px; padding: 28px 32px; margin-bottom: 20px; }
+.open-item h3 { color: #f59e0b; font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace; font-size: 20px; margin-bottom: 8px; }
+.open-item p { font-size: 17px; color: #d1d5db; line-height: 1.55; }
+
+.story-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 8px; }
+.story-cards .card { text-align: left; }
+.story-cards .card .card-count { font-size: 36px; font-weight: 700; color: #22c55e; margin-bottom: 4px; }
+.story-cards .card .card-label { font-size: 15px; color: #9ca3af; line-height: 1.4; }
+
+.area-header { font-size: 18px; color: #60a5fa; font-weight: 600; margin-bottom: 8px; letter-spacing: 0.01em; }
+
+/* Presenter view */
+body.presenter-mode #stage-wrap { display: none; }
+.pv-layout { display: none; width: 100%; height: 100%; }
+body.presenter-mode .pv-layout { display: grid; grid-template-columns: 1fr 420px; gap: 0; height: 100%; background: #0f1117; }
+.pv-current-wrap { background: #0a0b0f; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+.pv-current-wrap #stage-pv { width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #0f1117; transform-origin: center center; }
+.pv-sidebar { background: #13151c; border-left: 1px solid #2a2d37; display: flex; flex-direction: column; padding: 40px 32px; overflow-y: auto; }
+.pv-sidebar h3 { font-size: 14px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; font-weight: 500; }
+.pv-next-title { font-size: 20px; color: #d1d5db; margin-bottom: 24px; line-height: 1.3; }
+.pv-timer { font-size: 36px; font-weight: 600; color: #ffffff; margin-bottom: 24px; font-variant-numeric: tabular-nums; }
+.pv-notes { background: #1a1d27; border: 1px solid #2a2d37; border-radius: 10px; padding: 20px; flex: 1; overflow-y: auto; margin-bottom: 20px; font-size: 16px; color: #d1d5db; line-height: 1.6; white-space: pre-wrap; }
+.pv-nav { display: flex; gap: 12px; }
+.pv-nav button { flex: 1; padding: 12px 20px; border: 1px solid #2a2d37; border-radius: 8px; background: #1a1d27; color: #d1d5db; font-size: 15px; cursor: pointer; font-family: inherit; }
+.pv-nav button:hover { background: #2a2d37; }
+.pv-nav button:disabled { opacity: 0.4; cursor: default; }
+.pv-status { font-size: 13px; color: #6b7280; margin-top: 12px; text-align: center; }
+
+/* Title slide-specific */
+.slide.title-slide { justify-content: center; align-items: flex-start; }
+.slide.title-slide h1 { font-size: 72px; margin-bottom: 20px; }
+.slide.title-slide .subtitle { font-size: 30px; margin-bottom: 40px; }
+.title-tags { display: flex; gap: 12px; flex-wrap: wrap; }
+.title-tag { font-size: 16px; padding: 6px 16px; border-radius: 100px; border: 1px solid #2a2d37; color: #9ca3af; background: #1a1d27; }
+
+/* Iteration flow */
+.iteration-box { display: flex; gap: 20px; align-items: center; margin: 24px 0; }
+.iteration-step { flex: 1; background: #1a1d27; border: 1px solid #2a2d37; border-radius: 10px; padding: 20px 24px; text-align: center; }
+.iteration-step h4 { font-size: 15px; color: #6b7280; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.04em; }
+.iteration-step p { font-size: 16px; color: #d1d5db; line-height: 1.4; }
+.iteration-arrow { color: #4b5563; font-size: 24px; flex-shrink: 0; }
+
+.progress-pip { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; }
+.progress-pip.done { background: #22c55e; }
+.progress-pip.pending { background: #f59e0b; }
+
+@media (max-width: 1200px) {
+  .story-cards { grid-template-columns: repeat(2, 1fr); }
+  .cards { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+<div id="stage-wrap">
+  <div id="stage"></div>
+</div>
+
+<div class="pv-layout">
+  <div class="pv-current-wrap"><div id="stage-pv"></div></div>
+  <div class="pv-sidebar">
+    <h3>Next Slide</h3>
+    <div class="pv-next-title" id="pv-next-title">Start of deck</div>
+    <h3>Elapsed</h3>
+    <div class="pv-timer" id="pv-timer">00:00</div>
+    <h3>Presenter Notes</h3>
+    <div class="pv-notes" id="pv-notes"></div>
+    <div class="pv-nav">
+      <button id="pv-prev" onclick="navigate(-1)">Prev</button>
+      <button id="pv-next" onclick="navigate(1)">Next</button>
+    </div>
+    <div class="pv-status" id="pv-status"></div>
+  </div>
+</div>
+
+<script>
+// --- Slides Data ---
+const slides = [];
+
+function S(title, bodyHTML, notes) {
+  slides.push({ title, bodyHTML, notes });
+}
+
+S('Weekly Delivery Narrative, 2026-W21',
+  `<h1>Weekly Delivery Narrative</h1>
+    <div class="subtitle">Customer fixes, admin RBAC enforcement, HTTPS local dev, and CSP resolution</div>
+    <div class="title-tags">
+      <span class="title-tag">8 tickets completed</span>
+      <span class="title-tag">2 pending review</span>
+      <span class="title-tag">0 blockers</span>
+    </div>`,
+  `We are walking through the weekly delivery for W21. The headline is eight tickets completed across five areas, with two items still in the review queue and no blockers recorded. The work covered customer fixes verified in staging, role based access control across three admin frontends, HTTPS local dev setup for the location apps alongside a CSP fix for the Finance iframe, a partner admin error message correction, and a location data bug report that has not been picked up yet. I will go through each area and show the specific tickets behind the numbers.`
+);
+
+S('The Week\'s Story',
+  `<h2>The Week's Story</h2>
+  <div class="story-cards">
+    <div class="card">
+      <div class="card-count">3</div>
+      <div class="card-label">Developer environment tickets resolved: HTTPS local dev for location-frontend and location-admin, CSP port-wildcard fix for Finance iframe embedding</div>
+    </div>
+    <div class="card">
+      <div class="card-count">3</div>
+      <div class="card-label">RBAC gaps found across Support, Partner, and Marketplace admin pages. Two resolved, one open.</div>
+    </div>
+    <div class="card">
+      <div class="card-count">2</div>
+      <div class="card-label">Customer fixes QA tested in staging: updateCustomer BAD_REQUEST and Customers table cutoff with pagination. Both PASS.</div>
+    </div>
+    <div class="card">
+      <div class="card-count">1</div>
+      <div class="card-label">Partner admin error message corrected. Duane fixed conditional isExternal field handling for non-BIN-ISO partners.</div>
+    </div>
+    <div class="card">
+      <div class="card-count">1</div>
+      <div class="card-label">Location Details banking info bug documented: hardcoded values shown across locations. Pending Review.</div>
+    </div>
+  </div>`,
+  `This slide gives a quick overview of the five areas and how many tickets landed in each. The developer environment work was the largest grouping: three tickets covering HTTPS local dev for location-frontend and location-admin, plus the CSP frame-ancestors fix for the Finance iframe. Admin RBAC was three identical gaps filed for Support, Partner, and Marketplace admin pages. Duane resolved Support and Partner, Marketplace is the one still open. Customer fixes were two tickets I QA tested in staging, both returned PASS. One partner admin ticket for a confusing error message was resolved, and one location data bug was documented but has not been picked up yet.`
+);
+
+S('Executive Snapshot',
+  `<h2>Executive Snapshot</h2>
+  <div class="stats-row">
+    <div class="stat-block done">
+      <div class="stat-number">8</div>
+      <div class="stat-label">Completed</div>
+    </div>
+    <div class="stat-block pending">
+      <div class="stat-number">2</div>
+      <div class="stat-label">Pending Review</div>
+    </div>
+    <div class="stat-block blocked">
+      <div class="stat-number">0</div>
+      <div class="stat-label">Blockers</div>
+    </div>
+  </div>
+  <div class="cards" style="margin-top: 32px;">
+    <div class="card">
+      <h3>Completed Tickets</h3>
+      <p>NGN-604, NGN-632, NGN-645, NGN-647, NGN-649, NGN-650, NGN-651, NGN-671</p>
+    </div>
+    <div class="card">
+      <h3>Pending Review</h3>
+      <p><span class="ticket-id">NGN-648</span> Marketplace Admin RBAC<br><span class="ticket-id">NGN-661</span> Location banking info</p>
+    </div>
+  </div>`,
+  `Eight tickets completed with staging or develop verification, two remain in the review queue, zero blockers. The completed tickets span Customer, Support, Partner, Finance, and Location domains. The two pending items are Marketplace Admin RBAC and the Location banking info bug. Both have documented reproduction steps and clear acceptance criteria, so the remaining work is well defined. One of the eight completions took a second QA round: the CSP fix for Finance went through a FAIL and then a PASS after the port-wildcard pattern was applied. The rest resolved cleanly on the first pass.`
+);
+
+S('Activity Flow',
+  `<h2>Activity Flow</h2>
+  <div class="flow-row">
+    <div class="flow-col">
+      <h4>Customer</h4>
+      <div class="flow-item"><span class="tid">NGN-604</span> updateCustomer fix <span class="badge done">DONE</span></div>
+      <div class="flow-item"><span class="tid">NGN-632</span> Table cutoff + pagination <span class="badge done">DONE</span></div>
+    </div>
+    <div class="flow-col">
+      <h4>Admin RBAC</h4>
+      <div class="flow-item"><span class="tid">NGN-647</span> Support Admin <span class="badge done">DONE</span></div>
+      <div class="flow-item"><span class="tid">NGN-649</span> Partner Admin <span class="badge done">DONE</span></div>
+      <div class="flow-item"><span class="tid">NGN-648</span> Marketplace Admin <span class="badge pending">PENDING</span></div>
+    </div>
+    <div class="flow-col">
+      <h4>Dev Environment</h4>
+      <div class="flow-item"><span class="tid">NGN-650</span> location-fe HTTPS <span class="badge done">DONE</span></div>
+      <div class="flow-item"><span class="tid">NGN-651</span> location-admin HTTPS <span class="badge done">DONE</span></div>
+      <div class="flow-item"><span class="tid">NGN-645</span> CSP fix <span class="badge done">DONE</span> <span class="badge fail">QA ITER</span></div>
+    </div>
+    <div class="flow-col">
+      <h4>Partner &amp; Location</h4>
+      <div class="flow-item"><span class="tid">NGN-671</span> Error message fix <span class="badge done">DONE</span></div>
+      <div class="flow-item"><span class="tid">NGN-661</span> Banking info bug <span class="badge pending">PENDING</span></div>
+    </div>
+  </div>`,
+  `This slide shows how the tickets distributed across the four work columns and which ones moved to Done versus stayed open. The customer column was clean: two tickets, both QA PASS in staging. The admin RBAC column has three tickets filed: Support and Partner were resolved by Duane using the Location Admin access control pattern. Marketplace is the one that has not been addressed yet. The dev environment column has three tickets, all Done. The CSP fix, NGN-645, is the one marked with QA iteration. It went through two rounds: the first round returned FAIL because the CSP wildcard did not match non-default ports. The fix was a port-wildcard pattern, and the second QA round returned PASS on both develop and staging. Partner and Location is the lightest column: NGN-671 for the partner error message was resolved, NGN-661 for banking info remains Pending Review.`
+);
+
+S('Developer Environment: HTTPS Local Dev and CSP Resolution',
+  `<h2>Developer Environment</h2>
+  <div class="area-header">NGN-645, NGN-650, NGN-651. All Done</div>
+  <div class="iteration-box">
+    <div class="iteration-step">
+      <h4>Problem</h4>
+      <p>Finance iframe blocked by CSP frame-ancestors in local dev. Location FE ran on HTTP, CSP wildcard only matched HTTPS origins.</p>
+    </div>
+    <div class="iteration-arrow">→</div>
+    <div class="iteration-step">
+      <h4>Action</h4>
+      <p>Created NGN-650 and NGN-651 to switch location-fe and location-admin to HTTPS via mkcert. Josh implemented both.</p>
+    </div>
+    <div class="iteration-arrow">→</div>
+    <div class="iteration-step">
+      <h4>QA FAIL</h4>
+      <p>CSP wildcard did not match non-default port 3011. Port-handling edge case caught during QA.</p>
+    </div>
+    <div class="iteration-arrow">→</div>
+    <div class="iteration-step">
+      <h4>Fix & QA PASS</h4>
+      <p>Port-wildcard pattern (https://*.dev1.ngnair.com:*) applied. QA PASS on develop and staging.</p>
+    </div>
+  </div>
+  <div style="margin-top: 20px; font-size: 17px; color: #9ca3af; line-height: 1.5;">
+    Location-frontend and location-admin now support <code style="color:#60a5fa;">just dev</code> over HTTPS with trusted mkcert certificates. Finance iframe embedding works from the HTTPS local dev origin.
+  </div>`,
+  `This slide walks through the developer environment work, which took the most back and forth of anything this week. It started with NGN-645: Finance pages were blocked from rendering inside the location-fe host app iframe during local development because the CSP frame-ancestors directive only allowed HTTPS origins and the local dev server ran on HTTP. The resolution path was to switch location-fe to HTTPS rather than loosen the CSP. I created NGN-650 and NGN-651 for location-frontend and location-admin respectively. Josh implemented both using mkcert, adding justfiles and updating package.json dev scripts with the experimental-https flag. On QA testing NGN-645, I found the Finance iframe was still blocked. The CSP wildcard https colon slash slash star dot dev1 dot ngnair dot com did not match the non-default port 3011. Per the CSP spec, hostname wildcards do not match non-default ports. Josh then applied a port-wildcard pattern with colon-star in the CSP, updated the CapRover env var on staging, and I re-tested on both develop and staging. That final QA returned PASS. All three tickets closed.`
+);
+
+S('Admin RBAC: Support, Partner, and Marketplace',
+  `<h2>Admin RBAC Enforcement</h2>
+  <div class="area-header">NGN-647, NGN-649. Done. NGN-648. Pending Review</div>
+  <div class="cards" style="margin-top: 16px;">
+    <div class="card" style="border-left: 4px solid #22c55e;">
+      <h3><span class="ticket-id">NGN-647</span> Support Admin <span class="badge done">DONE</span></h3>
+      <p>Standard users were reaching the Support Admin page by navigating to the URL directly. Now enforces Platform Administrator role check, showing Access Denied for unauthorized users.</p>
+    </div>
+    <div class="card" style="border-left: 4px solid #22c55e;">
+      <h3><span class="ticket-id">NGN-649</span> Partner Admin <span class="badge done">DONE</span></h3>
+      <p>Same RBAC gap on the Partner FE host app. Resolved with access control matching the Location Admin pattern.</p>
+    </div>
+    <div class="card" style="border-left: 4px solid #f59e0b;">
+      <h3><span class="ticket-id">NGN-648</span> Marketplace Admin <span class="badge pending">PENDING</span></h3>
+      <p>Identical gap still exists on Marketplace Admin. Acceptance criteria require Platform Administrator-only access with Access Denied page for standard users.</p>
+    </div>
+  </div>
+  <p style="margin-top: 24px; font-size: 17px; color: #9ca3af;">All three share the same pattern: any authenticated user could access the admin page directly via URL. Duane implemented the fix for Support and Partner following the existing Location Admin access control pattern. Marketplace remains open.</p>`,
+  `Here are the three RBAC gaps. I found the same access control problem on three admin frontends: Support, Partner, and Marketplace. Any authenticated user, like Sofia Navarro or Ivan Petrov, could reach these pages by typing the URL directly. Duane picked up all three. He implemented role based access control on Support and Partner, following the Location Admin pattern that was already in place. Unauthorized users now see an Access Denied page instead of the admin interface. Marketplace Admin has the same gap but has not been addressed yet. The acceptance criteria and reproduction steps are documented in NGN-648, matching what was done for Support and Partner. Two out of three resolved, one remains in the queue.`
+);
+
+S('Customer Fixes: QA Verified',
+  `<h2>Customer Fixes</h2>
+  <div class="area-header">NGN-604, NGN-632. Both PASS in Staging</div>
+  <div class="cards" style="margin-top: 16px;">
+    <div class="card">
+      <h3><span class="ticket-id">NGN-604</span> updateCustomer BAD_REQUEST</h3>
+      <p><strong>Problem:</strong> Newly created customers could not be edited. The create-then-edit flow silently failed with a BAD_REQUEST error on updateCustomer.</p>
+      <p style="margin-top: 8px;"><strong>Verified:</strong> Tested in staging. Newly created customers can be edited and saved. Seeded customer edits unchanged. UI shows correct success state. All acceptance criteria passed.</p>
+    </div>
+    <div class="card">
+      <h3><span class="ticket-id">NGN-632</span> Customers Table Cutoff</h3>
+      <p><strong>Problem:</strong> Last visible entry in the Customers table was cut off. No pagination controls existed for locations with large result sets.</p>
+      <p style="margin-top: 8px;"><strong>Verified:</strong> Tested at Alpha City Branch with seeded data. 10 rows fully visible, Rows per page selector functional (5, 10, 25, 50), pagination works across pages, location selector preserved.</p>
+    </div>
+  </div>`,
+  `Both customer fixes were straightforward QA PASS results in staging. NGN-604 addressed a bug where newly created customers could not be edited. The updateCustomer call was returning a BAD_REQUEST error. I tested the full create-then-edit flow in staging: created a new customer, edited the values, saved, and confirmed the UI showed the correct success state. I also checked that existing seeded customers could still be edited without any regression. All acceptance criteria passed. NGN-632 fixed the Customers table, which was cutting off the last visible entry and had no pagination for locations with large result sets. I tested it as a location super admin at Alpha City Branch, which has seeded customer data. The table now shows all ten rows fully visible. The Rows per page selector with options for five, ten, twenty-five, and fifty rows is functional. Pagination works correctly when moving between pages. The location selector behavior is preserved. Clean QA PASS on both.`
+);
+
+S('Partner Error Handling & Location Data',
+  `<h2>Partner Error &amp; Location Data</h2>
+  <div class="cards" style="margin-top: 16px;">
+    <div class="card" style="border-left: 4px solid #22c55e;">
+      <h3><span class="ticket-id">NGN-671</span> Partner Status Update Error <span class="badge done">DONE</span></h3>
+      <p><strong>Problem:</strong> Status update on non-BIN-ISO partners showed a confusing error: "Update failed: isExternal can only be set on BIN_ISO partners." Internal field names were leaking to the UI.</p>
+      <p style="margin-top: 8px;"><strong>Fix:</strong> partnerToSnapshot() now conditionally includes isExternal only when the partner level is BinIso. Non-BIN-ISO saves succeed with "Partner updated successfully." Duane resolved this.</p>
+    </div>
+    <div class="card" style="border-left: 4px solid #f59e0b;">
+      <h3><span class="ticket-id">NGN-661</span> Location Banking Info <span class="badge pending">PENDING</span></h3>
+      <p><strong>Problem:</strong> Banking info in Location Details shows identical hardcoded values across different locations instead of per-location GraphQL data.</p>
+      <p style="margin-top: 8px;"><strong>Status:</strong> Bug report filed with reproduction steps and acceptance criteria. Needs to be sourced from the location-level GraphQL query. Not yet picked up for implementation.</p>
+    </div>
+  </div>`,
+  `This slide covers two smaller items. NGN-671 was a partner admin bug where saving changes on a non-BIN-ISO partner showed an error that exposed internal field names to the user. The toast said "isExternal can only be set on BIN_ISO partners," which is confusing for a non-technical admin. Duane traced it to partnerToSnapshot, which was unconditionally copying the isExternal field into the update payload for all partner levels. The backend rejected it for non-BIN-ISO partners. The fix now conditionally includes isExternal only when the partner level is BinIso. All other partner levels save successfully with the expected success toast. NGN-661 is a location data bug I documented: the Banking Info section in Location Details shows the same values no matter which location you open, meaning the data is hardcoded rather than sourced from the per-location GraphQL response. Reproduction steps and acceptance criteria are filed, but the ticket has not been picked up yet. It remains in Pending Review.`
+);
+
+S('What Changed',
+  `<h2>What Changed</h2>
+  <div class="impact-list">
+    <div class="impact-item">
+      <div class="impact-icon green">&#10003;</div>
+      <div class="impact-text"><span class="tid">NGN-650, NGN-651</span> location-frontend and location-admin now start on HTTPS locally via <code style="color:#60a5fa;">just dev</code> with trusted mkcert certificates. No Chrome flags needed.</div>
+    </div>
+    <div class="impact-item">
+      <div class="impact-icon blue">&#10003;</div>
+      <div class="impact-text"><span class="tid">NGN-645</span> Finance iframe embedding works from the HTTPS local dev origin. Port-wildcard CSP pattern deployed to staging.</div>
+    </div>
+    <div class="impact-item">
+      <div class="impact-icon green">&#10003;</div>
+      <div class="impact-text"><span class="tid">NGN-647, NGN-649</span> Standard users navigating to Support or Partner admin URLs now see Access Denied page matching Location Admin behavior.</div>
+    </div>
+    <div class="impact-item">
+      <div class="impact-icon blue">&#10003;</div>
+      <div class="impact-text"><span class="tid">NGN-604</span> Newly created customers can be edited and saved without BAD_REQUEST errors.</div>
+    </div>
+    <div class="impact-item">
+      <div class="impact-icon green">&#10003;</div>
+      <div class="impact-text"><span class="tid">NGN-632</span> Customers table displays all entries fully visible with functional pagination controls.</div>
+    </div>
+    <div class="impact-item">
+      <div class="impact-icon blue">&#10003;</div>
+      <div class="impact-text"><span class="tid">NGN-671</span> Non-BIN-ISO partner status updates show a user-friendly message instead of exposing internal field names.</div>
+    </div>
+  </div>`,
+  `This slide connects each completed ticket to the concrete change it produced. The developer environment improvements are the most visible for the team: developers can now run location-frontend and location-admin over HTTPS without Chrome security flags, using the same mkcert pattern that marketplace-frontend already had. The Finance iframe embeds correctly from the HTTPS local dev origin, with the port-wildcard CSP pattern on staging. On access control, Support and Partner admin pages now block unauthorized standard users with an Access Denied page that matches the rest of the platform. On the customer side, newly created customers can be edited after creation without the BAD_REQUEST error, and the Customers table shows all entries with working pagination. The partner admin status update no longer exposes backend field names in the UI. Six concrete improvements from the eight completed tickets.`
+);
+
+S('Open Items',
+  `<h2>Open Items</h2>
+  <div class="open-item">
+    <h3>NGN-648: Marketplace Admin RBAC</h3>
+    <p>Marketplace Admin page allows standard users to access it directly via URL. Needs the same Platform Administrator-only access control that was applied to Support and Partner admin pages. Acceptance criteria: Mark Goldman can access it, standard users see Access Denied page.</p>
+  </div>
+  <div class="open-item">
+    <h3>NGN-661: Location Banking Info</h3>
+    <p>Banking info in Location Details shows identical values across different locations. Hardcoded data needs to be replaced with location-level GraphQL fields. Acceptance criteria: different locations display different banking info, null or missing fields show a valid empty state, verified with at least two distinct location records.</p>
+  </div>
+  <p style="margin-top: 24px; font-size: 18px; color: #9ca3af;">Both items have documented reproduction steps, clear acceptance criteria, and no blockers.</p>`,
+  `The open queue is two items, both with well defined scope. Marketplace Admin, NGN-648, needs the same RBAC enforcement that was applied to Support and Partner. The acceptance criteria and reproduction steps are documented, matching the pattern that already passed QA on the other two admin pages. The Location banking info bug, NGN-661, is a data issue where the Banking Info section in Location Details shows the same hardcoded values across every location. The fix needs to source this data from the location-level GraphQL query. Reproduction steps are documented, and the acceptance criteria specify verifying with at least two distinct location records so the values are visibly different. Both items have clear scope and no blockers in the way.`
+);
+
+S('Closing',
+  `<div class="closing-box">
+    <h2>Week 21 Closing</h2>
+    <div class="stats-row" style="margin: 32px 0;">
+      <div class="stat-block done"><div class="stat-number">8</div><div class="stat-label">Completed</div></div>
+      <div class="stat-block pending"><div class="stat-number">2</div><div class="stat-label">Pending</div></div>
+      <div class="stat-block blocked"><div class="stat-number">0</div><div class="stat-label">Blockers</div></div>
+    </div>
+    <p>Customer management, admin RBAC, developer tooling, partner error handling, and location data reporting.</p>
+    <p style="font-size: 20px; color: #d1d5db; margin-top: 16px;">Two items remain in the review queue. Both have documented reproduction steps and clear acceptance criteria.</p>
+  </div>`,
+  `To close, eight tickets completed with staging or develop verification across five work areas. Two items remain open: Marketplace Admin RBAC and the Location banking info fix. Both have documented reproduction steps and clear acceptance criteria. No blockers were recorded. The most involved ticket was the CSP fix for Finance, which required a second QA round after a port-handling edge case was caught, but it ended with a PASS on both develop and staging. The rest of the completed tickets resolved cleanly. That is the W21 summary.`
+);
+
+// --- Engine ---
+let currentSlide = 0;
+const totalSlides = slides.length;
+const isPresenter = new URLSearchParams(location.search).get('view') === 'presenter';
+const stageEl = document.getElementById('stage');
+const stagePvEl = document.getElementById('stage-pv');
+let timerInterval = null;
+let elapsedSeconds = 0;
+const channel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('slideshow-sync') : null;
+
+if (isPresenter) {
+  document.body.classList.add('presenter-mode');
+}
+
+function formatTime(sec) {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+}
+
+function updateTimer() {
+  const el = document.getElementById('pv-timer');
+  if (el) el.textContent = formatTime(elapsedSeconds);
+}
+
+function startTimer() {
+  if (timerInterval) return;
+  elapsedSeconds = 0;
+  updateTimer();
+  timerInterval = setInterval(() => { elapsedSeconds++; updateTimer(); }, 1000);
+}
+
+function stopTimer() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+}
+
+function buildSlideHTML(i) {
+  const s = slides[i];
+  const cls = i === 0 ? 'title-slide' : '';
+  return `<div class="slide ${cls}" data-notes="${s.notes.replace(/"/g, '&quot;').replace(/\n/g, ' ')}"><div class="slide-meta">${i + 1} / ${totalSlides}</div>${s.bodyHTML}</div>`;
+}
+
+function renderStage(target) {
+  target.innerHTML = slides.map((_, i) => buildSlideHTML(i)).join('');
+  const allSlides = target.querySelectorAll('.slide');
+  allSlides.forEach((el, i) => { if (i === currentSlide) el.classList.add('active'); });
+}
+
+function showSlide(index, opts = {}) {
+  if (index < 0 || index >= totalSlides) return;
+  currentSlide = index;
+  [stageEl, stagePvEl].forEach(el => {
+    if (!el) return;
+    const active = el.querySelector('.slide.active');
+    if (active) active.classList.remove('active');
+    const next = el.querySelectorAll('.slide')[index];
+    if (next) next.classList.add('active');
+  });
+  updatePresenterUI();
+  if (!opts.skipBroadcast && channel) {
+    channel.postMessage({ slide: index });
+  }
+}
+
+function updatePresenterUI() {
+  if (!isPresenter) return;
+  const notesEl = document.getElementById('pv-notes');
+  const nextTitleEl = document.getElementById('pv-next-title');
+  const statusEl = document.getElementById('pv-status');
+  const activeSlide = stageEl ? stageEl.querySelectorAll('.slide')[currentSlide] : null;
+  if (notesEl && activeSlide) {
+    notesEl.textContent = activeSlide.getAttribute('data-notes') || '';
+  }
+  const nextIdx = currentSlide + 1;
+  if (nextTitleEl) {
+    nextTitleEl.textContent = nextIdx < totalSlides ? slides[nextIdx].title : 'End of deck';
+  }
+  if (statusEl) {
+    statusEl.textContent = `Slide ${currentSlide + 1} of ${totalSlides}`;
+  }
+  const prevBtn = document.getElementById('pv-prev');
+  const nextBtn = document.getElementById('pv-next');
+  if (prevBtn) prevBtn.disabled = currentSlide === 0;
+  if (nextBtn) nextBtn.disabled = currentSlide === totalSlides - 1;
+}
+
+function navigate(delta) {
+  const next = currentSlide + delta;
+  if (next < 0 || next >= totalSlides) return;
+  if (currentSlide === 0 && delta === 1 && isPresenter) startTimer();
+  showSlide(next, { skipBroadcast: true });
+  if (channel) channel.postMessage({ slide: next });
+}
+
+function scaleStage() {
+  const wrap = document.getElementById('stage-wrap');
+  if (!wrap) return;
+  const ww = wrap.clientWidth;
+  const wh = wrap.clientHeight;
+  const scale = Math.min(ww / 1920, wh / 1080);
+  stageEl.style.transform = `scale(${scale})`;
+  if (stagePvEl) {
+    const pvWrap = document.querySelector('.pv-current-wrap');
+    if (pvWrap) {
+      const pvw = pvWrap.clientWidth;
+      const pvh = pvWrap.clientHeight;
+      const pvScale = Math.min(pvw / 1920, pvh / 1080);
+      stagePvEl.style.transform = `scale(${pvScale})`;
+    }
+  }
+}
+
+// Init
+renderStage(stageEl);
+if (stagePvEl) renderStage(stagePvEl);
+showSlide(0, { skipBroadcast: true });
+scaleStage();
+
+// Events
+window.addEventListener('resize', scaleStage);
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown') { e.preventDefault(); navigate(1); }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); navigate(-1); }
+  if (e.key === 'Home') { e.preventDefault(); showSlide(0); }
+  if (e.key === 'End') { e.preventDefault(); showSlide(totalSlides - 1); }
+  if (e.key === 'p' || e.key === 'P') {
+    if (!isPresenter) {
+      e.preventDefault();
+      window.open(location.pathname + '?view=presenter', 'slideshow-presenter', 'width=1400,height=900');
+    }
+  }
+});
+
+// Sync
+if (channel) {
+  channel.onmessage = (e) => {
+    if (e.data && typeof e.data.slide === 'number') {
+      showSlide(e.data.slide, { skipBroadcast: true });
+    }
+  };
+}
+
+// localStorage fallback
+window.addEventListener('storage', (e) => {
+  if (e.key === 'slideshow-current') {
+    const idx = parseInt(e.newValue, 10);
+    if (!isNaN(idx) && idx >= 0 && idx < totalSlides) {
+      showSlide(idx, { skipBroadcast: true });
+    }
+  }
+});
+
+// Fallback sync: write to localStorage on navigation
+const origNavigate = navigate;
+navigate = function(delta) {
+  origNavigate(delta);
+  try { localStorage.setItem('slideshow-current', String(currentSlide)); } catch(_) {}
+};
+</script>
+</body>
+</html>
