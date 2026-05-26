@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ticket Codebase Investigator"
+  short_description: "Investigate tickets against code"
+  default_prompt: "Use $ticket-codebase-investigator to investigate tracker tickets against the relevant codebase and return source-aware root causes, implementation steps, effort, risk, and validation guidance."
