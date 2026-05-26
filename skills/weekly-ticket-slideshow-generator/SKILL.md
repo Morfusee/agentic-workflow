@@ -1,11 +1,11 @@
 ---
 name: weekly-ticket-slideshow-generator
-description: Transform weekly ticket dumps and stand-up scripts into an objective weekly presentation brief for $slideshow-generator. Use when weekly work needs to be pulled from dump files, normalized, and turned into clear presentation-ready information that shows what the user actually worked on last week without directly authoring the final slideshow HTML.
+description: Transform weekly ticket dumps and stand-up scripts into an objective weekly presentation brief for $revealjs-presenter. Use when weekly work needs to be pulled from dump files, normalized, and turned into clear presentation-ready information that shows what the user actually worked on last week without directly authoring the final slideshow HTML.
 ---
 
 # Weekly Ticket Slideshow Generator
 
-Transform weekly ticket evidence into an objective weekly presentation brief and hand that brief to `$slideshow-generator`.
+Transform weekly ticket evidence into an objective weekly presentation brief and hand that brief to `$revealjs-presenter`.
 
 ## Core Objective
 
@@ -21,7 +21,7 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 5. Avoid flattening the week into only high-level themes when specific work detail is what gives the update value.
 3. Produce clear, usable presentation input rather than the final slide HTML.
 4. Keep the output objective, evidence-based, and easy for another skill to render.
-5. Leave slide layout, visual treatment, and final HTML composition to `$slideshow-generator`.
+5. Leave slide layout, visual treatment, and final HTML composition to `$revealjs-presenter`.
 
 ## Weekly Narrative Rules
 
@@ -84,8 +84,8 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 - impact or insight
 - open items
 - closing position
-2. Keep the structure explicit enough that `$slideshow-generator` can interpret it without re-reading raw dump files.
-3. Include enough ticket and task detail inside each section that `$slideshow-generator` can build a substantive deck instead of padding a thin summary.
+2. Keep the structure explicit enough that `$revealjs-presenter` can interpret it without re-reading raw dump files.
+3. Include enough ticket and task detail inside each section that `$revealjs-presenter` can build a substantive deck instead of padding a thin summary.
 4. Include source-backed notes for each section so presenter script can be written from evidence rather than guesswork.
 5. For any section that references specific work, name the relevant tickets and state what was actually done on them.
 6. When using ticket-level sections, make the ticket ID and ticket title explicit in the section title or section summary.
@@ -106,7 +106,7 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 ## Output Contract
 
 1. Output a structured weekly presentation brief, not the final slideshow HTML.
-2. Make the brief usable as direct input to `$slideshow-generator`.
+2. Make the brief usable as direct input to `$revealjs-presenter`.
 3. For each section, provide:
 - section title
 - objective summary
@@ -123,7 +123,7 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 - **Light sections** (title slide, executive snapshot, closing position, simple stat summaries): write 1-3 sentences. These slides are visual cues that need brief context, not extended narration. Do not pad thin content.
 - **Standard sections** (weekly story overview, activity flow, net effect summary): write 2-4 sentences covering what the section shows, why it matters, and the key takeaway.
 - **Heavy sections** (detailed ticket breakdowns, priority work with multiple tickets, impact analysis): write 3-5 sentences covering the problem, the action taken, the validation or result, the current state, and what remains open. These slides carry the most evidence and need the most context.
-9. Keep `suggested presenter notes` factual and information-rich so `$slideshow-generator` can turn them into natural spoken script without adding hype or padding thin input.
+9. Keep `suggested presenter notes` factual and information-rich so `$revealjs-presenter` can turn them into natural spoken script without adding hype or padding thin input.
 9. Use `work detail` to show the concrete tasks performed, validations made, findings recorded, or follow-through completed for the tickets in that section.
 10. Include ticket IDs inside `work detail` whenever that helps the audience map the work back to actual items.
 11. When a ticket is covered as its own section, structure `work detail` so it answers:
@@ -144,7 +144,7 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 7. Build an objective weekly brief as structured narrative content, not as a chronological ticket list.
 8. Keep wording audience-safe, evidence-based, and non-promotional.
 9. Run all presenter notes, summaries, and narrative prose through `$avoid-ai-writing` in detect mode at the `blog` context profile. Fix every P0 and P1 flag before finalizing. Check P2 flags and fix unambiguous patterns. Remove chatbot artifacts, word-list violations (`delve`, `leverage`, `robust`, `seamless`, etc.), significance inflation, template phrases, `let's` constructions, generic closers, hedge-stacked predictions, and promotional language. The brief must read as plain factual internal reporting.
-10. Hand the resulting brief to `$slideshow-generator` for slide interpretation and HTML composition. Inject the output path `memory/tickets/linear/YYYY-W##/weekly-slideshow.html` under the canonical memory root defined in OpenCode's global AGENTS.md so the generated file lands alongside the ticket dumps for that week.
+10. Hand the resulting brief to `$revealjs-presenter` for slide interpretation and HTML composition. Inject the output path `memory/tickets/linear/YYYY-W##/weekly-slideshow.html` under the canonical memory root defined in OpenCode's global AGENTS.md so the generated file lands alongside the ticket dumps for that week.
 11. Do not take over slide rendering responsibilities unless the user explicitly asks for a combined workflow.
 
 ## Rules
@@ -158,7 +158,7 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 7. Do not default to repository `scripts/`, `assets/`, or `output/` folders as the core mechanism.
 8. Keep the role boundary clear:
 - `$weekly-ticket-slideshow-generator` interprets dumps into structured information
-- `$slideshow-generator` interprets structured information into slides
+- `$revealjs-presenter` interprets structured information into slides
 9. If a grouped section becomes too vague, add more concrete ticket detail instead of adding hype.
 10. If a week contains several meaningful tickets in the same area, prefer a grouped section with detailed sub-work over a single bland summary sentence.
 11. If the user asks to cover each ticket or task in depth, do not compress the week into only grouped overview slides.

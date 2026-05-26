@@ -4,7 +4,7 @@ title: Weekly Brief Example
 
 # Weekly Brief Example
 
-Use this as the target handoff shape from `$weekly-ticket-slideshow-generator` to `$slideshow-generator`.
+Use this as the target handoff shape from `$weekly-ticket-slideshow-generator` to `$revealjs-presenter`.
 
 The weekly skill should stop at this information layer.
 The slideshow skill should use this information layer to compose slides, notes, layout, and HTML.
@@ -123,7 +123,7 @@ closing:
 
 1. Keep the brief objective and source-backed.
 2. Avoid persuasive or celebratory phrasing.
-3. Give `$slideshow-generator` enough information to compose slides without re-reading raw dump files.
+3. Give `$revealjs-presenter` enough information to compose slides without re-reading raw dump files.
 4. Use `work_detail` to preserve the ticket and task visibility that would be lost in a thin summary.
 5. When the user asks for in-depth coverage, expand the `sections` list so individual tickets can become their own sections instead of being flattened into grouped summaries.
 6. Manual task IDs use the `MANUAL-###` prefix. Treat them alongside tickets in all sections, using only title, status, and activity notes as evidence. Keep manual task narration factual and brief.
