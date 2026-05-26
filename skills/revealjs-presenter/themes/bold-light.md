@@ -1,6 +1,6 @@
-# RevealJS Bold Theme (Dark Mode)
+# RevealJS Bold Theme
 
-A high-impact visual theme optimized for readability on dark backgrounds. Features large typography, bold weights, and strong color contrasts against a near-black canvas. This is the default theme — presentations default to dark mode.
+A high-impact visual theme optimized for maximum readability and dramatic presentation moments. Features large typography, bold weights, and strong color contrasts.
 
 ## When to Use
 
@@ -8,7 +8,6 @@ A high-impact visual theme optimized for readability on dark backgrounds. Featur
 - Talks where audience is far from the display
 - High-energy, persuasive presentations
 - Content with key statistics and dramatic assertions
-- Any presentation where dark mode is preferred (the default)
 
 ---
 
@@ -19,20 +18,20 @@ Every presentation using this theme must include these variables.
 ```css
 :root {
   /* === COLORS === */
-  --bg-primary: #0b1020;
-  --bg-secondary: #151b2e;
-  --bg-dark: #050816;
-  --bg-accent: #102a43;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f7;
+  --bg-dark: #1a1a2e;
+  --bg-accent: #003366;
 
-  --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
+  --text-primary: #1a1a1a;
+  --text-secondary: #4a4a4a;
+  --text-muted: #7a7a7a;
   --text-on-dark: #ffffff;
 
-  --accent-1: #60a5fa;      /* Primary accent */
-  --accent-2: #34d399;      /* Secondary accent */
-  --accent-3: #fb923c;      /* Tertiary accent */
-  --accent-4: #a78bfa;      /* Quaternary accent */
+  --accent-1: #0066cc;      /* Primary accent */
+  --accent-2: #00a86b;      /* Secondary accent */
+  --accent-3: #ff6b35;      /* Tertiary accent */
+  --accent-4: #7c3aed;      /* Quaternary accent */
 
   /* === TYPOGRAPHY === */
   --font-display: 'Space Grotesk', sans-serif;
@@ -81,18 +80,6 @@ Every presentation using this theme must include these variables.
   --slide-padding: 60px;
 }
 ```
-
-**Dark mode background rule:**
-
-Always include this rule so the canvas renders dark:
-
-```css
-.reveal {
-  background: var(--bg-primary);
-}
-```
-
-This theme uses a dark canvas (`--bg-primary: #0b1020`). Cards and secondary surfaces use `--bg-secondary` for elevated contrast. Default section slides sit on the dark primary background. Use `data-background-color` only for intentional section breaks.
 
 ---
 
@@ -223,9 +210,9 @@ For visual rhythm, vary section break backgrounds. Suggested rotation:
 
 **Example with accent background:**
 ```html
-<section class="centered" data-background-color="var(--accent-3)">
+<section class="centered" data-background-color="#D45D00">
   <h1 class="text-on-dark">The Problem</h1>
-  <p class="text-on-dark" style="opacity: 0.8;">What needs to change.</p>
+  <p class="text-on-dark" style="opacity: 0.8;">Why the current paradigm is broken.</p>
 </section>
 ```
 

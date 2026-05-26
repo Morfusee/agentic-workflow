@@ -41,8 +41,15 @@ Reveal.initialize({
   height: 1080,
   margin: 0.08,
   minScale: 0.2,
-  maxScale: 2.0
+  maxScale: 2.0,
+  plugins: [ RevealNotes ]
 });
+```
+
+Also include the notes plugin script before the initialize call:
+
+```html
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
 ```
 
 **Why these values:**
@@ -50,6 +57,7 @@ Reveal.initialize({
 - `width: 1920, height: 1080` — Standard HD ratio. Content scales automatically.
 - `margin: 0.08` — Provides breathing room at viewport edges.
 - `transition: 'fade'` — Professional, non-distracting. Avoid 'zoom', 'convex', etc.
+- `plugins: [ RevealNotes ]` — Enables the separate speaker view window (press `S`) with speaker notes, next slide preview, and elapsed timer. Always include this so speaker notes work reliably. The plugin is small and harmless when no `<aside class="notes">` elements are present.
 
 ### 1.2 Base HTML Structure
 
@@ -82,6 +90,7 @@ Reveal.initialize({
   </div>
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
   <script>
     Reveal.initialize({
       hash: true,
@@ -93,7 +102,8 @@ Reveal.initialize({
       height: 1080,
       margin: 0.08,
       minScale: 0.2,
-      maxScale: 2.0
+      maxScale: 2.0,
+      plugins: [ RevealNotes ]
     });
   </script>
 </body>
@@ -169,23 +179,35 @@ Each theme file specifies:
 
 ### 2.2 Default Theme
 
-Use `themes/bold.md` unless the user specifies otherwise.
+The default theme is `themes/bold.md` which uses **dark mode** (near-black canvas, light text). Use this unless the user specifies otherwise.
 
-### 2.3 How to Apply a Theme
+If the user explicitly asks for a light-mode presentation, switch to `themes/bold-light.md` (identical content strategy but with light backgrounds and dark text).
+
+### 2.3 Dark Mode Default
+
+All generated presentations should use dark-safe color variables by default. Rules:
+
+- Include `.reveal { background: var(--bg-primary); }` so the dark canvas renders correctly.
+- Do not hardcode white backgrounds or light card colors in generated decks.
+- Ensure headings, lead text, card text, stat labels, and footer text use theme variables (not hardcoded light values).
+- Use `data-background-color` only for intentional section breaks, never to override the default slide background.
+- The `theme/white.min.css` RevealJS CDN stylesheet is fine — its defaults are overridden by custom CSS variables. Do not switch to `theme/black.min.css`; it introduces unwanted style resets.
+
+### 2.4 How to Apply a Theme
 
 1. Read the entire theme file before generating slides
 2. Follow the theme's **Content Strategy** section for word limits and slide type choices
 3. Include all CSS from the theme's variables and typography sections
 4. Combine with the base CSS reset from Part 1.3
 
-### 2.4 Available Themes
+### 2.5 Available Themes
 
 | Theme | File | Content Approach |
 |-------|------|------------------|
-| Bold | `themes/bold.md` | Minimal words, dramatic impact, simple structures, 40%+ impact slides |
+| Bold (dark, default) | `themes/bold.md` | Minimal words, dramatic impact, simple structures, 40%+ impact slides, dark canvas |
+| Bold Light | `themes/bold-light.md` | Same content strategy as Bold but with light backgrounds and dark text. Use only when user explicitly requests light mode. |
 | Corporate | `themes/corporate.md` | Information-dense, detailed content, complex structures allowed |
-
-Future themes may include `minimal.md` (clean, understated design).
+| Delft | `themes/delft.md` | Refined blue-and-white aesthetic, classical typography, porcelain-inspired palette |
 
 ---
 
@@ -378,9 +400,9 @@ Vary section break backgrounds to create distinct visual identities for each maj
 
 **Example with accent background:**
 ```html
-<section class="centered" data-background-color="#D45D00">
+<section class="centered" data-background-color="var(--accent-3)">
   <h1 class="text-on-dark">The Problem</h1>
-  <p class="text-on-dark" style="opacity: 0.8;">Why the current paradigm is broken.</p>
+  <p class="text-on-dark" style="opacity: 0.8;">What needs to change.</p>
 </section>
 ```
 
@@ -1208,23 +1230,24 @@ to those prototypes that used to die in pilot purgatory...
 
 ### 8.7 Enabling Speaker Notes Plugin
 
-Speaker notes work by default, but for the separate speaker view window:
+The speaker notes plugin must be loaded and registered for the separate speaker view window to work. Three things are required:
 
-```javascript
-Reveal.initialize({
-  // ... other config
-  
-  // Optional: configure notes behavior
-  showNotes: false,  // Don't show notes in main view (default)
-  
-  // For speaker view keyboard shortcut
-  keyboard: {
-    83: function() { Reveal.toggleOverview(); }  // 'S' key
-  }
-});
-```
+1. Load the notes plugin script:
+   ```html
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
+   ```
 
-To enable the separate speaker notes window with timer and preview, press `S` during presentation. This requires the presentation to be served over HTTP (not just opened as a local file) for the popup window to work in most browsers.
+2. Register the plugin in RevealJS initialization:
+   ```javascript
+   Reveal.initialize({
+     // ... other config
+     plugins: [ RevealNotes ]
+   });
+   ```
+
+3. Serve the presentation over HTTP (not `file://`) and allow browser popups for the domain.
+
+To open the separate speaker notes window with timer and preview, press `S` during presentation. This requires the presentation to be served over HTTP (not just opened as a local file) for the popup window to work in most browsers.
 
 ### 8.8 Notes Anti-Patterns
 
@@ -1281,6 +1304,7 @@ Before delivering the presentation:
 - [ ] RevealJS initializes without errors
 - [ ] Works at multiple viewport sizes
 - [ ] Fragment animations work as expected
+- [ ] Notes plugin script loaded and registered in plugins array
 - [ ] Speaker view opens correctly (press 'S')
 
 ### Accessibility
@@ -1311,15 +1335,15 @@ This example shows a minimal presentation structure. For full presentations, use
   
   <style>
     :root {
-      --bg-primary: #ffffff;
-      --bg-secondary: #f5f5f7;
-      --bg-dark: #1a1a2e;
-      --text-primary: #1a1a1a;
-      --text-secondary: #4a4a4a;
-      --text-muted: #7a7a7a;
+      --bg-primary: #0b1020;
+      --bg-secondary: #151b2e;
+      --bg-dark: #050816;
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
       --text-on-dark: #ffffff;
-      --accent-1: #0066cc;
-      --accent-2: #00a86b;
+      --accent-1: #60a5fa;
+      --accent-2: #34d399;
       --font-display: 'Space Grotesk', sans-serif;
       --font-body: 'Inter', sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
@@ -1335,7 +1359,7 @@ This example shows a minimal presentation structure. For full presentations, use
       --bar-height: 8px;
     }
 
-    .reveal { font-family: var(--font-body); color: var(--text-primary); }
+    .reveal { background: var(--bg-primary); font-family: var(--font-body); color: var(--text-primary); }
     .reveal h1, .reveal h2 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin: 0 0 0.5em 0; }
     .reveal h1 { font-size: var(--size-h1); }
     .reveal h2 { font-size: var(--size-h2); }
@@ -1373,7 +1397,7 @@ target. Let's start with the results.
       </section>
       
       <!-- Section Break -->
-      <section class="centered" data-background-color="#1a1a2e">
+      <section class="centered" data-background-color="var(--bg-dark)">
         <h1 class="text-on-dark">Results</h1>
         
         <aside class="notes">
@@ -1417,7 +1441,7 @@ results by end of next week.
       </section>
       
       <!-- Closing -->
-      <section class="centered" data-background-color="#1a1a2e">
+      <section class="centered" data-background-color="var(--bg-dark)">
         <h1 class="text-on-dark">Questions?</h1>
         <div class="bar" style="background: var(--accent-2);"></div>
         <p class="text-on-dark">team@example.com</p>
@@ -1438,6 +1462,7 @@ If anything comes up later, reach out to the team alias.
   </div>
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
   <script>
     Reveal.initialize({
       hash: true,
@@ -1446,7 +1471,8 @@ If anything comes up later, reach out to the team alias.
       transitionSpeed: 'fast',
       width: 1920,
       height: 1080,
-      margin: 0.08
+      margin: 0.08,
+      plugins: [ RevealNotes ]
     });
   </script>
 </body>
