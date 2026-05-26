@@ -1,0 +1,4 @@
+interface:
+  display_name: "Config Symlink Maintainer"
+  short_description: "Maintain repo-owned config symlinks"
+  default_prompt: "Use $config-symlink-maintainer to make repo-owned config directories the source of truth and safely sync or symlink them into tool config locations."
