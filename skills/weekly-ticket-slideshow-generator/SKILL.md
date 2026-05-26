@@ -103,6 +103,33 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 9. Do not hide concrete work behind abstract phrasing such as `advanced the initiative` or `supported progress`.
 10. Before finalizing the brief, pass all presenter notes, objective summaries, and narrative content through `$avoid-ai-writing` in detect mode at the `blog` context profile. Fix every P0 and P1 flag (chatbot artifacts, word-list violations, significance inflation, template phrases, `let's` constructions, bold overuse in notes, em dashes, generic closers, hedge-stacked predictions, promotional language, real/actual adjective inflation, future-narrative closers). P2 flags (transition overuse, uniform sentence length, copula avoidance, numbered-list inflation, rhetorical question openers) should be checked and fixed when the pattern is unambiguous. The brief must read as factual internal reporting, not as AI-generated prose.
 
+## Non-Redundant Flow Rules
+
+1. Assign each piece of information to one primary section. Do not repeat the same ticket problem, reproduction detail, status, or impact across multiple sections.
+2. Later sections that need to reference a ticket already covered in detail elsewhere must use short references only, such as `covered in priority work`, `remains pending`, `validated fix`, or `see above`. Never restate full reproduction steps, acceptance criteria, or problem descriptions in a second section.
+3. The `weekly story` section explains the week's shape and themes, not individual ticket details. Reserve ticket-level detail for the `priority work` section.
+4. The `executive snapshot` section provides only counts, status summary, and high-level state. It must not include per-ticket descriptions, reproduction steps, or acceptance criteria.
+5. The `activity flow` section explains movement or workflow stages (creation, QA, resolution). Use short ticket references grouped by stage. Do not repeat ticket-by-ticket summaries that belong in `priority work`.
+6. The `priority work` section is the primary home for ticket-level detail: problem description, action taken, validation performed, and current state. Other sections must not duplicate this detail.
+7. The `impact` section explains what changed because of completed or verified work. Reference resolved tickets by ID only, with a one-line description of the outcome. Do not repeat every open ticket.
+8. The `open items` section covers only what remains unresolved and what follow-up is needed. Use ticket IDs with one-line summaries. Do not repeat reproduction steps or problem descriptions already covered in `priority work`.
+9. The `closing` section summarizes the final state in one short paragraph. No new details, no new ticket references, no repeated counts from the executive snapshot.
+10. After drafting the brief, scan every section for repeated ticket descriptions. If the same ticket appears with detailed explanation in more than one section, keep the detail only in `priority work` and reduce other references to short pointers.
+
+## Section Responsibilities
+
+Each section has one clear job. Do not let sections overlap in what they communicate.
+
+| Section | Responsibility | Must NOT include |
+|---|---|---|
+| `weekly-story` | The week's shape: themes, work areas, and why the grouping matters | Individual ticket detail, reproduction steps, acceptance criteria |
+| `executive-snapshot` | Top-line counts, status summary, blocker check | Per-ticket descriptions, work detail |
+| `activity-flow` | Workflow stage movement: creation, QA, resolution | Ticket-by-ticket summaries, problem descriptions |
+| `priority-work` | Full ticket detail: problem, action, validation, state | (This is the primary detail section — nothing is off-limits here) |
+| `impact` | Observable changes from completed/verified work | Reproduction of open-ticket problems, full ticket descriptions |
+| `open-items` | Unresolved items and follow-through needed | Reproduction steps already in priority work, duplicate counts from snapshot |
+| `closing` | Final state summary in one paragraph | New details, new ticket IDs, restated counts |
+
 ## Output Contract
 
 1. Output a structured weekly presentation brief, not the final slideshow HTML.
@@ -136,7 +163,7 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 
 1. Resolve target week under `memory/tickets/linear/YYYY-W##/` in the canonical memory root defined in OpenCode's global AGENTS.md.
    Before writing, check whether an existing implementation already exists in the target location and reuse it if present.
-2. Parse `# All Scraped Tickets`, `# Selected Tickets`, `# Manual Tasks`, and stand-up script content from each daily dump. When any dump in the week contains a `# Selected Tickets` section, use the selected ticket IDs as an inclusion filter — only tickets that appear in at least one `# Selected Tickets` section across the week are included in the brief. When no `# Selected Tickets` section exists in any dump, fall back to including all tickets from `# All Scraped Tickets`. Never include tickets listed only in `# Unselected Tickets` unless they also appear in `# Selected Tickets`.
+2. Parse `# All Scraped Tickets`, `# Selected Tickets`, `# Manual Tasks`, and stand-up script content from each daily dump. When any dump in the week contains a `# Selected Tickets` section, use the selected ticket IDs as an inclusion filter — only tickets that appear in at least one `# Selected Tickets` section across the week are included in the brief. When no `# Selected Tickets` section exists in any dump, fall back to including all tickets from `# All Scraped Tickets`. Never include tickets listed only in `# Unselected Tickets` unless they also appear in `# Selected Tickets`. Treat the `# Unselected Tickets` section as carry-over metadata only — do not ingest its content for counts, open items, executive snapshot content, supporting evidence, work detail, presenter notes, or any other section of the brief.
 3. Filter out any daily entries that describe inactivity, no progress, or no work performed. Drop them entirely before merging.
 4. Merge same ticket IDs and manual task IDs across the week and preserve chronological events.
 5. Identify the strongest weekly themes and the tickets that best explain the actual work performed.
@@ -144,8 +171,9 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 7. Build an objective weekly brief as structured narrative content, not as a chronological ticket list.
 8. Keep wording audience-safe, evidence-based, and non-promotional.
 9. Run all presenter notes, summaries, and narrative prose through `$avoid-ai-writing` in detect mode at the `blog` context profile. Fix every P0 and P1 flag before finalizing. Check P2 flags and fix unambiguous patterns. Remove chatbot artifacts, word-list violations (`delve`, `leverage`, `robust`, `seamless`, etc.), significance inflation, template phrases, `let's` constructions, generic closers, hedge-stacked predictions, and promotional language. The brief must read as plain factual internal reporting.
-10. Hand the resulting brief to `$revealjs-presenter` for slide interpretation and HTML composition. Inject the output path `memory/tickets/linear/YYYY-W##/weekly-slideshow.html` under the canonical memory root defined in OpenCode's global AGENTS.md so the generated file lands alongside the ticket dumps for that week.
-11. Do not take over slide rendering responsibilities unless the user explicitly asks for a combined workflow.
+10. Run a redundancy check: scan every section for repeated ticket descriptions, reproduction steps, or acceptance criteria appearing in more than one section. If the same ticket is described in detail in both `weekly-story` and `priority-work`, keep the detail only in `priority-work` and reduce the other instance to a short reference. If status counts appear in both `executive-snapshot` and `closing`, keep the detail in the snapshot and reduce the closing to a one-sentence summary. Apply the section responsibilities table: each piece of information must live in exactly one section.
+11. Hand the resulting brief to `$revealjs-presenter` for slide interpretation and HTML composition. Inject the output path `memory/tickets/linear/YYYY-W##/weekly-slideshow.html` under the canonical memory root defined in OpenCode's global AGENTS.md so the generated file lands alongside the ticket dumps for that week.
+12. Do not take over slide rendering responsibilities unless the user explicitly asks for a combined workflow.
 
 ## Rules
 
@@ -168,3 +196,4 @@ Transform weekly ticket evidence into an objective weekly presentation brief and
 15. When manual tasks share a theme or area with tickets, group them together in the same brief section.
 16. Keep manual task narrative in the brief factual and brief, using only title, status, and activity notes as evidence.
 17. Vary presenter note depth proportionally to the section. Light overview sections get short, direct notes. Heavy ticket-breakdown sections get fuller notes with context, evidence, and resolution. Do not write a long note for a thin slide or a thin note for an evidence-rich slide.
+18. Never include tickets from the `# Unselected Tickets` dump section in the weekly brief or any of its subsections. Unselected tickets are carry-over candidates, not reportable work. The only exception is when the same ticket ID also appears in `# Selected Tickets` or `# All Scraped Tickets` under the active fallback mode. Do not use unselected ticket data to augment open-item counts, domain summaries, or any narrative element.
