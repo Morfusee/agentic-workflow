@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "updated_at": "2026-05-26",
+  "providers": ["opencode", "opencode-go"],
+  "selection_order": [
+    {
+      "model": "opencode/deepseek-v4-flash-free",
+      "variant": "max",
+      "cost_tier": "free",
+      "requires_billing": false,
+      "preferred_for": ["SEARCH", "INSPECT", "SUMMARIZE", "VALIDATE", "COMPARE", "DRAFT_FRAGMENT"]
+    },
+    {
+      "model": "opencode-go/deepseek-v4-flash",
+      "variant": "high",
+      "cost_tier": "cheap",
+      "requires_billing": true,
+      "preferred_for": ["SEARCH", "INSPECT", "SUMMARIZE", "VALIDATE", "COMPARE", "DRAFT_FRAGMENT", "SMALL_PATCH"]
+    },
+    {
+      "model": "opencode/nemotron-3-super-free",
+      "variant": "high",
+      "cost_tier": "free",
+      "requires_billing": false,
+      "preferred_for": ["SEARCH", "INSPECT", "SUMMARIZE", "VALIDATE", "COMPARE", "DRAFT_FRAGMENT"]
+    },
+    {
+      "model": "opencode-go/deepseek-v4-pro",
+      "variant": "high",
+      "cost_tier": "moderate",
+      "requires_billing": true,
+      "preferred_for": ["COMPARE", "SMALL_PATCH"]
+    }
+  ],
+  "fallback_lookup": {
+    "when": "No configured preferred model is available or all configured models fail.",
+    "action": "Run local opencode model discovery first. If local discovery is insufficient and internet access is available, quickly look up current OpenCode/provider model names, then update this file before delegating."
+  },
+  "notes": [
+    "Codex remains the main agent and must review all OpenCode output before applying or reporting it.",
+    "Prefer free or cheap models for read-only subtasks. Use billing-required opencode-go models only when available and justified."
+  ]
+}
