@@ -1,0 +1,222 @@
+# configs/codex/rules/default.rules
+#
+# Source of truth for ~/.codex/rules/default.rules (symlinked by scripts/sync_environment.py).
+#
+# Goal:
+# - Mirror OpenCode-style command permissions from configs/opencode/opencode.jsonc
+# - Keep common project work fast under C:\Users\mrqvp\Documents\Programming
+# - Prompt before destructive/runtime-heavy actions
+# - Forbid system-level changes and remote package execution shortcuts
+#
+# Notes:
+# - Codex rules are prefix-based (tokenized argv prefixes).
+# - Avoid a blanket PowerShell allow rule; keep wrappers narrow.
+
+# =============================================================================
+# Always forbid system-level / machine-level changes
+# =============================================================================
+
+prefix_rule(
+    pattern = ["choco"],
+    decision = "forbidden",
+    justification = "System package installation is blocked.",
+)
+
+prefix_rule(
+    pattern = ["winget"],
+    decision = "forbidden",
+    justification = "System package installation is blocked.",
+)
+
+prefix_rule(
+    pattern = ["npm", "install", "-g"],
+    decision = "forbidden",
+    justification = "Global npm installs are blocked. Prefer project-local dependencies.",
+)
+
+prefix_rule(
+    pattern = ["pnpm", "add", "-g"],
+    decision = "forbidden",
+    justification = "Global pnpm installs are blocked. Prefer project-local dependencies.",
+)
+
+prefix_rule(
+    pattern = ["reg"],
+    decision = "forbidden",
+    justification = "Windows registry edits are blocked.",
+)
+
+prefix_rule(
+    pattern = ["netsh"],
+    decision = "forbidden",
+    justification = "Network configuration changes are blocked.",
+)
+
+prefix_rule(
+    pattern = ["sc"],
+    decision = "forbidden",
+    justification = "Windows service changes are blocked.",
+)
+
+prefix_rule(
+    pattern = ["schtasks"],
+    decision = "forbidden",
+    justification = "Scheduled task changes are blocked.",
+)
+
+prefix_rule(
+    pattern = ["shutdown"],
+    decision = "forbidden",
+    justification = "Shutdown/restart commands are blocked.",
+)
+
+prefix_rule(
+    pattern = ["taskkill", "/f"],
+    decision = "forbidden",
+    justification = "Force-killing processes is blocked.",
+)
+
+# =============================================================================
+# Forbid inline/eval execution shortcuts + remote execution shortcuts
+# =============================================================================
+
+prefix_rule(
+    pattern = ["node", "-e"],
+    decision = "forbidden",
+    justification = "Inline Node execution is blocked. Use a checked-in script instead.",
+)
+
+prefix_rule(
+    pattern = ["node", "--eval"],
+    decision = "forbidden",
+    justification = "Inline Node eval is blocked. Use a checked-in script instead.",
+)
+
+prefix_rule(
+    pattern = ["npx", "-y"],
+    decision = "forbidden",
+    justification = "npx -y can execute remote packages without review.",
+)
+
+# =============================================================================
+# Prompt before risky commands
+# =============================================================================
+
+prefix_rule(
+    pattern = ["node"],
+    decision = "prompt",
+    justification = "Node execution should be reviewed first.",
+)
+
+prefix_rule(
+    pattern = ["python"],
+    decision = "prompt",
+    justification = "Python execution should be reviewed first.",
+)
+
+prefix_rule(
+    pattern = ["git", "push"],
+    decision = "prompt",
+    justification = "Pushing changes should require explicit approval.",
+)
+
+prefix_rule(
+    pattern = ["git", "reset", "--hard"],
+    decision = "prompt",
+    justification = "Hard reset can destroy local work.",
+)
+
+prefix_rule(
+    pattern = ["git", "clean"],
+    decision = "prompt",
+    justification = "Git clean can delete untracked files.",
+)
+
+prefix_rule(
+    pattern = ["rm", "-rf"],
+    decision = "prompt",
+    justification = "Recursive deletion should require approval.",
+)
+
+prefix_rule(
+    pattern = ["del", "/s", "/q"],
+    decision = "prompt",
+    justification = "Recursive deletion should require approval.",
+)
+
+prefix_rule(
+    pattern = ["rmdir", "/s", "/q"],
+    decision = "prompt",
+    justification = "Recursive directory deletion should require approval.",
+)
+
+# =============================================================================
+# Common safe project checks
+# =============================================================================
+
+prefix_rule(
+    pattern = ["rg"],
+    decision = "allow",
+    justification = "Allow ripgrep searches in the workspace.",
+)
+
+prefix_rule(
+    pattern = ["git", "status"],
+    decision = "allow",
+    justification = "Allow checking repository status.",
+)
+
+prefix_rule(
+    pattern = ["git", "add"],
+    decision = "allow",
+    justification = "Allow staging changes locally.",
+)
+
+prefix_rule(
+    pattern = ["git", "commit"],
+    decision = "allow",
+    justification = "Allow creating local commits.",
+)
+
+prefix_rule(
+    pattern = ["git", "diff"],
+    decision = "allow",
+    justification = "Allow inspecting local diffs.",
+)
+
+prefix_rule(
+    pattern = ["git", "show"],
+    decision = "allow",
+    justification = "Allow reading committed file contents.",
+)
+
+prefix_rule(
+    pattern = ["git", "-C"],
+    decision = "allow",
+    justification = "Allow git read commands against an explicit project path. Destructive subcommands are still covered by stricter rules when run directly.",
+)
+
+# =============================================================================
+# PowerShell wrappers generated by Codex on Windows
+# =============================================================================
+#
+# Codex commonly wraps safe commands as:
+#   C:\Program Files\PowerShell\7\pwsh.exe -Command <command...>
+#
+# Keep these wrappers narrow and only for safe commands.
+
+prefix_rule(
+    pattern = ["C:\\Program Files\\PowerShell\\7\\pwsh.exe", "-Command", "Get-ChildItem"],
+    decision = "allow",
+    justification = "Allow simple directory listings through Codex's Windows PowerShell wrapper.",
+)
+
+prefix_rule(
+    pattern = ["C:\\Program Files\\PowerShell\\7\\pwsh.exe", "-Command", "rg"],
+    decision = "allow",
+    justification = "Allow ripgrep searches through Codex's Windows PowerShell wrapper.",
+)
+
+prefix_rule(pattern=["cd", "C:\\Users\\mrqvp\\Documents\\Programming\\agentic-workflow"], decision="allow")
+prefix_rule(pattern=["python", "scripts/sync_environment.py", "codex"], decision="allow")
+prefix_rule(pattern=["C:\\Program Files\\PowerShell\\7\\pwsh.exe", "-NoProfile", "-Command", "cd C:\\Users\\mrqvp\\Documents\\Programming\\agentic-workflow; \"test\" | Out-File -Encoding ascii .git\\_codex_write_test.txt; Remove-Item -Force .git\\_codex_write_test.txt; \"ok\""], decision="allow")

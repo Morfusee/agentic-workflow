@@ -26,6 +26,7 @@ REPO_ROOT = SCRIPT_DIR.parent
 
 MEMORY_SOURCE = REPO_ROOT / "memory"
 CONFIG_DIR = REPO_ROOT / "configs" / "opencode"
+CODEX_CONFIG_DIR = REPO_ROOT / "configs" / "codex"
 SKILLS_SOURCE = REPO_ROOT / "skills"
 NVIM_SOURCE = REPO_ROOT / "configs" / "nvim"
 ENV_FILE = REPO_ROOT / ".skills.env"
@@ -42,6 +43,8 @@ OPENCODE_CONFIG_FILES = [
     "opencode.jsonc",
     "AGENTS.md",
 ]
+
+CODEX_CONFIG_TEMPLATE = "config.toml.template"
 
 CODEX_SKILLS_DIR = CODEX_DIR / "skills"
 OPENCODE_SKILLS_DIR = OPENCODE_DIR / "skills"
@@ -125,6 +128,32 @@ def link_points_to(dest: Path, source: Path) -> bool:
 def backup_existing(path: Path) -> None:
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     backup_path = path.with_name(f"{path.name}.backup.{timestamp}")
+    # On Windows, moving a symlink can require privileges (or fail depending on
+    # symlink type). For file symlinks, preserve the *contents* as a regular
+    # backup file and then remove the symlink.
+    if path.is_symlink():
+        if path.is_dir():
+            shutil.move(str(path), str(backup_path))
+            log("BACKUP", f"{path} -> {backup_path}")
+            return
+
+        ensure_parent_dir(backup_path)
+        try:
+            shutil.copyfile(str(path), str(backup_path), follow_symlinks=True)
+        except FileNotFoundError:
+            # Broken symlink: preserve the link target string for debugging.
+            try:
+                target = os.readlink(str(path))
+            except OSError:
+                target = "<unreadable>"
+            backup_path.write_text(f"broken-symlink-target: {target}\n", encoding="utf-8", newline="\n")
+        try:
+            path.unlink()
+        except OSError:
+            os.remove(str(path))
+        log("BACKUP", f"{path} -> {backup_path} (copied contents; removed symlink)")
+        return
+
     shutil.move(str(path), str(backup_path))
     log("BACKUP", f"{path} -> {backup_path}")
 
@@ -295,6 +324,74 @@ def sync_opencode_config(dry_run: bool = False) -> bool:
     return all_ok
 
 
+def sync_codex_config(dry_run: bool = False) -> bool:
+    if not CODEX_CONFIG_DIR.is_dir():
+        error(f"Config source directory not found: {CODEX_CONFIG_DIR}")
+        return False
+
+    all_ok = True
+
+    # Render config.toml from an in-repo template so paths are portable across machines/users.
+    template_path = CODEX_CONFIG_DIR / CODEX_CONFIG_TEMPLATE
+    if not template_path.is_file():
+        error(f"Config template not found: {template_path}")
+        all_ok = False
+    else:
+        try:
+            template_text = template_path.read_text(encoding="utf-8")
+        except OSError as e:
+            error(f"Cannot read template: {e}")
+            all_ok = False
+        else:
+            rendered = template_text
+            userprofile = str(Path.home())
+            localappdata = os.environ.get("LOCALAPPDATA", str(Path.home() / "AppData" / "Local"))
+
+            rendered = rendered.replace("{USERPROFILE}", userprofile)
+            rendered = rendered.replace("{LOCALAPPDATA}", localappdata)
+
+            dest = CODEX_DIR / "config.toml"
+            if dry_run:
+                log("DRY-RUN", f"Would write rendered config: {dest} (from {template_path})")
+            else:
+                ensure_parent_dir(dest)
+                # Keep at most one backup for Codex config.toml to avoid backup spam.
+                # If a backup already exists, overwrite in place without creating a new one.
+                backup_once = dest.with_name("config.toml.backup")
+                if os.path.lexists(str(dest)) and not backup_once.exists():
+                    if dest.is_symlink() and not dest.exists():
+                        # Broken symlink: just remove it and proceed (backup adds little value).
+                        try:
+                            dest.unlink()
+                        except OSError:
+                            os.remove(str(dest))
+                        log("REMOVE", f"Broken symlink at {dest}")
+                    else:
+                        ensure_parent_dir(backup_once)
+                        try:
+                            shutil.copyfile(str(dest), str(backup_once), follow_symlinks=True)
+                            log("BACKUP", f"{dest} -> {backup_once}")
+                        except OSError as e:
+                            error(f"Cannot create one-time backup: {e}")
+                try:
+                    dest.write_text(rendered, encoding="utf-8", newline="\n")
+                    log("WROTE", f"{dest} (rendered from repo template)")
+                except OSError as e:
+                    error(f"Cannot write rendered config: {e}")
+                    all_ok = False
+
+    rules_source = CODEX_CONFIG_DIR / "rules" / "default.rules"
+    if not rules_source.is_file():
+        error(f"Rules file not found: {rules_source}")
+        all_ok = False
+    else:
+        rules_dest = CODEX_DIR / "rules" / "default.rules"
+        if not _sync_link(rules_dest, rules_source, is_dir=False, dry_run=dry_run):
+            all_ok = False
+
+    return all_ok
+
+
 def sync_skills(dry_run: bool = False) -> bool:
     if not SKILLS_SOURCE.is_dir():
         error(f"Skills source not found: {SKILLS_SOURCE}")
@@ -346,7 +443,7 @@ def main() -> None:
     parser.add_argument(
         "targets",
         nargs="*",
-        choices=["memory", "opencode", "skills", "nvim", "all"],
+        choices=["memory", "opencode", "codex", "skills", "nvim", "all"],
         default=["all"],
         help="Which targets to sync (default: all).",
     )
@@ -364,7 +461,7 @@ def main() -> None:
     args = parser.parse_args()
 
     if "all" in args.targets:
-        targets_to_run = ["memory", "opencode", "skills", "nvim"]
+        targets_to_run = ["memory", "opencode", "codex", "skills", "nvim"]
     else:
         targets_to_run = args.targets
 
@@ -374,6 +471,8 @@ def main() -> None:
             results["memory"] = sync_memory(dry_run=args.dry_run)
         elif target == "opencode":
             results["opencode"] = sync_opencode_config(dry_run=args.dry_run)
+        elif target == "codex":
+            results["codex"] = sync_codex_config(dry_run=args.dry_run)
         elif target == "skills":
             results["skills"] = sync_skills(dry_run=args.dry_run)
         elif target == "nvim":

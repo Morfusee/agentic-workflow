@@ -54,8 +54,9 @@ This is the canonical command and syncs:
 
 1. `memory/` -> `%USERPROFILE%\.config\opencode\memory` and `%USERPROFILE%\.codex\memory`
 2. `configs/opencode/*` -> `%USERPROFILE%\.config\opencode/`
-3. `skills/` -> `%USERPROFILE%\.codex\skills/` (and optionally OpenCode)
-4. `configs/nvim/` -> `%LOCALAPPDATA%\nvim`
+3. `configs/codex/*` -> `%USERPROFILE%\.codex/` (Codex permissions/config)
+4. `skills/` -> `%USERPROFILE%\.codex\skills/` (and optionally OpenCode)
+5. `configs/nvim/` -> `%LOCALAPPDATA%\nvim`
 
 #### 2. Sync only OpenCode config
 
@@ -71,7 +72,18 @@ If you want to open the config after linking, run:
 just opencode-config
 ```
 
-#### 3. Sync only memory
+#### 3. Sync only Codex config
+
+```powershell
+just sync-codex
+```
+
+This links:
+
+1. `configs\\codex\\config.toml.template` -> `%USERPROFILE%\\.codex\\config.toml` (rendered)
+2. `configs\\codex\\rules\\default.rules` -> `%USERPROFILE%\\.codex\\rules\\default.rules`
+
+#### 4. Sync only memory
 
 ```powershell
 just sync-memory
@@ -82,7 +94,7 @@ This symlinks `memory\` into:
 1. `%USERPROFILE%\.config\opencode\memory`
 2. `%USERPROFILE%\.codex\memory`
 
-#### 4. Sync only skills
+#### 5. Sync only skills
 
 If you want OpenCode skill mirroring, copy `.skills.env.example` to `.skills.env` and set:
 
@@ -98,7 +110,7 @@ just sync-skills
 
 `just sync-skills` bootstraps `skills\` into `%USERPROFILE%\.codex\skills\`. If `SYNC_OPENCODE=true`, it also mirrors into `%USERPROFILE%\.config\opencode\skills`.
 
-#### 5. Sync only Neovim config
+#### 6. Sync only Neovim config
 
 ```powershell
 just sync-nvim
@@ -115,6 +127,7 @@ just sync-environment
 ```
 
 This is the canonical command and syncs memory, OpenCode config, skills, and Neovim.
+It also syncs Codex config from `configs/codex/` into `~/.codex/`.
 
 #### 2. Sync only OpenCode config
 

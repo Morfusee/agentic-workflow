@@ -1,0 +1,14 @@
+approval_policy = "on-request"
+allow_login_shell = false
+
+# Permissions / sandboxing
+sandbox_mode = "workspace-write"
+
+[sandbox_workspace_write]
+writable_roots = [
+  '{USERPROFILE}\Documents\Programming',
+  '{LOCALAPPDATA}\Temp\opencode',
+]
+
+[windows]
+sandbox = "elevated"

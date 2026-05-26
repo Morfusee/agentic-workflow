@@ -2,6 +2,7 @@ alias se := sync-environment
 alias ss := sync-skills
 alias sm := sync-memory
 alias so := sync-opencode
+alias sc := sync-codex
 alias sn := sync-nvim
 alias sp := skills-open
 alias oc := opencode-config
@@ -25,6 +26,10 @@ sync-memory:
 sync-opencode:
   @python scripts/sync_environment.py opencode
 
+# Sync repo configs/codex/* into ~/.codex/
+sync-codex:
+  @python scripts/sync_environment.py codex
+
 # Sync repo configs/nvim into OS-specific nvim config location
 sync-nvim:
   @python scripts/sync_environment.py nvim
@@ -36,7 +41,7 @@ sync-nvim:
 # Open mirrored skills folders in default file manager
 skills-open:
   @if [ "{{ os() }}" == "windows" ]; then \
-    powershell -NoLogo -NoProfile -ExecutionPolicy Bypass -Command '$$codex = Join-Path $$env:USERPROFILE ".codex\skills"; explorer $$codex; if ((Test-Path ".\.skills.env") -and ((Get-Content ".\.skills.env" | Where-Object { $$_ -match "^\s*SYNC_OPENCODE\s*=\s*true\s*$$" }).Count -gt 0)) { $$open = Join-Path $$env:USERPROFILE ".config\opencode\skills"; explorer $$open }'; \
+    powershell -NoLogo -NoProfile -ExecutionPolicy Bypass -Command '$codex = Join-Path $env:USERPROFILE ".codex\\skills"; explorer $codex; if ((Test-Path ".\\.skills.env") -and ((Get-Content ".\\.skills.env" | Where-Object { $_ -match "^\\s*SYNC_OPENCODE\\s*=\\s*true\\s*$" }).Count -gt 0)) { $open = Join-Path $env:USERPROFILE ".config\\opencode\\skills"; explorer $open }'; \
   else \
     xdg-open ~/.codex/skills 2>/dev/null; \
     if [ -f .skills.env ] && grep -qi '^\s*SYNC_OPENCODE\s*=\s*true\s*$' .skills.env 2>/dev/null; then \
