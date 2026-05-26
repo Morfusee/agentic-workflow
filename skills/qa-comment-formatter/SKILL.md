@@ -1,6 +1,6 @@
 ---
 name: qa-comment-formatter
-description: Format QA testing results into structured Linear-ready markdown comments. Use when the user provides QA observations, test results, pass/fail checks, or verification notes that need to be formatted as a ticket comment. When checks are not provided but a Linear issue ID is, load the issue and infer test checks from its acceptance criteria. Use when called by an orchestrator as $qa-comment-formatter with injection parameters. Supports direct Linear comment publishing when a linear_issue_id is provided; outputs markdown only otherwise.
+description: Format QA testing results into structured Linear-ready markdown comments. Use when the user provides QA observations, test results, pass/fail checks, or verification notes that need to be formatted as a ticket comment. When checks are not provided but a Linear issue ID is available, load the issue and infer test checks from its acceptance criteria. Supports direct Linear comment publishing, and can move Linear issue status only when the user explicitly asks to move, mark done, close, pass-and-done, or otherwise change the issue status.
 ---
 
 # QA Comment Formatter
@@ -44,6 +44,10 @@ Other skills can call `$qa-comment-formatter` by passing these parameters:
 
 When `linear_issue_id` or `linear_issue_url` is present: publish the comment directly using `linear_save_comment` and report the result.
 
+Publishing a QA comment does not imply moving the issue. Change Linear issue status only when the user explicitly requests a move/status change, such as "move it to done", "mark it done", "close it", "pass and move", or "set status to Done".
+
+If the user requests a status change, load available statuses, select the exact requested status when present, and update the issue after publishing the QA comment. If the requested status is ambiguous or unavailable, report the available statuses and stop before changing status.
+
 When neither is present: output the formatted markdown only. Do not call any Linear tools.
 
 ## Workflow
@@ -61,6 +65,7 @@ When neither is present: output the formatted markdown only. Do not call any Lin
 7. Strip any section that has no data, except Test Scope (always include).
 8. Render Test Results as a paragraph by default. Write a single flowing paragraph describing what was tested and the outcome — do not mechanically append `— PASS` or `— FAIL` to each sentence. Use a table only when checks carry expected/actual detail or the caller explicitly requests it. Never render Test Results as bulleted lists.
 9. If `linear_issue_id` or `linear_issue_url` is provided: publish via `linear_save_comment`. Otherwise, output the markdown.
+10. If and only if the user explicitly requested a Linear status change, update the issue status after the comment is published. Report both the comment result and the status result.
 
 ## Output Format
 
