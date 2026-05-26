@@ -108,7 +108,7 @@ Then run:
 just sync-skills
 ```
 
-`just sync-skills` bootstraps `skills\` into `%USERPROFILE%\.codex\skills\`. If `SYNC_OPENCODE=true`, it also mirrors into `%USERPROFILE%\.config\opencode\skills`.
+`just sync-skills` bootstraps `skills\` into `%USERPROFILE%\.codex\skills\`. If `SYNC_OPENCODE=true`, it also mirrors into `%USERPROFILE%\.config\opencode\skills`. OpenCode skill sync skips folders with `.opencode-hidden`.
 
 #### 6. Sync only Neovim config
 
@@ -162,7 +162,7 @@ To also mirror into OpenCode, copy `.skills.env.example` to `.skills.env` and se
 SYNC_OPENCODE=true
 ```
 
-Then run `just sync-skills` again.
+Then run `just sync-skills` again. OpenCode skill sync skips folders with `.opencode-hidden`.
 
 #### 5. Sync only Neovim config
 

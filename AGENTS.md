@@ -132,8 +132,12 @@ All commits in this repository must follow [Conventional Commits v1.0.0](https:/
 - Never batch unrelated changes into a single commit. Each logical change gets its own commit.
 - Stage and commit one concern at a time. Do not combine feature work, refactors, migrations, or doc updates into the same commit.
 
-## Codex Visibility Control
+## Skill Visibility Control
 
 Place an empty `.codex-hidden` file inside any skill folder to prevent it from being symlinked into Codex's skills directory. The skill will still sync to OpenCode when `SYNC_OPENCODE=true`.
 
 Use this for skills that are opencode-specific or should not be exposed to other LLM agents.
+
+Place an empty `.opencode-hidden` file inside any skill folder to prevent it from being symlinked into OpenCode's skills directory. The skill will still sync to Codex.
+
+Use this for skills that are Codex-specific or should not be exposed to OpenCode agents.

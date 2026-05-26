@@ -410,10 +410,15 @@ def sync_skills(dry_run: bool = False) -> bool:
 
         for skill_folder in skill_folders:
             name = skill_folder.name
-            is_hidden = (skill_folder / ".codex-hidden").is_file()
+            is_codex_hidden = (skill_folder / ".codex-hidden").is_file()
+            is_opencode_hidden = (skill_folder / ".opencode-hidden").is_file()
 
-            if is_hidden and target == CODEX_SKILLS_DIR:
+            if is_codex_hidden and target == CODEX_SKILLS_DIR:
                 log("HIDDEN", f"{name} (skipped for Codex)")
+                continue
+
+            if is_opencode_hidden and target == OPENCODE_SKILLS_DIR:
+                log("HIDDEN", f"{name} (skipped for OpenCode)")
                 continue
 
             dest = target / name
