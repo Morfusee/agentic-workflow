@@ -1,12 +1,12 @@
-# MMDC Certifications Page Block Audit
+# Reusable Block Audit From MMDC Certifications Mockup
 
 Audit date: 2026-05-27
 Mockup checked: https://mmdc-certifications-page.fenunez.com/
-Browser artifact: `audit-mmdc-certifications-full.png`
+Browser artifact: `memory/audits/website/mmdc-certifications-block-audit.png`
 
 ## Scope
 
-This audit compares the certification landing page mockup against the current Payload CMS block/component system in this repository. The goal is to identify the missing blocks and component work needed to recreate the mockup in a maintainable, CMS-editable way.
+This audit uses the MMDC certifications mockup as a reference page, but the recommended blocks below are intentionally generic. The goal is not to create one-off certification components. The goal is to identify reusable Payload CMS blocks that can support landing pages, program pages, product pages, admissions pages, campaign pages, and future certification pages with the same system.
 
 ## Codebase Conventions Observed
 
@@ -18,143 +18,162 @@ This audit compares the certification landing page mockup against the current Pa
 - The design language is Tailwind-driven, using `primary` `#1E3A8A`, `secondary` `#C02C36`, white, muted gray, and `background` `#F5F5F5`.
 - Components favor compact cards, `rounded-xl`/`rounded-lg`, light shadows, thin borders, responsive grids, and restrained CTAs.
 
+## Reusable Block Principles
+
+- Name blocks after layout/content patterns, not page subjects. Prefer `SplitHero` over `CertificationHero`, `MetricStrip` over `ProgramFactStrip`, and `ProofSection` over `PartnerProof`.
+- Keep data structured when editors repeat items. Arrays of cards, facts, logos, modules, plans, and quotes should be first-class fields instead of rich-text formatting.
+- Use variants sparingly. A good block can support a few layout variants, but should not become a catch-all page builder inside a page builder.
+- Preserve current system conventions: `StyleField`, `ButtonField`, upload relations to `images`, optional renderers only for nested Payload blocks, and Storybook stories for each visual block.
+- Reuse existing generic blocks where composition stays editor-friendly. Add a block when the current composition would force editors to manage fragile spacing, nested rich text, or repeated visual semantics manually.
+
 ## Mockup Section Inventory
 
-| Mockup section | Current coverage | Recommendation |
+| Mockup section | Current coverage | Generic recommendation |
 | --- | --- | --- |
 | Sticky header and footer | Existing globals | Use existing `Header` and `Footer`; no page block required. |
-| Certification hero with badge, rating, CTAs, and image | Partial: `Hero` cannot model this layout cleanly | Add `CertificationHero`. |
-| Quick facts strip: length, cost, start date | Partial: could be forced with `Grid` + `IconCard` | Add `ProgramFactStrip` for repeatable facts. |
-| Trusted by Industry Leaders logos plus quote cards | Partial: `BrandPartners` only handles global marquee logos | Add `PartnerProof`. |
-| Why Choose MMDC stats/cards | Mostly covered by `Grid` + `IconCard` | No new block required unless exact icon/stat styling is required. |
-| What You'll Learn module cards | Partial: `Grid` + `List` can approximate, but module grouping is awkward | Add `CurriculumModules`. |
-| Pricing and payment cards | Not covered | Add `PricingPlans`. |
-| Start Learning Now lead form | Partial: `LeadForm` exists; form fields are missing radio/textarea and mockup shell | Add form field support and a `LeadFormSection` wrapper or extend `LeadForm`. |
-| Accredited and Recognized logo row | Partial: can use `Image` in `Grid`, but repeated logo-strip editing is awkward | Add `LogoStrip` or extend `BrandPartners` with manual source mode. |
-| Learner testimonials image carousel | Partial: `Carousel` + `ProfileCard` can approximate | Add `TestimonialCarousel` variant if social-card screenshot layout must be exact. |
+| Hero with badge, rating, CTAs, and image | Partial: existing `Hero` is image-background/overlay oriented | Add generic `SplitHero`. |
+| Quick facts strip | Partial: can be forced with `Grid` + `IconCard` | Add generic `MetricStrip`. |
+| Logos plus quote cards | Partial: `BrandPartners` handles global marquee logos only | Add generic `ProofSection`. |
+| Benefit/stat cards | Mostly covered by `Grid` + `IconCard` | Reuse existing blocks unless exact card semantics are needed. |
+| Learning/module cards | Partial: `Grid` + `List` can approximate, but nested lists are awkward | Add generic `StructuredCardGroup`. |
+| Pricing/payment cards | Not covered | Add generic `PlanCards`. |
+| Lead form with intro and card shell | Partial: `LeadForm` exists, but field support and section shell are limited | Add generic `FormSection` and form field enhancements. |
+| Accreditation/recognition logo row | Partial: possible with `Image` in `Grid`, but awkward | Add generic `LogoStrip`. |
+| Learner/testimonial cards | Partial: `Carousel` + `ProfileCard` can approximate | Add generic `QuoteCarousel` or extend `Carousel` with quote-card slides. |
 | FAQ accordion | Existing `Accordion` | Use existing block. |
-| Blue conversion CTA | Existing `Container` + `RichText` + `Button` | No new block required. |
-| Learning Resources cards | Partial: `ArticleCategory` is category-driven and dark-primary, not manual cards | Add `ResourceCards` or extend `ArticleCategory`. |
+| Blue conversion CTA | Existing `Container` + `RichText` + `Button` | Reuse existing blocks. |
+| Resource/article cards | Partial: `ArticleCategory` is category-driven and dark-primary | Add generic `ContentCards`. |
 
-## Missing Blocks and Components
+## Recommended Generic Blocks and Components
 
-### 1. `CertificationHero`
+### 1. `SplitHero`
 
 Component files needed:
-- `src/blocks/CertificationHero/CertificationHero.block.ts`
-- `src/blocks/CertificationHero/CertificationHero.component.tsx`
-- `src/blocks/CertificationHero/CertificationHero.stories.tsx`
+- `src/blocks/SplitHero/SplitHero.block.ts`
+- `src/blocks/SplitHero/SplitHero.component.tsx`
+- `src/blocks/SplitHero/SplitHero.stories.tsx`
 
 Short description:
-CMS-editable hero for certification landing pages. It should render a small program badge, headline, supporting copy, rating/social proof, primary and secondary CTAs, and a right-side image. The mockup layout is not a full-bleed image hero; it is a two-column editorial hero with a light blue-to-white background and a contained image card.
+A reusable two-column hero for landing, product, program, admissions, and campaign pages. It supports an eyebrow/badge, headline, body copy, optional proof metadata, one or two CTAs, and an image or media panel. In the mockup, this maps to the top section with the IBM badge, title, rating, CTAs, and student image.
 
 Suggested Payload fields:
-- `badgeText`
+- `eyebrow`
 - `title`
 - `body`
-- `ratingLabel`
-- `reviewLabel`
-- `image`
-- `imageAlt`
+- `proofItems` array with `icon`, `label`, optional `value`
+- `media` upload relation to `images`
+- `mediaPosition`: `left` or `right`
 - `primaryButton` via existing `ButtonField`
 - `secondaryButton` via existing `ButtonField`
+- `variant`: `default`, `light`, `brand`, `minimal`
 - `StyleField`
 
-Why it is missing:
-Existing `Hero` variants are image-background/overlay oriented. The mockup needs text-first certification messaging, review metadata, two CTAs, and a contained image.
+Why this should be generic:
+The same layout can serve degree pages, scholarship pages, event campaigns, article landing pages, and lead-generation pages. Nothing in the component should know about certifications.
 
-### 2. `ProgramFactStrip`
+### 2. `MetricStrip`
 
 Component files needed:
-- `src/blocks/ProgramFactStrip/ProgramFactStrip.block.ts`
-- `src/blocks/ProgramFactStrip/ProgramFactStrip.component.tsx`
-- `src/blocks/ProgramFactStrip/ProgramFactStrip.stories.tsx`
+- `src/blocks/MetricStrip/MetricStrip.block.ts`
+- `src/blocks/MetricStrip/MetricStrip.component.tsx`
+- `src/blocks/MetricStrip/MetricStrip.stories.tsx`
 
 Short description:
-A compact responsive row of program facts such as `Program Length`, `Cost Per Month`, and `Next Start Date`. Each fact has an icon, label, value, and helper text.
+A responsive strip of compact facts, stats, or highlights. Each item has optional icon, label, value, and supporting text. In the mockup, this maps to program length, cost, and next start date.
 
 Suggested Payload fields:
 - `items` array with `icon`, `label`, `value`, `description`
 - `columns` select or number, default `3`
+- `alignment`: `left` or `center`
+- `variant`: `cards`, `inline`, `bordered`
 - `StyleField`
 
-Why it is missing:
-`Grid` + `IconCard` can mimic the cards, but the fact strip is a recurring certification-page pattern with consistent icon/value/description semantics.
+Why this should be generic:
+The same block can show program facts, application deadlines, scholarship amounts, event details, campus stats, performance metrics, or partner counts.
 
-### 3. `PartnerProof`
+### 3. `ProofSection`
 
 Component files needed:
-- `src/blocks/PartnerProof/PartnerProof.block.ts`
-- `src/blocks/PartnerProof/PartnerProof.component.tsx`
-- `src/blocks/PartnerProof/PartnerProof.stories.tsx`
+- `src/blocks/ProofSection/ProofSection.block.ts`
+- `src/blocks/ProofSection/ProofSection.component.tsx`
+- `src/blocks/ProofSection/ProofSection.stories.tsx`
 
 Short description:
-A social-proof block that combines a logo row with one or more quote cards. The mockup has a heading, subheading, partner logos, and testimonial quotes from company representatives.
+A trust/social-proof section that combines section copy, logos, and optional quote cards. In the mockup, this maps to the industry leader logo row and company representative quotes.
 
 Suggested Payload fields:
 - `title`
 - `subtitle`
-- `logos` array with `image`, `name`
-- `quotes` array with `quote`, `name`, `role`, `company`, optional `avatar`
+- `logos` array with `image`, `name`, optional `url`
+- `quotes` array with `quote`, `name`, `role`, `organization`, optional `avatar`
+- `logoDisplay`: `static`, `marquee`, `grid`
+- `quoteDisplay`: `cards`, `carousel`, `hidden`
 - `StyleField`
 
-Why it is missing:
-`BrandPartners` reads global partner data and renders marquee logo rows only. It does not support page-specific logos, quotes, attribution cards, or the static row layout shown in the mockup.
+Why this should be generic:
+This pattern covers partners, employers, accreditors, press mentions, outcomes proof, client logos, and alumni/company testimonials.
 
-### 4. `CurriculumModules`
+### 4. `StructuredCardGroup`
 
 Component files needed:
-- `src/blocks/CurriculumModules/CurriculumModules.block.ts`
-- `src/blocks/CurriculumModules/CurriculumModules.component.tsx`
-- `src/blocks/CurriculumModules/CurriculumModules.stories.tsx`
+- `src/blocks/StructuredCardGroup/StructuredCardGroup.block.ts`
+- `src/blocks/StructuredCardGroup/StructuredCardGroup.component.tsx`
+- `src/blocks/StructuredCardGroup/StructuredCardGroup.stories.tsx`
 
 Short description:
-Structured curriculum cards for modules. Each module has a pill label, title, and checklist of lessons or outcomes.
+A grid or carousel of structured cards where each card can include eyebrow text, title, body, icon/image, checklist items, and optional CTA. In the mockup, this maps to the module cards in the `What You'll Learn` section, but it can also cover benefits, steps, requirements, learning paths, or feature comparisons.
 
 Suggested Payload fields:
 - `title`
 - `subtitle`
-- `modules` array with `eyebrow`, `title`, `items` array
+- `cards` array with `eyebrow`, `title`, `body`, `image`, `icon`, `items`, optional `button`
+- `cardLayout`: `default`, `checklist`, `numbered`, `media`
+- `columns`
+- `carouselOnMobile`
 - `StyleField`
 
-Why it is missing:
-Existing `List` and `BasicCard` can display text, but they do not model nested modules with lesson lists cleanly. A dedicated block keeps the CMS editing experience simple and prevents fragile rich-text formatting.
+Why this should be generic:
+This avoids creating narrow blocks like `CurriculumModules`, `AdmissionsSteps`, or `BenefitCards` when the underlying pattern is a repeated structured card.
 
-### 5. `PricingPlans`
+### 5. `PlanCards`
 
 Component files needed:
-- `src/blocks/PricingPlans/PricingPlans.block.ts`
-- `src/blocks/PricingPlans/PricingPlans.component.tsx`
-- `src/blocks/PricingPlans/PricingPlans.stories.tsx`
+- `src/blocks/PlanCards/PlanCards.block.ts`
+- `src/blocks/PlanCards/PlanCards.component.tsx`
+- `src/blocks/PlanCards/PlanCards.stories.tsx`
 
 Short description:
-Two or more pricing cards with optional `Popular` ribbon, plan type, price, billing note, feature checklist, and CTA. It should support individual and team/company pricing.
+A reusable plan/package/card comparison block with highlighted cards, pricing or non-pricing labels, feature lists, and CTAs. In the mockup, this maps to the individual and team pricing cards.
 
 Suggested Payload fields:
 - `title`
 - `subtitle`
 - `plans` array with `name`, `summary`, `price`, `pricePrefix`, `priceSuffix`, `badge`, `highlighted`, `features`, `button`
+- `comparisonMode`: `pricing`, `package`, `option`
+- `columns`
 - `StyleField`
 
-Why it is missing:
-`BasicCard` has title/body/image/button, but it does not provide pricing semantics, highlighted plan styling, feature checklist rows, or a ribbon/badge.
+Why this should be generic:
+The same component can present tuition plans, payment options, scholarship packages, enrollment tracks, service tiers, event passes, or downloadable bundles.
 
-### 6. Form Enhancements and `LeadFormSection`
+### 6. `FormSection` and Form Field Enhancements
 
 Component files needed:
-- `src/blocks/LeadFormSection/LeadFormSection.block.ts`
-- `src/blocks/LeadFormSection/LeadFormSection.component.tsx`
-- optional `src/blocks/LeadFormSection/LeadFormSection.renderer.tsx`
+- `src/blocks/FormSection/FormSection.block.ts`
+- `src/blocks/FormSection/FormSection.component.tsx`
+- optional `src/blocks/FormSection/FormSection.renderer.tsx`
 - `src/components/Form/fields/RadioFormField.tsx`
 - `src/components/Form/fields/TextareaFormField.tsx`
 
 Short description:
-A landing-page form section that wraps the existing Payload form with a heading, subheading, light gradient/background section, and centered card layout. The form itself needs radio-group and textarea field rendering to match the mockup's learner-type selector and message field.
+A generic section wrapper for any Payload form. It provides title, subtitle, optional supporting content, background treatment, and form-card presentation while continuing to use the existing `forms` collection. In the mockup, this maps to the `Start Learning Now` form.
 
 Suggested Payload fields for the wrapper:
 - `title`
 - `subtitle`
+- `body` via `RichTextField`
 - `form` relationship to `forms`
+- `layout`: `centered`, `split`, `card`
 - `StyleField`
 
 Required form-builder work:
@@ -162,8 +181,8 @@ Required form-builder work:
 - Enable or add a `textarea` field block.
 - Register both in `FormFieldComponents` in `src/components/Form/fields/FormFields.tsx`.
 
-Why it is missing:
-`LeadForm` currently renders the existing `Form` directly. The mockup has a purpose-built section shell and fields that are not currently rendered by the local form system.
+Why this should be generic:
+The existing `LeadForm` name is narrow. A generic `FormSection` can support inquiry forms, event registration, brochure downloads, applications, newsletter signups, contact forms, and campaign funnels.
 
 ### 7. `LogoStrip`
 
@@ -173,47 +192,49 @@ Component files needed:
 - `src/blocks/LogoStrip/LogoStrip.stories.tsx`
 
 Short description:
-A static row/grid of accreditation or recognition logos with title and body copy. This differs from partner marquees because the order and display are content-specific and should be manually curated per page.
+A static or lightly responsive row/grid of logos with optional title and copy. In the mockup, this maps to accreditation and recognition logos.
 
 Suggested Payload fields:
 - `title`
 - `body` via `RichTextField`
 - `logos` array with `image`, `name`, optional `url`
+- `display`: `row`, `grid`, `wrapped`
 - `StyleField`
 
-Why it is missing:
-The current `BrandPartners` block is global and animated. The mockup requires a static trust/accreditation strip with page-specific copy and logos.
+Why this should be generic:
+This covers accreditations, partner marks, press logos, platform logos, award badges, school affiliations, and employer logos without depending on the global `Partners` data model.
 
-### 8. `TestimonialCarousel`
+### 8. `QuoteCarousel`
 
 Component files needed:
-- `src/blocks/TestimonialCarousel/TestimonialCarousel.block.ts`
-- `src/blocks/TestimonialCarousel/TestimonialCarousel.component.tsx`
-- `src/blocks/TestimonialCarousel/TestimonialCarousel.stories.tsx`
+- `src/blocks/QuoteCarousel/QuoteCarousel.block.ts`
+- `src/blocks/QuoteCarousel/QuoteCarousel.component.tsx`
+- `src/blocks/QuoteCarousel/QuoteCarousel.stories.tsx`
 
 Short description:
-Carousel/grid for learner testimonials. It should support image-only testimonial cards, quote cards, or mixed cards depending on assets.
+A carousel or grid for quotes, testimonial cards, social proof screenshots, or image-first endorsements. In the mockup, this maps to the learner testimonial cards.
 
 Suggested Payload fields:
 - `title`
 - `subtitle`
-- `items` array with `image`, `quote`, `name`, `role`
-- `displayMode`: `image-card`, `quote-card`, `mixed`
+- `items` array with `image`, `quote`, `name`, `role`, `organization`
+- `displayMode`: `quote-card`, `image-card`, `mixed`
 - `autoplay`
+- `showIndicators`
 - `StyleField`
 
-Why it is missing:
-Existing `Carousel` and `ProfileCard` can approximate this, but the mockup shows social-style testimonial image cards. A dedicated block keeps those assets and captions editable without overloading `ProfileCard`.
+Why this should be generic:
+The same block can render learner stories, alumni quotes, employer feedback, event testimonials, partner endorsements, or press pull quotes.
 
-### 9. `ResourceCards`
+### 9. `ContentCards`
 
 Component files needed:
-- `src/blocks/ResourceCards/ResourceCards.block.ts`
-- `src/blocks/ResourceCards/ResourceCards.component.tsx`
-- `src/blocks/ResourceCards/ResourceCards.stories.tsx`
+- `src/blocks/ContentCards/ContentCards.block.ts`
+- `src/blocks/ContentCards/ContentCards.component.tsx`
+- `src/blocks/ContentCards/ContentCards.stories.tsx`
 
 Short description:
-Manual or relationship-backed article/resource cards with image, category badge, title, excerpt, link text, and a section-level CTA.
+A generic card grid for related content. Cards may be manually entered or pulled from the `articles` collection. In the mockup, this maps to learning resources and insights.
 
 Suggested Payload fields:
 - `title`
@@ -222,20 +243,23 @@ Suggested Payload fields:
 - `manualItems` array with `image`, `badge`, `title`, `excerpt`, `link`, `newTab`
 - `articles` relationship array to `articles`
 - `button` via `ButtonField`
+- `columns`
 - `StyleField`
 
-Why it is missing:
-`ArticleCategory` is useful for category pages, but it assumes category-driven content and a dark-primary section. The mockup needs a light gray landing-page resource grid with hand-picked cards and a `View All Resources` CTA.
+Why this should be generic:
+This can power resource sections, related articles, next steps, guides, downloads, webinars, news previews, and campaign follow-up content. It should not be tied to a category page layout.
 
 ## Existing Blocks to Reuse
 
-- `Accordion`: use for the FAQ section with the current `default` or `topic` variants.
-- `Container`: use as a section wrapper for CTA and general background/spacing control.
-- `Grid`: use for the `Why Choose MMDC?` metric cards and other simple card layouts.
-- `IconCard`: use for small icon/stat cards where no nested checklist or price logic is needed.
+- `Accordion`: use for FAQ and expandable informational sections.
+- `Container`: use as a section wrapper for CTA, background, rounded, and spacing control.
+- `Grid`: use for simple repeated item layouts where cards do not need special semantics.
+- `IconCard`: use for small icon/stat/benefit cards where no nested checklist or price logic is needed.
+- `BasicCard`: use for simple image/title/body/button cards.
+- `Carousel`: reuse internally for generic carousel behavior, or compose it inside `QuoteCarousel`/`StructuredCardGroup`.
 - `Button`: use for all CTAs through `ButtonField` so links, new-tab behavior, and colors remain consistent.
 - `RichText`: use for section intro copy and body copy.
-- `Image`: use for uploaded certification imagery and logos.
+- `Image`: use for uploaded media and logos.
 
 ## Payload Integration Checklist
 
@@ -252,15 +276,16 @@ For every new block:
 
 ## Recommended Build Order
 
-1. `CertificationHero`, `ProgramFactStrip`, and `PricingPlans`: these are the highest-impact missing above-the-fold and conversion blocks.
-2. Form enhancements and `LeadFormSection`: needed for the page's main conversion workflow.
-3. `CurriculumModules`, `PartnerProof`, and `LogoStrip`: needed for page-specific trust and learning-details sections.
-4. `TestimonialCarousel` and `ResourceCards`: important for visual parity, but less structurally risky than form and pricing.
+1. `SplitHero`, `MetricStrip`, and `PlanCards`: highest-impact reusable landing-page blocks.
+2. `FormSection` plus radio/textarea field support: needed for conversion workflows across multiple page types.
+3. `StructuredCardGroup`, `ProofSection`, and `LogoStrip`: reusable trust, feature, and information-density sections.
+4. `QuoteCarousel` and `ContentCards`: useful for social proof and related content, with lower implementation risk.
 
 ## Notes and Risks
 
 - The current `BrandPartnersBlock` has only `StyleField`; its component expects `brands` from global data. If it is used directly in page layout without a renderer injecting global partners, it may not have the data it needs.
 - The existing form plugin disables `message` fields and the local renderer has no radio or textarea component. The mockup form cannot be faithfully recreated until those fields are supported.
-- `Hero` could be extended with a new `certification` variant instead of adding `CertificationHero`, but a dedicated block is cleaner because the mockup's fields are certification-specific.
-- The current color palette can support the mockup, but the mockup uses light blue surfaces and gray section bands not fully represented in `tailwind.config.js`. Consider adding a named light-blue token only if repeated across multiple certification pages.
-- Some sections can be assembled from generic blocks today, but doing so would shift too much layout responsibility to CMS editors. Dedicated structured blocks are better for pricing, curriculum, proof, and form conversion sections.
+- Existing `Hero` could receive a new split variant, but a generic `SplitHero` is cleaner because it avoids overloading an image-overlay hero with a different content model.
+- `LeadForm` can remain for backward compatibility, but new work should prefer `FormSection` as the generic wrapper name.
+- The current color palette can support most of the mockup, but repeated light-blue surfaces may justify a named design token only if they are used across several pages.
+- Some sections can be assembled from generic blocks today, but doing so would shift too much layout responsibility to CMS editors. Dedicated structured blocks are better when the content has repeated semantics: plans, metrics, proof, structured cards, forms, logos, quotes, and related content.
