@@ -9,6 +9,7 @@ writable_roots = [
   '{USERPROFILE}\Documents\Programming',
   '{LOCALAPPDATA}\Temp\opencode',
 ]
+network_access = true
 
 [windows]
 sandbox = "elevated"
