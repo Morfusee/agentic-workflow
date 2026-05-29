@@ -24,6 +24,11 @@ Use these canonical subpaths under `${HOME}/Documents/Programming/agentic-workfl
 
 Before creating a new directory or file in one of these locations, check whether an existing implementation already exists in the target location and reuse it if present.
 
+## Worktree Directory
+
+- Canonical worktree root: `~/Documents/Programming/worktrees`.
+- The `using-git-worktrees` skill resolves this preference automatically when `AGENTS.md` declares it.
+
 ## Skill Creation Standard
 
 Follow the Skill Creator process in order:
