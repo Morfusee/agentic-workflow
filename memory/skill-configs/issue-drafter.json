@@ -1,60 +1,76 @@
 {
-  "provider": "linear",
-  "defaults": {
-    "team": "ngnair",
-    "priority": 3
-  },
-  "engineers": [
-    {
-      "name": "Reineer",
-      "role": "Staff Engineer",
-      "areas": ["Mobile", "React Native"],
-      "linear_user": null
+  "default_profile": "linear_ngn",
+  "profiles": {
+    "linear_ngn": {
+      "provider": "linear",
+      "title_format": "Service: Actionable technical fix",
+      "services": ["Partner", "Auth", "Marketplace", "Support", "POS", "Location", "Finance"],
+      "default_labels": ["Bug"],
+      "defaults": {
+        "team": "ngnair",
+        "priority": 3
+      },
+      "engineers": [
+        {
+          "name": "Reineer",
+          "role": "Staff Engineer",
+          "areas": ["Mobile", "React Native"],
+          "linear_user": null
+        },
+        {
+          "name": "Duane",
+          "role": "Staff Engineer",
+          "areas": ["Marketplace", "Partner", "Support"],
+          "linear_user": "duane.enriquez"
+        },
+        {
+          "name": "Josh",
+          "role": "Staff Engineer",
+          "areas": ["Location", "Finance", "Auth"],
+          "linear_user": "josh.tating"
+        },
+        {
+          "name": "John",
+          "role": "Staff Engineer",
+          "areas": ["POS", "Product", "Customer", "Open Bank"],
+          "linear_user": "john.demonteverde"
+        },
+        {
+          "name": "Irvin",
+          "role": "Intern",
+          "areas": ["Support Frontend", "Platform QA"],
+          "linear_user": "irvin.presto"
+        },
+        {
+          "name": "Reece",
+          "role": "Intern",
+          "areas": ["Platform QA"],
+          "linear_user": "reece.lim"
+        },
+        {
+          "name": "Mae",
+          "role": "Intern",
+          "areas": ["Platform QA"],
+          "linear_user": "mae.kiskis"
+        }
+      ],
+      "service_to_engineer": {
+        "Partner": "Duane",
+        "Auth": "Josh",
+        "Marketplace": "Duane",
+        "Support": "Duane",
+        "POS": "John",
+        "Location": "Josh",
+        "Finance": "Josh"
+      }
     },
-    {
-      "name": "Duane",
-      "role": "Staff Engineer",
-      "areas": ["Marketplace", "Partner", "Support"],
-      "linear_user": "duane.enriquez"
-    },
-    {
-      "name": "Josh",
-      "role": "Staff Engineer",
-      "areas": ["Location", "Finance", "Auth"],
-      "linear_user": "josh.tating"
-    },
-    {
-      "name": "John",
-      "role": "Staff Engineer",
-      "areas": ["POS", "Product", "Customer", "Open Bank"],
-      "linear_user": "john.demonteverde"
-    },
-    {
-      "name": "Irvin",
-      "role": "Intern",
-      "areas": ["Support Frontend", "Platform QA"],
-      "linear_user": "irvin.presto"
-    },
-    {
-      "name": "Reece",
-      "role": "Intern",
-      "areas": ["Platform QA"],
-      "linear_user": "reece.lim"
-    },
-    {
-      "name": "Mae",
-      "role": "Intern",
-      "areas": ["Platform QA"],
-      "linear_user": "mae.kiskis"
+    "notion_coding_projects": {
+      "provider": "notion",
+      "publisher": "notion-orchestrator",
+      "title_format": "Actionable technical fix",
+      "services": [],
+      "allowed_labels": ["Feature", "Fix", "Refactor", "Release"],
+      "default_labels": ["Feature"]
     }
-  ],
-  "service_to_engineer": {
-    "Partner": "Duane",
-    "Auth": "Josh",
-    "Marketplace": "Duane",
-    "Support": "Duane",
-    "POS": "John",
-    "Location": "Josh",
-    "Finance": "Josh"
   }
 }

@@ -1,0 +1,89 @@
+{
+  "default_domain": "personal_tasks",
+  "domains": {
+    "personal_tasks": {
+      "kind": "lightweight_task",
+      "name": "Personal Tasks",
+      "triggers": [
+        "personal task",
+        "personal reminder",
+        "errand",
+        "habit",
+        "goal",
+        "non-school task"
+      ],
+      "template": "personal_task_four_section",
+      "database": "https://www.notion.so/d176121a39804abb85be6e42bb83b7aa",
+      "data_source": "collection://c87de477-c2cd-4e76-ba7c-89086b5305d0",
+      "parent_page": "https://www.notion.so/f839c4af3611477ea4358285612e7fcf",
+      "fields": {
+        "title": "Name",
+        "status": "Status",
+        "due": "Due Date",
+        "priority": "Priority",
+        "url": "URL",
+        "parent": "Parent Task",
+        "subtasks": "Subtasks"
+      },
+      "write_fields": {
+        "url": "userDefined:URL"
+      },
+      "defaults": {
+        "status": "Not started"
+      },
+      "allowed_statuses": ["Not started", "Waiting", "In progress", "Done"],
+      "allowed_priorities": ["Low", "Medium", "High"]
+    },
+    "coding_projects": {
+      "kind": "technical_issue",
+      "name": "Coding Projects Tracker",
+      "triggers": [
+        "coding project",
+        "coding ticket",
+        "project task",
+        "technical ticket",
+        "coding task"
+      ],
+      "template": "linear_issue_markdown",
+      "draft_profile": "notion_coding_projects",
+      "tracker_page": "https://www.notion.so/2bfee6df9a4380dd87cdf06c67c16aca",
+      "projects": {
+        "database": "https://www.notion.so/2bfee6df9a438171a731fac3dc6af902",
+        "data_source": "collection://2bfee6df-9a43-81f4-8cc7-000b80f57b69",
+        "title_field": "Project name",
+        "status_field": "Status",
+        "relation_back_field": "Tasks"
+      },
+      "tasks": {
+        "database": "https://www.notion.so/2bfee6df9a43813bb201c5d4af5243e1",
+        "data_source": "collection://2bfee6df-9a43-81f1-984c-000b651deb32",
+        "fields": {
+          "title": "Task name",
+          "status": "Status",
+          "project": "Project",
+          "tags": "Tags",
+          "priority": "Priority",
+          "due": "Due",
+          "assignee": "Assignee",
+          "parent": "Parent-task",
+          "subtasks": "Sub-tasks",
+          "completed_on": "Completed on"
+        }
+      },
+      "defaults": {
+        "status": "Not Started"
+      },
+      "allowed_statuses": ["Not Started", "In Progress", "Done", "Archived"],
+      "allowed_priorities": ["Low", "Medium", "High"],
+      "allowed_tags": ["Feature", "Fix", "Refactor", "Release"],
+      "tag_mapping": {
+        "bug": "Fix",
+        "fix": "Fix",
+        "feature": "Feature",
+        "enhancement": "Feature",
+        "refactor": "Refactor",
+        "release": "Release"
+      }
+    }
+  }
+}

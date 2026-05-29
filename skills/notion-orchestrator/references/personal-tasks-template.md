@@ -2,15 +2,27 @@
 
 Use this template for Notion Personal Tasks only.
 
+## Configuration Contract
+
+Load `skill-configs/notion-orchestrator.json` from the canonical memory root before using this template. Resolve the `personal_tasks` domain and verify its configured values against Notion before writes.
+
+Expected domain shape:
+
+- `kind`: `lightweight_task`
+- `template`: `personal_task_four_section`
+- `database`: Personal Tasks database URL
+- `data_source`: Personal Tasks data source URL
+- `parent_page`: parent page URL
+- `fields`: title, status, due, priority, URL, parent, and subtasks field names
+- `write_fields`: Notion write aliases for reserved property names, such as `userDefined:URL`
+- `defaults.status`: default task status
+- `allowed_statuses` and `allowed_priorities`: Notion schema values expected by this domain
+
+Do not hardcode database IDs in this reference file. Use the config, then fetch Notion to verify the data source schema still matches.
+
 ## Database Contract
 
-Default database:
-
-- Name: `Personal Tasks`
-- URL: `https://www.notion.so/d176121a39804abb85be6e42bb83b7aa`
-- Data source: `collection://c87de477-c2cd-4e76-ba7c-89086b5305d0`
-
-Required fields:
+Required fields, using configured field names:
 
 | Field | Type | Required | Notes |
 | --- | --- | --- | --- |
@@ -29,7 +41,7 @@ Known status values:
 - `In progress`
 - `Done`
 
-Use exactly the database's current status labels. Do not invent `Backlog` unless it exists in the fetched schema.
+Use exactly the database's current status labels and configured `allowed_statuses`. Do not invent `Backlog` unless it exists in the fetched schema and config.
 
 ## Intent Mapping
 
@@ -126,11 +138,13 @@ Relative dates use the user's local date. If the date could mean more than one d
 
 ## Create Workflow
 
-1. Resolve the target database.
-2. Fetch the data source and confirm the required fields exist.
-3. Draft the task if the request is vague or contains multiple possible interpretations.
-4. Create the page with the four-section body format using `notion-create-pages` only after the target and fields are clear.
-5. Report the created task title and URL.
+1. Load Notion Orchestrator config.
+2. Resolve the `personal_tasks` domain.
+3. Resolve the target database and data source from config.
+4. Fetch the data source and confirm the configured fields exist.
+5. Draft the task if the request is vague or contains multiple possible interpretations.
+6. Create the page with the four-section body format using `notion-create-pages` only after the target and fields are clear.
+7. Report the created task title and URL.
 
 Create database-backed subtasks only when the user explicitly asks for subtasks, child tasks, linked tasks, or separate trackable task rows. Do not infer subtasks from a multi-step task, ticket, checklist, acceptance criteria, or obvious child work. If the user gives child work without explicitly asking for subtasks, place it in the parent task's `How To Do It` section instead. If the user's intent is ambiguous, ask whether they want linked subtasks or just steps in the task body.
 
@@ -145,11 +159,11 @@ When the user explicitly asks for database-backed subtasks:
 7. If the parent cannot be created, do not create orphan subtasks.
 8. If either relation update fails, report the created page URL and the failed relation field.
 
-Use this property mapping for `notion-create-pages`:
+Use this property mapping shape for `notion-create-pages`; field names come from config:
 
 ```json
 {
-  "parent": {"data_source_id": "c87de477-c2cd-4e76-ba7c-89086b5305d0"},
+  "parent": {"data_source_id": "configured-personal-tasks-data-source-id"},
   "pages": [
     {
       "properties": {
@@ -165,13 +179,13 @@ Use this property mapping for `notion-create-pages`:
 }
 ```
 
-Omit optional properties when they do not apply. For date ranges, include both `date:Due Date:start` and `date:Due Date:end`. Use `userDefined:URL` for the `URL` property because Notion treats `URL` as a special property name.
+Omit optional properties when they do not apply. For date ranges, include both `date:Due Date:start` and `date:Due Date:end`. Use the configured `write_fields.url` value, currently `userDefined:URL`, for the `URL` property because Notion treats `URL` as a special property name.
 
 Use this relation property mapping when creating or updating subtasks after the parent task URL is known:
 
 ```json
 {
-  "Parent Task": ["https://www.notion.so/example-parent-task-url"]
+  "Parent Task": ["parent-task-page-url"]
 }
 ```
 
@@ -180,8 +194,8 @@ After each subtask exists, fetch the parent task and update its `Subtasks` relat
 ```json
 {
   "Subtasks": [
-    "https://www.notion.so/existing-subtask-url",
-    "https://www.notion.so/new-subtask-url"
+    "existing-subtask-page-url",
+    "new-subtask-page-url"
   ]
 }
 ```
