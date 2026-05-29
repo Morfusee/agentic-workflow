@@ -1,0 +1,4 @@
+interface:
+  display_name: "Notion Orchestrator"
+  short_description: "Single entrypoint for structured Notion Personal Tasks and future Notion workflows"
+  default_prompt: "Use $notion-orchestrator to infer my Notion intent and run the correct flow: Personal Tasks drafting, creation, updates, review, or location resolution. Format Personal Task bodies with What It Is, How To Do It, Requirements, and Notes. Ask where to implement changes when the target page or database is not specified or safely inferred."
