@@ -42,7 +42,7 @@ Future domains, such as coding tasks or notes, must be added as new reference te
 
 Load `references/personal-tasks-template.md` before drafting, creating, updating, or reviewing Personal Tasks.
 
-Personal Task pages must use the four-section body from the template: `What It Is`, `How To Do It`, `Requirements`, and `Notes`.
+Personal Task pages and database-backed subtasks must use the four-section body from the template: `What It Is`, `How To Do It`, `Requirements`, and `Notes`.
 
 Known Personal Tasks targets:
 

@@ -19,6 +19,8 @@ Required fields:
 | `Due Date` | Date | No | Use `YYYY-MM-DD`; only use a date range when the user explicitly asks for a span, range, or end date. Ask if the date is ambiguous. |
 | `Priority` | Select | No | `Low`, `Medium`, or `High`; leave empty unless the user indicates priority. |
 | `URL` | URL | No | Optional reference link. |
+| `Parent Task` | Relation | No | Link a subtask back to its parent Personal Task. |
+| `Subtasks` | Relation | No | Reciprocal relation showing child Personal Tasks from the parent task. |
 
 Known status values:
 
@@ -54,9 +56,11 @@ Present drafts in this format:
 **How To Do It:** [2-5 simple inferred steps, or none stated]
 **Requirements:** [stated requirements, resources, links, deadlines, or none stated]
 **Notes:** [caveats, blockers, related context, or none stated]
+**Subtasks:** [only include when explicitly requested; child task titles, each with status/date/priority if stated]
 ```
 
 Keep drafts concise. Avoid business-style issue sections unless the user asks for more detail.
+Do not draft database-backed subtasks unless the user explicitly asks for subtasks, child tasks, linked tasks, or separate trackable task rows.
 
 ## Body Format
 
@@ -79,6 +83,8 @@ Every Personal Task page body must use these sections in this order:
 - [List caveats, blockers, related context, eligibility rules, or reminders.]
 - If nothing was stated, write `None stated.`
 ```
+
+Subtask pages must use the same four sections in the same order. Do not use checklist-only child pages when creating database-backed subtasks.
 
 Use inference only for practical next actions. Do not invent requirements, deadlines, links, eligibility, or people.
 
@@ -126,6 +132,18 @@ Relative dates use the user's local date. If the date could mean more than one d
 4. Create the page with the four-section body format using `notion-create-pages` only after the target and fields are clear.
 5. Report the created task title and URL.
 
+Create database-backed subtasks only when the user explicitly asks for subtasks, child tasks, linked tasks, or separate trackable task rows. Do not infer subtasks from a multi-step task, ticket, checklist, acceptance criteria, or obvious child work. If the user gives child work without explicitly asking for subtasks, place it in the parent task's `How To Do It` section instead. If the user's intent is ambiguous, ask whether they want linked subtasks or just steps in the task body.
+
+When the user explicitly asks for database-backed subtasks:
+
+1. Create the parent Personal Task first.
+2. Create each subtask as a separate page in the same Personal Tasks data source.
+3. Give every subtask the same four-section body format.
+4. Set each subtask's `Parent Task` relation to the parent page URL.
+5. Do not manually set `Subtasks` unless the Notion tool requires it; it is the reciprocal relation from `Parent Task`.
+6. If the parent cannot be created, do not create orphan subtasks.
+7. If a subtask relation update fails, report the created subtask URL and the failed relation field.
+
 Use this property mapping for `notion-create-pages`:
 
 ```json
@@ -147,6 +165,16 @@ Use this property mapping for `notion-create-pages`:
 ```
 
 Omit optional properties when they do not apply. For date ranges, include both `date:Due Date:start` and `date:Due Date:end`. Use `userDefined:URL` for the `URL` property because Notion treats `URL` as a special property name.
+
+Use this relation property mapping when creating or updating subtasks after the parent task URL is known:
+
+```json
+{
+  "Parent Task": ["https://www.notion.so/example-parent-task-url"]
+}
+```
+
+Use page URLs for relation values, matching the data source schema's JSON array of related page URLs.
 
 ## Update Workflow
 
@@ -171,8 +199,9 @@ Summarize Personal Tasks in this order:
 1. Overdue tasks.
 2. Due today.
 3. Upcoming tasks sorted by `Due Date`.
-4. No-date active tasks grouped by `Status`.
-5. Completed tasks only if requested.
+4. Active parent tasks with related subtasks grouped underneath when relation data is available.
+5. No-date active tasks grouped by `Status`.
+6. Completed tasks only if requested.
 
 Use this summary format:
 
@@ -190,6 +219,10 @@ Use this summary format:
 
 **No Date**
 - [Status] [Priority] [Task]
+
+**Subtasks**
+- [Parent Task]
+- [Status] [Priority] [Subtask] - due [date or no date]
 ```
 
 If there are no matching tasks, say `No matching Personal Tasks found.`
