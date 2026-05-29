@@ -16,7 +16,7 @@ Required fields:
 | --- | --- | --- | --- |
 | `Name` | Title | Yes | Verb-first personal task title. |
 | `Status` | Status | No | Defaults to `Not started` when creating. |
-| `Due Date` | Date | No | Use `YYYY-MM-DD`; ask if the date is ambiguous. |
+| `Due Date` | Date | No | Use `YYYY-MM-DD`; only use a date range when the user explicitly asks for a span, range, or end date. Ask if the date is ambiguous. |
 | `Priority` | Select | No | `Low`, `Medium`, or `High`; leave empty unless the user indicates priority. |
 | `URL` | URL | No | Optional reference link. |
 
@@ -47,7 +47,7 @@ Present drafts in this format:
 ```markdown
 **Task:** [verb-first task title]
 **Status:** [Not started / Waiting / In progress / Done]
-**Due Date:** [YYYY-MM-DD or none]
+**Due Date:** [YYYY-MM-DD, YYYY-MM-DD to YYYY-MM-DD, or none]
 **Priority:** [Low / Medium / High or none]
 **URL:** [URL or none]
 **What It Is:** [one short sentence]
@@ -110,6 +110,14 @@ Examples:
 
 Relative dates use the user's local date. If the date could mean more than one day, ask before writing.
 
+## Date Range Rules
+
+- Only set `date:Due Date:end` when the user explicitly says the task should span dates, gives a date range, or asks for a start and end date.
+- Treat `deadline`, `due`, `by`, and similar wording as a single due date unless the user also explicitly asks for a span or range.
+- If the user says a task should span a vague period such as `this weekend`, infer the start and end from local context only when the phrase clearly indicates a range.
+- If the user gives only an end date and does not explicitly ask for a span or range, set only `date:Due Date:start` to that date.
+- For a single due date with no span/range wording, set only `date:Due Date:start` and omit `date:Due Date:end`.
+
 ## Create Workflow
 
 1. Resolve the target database.
@@ -138,7 +146,7 @@ Use this property mapping for `notion-create-pages`:
 }
 ```
 
-Omit optional properties when they do not apply. Use `userDefined:URL` for the `URL` property because Notion treats `URL` as a special property name.
+Omit optional properties when they do not apply. For date ranges, include both `date:Due Date:start` and `date:Due Date:end`. Use `userDefined:URL` for the `URL` property because Notion treats `URL` as a special property name.
 
 ## Update Workflow
 
