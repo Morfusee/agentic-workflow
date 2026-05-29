@@ -20,7 +20,7 @@ Required fields:
 | `Priority` | Select | No | `Low`, `Medium`, or `High`; leave empty unless the user indicates priority. |
 | `URL` | URL | No | Optional reference link. |
 | `Parent Task` | Relation | No | Link a subtask back to its parent Personal Task. |
-| `Subtasks` | Relation | No | Reciprocal relation showing child Personal Tasks from the parent task. |
+| `Subtasks` | Relation | No | Link a parent Personal Task to its child subtasks. |
 
 Known status values:
 
@@ -140,9 +140,10 @@ When the user explicitly asks for database-backed subtasks:
 2. Create each subtask as a separate page in the same Personal Tasks data source.
 3. Give every subtask the same four-section body format.
 4. Set each subtask's `Parent Task` relation to the parent page URL.
-5. Do not manually set `Subtasks` unless the Notion tool requires it; it is the reciprocal relation from `Parent Task`.
-6. If the parent cannot be created, do not create orphan subtasks.
-7. If a subtask relation update fails, report the created subtask URL and the failed relation field.
+5. Update the parent task's `Subtasks` relation with the created subtask page URLs.
+6. Preserve any existing parent `Subtasks` relation values when adding new subtasks; append the new subtask URLs instead of replacing existing ones.
+7. If the parent cannot be created, do not create orphan subtasks.
+8. If either relation update fails, report the created page URL and the failed relation field.
 
 Use this property mapping for `notion-create-pages`:
 
@@ -174,7 +175,18 @@ Use this relation property mapping when creating or updating subtasks after the 
 }
 ```
 
-Use page URLs for relation values, matching the data source schema's JSON array of related page URLs.
+After each subtask exists, fetch the parent task and update its `Subtasks` relation with the full set of existing subtask URLs plus the newly created subtask URLs:
+
+```json
+{
+  "Subtasks": [
+    "https://www.notion.so/existing-subtask-url",
+    "https://www.notion.so/new-subtask-url"
+  ]
+}
+```
+
+Use page URLs for relation values, matching the data source schema's JSON array of related page URLs. Do not rely on `Parent Task` to automatically populate `Subtasks`; write both sides explicitly.
 
 ## Update Workflow
 
