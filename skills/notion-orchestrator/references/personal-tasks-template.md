@@ -225,31 +225,33 @@ Summarize Personal Tasks in this order:
 1. Overdue tasks.
 2. Due today.
 3. Upcoming tasks sorted by `Due Date`.
-4. Active parent tasks with related subtasks grouped underneath when relation data is available.
-5. No-date active tasks grouped by `Status`.
-6. Completed tasks only if requested.
+4. No-date active tasks grouped by `Status`.
+5. Completed tasks only if requested.
+
+List subtasks alongside regular tasks in the appropriate section; do not indent them under parent tasks.
 
 Use this summary format:
 
 ```markdown
 **Personal Tasks**
 
-**Overdue**
-- [Priority] [Task] - due [date]
+**Overdue / Due Today**
+1. **[Task Name](url)** (Priority) [Status] — **Due Date**
+2. **[Task Name](url)** (Priority) [Status] — **Due Date**
 
-**Today**
-- [Priority] [Task]
-
-**Upcoming**
-- [date] [Priority] [Task]
+**Due [day name or date]**
+1. **[Task Name](url)** (Priority) [Status] — **Due Date**
 
 **No Date**
-- [Status] [Priority] [Task]
-
-**Subtasks**
-- [Parent Task]
-- [Status] [Priority] [Subtask] - due [date or no date]
+1. **[Task Name](url)** (Priority) [Status]
 ```
+
+Rules:
+- Omit `(Priority)` when priority is none.
+- Use `[Status]` exactly as it appears in Notion.
+- Omit `— **Due Date**` when there is no due date.
+- Use numbered items under each section header.
+- Keep section headers only when there are matching tasks.
 
 If there are no matching tasks, say `No matching Personal Tasks found.`
 
