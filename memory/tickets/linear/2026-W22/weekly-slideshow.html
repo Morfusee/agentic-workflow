@@ -1,542 +1,816 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Weekly Delivery Narrative — 2026-W22</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weekly Delivery Narrative — 2026-W22</title>
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/white.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/white.min.css"
+    />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@100;200;300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
 
-  <style>
-    :root {
-      --bg-primary: #ffffff;
-      --bg-secondary: #f5f5f7;
-      --bg-dark: #0f172a;
-      --bg-accent: #1e3a5f;
+    <style>
+      :root {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f5f5f7;
+        --bg-dark: #0f172a;
+        --bg-accent: #1e3a5f;
 
-      --text-primary: #1a1a1a;
-      --text-secondary: #4a4a4a;
-      --text-muted: #7a7a7a;
-      --text-on-dark: #ffffff;
+        --text-primary: #1a1a1a;
+        --text-secondary: #4a4a4a;
+        --text-muted: #7a7a7a;
+        --text-on-dark: #ffffff;
 
-      --accent-1: #3b82f6;
-      --accent-2: #10b981;
-      --accent-3: #f59e0b;
-      --accent-4: #8b5cf6;
-      --accent-5: #ef4444;
+        --accent-1: #3b82f6;
+        --accent-2: #10b981;
+        --accent-3: #f59e0b;
+        --accent-4: #8b5cf6;
+        --accent-5: #ef4444;
 
-      --font-display: 'Space Grotesk', sans-serif;
-      --font-body: 'Inter', -apple-system, sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
+        --font-display: "Space Grotesk", sans-serif;
+        --font-body: "Inter", -apple-system, sans-serif;
+        --font-mono: "JetBrains Mono", monospace;
 
-      --size-stat-hero: clamp(6rem, 15vw, 12rem);
-      --size-stat: clamp(4rem, 10vw, 8rem);
-      --size-impact-hero: clamp(3.5rem, 10vw, 6rem);
-      --size-impact: clamp(2.5rem, 6vw, 4.5rem);
-      --size-h1: clamp(4rem, 7vw, 7rem);
-      --size-h2: clamp(3rem, 5vw, 5rem);
-      --size-h3: clamp(2rem, 3.5vw, 3rem);
-      --size-h4: clamp(1.5rem, 2.5vw, 2rem);
-      --size-body: clamp(1.25rem, 2vw, 2rem);
-      --size-body-lg: clamp(1.5rem, 2.5vw, 2.25rem);
-      --size-body-xl: clamp(2rem, 2.5vw, 3rem);
-      --size-small: clamp(1rem, 1.25vw, 1.25rem);
-      --size-label: clamp(1.25rem, 2vw, 1.75rem);
+        --size-stat-hero: clamp(3rem, 8vw, 6rem);
+        --size-stat: clamp(2.5rem, 6vw, 4rem);
+        --size-impact-hero: clamp(2.5rem, 6vw, 4rem);
+        --size-impact: clamp(2rem, 4vw, 3rem);
+        --size-h1: clamp(2.5rem, 4vw, 3.5rem);
+        --size-h2: clamp(2rem, 3vw, 2.5rem);
+        --size-h3: clamp(1.25rem, 2vw, 2rem);
+        --size-h4: clamp(1.1rem, 1.5vw, 1.5rem);
+        --size-body: clamp(0.9rem, 1.2vw, 1.25rem);
+        --size-body-lg: clamp(1rem, 1.4vw, 1.4rem);
+        --size-body-xl: clamp(1.2rem, 1.75vw, 1.6rem);
+        --size-small: clamp(0.75rem, 0.9vw, 0.95rem);
+        --size-label: clamp(0.85rem, 1.1vw, 1.2rem);
 
-      --space-xs: 0.5rem;
-      --space-sm: 1rem;
-      --space-md: 2rem;
-      --space-lg: 3rem;
-      --space-xl: 4rem;
-      --bar-width: 120px;
-      --bar-height: 8px;
-      --card-radius: 8px;
-      --card-padding: 2rem;
-      --content-max-width: 1400px;
-      --slide-padding: 60px;
-    }
+        --space-xs: 0.35rem;
+        --space-sm: 0.75rem;
+        --space-md: 1.25rem;
+        --space-lg: 2rem;
+        --space-xl: 2.5rem;
+        --bar-width: 100px;
+        --bar-height: 6px;
+        --card-radius: 8px;
+        --card-padding: 1.25rem;
+        --content-max-width: 1400px;
+        --slide-padding: 50px;
+      }
 
-    .reveal { background: var(--bg-primary); font-family: var(--font-body); color: var(--text-primary); }
-    .reveal .slides section { text-align: left; padding: 60px; box-sizing: border-box; }
-    .reveal .slides section.centered { text-align: center; }
-    .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
-      font-family: var(--font-display); font-weight: 700; color: var(--text-primary);
-      text-transform: none; letter-spacing: -0.02em; line-height: 1.1; margin: 0 0 0.5em 0;
-    }
-    .reveal h1 { font-size: var(--size-h1); }
-    .reveal h2 { font-size: var(--size-h2); }
-    .reveal h3 { font-size: var(--size-h3); }
-    .reveal h4 { font-size: var(--size-h4); }
-    .reveal p, .reveal li { font-size: var(--size-body); line-height: 1.5; margin: 0 0 1em 0; }
+      .reveal {
+        background: var(--bg-primary);
+        font-family: var(--font-body);
+        color: var(--text-primary);
+      }
+      .reveal .slides section {
+        text-align: left;
+        padding: 50px;
+        box-sizing: border-box;
+      }
+      .reveal .slides section.centered {
+        text-align: center;
+      }
+      .reveal h1,
+      .reveal h2,
+      .reveal h3,
+      .reveal h4 {
+        font-family: var(--font-display);
+        font-weight: 700;
+        color: var(--text-primary);
+        text-transform: none;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+        margin: 0 0 0.5em 0;
+      }
+      .reveal h1 {
+        font-size: var(--size-h1);
+      }
+      .reveal h2 {
+        font-size: var(--size-h2);
+      }
+      .reveal h3 {
+        font-size: var(--size-h3);
+      }
+      .reveal h4 {
+        font-size: var(--size-h4);
+      }
+      .reveal p,
+      .reveal li {
+        font-size: var(--size-body);
+        line-height: 1.45;
+        margin: 0 0 0.75em 0;
+      }
 
-    .reveal .lead {
-      font-size: var(--size-body-lg);
-      color: var(--text-secondary);
-    }
-    .reveal .label {
-      font-family: var(--font-mono); font-size: var(--size-label); font-weight: 500;
-      text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-1);
-    }
-    .reveal .stat {
-      font-family: var(--font-mono); font-size: var(--size-stat); font-weight: 700;
-      line-height: 1; color: var(--accent-1); margin-bottom: 0;
-    }
-    .reveal .stat-hero {
-      font-family: var(--font-mono); font-size: var(--size-stat-hero); font-weight: 700;
-      line-height: 0.9; color: var(--accent-1); margin-bottom: 0;
-    }
-    .reveal .stat-label {
-      font-size: var(--size-body-lg); font-weight: 500; color: var(--text-secondary);
-      margin-top: var(--space-sm);
-    }
-    .reveal .impact {
-      font-size: var(--size-impact); font-weight: 700; line-height: 1.15;
-    }
-    .reveal .impact-hero {
-      font-size: var(--size-impact-hero); font-weight: 700; line-height: 1.1;
-    }
+      .reveal .lead {
+        font-size: var(--size-body-lg);
+        color: var(--text-secondary);
+      }
+      .reveal .label {
+        font-family: var(--font-mono);
+        font-size: var(--size-label);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--accent-1);
+      }
+      .reveal .stat {
+        font-family: var(--font-mono);
+        font-size: var(--size-stat);
+        font-weight: 700;
+        line-height: 1;
+        color: var(--accent-1);
+        margin-bottom: 0;
+      }
+      .reveal .stat-hero {
+        font-family: var(--font-mono);
+        font-size: var(--size-stat-hero);
+        font-weight: 700;
+        line-height: 0.9;
+        color: var(--accent-1);
+        margin-bottom: 0;
+      }
+      .reveal .stat-label {
+        font-size: var(--size-body-lg);
+        font-weight: 500;
+        color: var(--text-secondary);
+        margin-top: var(--space-xs);
+      }
+      .reveal .impact {
+        font-size: var(--size-impact);
+        font-weight: 700;
+        line-height: 1.15;
+      }
+      .reveal .impact-hero {
+        font-size: var(--size-impact-hero);
+        font-weight: 700;
+        line-height: 1.1;
+      }
 
-    .reveal .text-primary { color: var(--text-primary); }
-    .reveal .text-secondary { color: var(--text-secondary); }
-    .reveal .text-muted { color: var(--text-muted); }
-    .reveal .text-on-dark { color: var(--text-on-dark); }
-    .reveal .text-accent-1 { color: var(--accent-1); }
-    .reveal .text-accent-2 { color: var(--accent-2); }
-    .reveal .text-accent-3 { color: var(--accent-3); }
-    .reveal .text-accent-4 { color: var(--accent-4); }
-    .reveal .text-accent-5 { color: var(--accent-5); }
+      .reveal .text-primary {
+        color: var(--text-primary);
+      }
+      .reveal .text-secondary {
+        color: var(--text-secondary);
+      }
+      .reveal .text-muted {
+        color: var(--text-muted);
+      }
+      .reveal .text-on-dark {
+        color: var(--text-on-dark);
+      }
+      .reveal .text-accent-1 {
+        color: var(--accent-1);
+      }
+      .reveal .text-accent-2 {
+        color: var(--accent-2);
+      }
+      .reveal .text-accent-3 {
+        color: var(--accent-3);
+      }
+      .reveal .text-accent-4 {
+        color: var(--accent-4);
+      }
+      .reveal .text-accent-5 {
+        color: var(--accent-5);
+      }
 
-    .reveal .highlight-1 { color: var(--accent-1); font-weight: 600; }
-    .reveal .highlight-2 { color: var(--accent-2); font-weight: 600; }
-    .reveal .highlight-3 { color: var(--accent-3); font-weight: 600; }
-    .reveal .highlight-4 { color: var(--accent-4); font-weight: 600; }
-    .reveal .highlight-5 { color: var(--accent-5); font-weight: 600; }
+      .reveal .highlight-1 {
+        color: var(--accent-1);
+        font-weight: 600;
+      }
+      .reveal .highlight-2 {
+        color: var(--accent-2);
+        font-weight: 600;
+      }
+      .reveal .highlight-3 {
+        color: var(--accent-3);
+        font-weight: 600;
+      }
+      .reveal .highlight-4 {
+        color: var(--accent-4);
+        font-weight: 600;
+      }
+      .reveal .highlight-5 {
+        color: var(--accent-5);
+        font-weight: 600;
+      }
 
-    .bar { width: var(--bar-width); height: var(--bar-height); background: var(--accent-1); margin-bottom: var(--space-md); }
-    .centered .bar { margin-left: auto; margin-right: auto; }
-    .bar-accent-2 { background: var(--accent-2); }
-    .bar-accent-3 { background: var(--accent-3); }
-    .bar-accent-4 { background: var(--accent-4); }
+      .bar {
+        width: var(--bar-width);
+        height: var(--bar-height);
+        background: var(--accent-1);
+        margin-bottom: var(--space-md);
+      }
+      .centered .bar {
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .bar-accent-2 {
+        background: var(--accent-2);
+      }
+      .bar-accent-3 {
+        background: var(--accent-3);
+      }
+      .bar-accent-4 {
+        background: var(--accent-4);
+      }
 
-    .content-wrap { max-width: var(--content-max-width); width: 100%; }
-    .centered .content-wrap { margin: 0 auto; }
+      .content-wrap {
+        max-width: var(--content-max-width);
+        width: 100%;
+      }
+      .centered .content-wrap {
+        margin: 0 auto;
+      }
 
-    .card {
-      background: var(--bg-secondary); border-radius: var(--card-radius);
-      padding: var(--card-padding); border-left: 4px solid var(--accent-1);
-    }
-    .card-accent-2 { border-left-color: var(--accent-2); }
-    .card-accent-3 { border-left-color: var(--accent-3); }
-    .card-accent-4 { border-left-color: var(--accent-4); }
-    .card-accent-5 { border-left-color: var(--accent-5); }
-    .card h3 { font-size: var(--size-h4); margin-bottom: var(--space-xs); }
-    .card p { font-size: var(--size-body); color: var(--text-secondary); margin: 0; }
-    .card .card-tag {
-      display: inline-block; font-family: var(--font-mono); font-size: var(--size-small);
-      font-weight: 600; padding: 0.2em 0.6em; border-radius: 4px; margin-bottom: var(--space-xs);
-    }
-    .card .card-tag-done { background: #dcfce7; color: #166534; }
-    .card .card-tag-blocked { background: #fef3c7; color: #92400e; }
-    .card .card-tag-review { background: #e0e7ff; color: #3730a3; }
-    .card .card-tag-canceled { background: #f3f4f6; color: #6b7280; }
+      .card {
+        background: var(--bg-secondary);
+        border-radius: var(--card-radius);
+        padding: var(--card-padding);
+        border-left: 4px solid var(--accent-1);
+      }
+      .card-accent-2 {
+        border-left-color: var(--accent-2);
+      }
+      .card-accent-3 {
+        border-left-color: var(--accent-3);
+      }
+      .card-accent-4 {
+        border-left-color: var(--accent-4);
+      }
+      .card-accent-5 {
+        border-left-color: var(--accent-5);
+      }
+      .card h3 {
+        font-size: var(--size-h4);
+        margin-bottom: var(--space-xs);
+      }
+      .card p {
+        font-size: var(--size-body);
+        color: var(--text-secondary);
+        margin: 0;
+      }
+      .card .card-tag {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: var(--size-small);
+        font-weight: 600;
+        padding: 0.15em 0.5em;
+        border-radius: 4px;
+        margin-bottom: var(--space-xs);
+      }
+      .card .card-tag-done {
+        background: #dcfce7;
+        color: #166534;
+      }
+      .card .card-tag-blocked {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .card .card-tag-review {
+        background: #e0e7ff;
+        color: #3730a3;
+      }
+      .card .card-tag-canceled {
+        background: #f3f4f6;
+        color: #6b7280;
+      }
 
-    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-lg); }
-    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-md); }
-    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-md); }
-    .grid-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-lg); }
-    .grid-1-3 { display: grid; grid-template-columns: 1fr 3fr; gap: var(--space-lg); }
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-lg);
+      }
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-md);
+      }
+      .grid-4 {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--space-md);
+      }
+      .grid-2-1 {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: var(--space-lg);
+      }
 
-    .flow-row {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: var(--space-md); margin-top: var(--space-lg);
-    }
-    .flow-step {
-      flex: 1; text-align: center; padding: var(--space-md);
-      background: var(--bg-secondary); border-radius: var(--card-radius);
-    }
-    .flow-step-arrow { font-size: 2rem; color: var(--text-muted); font-weight: 700; }
-    .flow-step .step-count { font-family: var(--font-mono); font-size: var(--size-h3); font-weight: 700; color: var(--accent-1); }
-    .flow-step .step-label { font-size: var(--size-body); font-weight: 600; color: var(--text-primary); margin-top: var(--space-xs); }
-    .flow-step .step-detail { font-size: var(--size-small); color: var(--text-secondary); margin-top: var(--space-xs); }
+      .flow-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-md);
+        margin-top: var(--space-lg);
+      }
+      .flow-step {
+        flex: 1;
+        text-align: center;
+        padding: var(--space-md);
+        background: var(--bg-secondary);
+        border-radius: var(--card-radius);
+      }
+      .flow-step-arrow {
+        font-size: 1.5rem;
+        color: var(--text-muted);
+        font-weight: 700;
+      }
+      .flow-step .step-count {
+        font-family: var(--font-mono);
+        font-size: var(--size-h3);
+        font-weight: 700;
+        color: var(--accent-1);
+      }
+      .flow-step .step-label {
+        font-size: var(--size-body);
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-top: var(--space-xs);
+      }
+      .flow-step .step-detail {
+        font-size: var(--size-small);
+        color: var(--text-secondary);
+        margin-top: var(--space-xs);
+      }
 
-    .section-subtitle { font-size: var(--size-body-xl); color: var(--text-secondary); margin-top: var(--space-sm); }
+      .compact-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .compact-list li {
+        font-size: var(--size-body);
+        color: var(--text-secondary);
+        margin-bottom: var(--space-xs);
+        padding: 0;
+      }
+      .compact-list li strong {
+        color: var(--text-primary);
+      }
 
-    .slide-footer {
-      position: fixed; bottom: 30px; left: var(--slide-padding);
-      font-size: var(--size-small); font-weight: 500; letter-spacing: 0.05em;
-      text-transform: uppercase; color: var(--text-muted); z-index: 1000;
-    }
-    section[data-background-color] .slide-footer,
-    .dark-slide .slide-footer { color: rgba(255, 255, 255, 0.4); }
-  </style>
-</head>
-<body>
-  <div class="slide-footer">NGNAir | Weekly Delivery Narrative — 2026-W22</div>
-  <div class="reveal">
-    <div class="slides">
-
-      <!-- Title -->
-      <section class="centered">
-        <p class="label">2026-W22</p>
-        <h1>Weekly Delivery Narrative</h1>
-        <div class="bar"></div>
-        <p class="lead">Finance QA, partner workflow validation, and internal MID architecture</p>
-        <aside class="notes">
-The week covered QA validation of three fixes, filing of five new bug reports, one scoped cancellation, one reported ops issue, and one blocked architectural QA. Three tickets were validated to Done with staging QA, five new issues were filed with reproduction steps, and one major architectural change reached QA but hit a processor-configuration blocker.
-        </aside>
-      </section>
-
-      <!-- Section Break: Story -->
-      <section class="centered" data-background-color="var(--bg-dark)">
-        <h1 class="text-on-dark">The Week's Story</h1>
-        <div class="bar bar-accent-2"></div>
-        <p class="text-on-dark" style="opacity: 0.8;">Three work areas, one blocked item, and a clean open queue</p>
-        <aside class="notes">
-The work this week fell into three areas: finance and payment link QA, partner workflow validation, and internal MID architecture testing. Several completed tickets were validated in staging with full lifecycle testing. One architectural item reached QA but hit a processor-configuration blocker that needs a separate follow-up ticket. Five new bug reports were filed with concrete reproduction steps.
-        </aside>
-      </section>
-
-      <!-- Weekly Story — Card Grid -->
-      <section>
-        <h2>Work Areas</h2>
-        <div class="bar"></div>
-        <div class="grid-3" style="margin-top: var(--space-lg);">
-          <div class="card">
-            <h3>Finance &amp; Payment Link QA</h3>
-            <p>Elavon refund errors, discount filtering, discount Max Claims enforcement, duplicate escalation blocking, and internal MID architecture testing.</p>
-          </div>
-          <div class="card card-accent-2">
-            <h3>Partner Workflow Validation</h3>
-            <p>Invitation lifecycle recovery QA and a scoped feature cancellation for Partner FE invite name fields.</p>
-          </div>
-          <div class="card card-accent-4">
-            <h3>Product Bug Reports</h3>
-            <p>Category modal bugs, payment link timezone fixes, marketplace error handling, and operational support.</p>
-          </div>
-        </div>
-        <aside class="notes">
-The work grouped into three areas. Finance and payment link QA covered five tickets spanning Elavon errors, discount behavior, escalation rules, and internal MID architecture. Partner workflow validation handled invitation lifecycle testing and a scoping decision. Product bug reports covered category modals, timezone fixes, and marketplace code analysis.
-        </aside>
-      </section>
-
-      <!-- Section Break: Snapshot -->
-      <section class="centered" data-background-color="var(--accent-1)">
-        <h1 class="text-on-dark">Executive Snapshot</h1>
-        <div class="bar" style="background: rgba(255,255,255,0.5);"></div>
-        <aside class="notes">
-Four items completed with staging verification. One item was scoped and canceled after discussion. One architectural item is blocked by a separate processor-options issue. Five new reports are in the review queue with clear reproduction paths.
-        </aside>
-      </section>
-
-      <!-- Executive Snapshot — Stat Cluster -->
-      <section>
-        <h2>Week at a Glance</h2>
-        <div class="bar"></div>
-        <div class="grid-4" style="margin-top: var(--space-lg);">
-          <div class="centered">
-            <p class="stat text-accent-2">4</p>
-            <p class="stat-label">Done</p>
-            <p class="text-muted" style="font-size: var(--size-small);">3 tickets QA-validated<br>1 ops report resolved</p>
-          </div>
-          <div class="centered">
-            <p class="stat text-accent-5">1</p>
-            <p class="stat-label">Blocked</p>
-            <p class="text-muted" style="font-size: var(--size-small);">processor-options gap<br>separate bug needed</p>
-          </div>
-          <div class="centered">
-            <p class="stat text-muted">1</p>
-            <p class="stat-label">Canceled</p>
-            <p class="text-muted" style="font-size: var(--size-small);">scoped out<br>after team discussion</p>
-          </div>
-          <div class="centered">
-            <p class="stat text-accent-3">5</p>
-            <p class="stat-label">Pending Review</p>
-            <p class="text-muted" style="font-size: var(--size-small);">all filed with<br>reproduction steps</p>
-          </div>
-        </div>
-        <p class="text-muted" style="margin-top: var(--space-lg); font-size: var(--size-small);">
-          Done: NGN-688, NGN-728, NGN-744, MANUAL-002 &nbsp;|&nbsp; Blocked: NGN-752 &nbsp;|&nbsp; Canceled: NGN-727<br>
-          Pending: NGN-673, NGN-674, NGN-675, NGN-676, NGN-731
-        </p>
-        <aside class="notes">
-Four items completed with staging verification — three tickets QA-validated and one ops report resolved. One item was scoped and canceled after discussion with the developer. NGN-752 is blocked by missing processor options for Ruby and Plat BIN ISOs and needs a separate follow-up bug. Five new reports are in the review queue, all filed with clear reproduction paths and acceptance criteria.
-        </aside>
-      </section>
-
-      <!-- Section Break: Activity -->
-      <section class="centered" data-background-color="var(--bg-dark)">
-        <h1 class="text-on-dark">Activity Flow</h1>
-        <div class="bar bar-accent-3"></div>
-        <p class="text-on-dark" style="opacity: 0.8;">From filing to QA — creation-to-resolution across the week</p>
-        <aside class="notes">
-Tickets moved through several stages: creation, developer implementation, QA testing in staging, and resolution. Two tickets went from filing to Done with full lifecycle testing. One architectural item reached QA after implementation but was blocked by a processor-options configuration gap. One improvement ticket was scoped and canceled after team discussion.
-        </aside>
-      </section>
-
-      <!-- Activity Flow — Lifecycle stages -->
-      <section>
-        <h2>Lifecycle Stages</h2>
-        <div class="bar"></div>
-        <div class="flow-row">
-          <div class="flow-step">
-            <p class="step-count">5</p>
-            <p class="step-label">Filed</p>
-            <p class="step-detail">NGN-673, 674, 675<br>NGN-676, NGN-731</p>
-          </div>
-          <div class="flow-step-arrow">&rarr;</div>
-          <div class="flow-step">
-            <p class="step-count">2</p>
-            <p class="step-label">Implemented</p>
-            <p class="step-detail">NGN-728, NGN-744<br>Dev → QA handoff</p>
-          </div>
-          <div class="flow-step-arrow">&rarr;</div>
-          <div class="flow-step">
-            <p class="step-count">4</p>
-            <p class="step-label">QA Tested</p>
-            <p class="step-detail">NGN-688, 728, 744<br>NGN-752 (blocked)</p>
-          </div>
-          <div class="flow-step-arrow">&rarr;</div>
-          <div class="flow-step">
-            <p class="step-count">3</p>
-            <p class="step-label">Done</p>
-            <p class="step-detail">NGN-688, 728, 744<br>Staging verified</p>
-          </div>
-        </div>
-        <p class="text-muted" style="margin-top: var(--space-lg); font-size: var(--size-small);">
-          NGN-727: Canceled after scoping &nbsp;|&nbsp; MANUAL-002: Support Admin accessibility reported and resolved
-        </p>
-        <aside class="notes">
-Two tickets completed the full lifecycle: NGN-728, the partner invitation disable and reactivate flow, and NGN-744, the duplicate escalation blocking. Both went from filing through developer implementation to QA testing in staging and were moved to Done. NGN-688 was QA-only validation of a prior fix on the payment link expiration date timezone issue. NGN-752 was implemented and reached QA but was blocked by the processor-options gap. NGN-727 was filed, discussed, and canceled. Five new reports are in the pending review queue.
-        </aside>
-      </section>
-
-      <!-- Section Break: Priority -->
-      <section class="centered" data-background-color="var(--accent-2)">
-        <h1 class="text-on-dark">Priority Work</h1>
-        <div class="bar" style="background: rgba(255,255,255,0.5);"></div>
-        <p class="text-on-dark" style="opacity: 0.8;">Completed validations, a blocked architectural change, and new reports</p>
-        <aside class="notes">
-The priority items show completed validations, a blocked architectural item with a clear next step, and new reports with concrete reproduction paths. This section covers what was actually done on each ticket.
-        </aside>
-      </section>
-
-      <!-- Priority: Completed — Card Grid -->
-      <section>
-        <h2>Completed — QA Validated in Staging</h2>
-        <div class="bar bar-accent-2"></div>
-        <div class="grid-3" style="margin-top: var(--space-lg);">
-          <div class="card">
-            <p class="card-tag card-tag-done">DONE</p>
-            <h3>NGN-728</h3>
-            <p>Partner invitation lifecycle recovery. Backend fix so reactivating an unaccepted invite restores INVITED status instead of denying access. QA verified the full invite → disable → reactivate → accept flow.</p>
-          </div>
-          <div class="card card-accent-2">
-            <p class="card-tag card-tag-done">DONE</p>
-            <h3>NGN-744</h3>
-            <p>Block duplicate support escalations to the same entity type. Backend enforcement excludes already-used types from available targets. QA confirmed BIN ISO and Bank blocking, cross-entity still works.</p>
-          </div>
-          <div class="card card-accent-4">
-            <p class="card-tag card-tag-done">DONE</p>
-            <h3>NGN-688</h3>
-            <p>Payment link expiration date timezone fix. QA validated the fix on staging — expiration matches user selection exactly without UTC-offset shift across timezones.</p>
-          </div>
-        </div>
-        <aside class="notes">
-NGN-728, the partner invitation lifecycle ticket: the developer fixed the backend so reactivating a user who never accepted their invitation restores INVITED status instead of denying access. QA verified the full invite, disable, reactivate, and accept flow on staging. The invitation screen appeared correctly, the user accepted, and gained expected partner access. NGN-744 blocked duplicate support escalations to the same entity type: the developer added backend enforcement so the available escalation targets field excludes already-used types for a given ticket, and the escalation mutation rejects duplicates. QA confirmed both BIN ISO and Bank escalation blocking, verified cross-entity escalation still works, and checked that the UI hides unavailable options. NGN-688 validated the payment link expiration date timezone fix: QA confirmed the Expires value shows exactly what was selected without UTC-offset shift and verified consistent behavior across timezones.
-        </aside>
-      </section>
-
-      <!-- Priority: Blocked NGN-752 — Assertion + Evidence -->
-      <section>
-        <h2>NGN-752: Internal MID Architecture Change — QA Blocked</h2>
-        <div class="bar bar-accent-3"></div>
-        <div class="grid-2" style="margin-top: var(--space-lg);">
-          <div>
-            <p class="label" style="color: var(--accent-2);">What Changed</p>
-            <ul style="margin-top: var(--space-sm);">
-              <li>Each merchant account now carries the partner Internal MID <span class="highlight-1">publicId</span> (not a fabricated MA-... value)</li>
-              <li>BIN ISO selection provisions one partner InternalMid per selected BIN ISO</li>
-              <li><span class="highlight-4">externalMid</span> is now a distinct display value, separate from internalMid</li>
-              <li>Finance-facing endpoint returns the partner publicId consistently</li>
-            </ul>
-          </div>
-          <div>
-            <p class="label" style="color: var(--accent-5);">The Blocker</p>
-            <p class="lead" style="margin-top: var(--space-sm);">Ruby and Plat BIN ISOs showed <span class="highlight-5">no processor options</span> during approval despite having Elavon configured. Only Gold BIN ISO worked.</p>
-            <p class="text-muted" style="font-size: var(--size-small); margin-top: var(--space-sm);">Josh confirmed this should be tracked as a <span class="highlight-3">separate bug ticket</span>.</p>
-          </div>
-        </div>
-        <aside class="notes">
-NGN-752 is the meat of the architectural work this week. The developer made each merchant account carry the partner-owned Internal MID publicId instead of a locally fabricated MA value, separated externalMid as a distinct display value, and provisioned one InternalMid per selected BIN ISO. QA started testing the full approval pipeline on staging. Gold BIN ISO worked, but Ruby and Plat showed no processor options during approval despite having Elavon configured. QA returned the ticket as BLOCKED and the developer confirmed the processor-options issue should be a separate bug.
-        </aside>
-      </section>
-
-      <!-- Priority: New Reports — Card Grid -->
-      <section>
-        <h2>New Reports — Pending Review</h2>
-        <div class="bar bar-accent-4"></div>
-
-        <div style="margin-top: var(--space-lg);">
-          <div class="card card-accent-4" style="margin-bottom: var(--space-md);">
-            <p class="card-tag card-tag-review">PENDING REVIEW</p>
-            <h3>NGN-731 — Marketplace: Category Delete Error Toast</h3>
-            <p>Raw Prisma error text shown to users. Code analysis pinpointed the exact file and line (<code>categories/page.tsx</code> handleDelete catch block). Four implementation options provided — from hardcoded message to structured error-code inspection. Only place in the codebase passing <code>err.message</code> to <code>toast.error</code>.</p>
-          </div>
-        </div>
-
-        <div class="grid-2" style="margin-top: var(--space-md);">
-          <div class="card">
-            <h3>NGN-673</h3>
-            <p>Raw Elavon API error shown when refunding fresh pay link transactions.</p>
-          </div>
-          <div class="card card-accent-2">
-            <h3>NGN-674</h3>
-            <p>Category detail modal always shows 0 total products regardless of actual count.</p>
-          </div>
-          <div class="card card-accent-3">
-            <h3>NGN-675</h3>
-            <p>Create Payment Link discount selection shows expired and not-yet-active discounts.</p>
-          </div>
-          <div class="card card-accent-4">
-            <h3>NGN-676</h3>
-            <p>Discount Max Claims limit not enforced on pay link transactions after limit reached.</p>
-          </div>
-        </div>
-
-        <aside class="notes">
-On the new reports: NGN-731 received detailed code analysis pinpointing the exact location in categories/page.tsx where raw Prisma error text reaches the UI, with four implementation options provided. NGN-673, 674, 675, and 676 are bug reports with clear reproduction steps and acceptance criteria — covering Elavon errors, category modal display, discount filtering, and discount Max Claims enforcement.
-        </aside>
-      </section>
-
-      <!-- Section Break: Impact -->
-      <section class="centered" data-background-color="var(--bg-dark)">
-        <h1 class="text-on-dark">What Changed</h1>
-        <div class="bar bar-accent-1"></div>
-        <p class="text-on-dark" style="opacity: 0.8;">Three fixes validated, one path blocked, one improvement scoped out</p>
-        <aside class="notes">
-The three completed tickets address distinct product workflows: partner invitation lifecycle recovery, support escalation duplication prevention, and payment link timezone consistency. Each was validated in staging with full acceptance criteria checks. The internal MID architecture change is implemented but needs a separate processor-options bug before full QA can complete. The partner FE invite improvement was scoped out after team discussion.
-        </aside>
-      </section>
-
-      <!-- What Changed — Impact Summary -->
-      <section>
-        <h2>Impact Summary</h2>
-        <div class="bar"></div>
-        <div class="grid-2" style="margin-top: var(--space-lg);">
-          <div class="card">
-            <h3>NGN-728 — Partner Invitations</h3>
-            <p>Users invited to a partner, disabled for review, and reactivated can now accept their invitation instead of hitting Access Denied.</p>
-          </div>
-          <div class="card card-accent-2">
-            <h3>NGN-744 — Support Escalation</h3>
-            <p>Support staff can no longer create duplicate BIN ISO or Bank escalations on the same ticket. The UI reflects unavailable entity types automatically.</p>
-          </div>
-          <div class="card card-accent-3">
-            <h3>NGN-688 — Payment Link Dates</h3>
-            <p>Payment link expiration dates match user selection without timezone offset shifts. Consistent behavior across timezones.</p>
-          </div>
-          <div class="card card-accent-5">
-            <h3>NGN-752 — Internal MID</h3>
-            <p>Each merchant account now carries the partner Internal MID publicId with a distinct externalMid. Awaiting processor-options fix for full QA.</p>
-          </div>
-        </div>
-        <aside class="notes">
-The main changes this week: partner invitations survive the disable and reactivate cycle, support escalations are blocked against duplicate entity types, and payment link expiration dates display correctly across timezones. The internal MID architecture change is partially validated — implemented but blocked on a processor-options configuration gap that needs a separate bug. The partner FE invite name fields improvement was scoped out after determining the email-only flow is sufficient.
-        </aside>
-      </section>
-
-      <!-- Section Break: Open Items -->
-      <section class="centered" data-background-color="var(--accent-3)">
-        <h1 class="text-on-dark">Open Items</h1>
-        <div class="bar" style="background: rgba(255,255,255,0.5);"></div>
-        <p class="text-on-dark" style="opacity: 0.8;">Six items, all with clear scope and next steps</p>
-        <aside class="notes">
-The open queue has six items. NGN-752 is blocked and needs a follow-up bug for the processor-options issue. NGN-731 has a detailed code analysis with four implementation options ready for the assignee. The remaining four are new bug reports with clear reproduction steps and defined acceptance criteria. No blockers outside of NGN-752's processor gap.
-        </aside>
-      </section>
-
-      <!-- Open Items — Card Grid -->
-      <section>
-        <h2>Open Items</h2>
-        <div class="bar bar-accent-3"></div>
-
-        <div style="margin-top: var(--space-lg);">
-          <div class="card card-accent-3" style="margin-bottom: var(--space-md);">
-            <p class="card-tag card-tag-blocked">BLOCKED</p>
-            <h3>NGN-752 — Internal MID Architecture</h3>
-            <p>Needs separate bug filed for Ruby and Plat BIN ISO processor options not appearing in the approval flow. Developer confirmed ready to clear once that follow-up is tracked.</p>
-          </div>
-        </div>
-
-        <div class="grid-2" style="margin-top: var(--space-md);">
-          <div class="card card-accent-4">
-            <p class="card-tag card-tag-review">PENDING REVIEW</p>
-            <h3>NGN-731</h3>
-            <p>Marketplace category delete error toast. Four implementation options provided in comments.</p>
-          </div>
-          <div class="card">
-            <p class="card-tag card-tag-review">PENDING REVIEW</p>
-            <h3>NGN-673</h3>
-            <p>Raw Elavon error on pay link refund. Reproduction steps with test card data.</p>
-          </div>
-          <div class="card card-accent-2">
-            <p class="card-tag card-tag-review">PENDING REVIEW</p>
-            <h3>NGN-674</h3>
-            <p>Category detail modal shows 0 products. Filed with reproduction steps.</p>
-          </div>
-          <div class="card card-accent-3">
-            <p class="card-tag card-tag-review">PENDING REVIEW</p>
-            <h3>NGN-675</h3>
-            <p>Pre-filter invalid discounts from pay link UI. Filed with reproduction steps.</p>
-          </div>
-          <div class="card card-accent-5">
-            <p class="card-tag card-tag-review">PENDING REVIEW</p>
-            <h3>NGN-676</h3>
-            <p>Enforce discount Max Claims on pay link transactions. Filed with AC.</p>
-          </div>
-          <div class="card card-accent-4" style="visibility: hidden;"></div>
-        </div>
-
-        <aside class="notes">
-Six open items. NGN-752 is the only blocked item — needs a separate bug for the processor-options gap with Ruby and Plat BIN ISOs. NGN-731 has four implementation options already documented, so it's ready for an assignee to pick up. The remaining four are standard bug reports with reproduction steps and acceptance criteria — all in pending review. No blockers outside of NGN-752's processor gap.
-        </aside>
-      </section>
-
-      <!-- Closing -->
-      <section class="centered" data-background-color="var(--bg-dark)">
-        <h1 class="text-on-dark">Week Complete</h1>
-        <div class="bar bar-accent-1"></div>
-        <p class="lead text-on-dark">Completed QA validations, new reports with clear scope, one blocked item with a defined path forward.</p>
-        <p class="text-muted" style="margin-top: var(--space-xl);">The open queue is concentrated and actionable.</p>
-        <aside class="notes">
-Completed QA validations across three product areas, new reports with clear scope, and one blocked architectural item with a defined path forward. The open queue is concentrated and actionable. The only blocker — the NGN-752 processor-options gap — has a clear next step: file a separate bug. Everything else is well-defined.
-        </aside>
-      </section>
-
+      .slide-footer {
+        position: fixed;
+        bottom: 25px;
+        left: var(--slide-padding);
+        font-size: var(--size-small);
+        font-weight: 500;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        z-index: 1000;
+      }
+      section[data-background-color] .slide-footer,
+      .dark-slide .slide-footer {
+        color: rgba(255, 255, 255, 0.4);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="slide-footer">
+      NGNAir | Weekly Delivery Narrative — 2026-W22
     </div>
-  </div>
+    <div class="reveal">
+      <div class="slides">
+        <!-- 1. Title -->
+        <section class="centered">
+          <p class="label">2026-W22</p>
+          <h1>Weekly Delivery Narrative</h1>
+          <div class="bar"></div>
+          <p class="lead">
+            Finance QA, partner workflow validation, and internal MID
+            architecture
+          </p>
+          <aside class="notes">
+            The week covered QA validation of three fixes, filing of five new
+            bug reports, one scoped cancellation, one ops report, and one
+            blocked architectural QA. Three tickets were validated to Done with
+            staging QA, five new issues were filed with reproduction steps, and
+            one major MID architecture change reached QA but hit a
+            processor-configuration blocker.
+          </aside>
+        </section>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
-  <script>
-    Reveal.initialize({
-      hash: true,
-      center: true,
-      transition: 'fade',
-      transitionSpeed: 'fast',
-      backgroundTransition: 'fade',
-      width: 1920,
-      height: 1080,
-      margin: 0.08,
-      minScale: 0.2,
-      maxScale: 2.0,
-      plugins: [ RevealNotes ]
-    });
-  </script>
-</body>
+        <!-- 2. Executive Snapshot — single source for counts and work areas -->
+        <section>
+          <h2>Week at a Glance</h2>
+          <div class="bar"></div>
+          <div class="grid-4" style="margin-top: var(--space-lg)">
+            <div class="centered">
+              <p class="stat text-accent-2">4</p>
+              <p class="stat-label">Done</p>
+              <p class="text-muted" style="font-size: var(--size-small)">
+                NGN-688, 728, 744<br />Support Admin outage
+              </p>
+            </div>
+            <div class="centered">
+              <p class="stat text-accent-5">1</p>
+              <p class="stat-label">Blocked</p>
+              <p class="text-muted" style="font-size: var(--size-small)">
+                NGN-752<br />processor-options gap
+              </p>
+            </div>
+            <div class="centered">
+              <p class="stat text-muted">1</p>
+              <p class="stat-label">Canceled</p>
+              <p class="text-muted" style="font-size: var(--size-small)">
+                NGN-727<br />scoped out
+              </p>
+            </div>
+            <div class="centered">
+              <p class="stat text-accent-3">5</p>
+              <p class="stat-label">Pending Review</p>
+              <p class="text-muted" style="font-size: var(--size-small)">
+                NGN-673, 674, 675<br />NGN-676, 731
+              </p>
+            </div>
+          </div>
+          <div class="grid-3" style="margin-top: var(--space-lg)">
+            <div class="card">
+              <h3>Finance &amp; Payment Links</h3>
+              <p>
+                Elavon errors, discount filtering, Max Claims enforcement,
+                duplicate escalation blocking, MID architecture.
+              </p>
+            </div>
+            <div class="card card-accent-2">
+              <h3>Partner Workflow</h3>
+              <p>
+                Invitation lifecycle recovery QA; name-field improvement scoped
+                and canceled.
+              </p>
+            </div>
+            <div class="card card-accent-4">
+              <h3>Product &amp; Ops</h3>
+              <p>
+                Category modal errors, timezone fixes, marketplace code
+                analysis, Support Admin accessibility.
+              </p>
+            </div>
+          </div>
+          <aside class="notes">
+            Four items completed — three tickets QA-validated in staging plus
+            one ops report resolved. The only blocker is NGN-752's
+            processor-options gap for Ruby and Plat BIN ISOs, which Josh
+            confirmed should be a separate bug. Five new reports are in the
+            review queue, all filed with reproduction paths.             NGN-727 was scoped
+            and canceled after discussion with Duane. Work grouped into finance and
+            payment links, partner workflow, and product/ops.
+          </aside>
+        </section>
+
+        <!-- 3. Completed — QA Validated -->
+        <section>
+          <h2>Completed — QA Validated in Staging</h2>
+          <div class="bar bar-accent-2"></div>
+          <div class="grid-2" style="margin-top: var(--space-lg)">
+            <div class="card">
+              <p class="card-tag card-tag-done">DONE</p>
+              <h3>NGN-728 — Partner Invitation Lifecycle</h3>
+              <p>
+                Backend fix so reactivating an unaccepted invite restores
+                INVITED status instead of denying access. QA verified the full
+                invite → disable → reactivate → accept flow.
+              </p>
+            </div>
+            <div class="card card-accent-2">
+              <p class="card-tag card-tag-done">DONE</p>
+              <h3>NGN-744 — Duplicate Escalation Blocking</h3>
+              <p>
+                Backend enforcement excludes already-used BIN ISO/Bank types
+                from available escalation targets. QA confirmed blocking and
+                cross-entity fallback.
+              </p>
+            </div>
+            <div class="card card-accent-4">
+              <p class="card-tag card-tag-done">DONE</p>
+              <h3>NGN-688 — Payment Link Timezone Fix</h3>
+              <p>
+                Expiration date now matches user selection exactly, no
+                UTC-offset shift. QA validated consistent behavior across
+                timezones.
+              </p>
+            </div>
+            <div class="card">
+              <p class="card-tag card-tag-done">DONE</p>
+              <h3>Support Admin Outage</h3>
+              <p>
+                Reported Support Admin returning 403 Forbidden Nginx error on
+                access. Resolved.
+              </p>
+            </div>
+          </div>
+          <aside class="notes">
+            NGN-728: Duane fixed the backend so
+            reactivating a user who never accepted their invitation restores
+            INVITED status instead of denying access. I verified the full
+            invite, disable, reactivate, and accept flow on staging. NGN-744:
+            Duane added backend enforcement so available escalation
+            targets exclude already-used entity types. I confirmed both BIN ISO
+            and Bank blocking, verified cross-entity escalation still works, and
+            checked that the UI hides unavailable options. NGN-688: John Demonteverde
+            fixed the payment link expiration date timezone handling. I confirmed
+            the Expires value shows exactly what was selected without UTC-offset
+            shift across timezones. Support Admin was returning 403
+            errors — reported and resolved.
+          </aside>
+        </section>
+
+        <!-- 4. NGN-752 — Internal MID Architecture (blocked) -->
+        <section>
+          <h2>NGN-752 — Internal MID Architecture — QA Blocked</h2>
+          <div class="bar bar-accent-3"></div>
+          <div class="grid-2" style="margin-top: var(--space-lg)">
+            <div>
+              <p class="label" style="color: var(--accent-2)">What Changed</p>
+              <ul style="margin-top: var(--space-sm)">
+                <li>
+                  Each merchant account now carries the partner
+                  <span class="highlight-1">publicId</span>, not a fabricated
+                  MA-... value
+                </li>
+                <li>
+                  BIN ISO selection provisions one partner InternalMid per
+                  selected BIN ISO
+                </li>
+                <li>
+                  <span class="highlight-4">externalMid</span> is now a distinct
+                  display value, separate from internalMid
+                </li>
+                <li>
+                  Finance-facing endpoint returns the partner publicId
+                  consistently
+                </li>
+              </ul>
+            </div>
+            <div>
+              <p class="label" style="color: var(--accent-5)">The Blocker</p>
+              <p class="lead" style="margin-top: var(--space-sm)">
+                Ruby and Plat BIN ISOs showed
+                <span class="highlight-5">no processor options</span> during
+                approval despite having Elavon configured. Only Gold BIN ISO
+                worked.
+              </p>
+              <p
+                class="text-muted"
+                style="
+                  font-size: var(--size-small);
+                  margin-top: var(--space-sm);
+                "
+              >
+                Josh confirmed this should be tracked as a
+                <span class="highlight-3">separate bug ticket</span>.
+              </p>
+            </div>
+          </div>
+          <aside class="notes">
+            NGN-752 is the most significant architectural item. Josh
+            made each merchant account carry the partner-owned Internal MID
+            publicId instead of a locally fabricated MA value, separated
+            externalMid as a distinct display value, and provisioned one
+            InternalMid per selected BIN ISO. I started testing the full
+            approval pipeline on staging. Gold BIN ISO worked, but Ruby and Plat
+            showed no processor options during approval despite having Elavon
+            configured. I returned the ticket as blocked. Josh confirmed the
+            processor-options issue needs a separate bug.
+          </aside>
+        </section>
+
+        <!-- 5. New Reports — Pending Review -->
+        <section>
+          <h2>New Reports — Pending Review</h2>
+          <div class="bar bar-accent-4"></div>
+          <div style="margin-top: var(--space-lg)">
+            <div
+              class="card card-accent-4"
+              style="margin-bottom: var(--space-md)"
+            >
+              <p class="card-tag card-tag-review">PENDING REVIEW</p>
+              <h3>
+                NGN-731 — Marketplace: Raw Prisma Error on Category Delete
+              </h3>
+              <p>
+                Raw Prisma foreign key error toast shown to users. Code analysis
+                pinpointed the exact location in
+                <code>categories/page.tsx</code> handleDelete catch block. Four
+                implementation options provided — from hardcoded message to
+                structured error-code inspection. Only place in the codebase
+                passing <code>err.message</code> to <code>toast.error</code>.
+              </p>
+            </div>
+          </div>
+          <div class="grid-4" style="margin-top: var(--space-md)">
+            <div class="card">
+              <h3>NGN-673</h3>
+              <p>
+                Raw Elavon API error shown when refunding fresh pay link
+                transactions.
+              </p>
+            </div>
+            <div class="card card-accent-2">
+              <h3>NGN-674</h3>
+              <p>
+                Category detail modal always shows 0 total products regardless
+                of actual count.
+              </p>
+            </div>
+            <div class="card card-accent-3">
+              <h3>NGN-675</h3>
+              <p>
+                Create Payment Link discount selection shows expired and
+                not-yet-active discounts.
+              </p>
+            </div>
+            <div class="card card-accent-5">
+              <h3>NGN-676</h3>
+              <p>
+                Discount Max Claims limit not enforced on pay link transactions
+                after limit reached.
+              </p>
+            </div>
+          </div>
+          <aside class="notes">
+            NGN-731 received detailed code analysis pinpointing the exact
+            location in categories/page.tsx where raw Prisma error text reaches
+            the UI, with four implementation options. NGN-673, 674, 675, and 676
+            are bug reports with clear reproduction steps and acceptance
+            criteria covering Elavon errors, category modal display, discount
+            filtering, and discount Max Claims enforcement. All five are in the
+            pending review queue.
+          </aside>
+        </section>
+
+        <!-- 6. Canceled — NGN-727 -->
+        <section>
+          <h2>Canceled — NGN-727</h2>
+          <div class="bar" style="background: var(--text-muted)"></div>
+          <div class="card" style="margin-top: var(--space-lg)">
+            <p class="card-tag card-tag-canceled">CANCELED</p>
+            <h3>NGN-727 — Partner FE Invite Name Fields</h3>
+            <p>
+              Improvement ticket to add optional first/last name fields to the
+              Partner FE invite modal for parity with Partner Admin. After
+              discussion with Duane, determined the email-only invite flow is
+              sufficient. Ticket canceled — no implementation needed.
+            </p>
+          </div>
+          <aside class="notes">
+            NGN-727 was filed to add optional first and last name fields to the
+            Partner FE invite modal. After discussing with Duane, we
+            determined the email-only flow is sufficient and the auth
+            service remains the source of truth for user names. Ticket was
+            canceled.
+          </aside>
+        </section>
+
+        <!-- 7. What Changed — Impact -->
+        <section>
+          <h2>What Changed</h2>
+          <div class="bar bar-accent-1"></div>
+          <div class="grid-2" style="margin-top: var(--space-lg)">
+            <div class="card">
+              <h3>NGN-728 — Partner Invitations</h3>
+              <p>
+                Users invited, disabled for review, and reactivated can now
+                accept their invitation instead of hitting Access Denied.
+              </p>
+            </div>
+            <div class="card card-accent-2">
+              <h3>NGN-744 — Support Escalation</h3>
+              <p>
+                Support staff can no longer create duplicate BIN ISO or Bank
+                escalations on the same ticket.
+              </p>
+            </div>
+            <div class="card card-accent-3">
+              <h3>NGN-688 — Payment Link Dates</h3>
+              <p>
+                Payment link expiration dates match user selection without
+                timezone offset shifts.
+              </p>
+            </div>
+            <div class="card card-accent-5">
+              <h3>NGN-752 — Internal MID</h3>
+              <p>
+                Each merchant account carries the partner publicId with a
+                distinct externalMid. Awaiting processor-options fix for full
+                QA.
+              </p>
+            </div>
+          </div>
+          <aside class="notes">
+            The main results: partner invitations survive the disable and
+            reactivate cycle, support escalations are blocked against duplicate
+            entity types, and payment link expiration dates display correctly
+            across timezones. The internal MID architecture change is partially
+            validated — implemented but blocked on a processor-options gap that
+            needs a separate bug. The partner FE invite improvement was scoped
+            out after determining the email-only flow is sufficient.
+          </aside>
+        </section>
+
+        <!-- 8. Open Items -->
+        <section>
+          <h2>Open Items</h2>
+          <div class="bar bar-accent-3"></div>
+          <div style="margin-top: var(--space-lg)">
+            <div
+              class="card card-accent-3"
+              style="margin-bottom: var(--space-md)"
+            >
+              <p class="card-tag card-tag-blocked">BLOCKED</p>
+              <h3>NGN-752 — Internal MID Architecture</h3>
+              <p>
+                Needs separate bug filed for Ruby and Plat BIN ISO processor
+                options not appearing in approval flow. Developer confirmed
+                ready to clear once that follow-up is tracked.
+              </p>
+            </div>
+          </div>
+          <ul
+            class="compact-list"
+            style="
+              margin-top: var(--space-md);
+              columns: 2;
+              column-gap: var(--space-lg);
+            "
+          >
+            <li>
+              <strong>NGN-731</strong> — Marketplace category delete error
+              toast. Four implementation options documented.
+            </li>
+            <li>
+              <strong>NGN-673</strong> — Raw Elavon error on pay link refund.
+            </li>
+            <li>
+              <strong>NGN-674</strong> — Category detail modal shows 0 products.
+            </li>
+            <li>
+              <strong>NGN-675</strong> — Pre-filter invalid discounts from pay
+              link UI.
+            </li>
+            <li>
+              <strong>NGN-676</strong> — Enforce discount Max Claims on pay link
+              transactions.
+            </li>
+          </ul>
+          <aside class="notes">
+            Six open items. NGN-752 is the only blocked item — needs a separate
+            bug for the processor-options gap with Ruby and Plat BIN ISOs.
+            NGN-731 has four implementation options already documented, ready
+            for an assignee. The remaining four are standard bug reports with
+            reproduction steps and acceptance criteria, all in pending review.
+          </aside>
+        </section>
+
+        <!-- 9. Closing -->
+        <section class="centered" data-background-color="var(--bg-dark)">
+          <h1 class="text-on-dark">Week Complete</h1>
+          <div class="bar bar-accent-2"></div>
+          <p class="lead text-on-dark">
+            Three fixes validated in staging, five reports with clear scope, one
+            blocked item with a defined path forward.
+          </p>
+          <aside class="notes">
+            Completed QA validations across finance, partner, and product areas.
+            Five new reports with clear scope. One blocked architectural item
+            with a defined path forward — file a separate bug for the
+            processor-options gap. The open queue is concentrated and
+            actionable.
+          </aside>
+        </section>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
+    <script>
+      Reveal.initialize({
+        hash: true,
+        center: true,
+        transition: "fade",
+        transitionSpeed: "fast",
+        backgroundTransition: "fade",
+        width: 1920,
+        height: 1080,
+        margin: 0.08,
+        minScale: 0.2,
+        maxScale: 2.0,
+        plugins: [RevealNotes],
+      });
+    </script>
+  </body>
 </html>
