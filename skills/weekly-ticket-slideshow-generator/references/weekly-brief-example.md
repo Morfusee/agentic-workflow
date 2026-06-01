@@ -62,7 +62,7 @@ sections:
       - "NGN-561 and NGN-562 moved through validation on payment-related behavior."
       - "NGN-624 and NGN-628 closed marketplace admin issues after follow-through."
       - "NGN-600, NGN-630, NGN-631, and NGN-632 formed the review queue for remaining admin usability work."
-      - "MANUAL-001: updated internal deployment documentation was done as a side task without a Linear ticket."
+      - "Updated internal deployment documentation was done as a side task without a Linear ticket."
     presenter_notes: "Tickets moved through several stages during the week: initial validation, ticket creation, verification in staging, and finally the review queue for remaining items. The flow shows progress rather than just end-state counts."
     takeaway: "The week ended with a small amount of open work, not with open uncertainty."
   - key: "priority-work"
@@ -126,7 +126,7 @@ closing:
 3. Give `$revealjs-presenter` enough information to compose slides without re-reading raw dump files.
 4. Use `work_detail` to preserve the ticket and task visibility that would be lost in a thin summary.
 5. When the user asks for in-depth coverage, expand the `sections` list so individual tickets can become their own sections instead of being flattened into grouped summaries.
-6. Manual task IDs use the `MANUAL-###` prefix. Treat them alongside tickets in all sections, using only title, status, and activity notes as evidence. Keep manual task narration factual and brief.
+6. Never use `MANUAL-###` prefixed identifiers in any brief content. Refer to manual tasks by their title only (e.g., `Updated internal deployment documentation`, not `MANUAL-001: updated internal deployment documentation`). Treat them alongside tickets in all sections, using only title, status, and activity notes as evidence. Keep manual task narration factual and brief.
 7. Never include dates, days of the week, or temporal markers in any section, presenter note, or work detail field. This is a weekly summary report. The brief communicates what happened, not when it happened.
 8. Never use ticket data from the `# Unselected Tickets` dump section. Unselected tickets are carry-over candidates only and must not appear in `summary.evidence`, `sections[*].work_detail`, `sections[*].supporting_evidence`, `open-items`, or `closing`. The only exception is when the same ticket ID also appears in `# Selected Tickets` or `# All Scraped Tickets`.
 9. Assign each piece of information to exactly one section. If a ticket problem description appears in `weekly-story`, do not repeat it in `priority-work` or `impact`. If a status count appears in `executive-snapshot`, do not restate it in `closing`. The `priority-work` section is the primary home for ticket-level detail; all other sections must reference tickets with short pointers rather than restating full descriptions.
