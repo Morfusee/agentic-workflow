@@ -6,6 +6,9 @@ alias sc := sync-codex
 alias sn := sync-nvim
 alias sp := skills-open
 alias oc := opencode-config
+alias as := auth-save
+alias aw := auth-switch
+alias al := auth-list
 
 default:
   @just --list
@@ -33,6 +36,30 @@ sync-codex:
 # Sync repo configs/nvim into OS-specific nvim config location
 sync-nvim:
   @python scripts/sync_environment.py nvim
+
+# Save current Codex + OpenCode auth into a named profile
+auth-save +name:
+  @if [ "{{ os() }}" == "windows" ]; then \
+    pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File scripts/switch-accounts.ps1 save {{ name }}; \
+  else \
+    echo "auth-save: Windows-only for now. Run scripts/switch-accounts.ps1 manually."; \
+  fi
+
+# Switch Codex + OpenCode auth to a saved profile
+auth-switch +name:
+  @if [ "{{ os() }}" == "windows" ]; then \
+    pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File scripts/switch-accounts.ps1 switch {{ name }}; \
+  else \
+    echo "auth-switch: Windows-only for now. Run scripts/switch-accounts.ps1 manually."; \
+  fi
+
+# List saved auth profiles
+auth-list:
+  @if [ "{{ os() }}" == "windows" ]; then \
+    pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File scripts/switch-accounts.ps1 list; \
+  else \
+    echo "auth-list: Windows-only for now. Run scripts/switch-accounts.ps1 manually."; \
+  fi
 
 # -----------------------------------------------------------------------
 # Windows-only recipes
