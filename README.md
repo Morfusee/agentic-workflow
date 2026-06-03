@@ -178,6 +178,39 @@ This links `~/.config/nvim` to `configs/nvim/` (repo is source of truth).
 2. Run `just sync-skills` to sync new skill folders.
 3. Run `just sync-environment` to sync everything at once.
 
+## Codex Account Switching
+
+The auth switcher (`scripts/switch-accounts.ps1`) saves and restores both your
+Codex and OpenCode auth in lockstep so you can switch between accounts (e.g.,
+personal vs. work) with a single command.
+
+**What gets switched:**
+
+| File | Controls |
+|------|----------|
+| `~/.codex/auth.json` | Codex CLI account (OpenAI OAuth) |
+| `~/.local/share/opencode/auth.json` | OpenCode model providers (OpenAI, GitHub Copilot, opencode-go API keys) |
+
+**Storage:** Saved profiles live under `~/.local/share/auth-profiles/<name>/`.
+
+**Commands:**
+
+```powershell
+# Save current auth from both tools into a named profile
+just auth-save <profile-name>
+
+# Restore a saved profile to both Codex and OpenCode
+just auth-switch <profile-name>
+
+# List saved profiles with timestamps
+just auth-list
+```
+
+**Aliases:** `as` (auth-save), `aw` (auth-switch), `al` (auth-list)
+
+**Important:** After switching, restart both OpenCode and Codex for the new auth
+to take effect — both tools cache auth on startup.
+
 ## Troubleshooting
 
 1. If a sync command says a path already exists as a real file or directory, the script backs it up with a timestamp and creates the symlink.
