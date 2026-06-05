@@ -39,14 +39,15 @@ For each date branch:
 
 ## dump-creation Branch
 
-Create one daily Markdown dump of relevant Linear ticket activity and print a concise grouped summary.
+Collect Linear activity, normalize qualifying issues, invoke `$ticket-dump-creator`, and print the grouped summary returned by that skill.
 
 ### Prerequisites
 
 - A Linear integration must be active so Linear issue, comment, and status tools are available.
 - Use Linear tools as source of truth. Do not infer or fabricate ticket facts.
+- Load `$ticket-dump-creator` after Linear facts are collected and normalized.
 
-### Execution Steps
+### Linear Retrieval Steps
 
 1. Resolve target date and requested range.
 - Use explicit user date (`yesterday`, `2026-05-14`) for filename when provided.
@@ -54,173 +55,66 @@ Create one daily Markdown dump of relevant Linear ticket activity and print a co
 - Filter by user-provided range when present.
 - Fetch all relevant tickets when no range is provided.
 
-2. Apply activity-first inclusion logic.
+2. Resolve current user.
+- Use `get_user` with `me` and store user id/email.
+
+3. Collect candidate issues without assignee bias.
+- Use `list_issues` with `createdAt` at range start.
+- Use `list_issues` with `updatedAt` at range start.
+- Merge and deduplicate candidates by ticket identifier.
+
+4. Load full evidence for each candidate.
+- Load detail via `get_issue`.
+- Load comments via `list_comments`.
+- Determine qualifying user activity from explicit issue/comment evidence.
+- Do not rely on a single search endpoint as sole source.
+
+5. Apply Linear-specific activity filtering before normalization.
 - Include a ticket only when the user's own activity occurred within the requested range.
 - Qualifying activities:
 - user commented on the ticket
 - user changed ticket status (`In Progress`, `In Review`, `Done`, `Todo`)
 - user explicitly marked ticket `Done`
-- explicit assignment event in-range (not subscription/watching)
+- explicit assignment event in-range, not subscription or watching
 - ticket created by user only when create event is in-range
 - Exclude tickets with no qualifying in-range user activity.
 
-3. Apply status handling after activity filtering.
-- First filter by qualifying user activity in-range.
-- Include all statuses by default after activity qualification.
-- Apply explicit status restriction only when user requests a subset.
-- Deduplicate by ticket identifier across activity sources.
+6. Normalize each qualifying Linear issue for `$ticket-dump-creator`.
+- Set `provider: linear`.
+- Set `provider_display_name: Linear`.
+- Set `item_label: ticket`.
+- Set `item_collection_label: tickets`.
+- Set `item_collection_heading: Tickets`.
+- Set `memory_subpath: memory/tickets/linear/`.
+- Set `requested_range` to the resolved user-requested range or `all relevant tickets`.
+- Set `dump_file_date` to the resolved filename date.
+- Set `generated_timestamp` to the current local timestamp.
+- For every item, provide all required normalized fields from `$ticket-dump-creator`.
 
-4. Compute activity date per ticket.
-- Use timestamp of qualifying user activity causing inclusion.
-- Prefer explicit user status-change timestamp.
-- Otherwise use user comment timestamp.
-- Otherwise explicit assignment event timestamp.
-- Otherwise created date only when creation qualifies.
-- Use updated date only when it clearly reflects allowed user actions.
-
-5. Compute attribution and role per ticket.
+7. Preserve Linear attribution semantics while normalizing.
 - Identify initial dev assignee/owner from explicit history when available.
 - Identify testing-only activity actors from explicit test/verification actions.
-- Set `My role for this ticket` as `dev-owner`, `contributor`, or `tester-only`.
+- Set `my_role` as `dev-owner`, `contributor`, or `tester-only`.
 - Mark `tester-only` when in-range user activity is only testing/verification/testing comments and no explicit in-range dev evidence exists.
 - Do not infer implementation authorship from comments/testing/QA-only updates.
 - Mark `contributor` only with explicit user development evidence and user is not initial dev owner.
 - Mark `dev-owner` only with explicit evidence that user is initial dev assignee/owner.
 
-6. Group summary data with full date-range coverage.
-- For requested ranges, evaluate every day in the range.
-- Emit every day in `# Grouped Summary`, even with no tickets.
-- For empty days print `- No qualifying tickets.`.
-- Group by activity date `YYYY-MM-DD`, then by status.
+8. Invoke `$ticket-dump-creator`.
+- Pass only normalized provider context and normalized qualifying items.
+- Let `$ticket-dump-creator` own grouped summary formatting, output path creation, collision handling, dump file structure, and chat summary reporting.
 
-7. Build output path and prevent overwrite.
-- Root path: follow the canonical memory root defined in OpenCode's global AGENTS.md.
-- Use `memory/tickets/linear/YYYY-W##/` for Linear dumps and stand-up outputs.
-- Before creating a new week folder or file, check whether an existing implementation already exists in the target location and reuse it if present.
-- Week folder: `YYYY-W##` (ISO week).
-- File format: `YYYY-MM-DD-ticket-dump.md`.
-- Create missing directories.
-- Do not overwrite; use suffixes `-1`, `-2` on collisions.
-
-8. Write one dump file per run.
-- Keep all scraped tickets in same file even when activity spans multiple days.
-- Write `No description provided.` when description is missing.
-- Write `No comments found.` when comments are missing.
-- Preserve full activity detail; do not collapse distinct actions.
-- If user has multiple qualifying same-day actions on a ticket, keep separate timestamped entries.
-- If user has qualifying actions on different in-range days for same ticket, preserve all with timestamps and reflect each day in grouped summary.
-
-9. Print grouped summary to chat and confirm saved file path.
-
-10. Prompt stand-up ticket selection immediately after dump creation.
+9. Prompt stand-up ticket selection immediately after successful dump creation.
 - Keep the grouped summary and saved path output unchanged.
 - Unless user explicitly asked for dump-only behavior, immediately present a selectable list in the same run.
 - Build selectable list from:
   - current dump `# All Scraped Tickets`
   - current dump `# Manual Tasks`
-  - carry-over tickets from `# Unselected Tickets` in the most recent previous dump (previous day or earlier in the same ISO week folder)
+  - carry-over tickets from `# Unselected Tickets` in the most recent previous dump, previous day or earlier in the same ISO week folder
 - Show one numbered list, grouped visually: current dump items first, then carry-over items.
 - Prefix carry-over entries with `[Carry-over]`.
 - After listing items, ask the exact stand-up selection prompt:
 - `Which tickets do you want to include in your stand-up? You can reply with ticket numbers, ticket IDs, or all. To add a manual task not tracked in Linear, describe it as "Manual: [task title] -- [Done / In Progress / To Do] [optional description]". To add a next-day plan, describe it as "Plan: [what you intend to work on next]".`
-
-11. Use fallback-safe Linear retrieval strategy.
-- Resolve current user via `get_user` with `me` and store user id/email.
-- Collect candidate issues without assignee bias:
-- `list_issues` with `createdAt` at range start
-- `list_issues` with `updatedAt` at range start
-- Merge and deduplicate candidates by ticket identifier.
-- For each candidate, load detail via `get_issue`.
-- For each candidate, load comments via `list_comments`.
-- Determine qualifying user activity from explicit issue/comment evidence.
-- Do not rely on a single search endpoint as sole source.
-
-### Chat Summary Contract
-
-Use this exact style:
-
-`[YYYY-MM-DD]`
-
-`[Status]`
-- `[TICKET-ID]: [Ticket title]`
-
-`[Another Status]`
-- `[TICKET-ID]: [Ticket title]`
-
-### Dump File Contract
-
-Use this structure:
-
-```md
-# Ticket Dump
-
-Generated: [timestamp]
-Requested range: [range or "all relevant tickets"]
-Dump file date: [YYYY-MM-DD]
-
----
-
-# Grouped Summary
-
-[YYYY-MM-DD]
-
-## [Status]
-- [TICKET-ID]: [Ticket title]
-
----
-
-# Manual Tasks
-
-Entries here are not tracked in Linear. Add tasks directly during stand-up selection. The dump creator writes this section empty; the stand-up generator appends tasks here.
-
-## [TASK-ID]: [Task title]
-
-Status: [Done / In Progress / To Do]
-Activity date: [YYYY-MM-DD]
-My role: dev-owner
-
-### Description
-[Task description or "No description provided."]
-
-### Activity Notes
-[Brief factual summary of work performed.]
-
----
-
-# All Scraped Tickets
-
-## [TICKET-ID]: [Ticket title]
-
-Status: [status]
-Activity date: [YYYY-MM-DD]
-URL: [Linear URL or "Not available"]
-Initial dev assignee: [name or "Not available"]
-Testing actors: [comma-separated names or "None identified"]
-My role for this ticket: [dev-owner / contributor / tester-only]
-
-### Why this ticket was included
-[Created by me / assigned to me / commented on by me / status changed by me]
-
-### Description
-[Full ticket description or "No description provided."]
-
-### Comments
-#### [comment author] - [timestamp]
-[comment body]
-
-[Repeat per comment, or "No comments found."]
-
-### Activity Timeline
-- [timestamp] [activity type: created / assigned / commented / moved to In Progress / moved to In Review / moved to Done / moved to Todo / tested]
-- [timestamp] [activity type...]
-
-### In-Range Day Mapping
-- [YYYY-MM-DD]: [list of qualifying user actions with timestamps]
-- [YYYY-MM-DD]: [list of qualifying user actions with timestamps]
-
-### Activity Notes
-[Brief factual summary of meaningful user activity on this ticket. Use explicit action verbs like `tested`, `commented`, `moved to In Progress`, `moved to Done`.]
-```
 
 ## standup-from-dump Branch
 
