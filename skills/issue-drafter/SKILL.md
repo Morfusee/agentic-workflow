@@ -19,6 +19,7 @@ This skill is draft-agnostic and publish-profile aware. All project-specific con
 - `profiles[*].default_labels` or `profiles[*].allowed_labels`: Labels available for the profile.
 - `profiles[*].defaults`: Provider-specific publishing defaults.
 - `profiles[*].engineers` and `profiles[*].service_to_engineer`: Optional assignment hints.
+- Profiles may omit workspace-specific values such as Linear team, service labels, and assignee mappings. Ask for missing publish-only values only when publishing.
 
 Use the caller-provided profile when supplied. Otherwise use `default_profile`. Do not mix profile defaults.
 
@@ -106,13 +107,13 @@ When triggered:
 
 2. Present the publishing plan to the user:
    - **Provider**: The active profile's configured provider.
-   - **Team**: The profile default team, when present.
+   - **Team**: The profile default team, when present. If absent for a Linear profile, ask the user which Linear team to publish into before calling Linear tools.
    - **Suggested assignee**: Infer from `service_to_engineer` only when the profile provides it and the issue has a matching service in the final labels. If the selected service appears only as the title prefix, add it to final labels before publishing. List the engineer's name, role, and areas from the profile roster. Ask the user to confirm or override.
    - **Priority**: The profile default priority, when present.
    - **Labels**: The final labels from the approved draft.
 
 3. Once confirmed, handle the active provider:
-    - For `"linear"`: use `linear_save_issue` with `title`, `description`, `team`, `labels`, `assignee`, `priority`, then report the created issue ID and URL back to the user.
+    - For `"linear"`: use `linear_save_issue` with `title`, `description`, confirmed `team`, `labels`, confirmed `assignee` when provided, and `priority`, then report the created issue ID and URL back to the user.
     - For `"notion"`: do not publish directly from this skill. Return the approved draft to the calling orchestrator, such as `$notion-orchestrator`, so that orchestrator can resolve Notion schema, project relation, and page creation.
 
 4. If the configured provider is unavailable or unsupported, inform the user and offer to output the final draft as copyable Markdown instead.
