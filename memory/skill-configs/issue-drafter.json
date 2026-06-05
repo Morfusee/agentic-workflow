@@ -3,7 +3,7 @@
   "profiles": {
     "linear_workspace": {
       "provider": "linear",
-      "title_format": "Service: Actionable technical fix",
+      "title_format": "Actionable technical fix",
       "services": [],
       "default_labels": ["Bug"],
       "defaults": {
@@ -19,6 +19,14 @@
       "services": [],
       "allowed_labels": ["Feature", "Fix", "Refactor", "Release"],
       "default_labels": ["Feature"]
+    },
+    "clickup_workspace": {
+      "provider": "clickup",
+      "publisher": "clickup-orchestrator",
+      "title_format": "Actionable technical fix",
+      "services": [],
+      "default_labels": ["Bug"],
+      "allowed_labels": ["Bug", "Feature", "Fix", "Refactor"]
     }
   }
 }
