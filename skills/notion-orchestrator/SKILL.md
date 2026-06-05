@@ -30,11 +30,12 @@ Infer intent heuristically and route to one branch:
 3. `personal-task-create`: create an approved personal task in the Personal Tasks database.
 4. `personal-task-update`: update an existing personal task's title, status, due date, priority, URL, relation, or structured body.
 5. `personal-task-review`: fetch Personal Tasks and summarize active work, upcoming deadlines, or completed work.
-6. `coding-ticket-draft`: draft a Coding Projects Tracker technical ticket using `$issue-drafter` and the configured draft profile.
-7. `coding-ticket-create`: create an approved Coding Projects Tracker task in the configured shared Tasks data source.
-8. `coding-ticket-update`: update an existing Coding Projects task's fields, project relation, or Markdown body.
-9. `coding-ticket-review`: fetch Coding Projects tasks for a selected project and summarize active work.
-10. `location-resolution`: resolve the target Notion page, database, data source, or project before any write.
+6. `coding-ticket-draft`: draft a Coding Projects Tracker bug, regression, or problem-investigation ticket using `$issue-drafter` and the configured draft profile.
+7. `coding-implementation-ticket-draft`: draft a Coding Projects Tracker feature, enhancement, refactor, or other non-bug implementation ticket using `$implementation-ticket-drafter`.
+8. `coding-ticket-create`: create an approved Coding Projects Tracker task in the configured shared Tasks data source.
+9. `coding-ticket-update`: update an existing Coding Projects task's fields, project relation, or Markdown body.
+10. `coding-ticket-review`: fetch Coding Projects tasks for a selected project and summarize active work.
+11. `location-resolution`: resolve the target Notion page, database, data source, or project before any write.
 
 If confidence is low, ask one focused clarification.
 
@@ -54,6 +55,7 @@ Use the loaded config's `domains` map to resolve Notion workflows.
 
 - Match explicit user wording against domain names and configured trigger hints.
 - If the request is a technical issue or bug but mentions Notion/Coding Projects, choose `coding_projects`.
+- If the request is a feature, enhancement, refactor, or non-bug implementation ticket and mentions Notion/Coding Projects, choose `coding_projects` and route to `coding-implementation-ticket-draft`.
 - If the request is a lightweight personal reminder/task, choose `personal_tasks`.
 - If multiple domains match or confidence is low, ask one focused clarification.
 - If a configured domain references a template this skill does not know, stop and report the unsupported template key.
@@ -81,13 +83,17 @@ Personal Tasks targets are configured in `skill-configs/notion-orchestrator.json
 
 Load `references/coding-projects-template.md` before drafting, creating, updating, or reviewing Coding Projects Tracker tasks.
 
-Coding Projects technical tickets must use the Linear-style issue body from `$issue-drafter`: `The Problem`, `Steps to Reproduce`, `Technical Requirements`, `Expected vs Actual`, and `Acceptance Criteria`.
+Coding Projects bug, regression, and problem-investigation tickets must use the Linear-style issue body from `$issue-drafter`: `The Problem`, `Steps to Reproduce`, `Technical Requirements`, `Expected vs Actual`, and `Acceptance Criteria`.
+
+Coding Projects feature, enhancement, refactor, and other non-bug implementation tickets must use `$implementation-ticket-drafter`: `Objective`, `Scope`, `Implementation Requirements`, `Acceptance Criteria`, `Testing Notes`, and any relevant adaptive sections.
 
 Coding Projects targets are configured in `skill-configs/notion-orchestrator.json` under `domains.coding_projects`. Treat config values as the only cached target source. Re-fetch before writes and fall back to Notion search for the configured domain name if a fetch fails.
 
 Always resolve the project relation before creating a Coding Projects task. Ask which project to connect when the request does not specify exactly one configured project.
 
-Do not publish Coding Projects tasks directly from `$issue-drafter`; use `$issue-drafter` only to draft approved issue Markdown and use this skill for Notion schema validation and page creation.
+Do not publish Coding Projects tasks directly from `$issue-drafter` or `$implementation-ticket-drafter`; use those skills only to draft approved Markdown and handoff metadata, then use this skill for Notion schema validation and page creation.
+
+For approved `$implementation-ticket-drafter` handoffs, map provider-agnostic metadata into the Coding Projects data source fields when those fields exist: title, Markdown body, status, priority, project relation, labels or tags, estimate, and confirmed assignee.
 
 ## Draft-First Writes
 

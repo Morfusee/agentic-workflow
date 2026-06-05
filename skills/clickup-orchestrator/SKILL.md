@@ -1,6 +1,6 @@
 ---
 name: clickup-orchestrator
-description: Route and orchestrate ClickUp-specific workflows through one entry point. Use when the user asks for ClickUp ticket dump creation, stand-up generation from ClickUp dumps, full ClickUp stand-up flow, ClickUp-context issue drafting, or ClickUp-context QA comment formatting.
+description: Route and orchestrate ClickUp-specific workflows through one entry point. Use when the user asks for ClickUp ticket dump creation, stand-up generation from ClickUp dumps, full ClickUp stand-up flow, ClickUp-context issue drafting, ClickUp-context implementation ticket drafting, or ClickUp-context QA comment formatting.
 ---
 
 # ClickUp Orchestrator
@@ -15,9 +15,22 @@ Infer intent heuristically and route to one branch:
 2. `standup-from-dump`: read dump, select tickets, capture an explicit next-day plan if provided, generate spoken stand-up, update dump.
 3. `full-flow`: run dump creation then stand-up from that dump.
 4. `issue-draft`: route to `$issue-drafter` only when request is clearly ClickUp-contextual. Instruct `$issue-drafter` to output the final draft in the ClickUp ticket format convention defined below (Description → Scope → Deliverable) instead of the default bug-report format.
-5. `qa-comment`: route to `$qa-comment-formatter` when the user provides QA results, pass/fail checks, or test observations to format into a ClickUp ticket comment. If the request includes a ClickUp task ID or task URL, pass it through as `clickup_task_id` so the formatter publishes directly to that task.
+5. `implementation-ticket-draft`: route to `$implementation-ticket-drafter` only when the request is clearly ClickUp-contextual and describes a feature, enhancement, refactor, or other non-bug implementation ticket.
+6. `qa-comment`: route to `$qa-comment-formatter` when the user provides QA results, pass/fail checks, or test observations to format into a ClickUp ticket comment. If the request includes a ClickUp task ID or task URL, pass it through as `clickup_task_id` so the formatter publishes directly to that task.
 
 If confidence is low, ask one focused clarification.
+
+## implementation-ticket-draft Branch
+
+Route ClickUp-context feature, enhancement, refactor, and other non-bug implementation ticket requests to `$implementation-ticket-drafter`.
+
+- Keep `$issue-drafter` for bugs, regressions, production problems, broken behavior, and problem investigations.
+- Instruct `$implementation-ticket-drafter` to use the active implementation-ticket profile and include ClickUp as the preferred provider context when relevant.
+- Let `$implementation-ticket-drafter` own draft, review, iteration, and provider-agnostic handoff metadata.
+- Preserve the ClickUp Ticket Format Convention when mapping an approved handoff into a ClickUp task description.
+- Do not create a ClickUp task until the user approves the implementation ticket draft and explicitly asks to create or publish it.
+- After approval, map the handoff metadata into ClickUp fields using ClickUp tools: title, description, labels/tags, priority, list, project or folder context, estimate, and confirmed assignee when available.
+- If the target ClickUp list is missing, ask which list to use before creating the task.
 
 ## ClickUp Ticket Format Convention
 
