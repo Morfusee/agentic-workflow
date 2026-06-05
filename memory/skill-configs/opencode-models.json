@@ -4,25 +4,11 @@
   "providers": ["opencode", "opencode-go"],
   "selection_order": [
     {
-      "model": "opencode/deepseek-v4-flash-free",
-      "variant": "max",
-      "cost_tier": "free",
-      "requires_billing": false,
-      "preferred_for": ["SEARCH", "INSPECT", "SUMMARIZE", "VALIDATE", "COMPARE", "DRAFT_FRAGMENT"]
-    },
-    {
       "model": "opencode-go/deepseek-v4-flash",
       "variant": "high",
       "cost_tier": "cheap",
       "requires_billing": true,
       "preferred_for": ["SEARCH", "INSPECT", "SUMMARIZE", "VALIDATE", "COMPARE", "DRAFT_FRAGMENT", "SMALL_PATCH"]
-    },
-    {
-      "model": "opencode/nemotron-3-super-free",
-      "variant": "high",
-      "cost_tier": "free",
-      "requires_billing": false,
-      "preferred_for": ["SEARCH", "INSPECT", "SUMMARIZE", "VALIDATE", "COMPARE", "DRAFT_FRAGMENT"]
     },
     {
       "model": "opencode-go/deepseek-v4-pro",
