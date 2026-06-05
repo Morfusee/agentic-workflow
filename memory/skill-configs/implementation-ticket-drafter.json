@@ -1,0 +1,19 @@
+{
+  "default_profile": "default",
+  "profiles": {
+    "default": {
+      "provider": "unspecified",
+      "title_format": "[description]",
+      "default_labels": [
+        "implementation"
+      ],
+      "allowed_labels": [],
+      "default_priority": null,
+      "default_project": null,
+      "default_estimate": null,
+      "engineers": [],
+      "service_to_engineer": {},
+      "defaults": {}
+    }
+  }
+}
