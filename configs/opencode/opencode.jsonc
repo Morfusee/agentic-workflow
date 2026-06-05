@@ -2,28 +2,28 @@
   "$schema": "https://opencode.ai/config.json",
   "lsp": {},
   "mcp": {
-    "linear": {
-      "type": "local",
-      "command": ["npx", "-y", "mcp-remote", "https://mcp.linear.app/mcp"],
-      "enabled": true
-    },
+    // "linear": {
+    //   "type": "local",
+    //   "command": ["npx", "-y", "mcp-remote", "https://mcp.linear.app/mcp"],
+    //   "enabled": true
+    // },
     "clickup": {
       "type": "remote",
       "url": "https://mcp.clickup.com/mcp",
-      "enabled": true
+      "enabled": true,
     },
     "notion": {
       "type": "remote",
       "url": "https://mcp.notion.com/mcp",
-      "enabled": true
-    }
+      "enabled": true,
+    },
   },
   "permission": {
     "external_directory": {
-      "C:/Users/*/Documents/Programming/**": "allow"
+      "C:/Users/*/Documents/Programming/**": "allow",
     },
     "edit": {
-      "C:/Users/*/Documents/Programming/**": "allow"
+      "C:/Users/*/Documents/Programming/**": "allow",
     },
     "read": {
       "C:/Users/*/Documents/Programming/**": "allow",
@@ -32,7 +32,7 @@
       "C:/Users/*/AppData/**": "deny",
       "./.env": "deny",
       "./.env.*": "deny",
-      "./secrets/**": "deny"
+      "./secrets/**": "deny",
     },
     "bash": {
       "*": "allow",
@@ -56,9 +56,7 @@
       "git clean *": "ask",
       "rm -rf *": "ask",
       "del /s /q *": "ask",
-      "rmdir /s /q *": "ask"
-    }
-  }
+      "rmdir /s /q *": "ask",
+    },
+  },
 }
-
-
