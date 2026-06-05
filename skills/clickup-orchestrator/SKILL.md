@@ -65,14 +65,15 @@ For each date branch:
 
 ## dump-creation Branch
 
-Create one daily Markdown dump of relevant ClickUp task activity and print a concise grouped summary.
+Collect ClickUp activity, normalize qualifying tasks, invoke `$ticket-dump-creator`, and print the grouped summary returned by that skill.
 
 ### Prerequisites
 
 - A ClickUp integration must be active so ClickUp task, comment, and status tools are available.
-- Use ClickUp tools as source of truth. Do not infer or fabricate ticket facts.
+- Use ClickUp tools as source of truth. Do not infer or fabricate task facts.
+- Load `$ticket-dump-creator` after ClickUp facts are collected and normalized.
 
-### Execution Steps
+### ClickUp Retrieval Steps
 
 1. Resolve target date and requested range.
    - Use explicit user date (`yesterday`, `2026-05-14`) for filename when provided.
@@ -80,161 +81,54 @@ Create one daily Markdown dump of relevant ClickUp task activity and print a con
    - Filter by user-provided range when present.
    - Fetch all relevant tasks when no range is provided.
 
-2. Apply activity-first inclusion logic.
+2. Resolve current user.
+   - Use `clickup_resolve_assignees` with `["me"]` and store user id/name/email.
+
+3. Collect candidate tasks using multiple approaches.
+   - Use `clickup_filter_tasks` with relevant filters such as date, assignee, and status.
+   - Use `clickup_search` by keyword or user name for broader coverage.
+   - Merge and deduplicate candidates by task identifier.
+
+4. Load full evidence for each candidate.
+   - Load detail via `clickup_get_task`.
+   - Load comments via `clickup_get_task_comments`.
+   - Determine qualifying user activity from explicit task/comment evidence.
+   - Do not rely on a single search endpoint as sole source.
+
+5. Apply ClickUp-specific activity filtering before normalization.
    - Include a task only when the user's own activity occurred within the requested range.
    - Qualifying activities:
      - user commented on the task
      - user changed task status
      - user explicitly marked task closed
-     - explicit assignment event in-range (not watching/following)
+      - explicit assignment event in-range, not watching or following
      - task created by user only when create event is in-range
    - Exclude tasks with no qualifying in-range user activity.
 
-3. Apply status handling after activity filtering.
-   - First filter by qualifying user activity in-range.
-   - Include all statuses by default after activity qualification.
-   - Apply explicit status restriction only when user requests a subset.
-   - Deduplicate by task identifier across activity sources.
+6. Normalize each qualifying ClickUp task for `$ticket-dump-creator`.
+   - Set `provider: clickup`.
+   - Set `provider_display_name: ClickUp`.
+   - Set `item_label: task`.
+   - Set `item_collection_label: tasks`.
+   - Set `item_collection_heading: Tasks`.
+   - Set `memory_subpath: memory/tickets/clickup/`.
+   - Set `requested_range` to the resolved user-requested range or `all relevant tasks`.
+   - Set `dump_file_date` to the resolved filename date.
+   - Set `generated_timestamp` to the current local timestamp.
+   - For every item, provide all required normalized fields from `$ticket-dump-creator`.
 
-4. Compute activity date per task.
-   - Use timestamp of qualifying user activity causing inclusion.
-   - Prefer explicit user status-change timestamp.
-   - Otherwise use user comment timestamp.
-   - Otherwise explicit assignment event timestamp.
-   - Otherwise created date only when creation qualifies.
-   - Use updated date only when it clearly reflects allowed user actions.
-
-5. Compute attribution and role per task.
+7. Preserve ClickUp attribution semantics while normalizing.
    - Identify initial dev assignee/owner from explicit history when available.
    - Identify testing-only activity actors from explicit test/verification actions.
-   - Set `My role for this task` as `dev-owner`, `contributor`, or `tester-only`.
+   - Set `my_role` as `dev-owner`, `contributor`, or `tester-only`.
    - Mark `tester-only` when in-range user activity is only testing/verification/testing comments and no explicit in-range dev evidence exists.
    - Do not infer implementation authorship from comments/testing/QA-only updates.
    - Mark `contributor` only with explicit user development evidence and user is not initial dev owner.
    - Mark `dev-owner` only with explicit evidence that user is initial dev assignee/owner.
 
-6. Group summary data with full date-range coverage.
-   - For requested ranges, evaluate every day in the range.
-   - Emit every day in `# Grouped Summary`, even with no tasks.
-   - For empty days print `- No qualifying tasks.`.
-   - Group by activity date `YYYY-MM-DD`, then by status.
-
-7. Build output path and prevent overwrite.
-   - Root path: follow the canonical memory root defined in OpenCode's global AGENTS.md.
-   - Use `memory/tickets/clickup/YYYY-W##/` for ClickUp dumps and stand-up outputs.
-   - Before creating a new week folder or file, check whether an existing implementation already exists in the target location and reuse it if present.
-   - Week folder: `YYYY-W##` (ISO week).
-   - File format: `YYYY-MM-DD-ticket-dump.md`.
-   - Create missing directories.
-   - Do not overwrite; use suffixes `-1`, `-2` on collisions.
-
-8. Write one dump file per run.
-   - Keep all scraped tasks in same file even when activity spans multiple days.
-   - Write `No description provided.` when description is missing.
-   - Write `No comments found.` when comments are missing.
-   - Preserve full activity detail; do not collapse distinct actions.
-   - If user has multiple qualifying same-day actions on a task, keep separate timestamped entries.
-   - If user has qualifying actions on different in-range days for same task, preserve all with timestamps and reflect each day in grouped summary.
-
-9. Print grouped summary to chat and confirm saved file path.
-
-10. Use fallback-safe ClickUp retrieval strategy.
-    - Resolve current user via `clickup_resolve_assignees` with `["me"]` and store user id/name/email.
-    - Collect candidate tasks using multiple approaches:
-      - `clickup_filter_tasks` with relevant filters (date, assignee, status).
-      - `clickup_search` by keyword/user name for broader coverage.
-    - Merge and deduplicate candidates by task identifier.
-    - For each candidate, load detail via `clickup_get_task`.
-    - For each candidate, load comments via `clickup_get_task_comments`.
-    - Determine qualifying user activity from explicit task/comment evidence.
-    - Do not rely on a single search endpoint as sole source.
-
-### Chat Summary Contract
-
-Use this exact style:
-
-`[YYYY-MM-DD]`
-
-`[Status]`
-- `[TASK-ID]: [Task title]`
-
-`[Another Status]`
-- `[TASK-ID]: [Task title]`
-
-### Dump File Contract
-
-Use this structure:
-
-```md
-# Ticket Dump
-
-Generated: [timestamp]
-Requested range: [range or "all relevant tasks"]
-Dump file date: [YYYY-MM-DD]
-
----
-
-# Grouped Summary
-
-[YYYY-MM-DD]
-
-## [Status]
-- [TASK-ID]: [Task title]
-
----
-
-# Manual Tasks
-
-Entries here are not tracked in ClickUp. Add tasks directly during stand-up selection. The dump creator writes this section empty; the stand-up generator appends tasks here.
-
-## [TASK-ID]: [Task title]
-
-Status: [Done / In Progress / To Do]
-Activity date: [YYYY-MM-DD]
-My role: dev-owner
-
-### Description
-[Task description or "No description provided."]
-
-### Activity Notes
-[Brief factual summary of work performed.]
-
----
-
-# All Scraped Tasks
-
-## [TASK-ID]: [Task title]
-
-Status: [status]
-Activity date: [YYYY-MM-DD]
-URL: [ClickUp URL or "Not available"]
-Initial dev assignee: [name or "Not available"]
-Testing actors: [comma-separated names or "None identified"]
-My role for this task: [dev-owner / contributor / tester-only]
-
-### Why this task was included
-[Created by me / assigned to me / commented on by me / status changed by me]
-
-### Description
-[Full task description or "No description provided."]
-
-### Comments
-#### [comment author] - [timestamp]
-[comment body]
-
-[Repeat per comment, or "No comments found."]
-
-### Activity Timeline
-- [timestamp] [activity type: created / assigned / commented / moved to [status] / closed / tested]
-- [timestamp] [activity type...]
-
-### In-Range Day Mapping
-- [YYYY-MM-DD]: [list of qualifying user actions with timestamps]
-- [YYYY-MM-DD]: [list of qualifying user actions with timestamps]
-
-### Activity Notes
-[Brief factual summary of meaningful user activity on this task. Use explicit action verbs like `tested`, `commented`, `moved to [status]`, `closed`.]
-```
+8. Invoke `$ticket-dump-creator`.
+   - Pass only normalized provider context and normalized qualifying items.
+   - Let `$ticket-dump-creator` own grouped summary formatting, output path creation, collision handling, dump file structure, and chat summary reporting.
 
 ## standup-from-dump Branch
 
