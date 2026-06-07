@@ -35,7 +35,7 @@ Infer intent heuristically and route to one branch:
 8. `coding-ticket-create`: create an approved Coding Projects Tracker task in the configured shared Tasks data source.
 9. `coding-ticket-update`: update an existing Coding Projects task's fields, project relation, or Markdown body.
 10. `coding-ticket-review`: fetch Coding Projects tasks for a selected project and summarize active work.
-11. `coding-ticket-implement`: prepare an approved Coding Projects implementation ticket for code changes. Route to `$implementation-prep` to classify work type, generate a branch name, resolve worktree setup, decide whether brainstorming is needed, and produce an implementation plan summary with approval gate.
+11. `coding-ticket-implement`: when the user references an approved Coding Projects task and appears to ask for repo, code, CI/CD, deploy, branch, commit, or other implementation work, ask whether to route to `$implementation-prep`. If approved, pass normalized ticket context to `$implementation-prep` for classification, branch/worktree setup, brainstorming decision, and implementation plan approval.
 12. `location-resolution`: resolve the target Notion page, database, data source, or project before any write.
 
 If confidence is low, ask one focused clarification.
@@ -98,7 +98,17 @@ For approved `$implementation-ticket-drafter` handoffs, map provider-agnostic me
 
 ### Implementation Prep Handoff
 
-When the user has an approved Coding Projects task and wants to start implementing it, route to `$implementation-prep`. Do not auto-trigger implementation-prep from general "implement this" requests — the user must explicitly signal readiness (e.g., "start implementing", "begin work", "let's code", or the `/implementation-prep` slash command).
+When the user references an approved Coding Projects task and asks to implement it, start work, code it, build it, fix it in the repo, update CI/CD, deploy it, create a branch, commit changes, or otherwise make repository changes from that task, ask whether to route to `$implementation-prep`.
+
+Use a short confirmation prompt:
+
+"This looks like implementation work for a Coding Projects ticket. Run implementation-prep first?"
+
+Options:
+1. Run implementation-prep
+2. Continue directly
+
+Do not invoke `$implementation-prep` silently. If implementation intent is likely but not explicit, ask the confirmation prompt first.
 
 Before routing, verify that:
 - A Coding Projects task exists and has been approved or handoff-completed.
