@@ -35,7 +35,8 @@ Infer intent heuristically and route to one branch:
 8. `coding-ticket-create`: create an approved Coding Projects Tracker task in the configured shared Tasks data source.
 9. `coding-ticket-update`: update an existing Coding Projects task's fields, project relation, or Markdown body.
 10. `coding-ticket-review`: fetch Coding Projects tasks for a selected project and summarize active work.
-11. `location-resolution`: resolve the target Notion page, database, data source, or project before any write.
+11. `coding-ticket-implement`: prepare an approved Coding Projects implementation ticket for code changes. Route to `$implementation-prep` to classify work type, generate a branch name, resolve worktree setup, decide whether brainstorming is needed, and produce an implementation plan summary with approval gate.
+12. `location-resolution`: resolve the target Notion page, database, data source, or project before any write.
 
 If confidence is low, ask one focused clarification.
 
@@ -94,6 +95,17 @@ Always resolve the project relation before creating a Coding Projects task. Ask 
 Do not publish Coding Projects tasks directly from `$issue-drafter` or `$implementation-ticket-drafter`; use those skills only to draft approved Markdown and handoff metadata, then use this skill for Notion schema validation and page creation.
 
 For approved `$implementation-ticket-drafter` handoffs, map provider-agnostic metadata into the Coding Projects data source fields when those fields exist: title, Markdown body, status, priority, project relation, labels or tags, estimate, and confirmed assignee.
+
+### Implementation Prep Handoff
+
+When the user has an approved Coding Projects task and wants to start implementing it, route to `$implementation-prep`. Do not auto-trigger implementation-prep from general "implement this" requests — the user must explicitly signal readiness (e.g., "start implementing", "begin work", "let's code", or the `/implementation-prep` slash command).
+
+Before routing, verify that:
+- A Coding Projects task exists and has been approved or handoff-completed.
+- The task includes enough detail for the implementation-prep skill to classify work type and produce a plan.
+- The user's current working directory or project context is known.
+
+If no Coding Projects task has been created yet, stop and route through `coding-ticket-draft` or `coding-implementation-ticket-draft` first.
 
 ## Draft-First Writes
 
