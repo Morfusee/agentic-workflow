@@ -2,6 +2,8 @@
 
 Yesterday, I completed the reusable Link atom and updated the Button component to use it as the shared link primitive. I also wrapped up the DesktopMegaMenu work, including the supporting data contract, desktop menu implementation, accessibility behavior, search integration, Storybook coverage, and matching mobile drawer support. Both pieces are now documented and marked complete.
 
+Today, I completed the Badge atom with 8 variants, shimmer/pulse animations via Framer Motion, reduced-motion support, and Storybook coverage. I also performed a full React code quality review across the Badge branch and refactored the component to eliminate all useEffect calls in favor of declarative animation props.
+
 No major blockers right now.
 
 ---
@@ -28,6 +30,13 @@ No major blockers right now.
   - URL: https://app.clickup.com/t/86d36z2nw
   - Reference: `# All Scraped Tasks` -> `## 86d36z2nw: Implement Navbar desktop mega menu component`
   - Stand-up relevance: Completed and documented on the stand-up date.
+
+- 86d39pyt8: Implement Badge Atom
+  - Status: complete
+  - Activity date: 2026-06-10
+  - URL: https://app.clickup.com/t/86d39pyt8
+  - Reference: `# All Scraped Tasks` -> `## 86d39pyt8: Implement Badge Atom`
+  - Stand-up relevance: Completed, code-reviewed, refactored to eliminate useEffects, and documented today. Includes comprehensive review (grade C+, 4 critical / 7 warning / 5 suggestion items) and a merge summary comment posted to the task.
 
 ---
 
@@ -234,3 +243,79 @@ I've reassigned this ticket to myself, as I've already completed the data contra
 
 ### Activity Notes
 Completed the Navbar desktop mega menu component with full keyboard/accessibility support, animations, GlobalSearch integration, typed data contracts, Storybook examples, and mobile drawer support. Documented all features in a detailed summary comment and closed the task the same day.
+
+---
+
+## 86d39pyt8: Implement Badge Atom
+
+Status: complete
+Activity date: 2026-06-10
+URL: https://app.clickup.com/t/86d39pyt8
+Initial dev assignee: Mark Rolis Valenzuela
+Testing actors: None identified
+My role for this task: dev-owner
+
+### Why this task was included
+Created by me, assigned to me, commented on by me, status changed by me
+
+### Description
+Description
+Implement a reusable Badge atom in the website repo using website3.0-prototype as the Kitchen Sink reference for expected behavior, styling direction, and component patterns.
+
+Scope
+Review the Badge atom at website3.0-prototype/src/components/atoms/Badge.tsx as the source reference
+Implement the Badge atom at src/components/Badge/Badge.component.tsx in the website repo
+Match the intended Kitchen Sink behavior and styling while adapting to the website repo's actual component patterns and token setup
+Define the Badge atom API for variants (success, warning, error, info, brand, brandRed, count, new), sizes (sm, md), shapes (pill, rounded), and optional count prop
+Implement visual states for each variant with proper color mapping to the website's Tailwind token system
+Support the "new" variant shimmer animation and the "count" variant increment pulse using motion/react while respecting useReducedMotion
+Ensure the atom is ready to be consumed by CardMolecule and other dependent components
+Add Storybook stories at src/components/Badge/Badge.stories.tsx covering all variant, size, and shape combinations
+
+Deliverable
+A reusable Badge atom is implemented in the website repo, not in website3.0-prototype
+The atom follows website3.0-prototype as the Kitchen Sink reference while fitting the website repo implementation patterns
+CardMolecule can consume the Badge atom (though currently CardMolecule uses Tag for its tag display - Badge is available for other badge-style indicators)
+All variants render correctly with proper color tokens
+Shimmer and pulse animations work and respect prefers-reduced-motion
+Supporting Storybook coverage demonstrates the expected variants and states
+Exported via barrel at src/components/index.ts
+
+### Comments
+#### Mark Rolis Valenzuela - 2026-06-10
+Merged into feat/v3-redesign.
+
+Badge atom component src/components/Badge/Badge.component.tsx supports 8 variants (success, warning, error, info, brand, brandRed, count, new), 2 sizes (sm, md), and 2 shapes (pill, rounded). Built on CVA with Framer Motion for the count and new animations.
+
+Count pulse - when the count prop changes, the badge content does a spring-based scale bounce to draw attention to the updated value.
+
+"NEW" shimmer - badges with variant="new" get a diagonal shine sweep across the badge on mount.
+
+Reduced-motion respect - both animations are automatically disabled when the user has prefers-reduced-motion: reduce enabled, using the shared useReducedMotion() hook.
+
+Simplified to zero effects - replaced 3 useEffect blocks with the useReducedMotion hook and declarative Framer Motion animate props. The count pulse triggers via React key-based remount instead of imperative controls.start().
+
+Storybook - 6 stories: Default, Variants, Sizes, Shapes, Shimmer, and CountPulse (live counter with increment button).
+
+Barrel export - Badge component and types added to src/components/index.ts.
+
+Color blending - backgrounds use color-mix(in srgb, var(--color-*), 15%, transparent) so variant colors stay token-driven and consistent with the design system.
+
+Accessibility - shimmer overlay is aria-hidden="true", animations disabled when user prefers reduced motion, clean semantic span element.
+
+### Activity Timeline
+- 2026-06-10 created: Task created by Mark Rolis Valenzuela
+- 2026-06-10 closed: Task moved to complete by Mark Rolis Valenzuela
+- 2026-06-10 commented: Merge summary comment added by Mark Rolis Valenzuela with Badge component features, animation behavior, refactor details, and accessibility highlights
+
+### In-Range Day Mapping
+- 2026-06-10: Created task, Closed task / moved to complete, Added merge summary comment
+
+### Activity Notes
+Implemented the Badge atom component with 8 variants, 2 sizes, 2 shapes, count pulse and shimmer animations via Framer Motion, reduced-motion support using useReducedMotion() hook, Storybook coverage with 6 stories, and barrel export. Performed a comprehensive React code quality review across the Badge branch (grade C+, 4 critical / 7 warning / 5 suggestion items). Refactored the Badge component to eliminate all 3 useEffect blocks by replacing them with the useReducedMotion hook and declarative Framer Motion animate/key props (commit ed49b2d). Posted a detailed merge summary comment to the task and merged into feat/v3-redesign.
+
+### Handoff Reference
+- Handoff file: memory/miscs/handoff/2026-06-10-badge-refactor.md
+- Commit: ed49b2d - refactor(Badge): replace useEffects with useReducedMotion hook and declarative framer-motion animations
+- Review checklist: react-quality-review-checklist.md (all 10 categories, grade C+ 62%)
+- Comment ID: 90160192844136
