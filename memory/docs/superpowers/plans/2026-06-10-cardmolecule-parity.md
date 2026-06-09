@@ -4,7 +4,7 @@
 
 **Goal:** Replace the current shadcn/ui-based CardMolecule with a full port of the website3.0-prototype CardMolecule, achieving visual/behavioral parity while preserving backward compatibility.
 
-**Architecture:** Port the prototype's standalone CardMolecule (no shadcn/ui dependency), adapting imports to the website's existing atoms (Heading, Button, cn, motion). Create 4 new dependency atoms (Badge, Tag, Skeleton, TwoToneIcon). Add prototype CSS utility classes (card-surface, lift, mesh-*, skel, m-track, media-zoom) to styles.css. Preserve legacy props (icon, description, actionLabel, selected, disabled, variant, onClick) via internal mapping to new props.
+**Architecture:** Port the prototype's standalone CardMolecule (no shadcn/ui dependency), adapting imports to the website's existing atoms (Heading, Button, cn, motion). Create 3 new dependency atoms (Badge, Tag, Skeleton). Add prototype CSS utility classes (card-surface, lift, mesh-*, skel, m-track, media-zoom) to styles.css. Preserve legacy props (icon, description, actionLabel, selected, disabled, variant, onClick) via internal mapping to new props. TriageHero story icons use lucide-react directly — no TwoToneIcon atom needed.
 
 **Tech Stack:** React 18, TypeScript (strict), Tailwind CSS, motion/react, class-variance-authority, Next.js Link, Storybook
 
@@ -481,256 +481,7 @@ git commit -m "feat: add Skeleton atom (ported from website3.0-prototype)"
 
 ---
 
-### Task 5: Create TwoToneIcon atom
-
-**Files:**
-- Create: `src/components/TwoToneIcon/TwoToneIcon.component.tsx`
-- Create: `src/components/TwoToneIcon/TwoToneIcon.stories.tsx`
-
-- [ ] **Step 1: Write TwoToneIcon component**
-
-Create `src/components/TwoToneIcon/TwoToneIcon.component.tsx`:
-
-```tsx
-'use client'
-
-import { forwardRef } from 'react'
-import { cn } from '@/lib/utils'
-
-export type TwoToneIconName =
-  | 'file-upload'
-  | 'alert-success'
-  | 'alert-error'
-  | 'alert-warning'
-  | 'alert-info'
-  | 'star-full'
-  | 'star-empty'
-  | 'star-half'
-  | 'search'
-  | 'password'
-  | 'accordion-open'
-  | 'accordion-closed'
-  | 'card-default'
-  | 'certificate'
-  | 'degree'
-  | 'pathfinder'
-
-export interface TwoToneIconProps extends React.SVGAttributes<SVGSVGElement> {
-  name: TwoToneIconName
-  size?: number
-}
-
-export const TwoToneIcon = forwardRef<SVGSVGElement, TwoToneIconProps>(
-  ({ name, size = 24, className, ...props }, ref) => {
-    const iconStyles = cn('inline-block shrink-0 select-none overflow-visible', className)
-
-    switch (name) {
-      case 'certificate':
-        return (
-          <svg ref={ref} width={size} height={size} viewBox="0 0 24 24" fill="none" className={iconStyles} {...props}>
-            <rect x="3" y="5" width="18" height="14" rx="2" stroke="#102c66" strokeWidth="2" />
-            <path d="M7 9h10M7 13h6" stroke="#bbc2d6" strokeWidth="2" strokeLinecap="round" />
-            <path d="M19 12v6l-2-1.5L15 18v-6" fill="#ed0000" />
-            <circle cx="17" cy="12" r="3" fill="#ed0000" />
-          </svg>
-        )
-
-      case 'degree':
-        return (
-          <svg ref={ref} width={size} height={size} viewBox="0 0 24 24" fill="none" className={iconStyles} {...props}>
-            <path d="M12 4L3 9L12 14L21 9L12 4Z" stroke="#102c66" strokeWidth="2" strokeLinejoin="round" />
-            <path d="M6 10.5V16C6 16 9 19 12 19C15 19 18 16 18 16V10.5" stroke="#102c66" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M21 9V15C21 16 20 17 21 18" stroke="#ed0000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        )
-
-      case 'pathfinder':
-        return (
-          <svg ref={ref} width={size} height={size} viewBox="0 0 24 24" fill="none" className={iconStyles} {...props}>
-            <circle cx="12" cy="12" r="10" stroke="#102c66" strokeWidth="2" />
-            <path d="M12 6L14 12L12 18L10 12L12 6Z" fill="#ed0000" stroke="#ed0000" strokeWidth="1" strokeLinejoin="round" />
-          </svg>
-        )
-
-      case 'star-full':
-        return (
-          <svg ref={ref} width={size} height={size} viewBox="0 0 24 24" fill="none" className={iconStyles} {...props}>
-            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#ed0000" stroke="#102c66" strokeWidth="2" strokeLinejoin="round" />
-          </svg>
-        )
-
-      case 'search':
-        return (
-          <svg ref={ref} width={size} height={size} viewBox="0 0 24 24" fill="none" className={iconStyles} {...props}>
-            <circle cx="11" cy="11" r="7" stroke="#102c66" strokeWidth="2.5" />
-            <path d="M20 20L16 16" stroke="#ed0000" strokeWidth="3" strokeLinecap="round" />
-          </svg>
-        )
-
-      case 'alert-success':
-        return (
-          <svg ref={ref} width={size} height={size} viewBox="0 0 24 24" fill="none" className={iconStyles} {...props}>
-            <path d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z" stroke="#102c66" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M9 11.5L11 13.5L15 9.5" stroke="#ed0000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        )
-
-      case 'alert-error':
-        return (
-          <svg ref={ref} width={size} height={size} viewBox="0 0 24 24" fill="none" className={iconStyles} {...props}>
-            <path d="M8.5 2H15.5L22 8.5V15.5L15.5 22H8.5L2 15.5V8.5L8.5 2Z" stroke="#102c66" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M10 10L14 14" stroke="#ed0000" strokeWidth="2.5" strokeLinecap="round" />
-            <path d="M14 10L10 14" stroke="#ed0000" strokeWidth="2.5" strokeLinecap="round" />
-          </svg>
-        )
-
-      case 'alert-warning':
-        return (
-          <svg ref={ref} width={size} height={size} viewBox="0 0 24 24" fill="none" className={iconStyles} {...props}>
-            <path d="M12 3L2 20H22L12 3Z" stroke="#102c66" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M12 9V14" stroke="#ed0000" strokeWidth="2.5" strokeLinecap="round" />
-            <circle cx="12" cy="17" r="1.25" fill="#ed0000" />
-          </svg>
-        )
-
-      case 'alert-info':
-        return (
-          <svg ref={ref} width={size} height={size} viewBox="0 0 24 24" fill="none" className={iconStyles} {...props}>
-            <circle cx="12" cy="12" r="10" stroke="#102c66" strokeWidth="2" />
-            <path d="M12 11V16" stroke="#ed0000" strokeWidth="2.5" strokeLinecap="round" />
-            <circle cx="12" cy="8" r="1.25" fill="#ed0000" />
-          </svg>
-        )
-
-      case 'file-upload':
-        return (
-          <svg ref={ref} width={size} height={size} viewBox="0 0 24 24" fill="none" className={iconStyles} {...props}>
-            <path d="M19 21H5C3.89543 21 3 20.1046 3 19V5C3 3.89543 3.89543 3 5 3H14L19 8V19C19 20.1046 18.1046 21 19 21Z" stroke="#102c66" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M14 3V8H19" stroke="#102c66" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M12 11V17" stroke="#ed0000" strokeWidth="2" strokeLinecap="round" />
-            <path d="M9 14L12 11L15 14" stroke="#ed0000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        )
-
-      case 'password':
-        return (
-          <svg ref={ref} width={size} height={size} viewBox="0 0 24 24" fill="none" className={iconStyles} {...props}>
-            <path d="M7 11V7C7 4.23858 9.23858 2 12 2C14.7614 2 17 4.23858 17 7V11" stroke="#102c66" strokeWidth="2" strokeLinecap="round" />
-            <rect x="4" y="11" width="16" height="11" rx="2" fill="#ed0000" stroke="#102c66" strokeWidth="2" />
-            <circle cx="12" cy="15" r="1.5" fill="#102c66" />
-            <path d="M12 16.5V18.5" stroke="#102c66" strokeWidth="2" strokeLinecap="round" />
-          </svg>
-        )
-
-      case 'accordion-open':
-        return (
-          <svg ref={ref} width={size} height={size} viewBox="0 0 24 24" fill="none" className={iconStyles} {...props}>
-            <circle cx="12" cy="12" r="10" stroke="#102c66" strokeWidth="2" />
-            <path d="M8 14L12 10L16 14" stroke="#ed0000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        )
-
-      case 'accordion-closed':
-        return (
-          <svg ref={ref} width={size} height={size} viewBox="0 0 24 24" fill="none" className={iconStyles} {...props}>
-            <circle cx="12" cy="12" r="10" stroke="#102c66" strokeWidth="2" />
-            <path d="M8 10L12 14L16 10" stroke="#ed0000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        )
-
-      case 'card-default':
-        return (
-          <svg ref={ref} width={size} height={size} viewBox="0 0 24 24" fill="none" className={iconStyles} {...props}>
-            <rect x="3" y="4" width="18" height="16" rx="2" stroke="#102c66" strokeWidth="2" />
-            <path d="M7 8H17" stroke="#ed0000" strokeWidth="2" strokeLinecap="round" />
-            <path d="M7 12H13" stroke="#bbc2d6" strokeWidth="2" strokeLinecap="round" />
-            <path d="M7 16H11" stroke="#bbc2d6" strokeWidth="2" strokeLinecap="round" />
-          </svg>
-        )
-
-      case 'star-empty':
-        return (
-          <svg ref={ref} width={size} height={size} viewBox="0 0 24 24" fill="none" className={iconStyles} {...props}>
-            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="#102c66" strokeWidth="2" strokeLinejoin="round" />
-          </svg>
-        )
-
-      case 'star-half':
-        return (
-          <svg ref={ref} width={size} height={size} viewBox="0 0 24 24" fill="none" className={iconStyles} {...props}>
-            <defs>
-              <linearGradient id="half-fill" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="50%" stopColor="#ed0000" />
-                <stop offset="50%" stopColor="transparent" stopOpacity="0" />
-              </linearGradient>
-            </defs>
-            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="url(#half-fill)" stroke="#102c66" strokeWidth="2" strokeLinejoin="round" />
-          </svg>
-        )
-
-      default:
-        return null
-    }
-  },
-)
-
-TwoToneIcon.displayName = 'TwoToneIcon'
-```
-
-- [ ] **Step 2: Write TwoToneIcon stories**
-
-Create `src/components/TwoToneIcon/TwoToneIcon.stories.tsx`:
-
-```tsx
-import type { Meta, StoryObj } from '@storybook/react'
-import { TwoToneIcon } from './TwoToneIcon.component'
-
-const meta: Meta<typeof TwoToneIcon> = {
-  title: 'Components/TwoToneIcon',
-  component: TwoToneIcon,
-  argTypes: {
-    name: {
-      control: 'select',
-      options: [
-        'certificate', 'degree', 'pathfinder', 'star-full', 'search',
-        'alert-success', 'alert-error', 'alert-warning', 'alert-info',
-        'file-upload', 'password', 'accordion-open', 'accordion-closed',
-        'card-default', 'star-empty', 'star-half',
-      ],
-    },
-    size: { control: 'number' },
-  },
-}
-
-export default meta
-type Story = StoryObj<typeof TwoToneIcon>
-
-export const Certificate: Story = { args: { name: 'certificate', size: 48 } }
-export const Degree: Story = { args: { name: 'degree', size: 48 } }
-export const Pathfinder: Story = { args: { name: 'pathfinder', size: 48 } }
-export const StarFull: Story = { args: { name: 'star-full', size: 48 } }
-export const Search: Story = { args: { name: 'search', size: 48 } }
-export const TriageHeroSet: Story = {
-  render: () => (
-    <div className="flex gap-6">
-      <TwoToneIcon name="certificate" size={32} />
-      <TwoToneIcon name="degree" size={32} />
-      <TwoToneIcon name="pathfinder" size={32} />
-    </div>
-  ),
-}
-```
-
-- [ ] **Step 3: Commit**
-
-```bash
-git add src/components/TwoToneIcon/TwoToneIcon.component.tsx src/components/TwoToneIcon/TwoToneIcon.stories.tsx
-git commit -m "feat: add TwoToneIcon atom (ported from website3.0-prototype)"
-```
-
----
-
-### Task 6: Rewrite CardMolecule component
+### Task 5: Rewrite CardMolecule component
 
 **Files:**
 - Modify: `src/components/CardMolecule/CardMolecule.component.tsx` (full rewrite)
@@ -748,7 +499,6 @@ import { ArrowRight } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { Heading } from '@/components/Heading/Heading'
-import { Badge } from '@/components/Badge/Badge.component'
 import { Tag } from '@/components/Tag/Tag.component'
 import { Skeleton } from '@/components/Skeleton/Skeleton.component'
 
@@ -1076,7 +826,7 @@ git commit -m "feat: rewrite CardMolecule with prototype parity and backward-com
 
 ---
 
-### Task 7: Rewrite CardMolecule stories
+### Task 6: Rewrite CardMolecule stories
 
 **Files:**
 - Modify: `src/components/CardMolecule/CardMolecule.stories.tsx` (full rewrite)
@@ -1087,10 +837,9 @@ Replace the entire contents of `src/components/CardMolecule/CardMolecule.stories
 
 ```tsx
 import type { Meta, StoryObj } from '@storybook/react'
-import { Sparkles, Bookmark, GraduationCap, MousePointerClick } from 'lucide-react'
+import { Sparkles, Bookmark, GraduationCap, MousePointerClick, Compass } from 'lucide-react'
 
 import { CardMolecule } from './CardMolecule.component'
-import { TwoToneIcon } from '@/components/TwoToneIcon/TwoToneIcon.component'
 
 const meta: Meta<typeof CardMolecule> = {
   title: 'Components/CardMolecule',
@@ -1186,7 +935,7 @@ export const TriageHeroUpskill: Story = {
     href: '#upskill',
     body: (
       <div className="flex items-start gap-4">
-        <TwoToneIcon name="certificate" size={32} className="mt-1" />
+        <GraduationCap className="size-8 mt-1 text-mmdc-red shrink-0" />
         <div className="flex flex-col gap-1.5">
           <h4 className="font-bold text-ink text-lg leading-tight">Upskill fast with a certificate</h4>
           <p className="text-slate-500 text-sm leading-snug">IBM, Google & Meta-backed · 3-5 months · from ₱990/mo</p>
@@ -1203,7 +952,7 @@ export const TriageHeroDegree: Story = {
     href: '#degree',
     body: (
       <div className="flex items-start gap-4">
-        <TwoToneIcon name="degree" size={32} className="mt-1" />
+        <GraduationCap className="size-8 mt-1 text-mmdc-blue shrink-0" />
         <div className="flex flex-col gap-1.5">
           <h4 className="font-bold text-ink text-lg leading-tight">Earn a Mapúa IT degree</h4>
           <p className="text-slate-500 text-sm leading-snug">CHED-accredited · built for working students · flexible payment</p>
@@ -1220,7 +969,7 @@ export const TriageHeroPathfinder: Story = {
     href: '#pathfinder',
     body: (
       <div className="flex items-start gap-4">
-        <TwoToneIcon name="pathfinder" size={32} className="mt-1" />
+        <Compass className="size-8 mt-1 text-mmdc-red shrink-0" />
         <div className="flex flex-col gap-1.5">
           <h4 className="font-bold text-ink text-lg leading-tight">Not sure yet?</h4>
           <p className="text-slate-500 text-sm leading-snug">Take the 30-second Pathfinder Quiz and we'll match you.</p>
@@ -1239,7 +988,7 @@ export const TriageHeroGrid: Story = {
         href="#upskill"
         body={
           <div className="flex items-start gap-4">
-            <TwoToneIcon name="certificate" size={32} className="mt-1" />
+            <GraduationCap className="size-8 mt-1 text-mmdc-red shrink-0" />
             <div className="flex flex-col gap-1.5">
               <h4 className="font-bold text-ink text-lg leading-tight">Upskill fast with a certificate</h4>
               <p className="text-slate-500 text-sm leading-snug">IBM, Google & Meta-backed · 3-5 months · from ₱990/mo</p>
@@ -1252,7 +1001,7 @@ export const TriageHeroGrid: Story = {
         href="#degree"
         body={
           <div className="flex items-start gap-4">
-            <TwoToneIcon name="degree" size={32} className="mt-1" />
+            <GraduationCap className="size-8 mt-1 text-mmdc-blue shrink-0" />
             <div className="flex flex-col gap-1.5">
               <h4 className="font-bold text-ink text-lg leading-tight">Earn a Mapúa IT degree</h4>
               <p className="text-slate-500 text-sm leading-snug">CHED-accredited · built for working students · flexible payment</p>
@@ -1265,7 +1014,7 @@ export const TriageHeroGrid: Story = {
         href="#pathfinder"
         body={
           <div className="flex items-start gap-4">
-            <TwoToneIcon name="pathfinder" size={32} className="mt-1" />
+            <Compass className="size-8 mt-1 text-mmdc-red shrink-0" />
             <div className="flex flex-col gap-1.5">
               <h4 className="font-bold text-ink text-lg leading-tight">Not sure yet?</h4>
               <p className="text-slate-500 text-sm leading-snug">Take the 30-second Pathfinder Quiz and we'll match you.</p>
@@ -1425,7 +1174,7 @@ git commit -m "feat: rewrite CardMolecule stories with full prototype + legacy c
 
 ---
 
-### Task 8: Update barrel export
+### Task 7: Update barrel export
 
 **Files:**
 - Modify: `src/components/index.ts`
@@ -1457,8 +1206,6 @@ export { default as SearchBar } from './SearchBar/SearchBar'
 export { default as MobileNavDrawer } from './MobileNavDrawer/MobileNavDrawer.component'
 export { Badge } from './Badge/Badge.component'
 export { Tag } from './Tag/Tag.component'
-export { TwoToneIcon } from './TwoToneIcon/TwoToneIcon.component'
-export type { TwoToneIconName } from './TwoToneIcon/TwoToneIcon.component'
 export { Skeleton } from './Skeleton/Skeleton.component'
 ```
 
@@ -1471,7 +1218,7 @@ git commit -m "feat: update barrel exports for CardMolecule rewrite and new atom
 
 ---
 
-### Task 9: Verify — build check
+### Task 8: Verify — build check
 
 - [ ] **Step 1: Run TypeScript check**
 
@@ -1505,7 +1252,7 @@ git commit -m "fix: address typecheck and lint issues from CardMolecule parity p
 
 ---
 
-### Task 10: Add CSS color tokens (if missing)
+### Task 9: Add CSS color tokens (if missing)
 
 Check that the website's Tailwind config defines these tokens used by the new CSS:
 - `mmdc-red` (`#ed0000`)
