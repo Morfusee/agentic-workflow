@@ -53,7 +53,8 @@ Run provider-backed or prompt-backed implementation work through explicit confid
 
 ## Notification Rules
 
-- Use `references/ticket-comment-format.md` for the ticket comment body.
+- Immediately before creating or updating any ticket implementation notification, freshly read `references/ticket-comment-format.md` and build the ticket comment body from that current file.
+- Before publishing, self-check the comment against the freshly read template: first sentence, bold branch line, section headings, notes behavior, required action section, and the ban on developer names, commit hashes, emojis, and verbose implementation logs.
 - Comment automatically only after this flow committed changes and the selected mode reaches ticket notification.
 - Do not comment when changes are uncommitted unless the comment stage was explicitly invoked.
 - `/ticket-implementation-flow comment [ticket]` may be invoked independently; inspect committed branch changes and comment on the resolved ticket.

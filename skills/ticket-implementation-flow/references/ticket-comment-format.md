@@ -1,21 +1,21 @@
 # Ticket Comment Format
 
-Use this exact structure for provider-facing implementation notifications.
+Use this exact structure for ticket implementation notifications.
 
 ```md
 All requirements for this ticket are already implemented and committed.
 
-Branch: [Branch]
+**Branch**: [Branch]
 
-What changed:
+### What changed:
 - [Bulletpoint 1]
 - [Bulletpoint 2]
 - [Bulletpoint 3]
 
-Notes:
+### Notes:
 [Paragraph of notes if there are any]
 
-Required action/s:
+### Required action/s:
 - [Bulletpoint 1]
 - [Bulletpoint 2]
 ```

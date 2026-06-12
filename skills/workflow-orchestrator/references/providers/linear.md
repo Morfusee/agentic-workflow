@@ -34,7 +34,7 @@ Resolve the Linear issue, then route normalized context to `$ticket-implementati
 - Include issue identifier, title, URL, status, description, labels, priority, project, comments relevant to requirements, and acceptance criteria when available.
 - Pass the Linear issue identifier as the provider comment target.
 - Let `$ticket-implementation-flow` decide confidence, brainstorming, branch/worktree setup, implementation, commit, and notification gates.
-- If `$ticket-implementation-flow` reaches ticket notification, publish its comment body to the Linear issue without adding commit hashes or developer names.
+- If `$ticket-implementation-flow` reaches ticket notification, publish its already self-checked comment body to the Linear issue without reformatting it or adding commit hashes or developer names.
 
 ## Agent Execution Contract
 
