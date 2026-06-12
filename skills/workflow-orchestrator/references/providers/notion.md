@@ -127,6 +127,16 @@ If no Coding Projects task has been created yet, stop and route through `coding-
 - If a database schema does not contain the required fields, stop and report the mismatch instead of writing partial or malformed entries.
 - If a Notion MCP tool cannot perform a requested layout or view operation, complete the supported parts and report the exact limitation.
 
+## URL Normalization
+
+MCP tools return URLs as `app.notion.com/p/{id}`. Normalize before reporting:
+
+1. Extract the page ID from the MCP-returned URL.
+2. Use the config's domain base (e.g., `www.notion.so`) with `/p/` prefix: `{domain}/p/{page-id}`.
+3. If no config domain is available, pass through the MCP-returned URL as-is.
+
+Do not strip `/p/` from the path. Do not construct URLs without the `/p/` segment.
+
 ## Chat Summary Contract
 
 After every write, report:
@@ -135,7 +145,7 @@ After every write, report:
 Updated Notion:
 - Target: [page/database name]
 - Action: [created/updated/appended]
-- URL: [Notion URL]
+- URL: [normalized Notion URL]
 - Notes: [limitations or follow-up, or "None"]
 ```
 
