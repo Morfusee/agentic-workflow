@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ticket Review Comment Drafter"
+  short_description: "Format review and QA results into structured tracker-ready markdown comments"
+  default_prompt: "Use $ticket-review-comment-drafter to draft these review or QA results into a structured ticket comment."

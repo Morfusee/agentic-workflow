@@ -1,9 +1,9 @@
 ---
-name: prd-to-ticket-planner
+name: ticket-prd-planner
 description: Create phased PRDs and turn approved PRDs into provider-backed execution ticket plans. Use for product requirement discovery, PRD creation, grill-me refinement, phase splitting, and ticket generation across Linear, ClickUp, or Notion. Do not use for already-scoped single tickets.
 ---
 
-# PRD To Ticket Planner
+# Ticket PRD Planner
 
 ## Purpose
 
@@ -68,7 +68,7 @@ Use these files:
 Every phase and subphase must end with this message shape:
 
 ```text
-This phase is complete. Start a fresh chat and invoke `$prd-to-ticket-planner` with this handoff document: <path>. The next chat should continue with <next phase or subphase>.
+This phase is complete. Start a fresh chat and invoke `$ticket-prd-planner` with this handoff document: <path>. The next chat should continue with <next phase or subphase>.
 ```
 
 ## Detailed Protocol

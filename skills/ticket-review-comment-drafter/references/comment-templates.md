@@ -1,4 +1,4 @@
-# QA Comment Templates
+# Review Comment Templates
 
 ## Template Selection
 
@@ -12,15 +12,15 @@
 ## PASS Template
 
 ```
-### QA Result: `PASS`
+### Review Result: `PASS`
 
-**Environment:** STAGING
-**Tested By:** Mark
+**Environment:** {resolved environment}
+**Reviewed By:** {provider first name}
 
-### Test Scope
+### Review Scope
 [paragraph or table — omitted when not provided]
 
-### Test Results
+### Review Results
 
 | # | Check | Result |
 |---|---|---|
@@ -29,22 +29,22 @@
 ```
 
 - Omit Expected and Actual columns since everything passed.
-- Omit Test Scope section when `test_scope` is not provided.
+- Omit Review Scope section when neither `review_scope` nor `test_scope` is provided.
 - Include Notes section only if `notes` is provided.
 - Include Attachments section only if `screenshots` is provided.
 
 ## FAIL Template
 
 ```
-### QA Result: `FAIL`
+### Review Result: `FAIL`
 
-**Environment:** STAGING
-**Tested By:** Mark
+**Environment:** {resolved environment}
+**Reviewed By:** {provider first name}
 
-### Test Scope
+### Review Scope
 [paragraph or table — omitted when not provided]
 
-### Test Results
+### Review Results
 
 | # | Check | Expected | Actual | Result |
 |---|---|---|---|---|
@@ -54,22 +54,22 @@
 
 - Always include Expected and Actual columns when at least one check failed.
 - If expected/actual is not provided for a failed check, use `—` (em dash) as placeholder.
-- Omit Test Scope section when `test_scope` is not provided.
+- Omit Review Scope section when neither `review_scope` nor `test_scope` is provided.
 - Include Notes section only if `notes` is provided.
 - Include Attachments section only if `screenshots` is provided.
 
 ## PARTIAL Template
 
 ```
-### QA Result: `PARTIAL`
+### Review Result: `PARTIAL`
 
-**Environment:** STAGING
-**Tested By:** Mark
+**Environment:** {resolved environment}
+**Reviewed By:** {provider first name}
 
-### Test Scope
+### Review Scope
 [paragraph or table — omitted when not provided]
 
-### Test Results
+### Review Results
 
 | # | Check | Expected | Actual | Result |
 |---|---|---|---|---|
@@ -81,22 +81,22 @@
 - Always include Expected and Actual columns when at least one check failed or was blocked.
 - For PASS checks without issues, use `—` in Expected/Actual columns.
 - Use `—` in Expected/Actual columns for BLOCKED checks unless details are provided.
-- Omit Test Scope section when `test_scope` is not provided.
+- Omit Review Scope section when neither `review_scope` nor `test_scope` is provided.
 - Include Notes section only if `notes` is provided.
 - Include Attachments section only if `screenshots` is provided.
 
 ## BLOCKED Template
 
 ```
-### QA Result: `BLOCKED`
+### Review Result: `BLOCKED`
 
-**Environment:** STAGING
-**Tested By:** Mark
+**Environment:** {resolved environment}
+**Reviewed By:** {provider first name}
 
-### Test Scope
+### Review Scope
 [paragraph or table — omitted when not provided]
 
-### Test Results
+### Review Results
 
 | # | Check | Expected | Actual | Result |
 |---|---|---|---|---|
@@ -105,25 +105,25 @@
 
 - Include Expected and Actual columns.
 - Use Actual column to describe what blocked the test.
-- Omit Test Scope section when `test_scope` is not provided.
+- Omit Review Scope section when neither `review_scope` nor `test_scope` is provided.
 - Include Notes section only if `notes` is provided.
 - Include Attachments section only if `screenshots` is provided.
 
-## Test Scope Section
+## Review Scope Section
 
-When `test_scope` is not explicitly provided, infer it from the issue title, description, and the test checks provided. Derive a concise 1-2 sentence summary of what was tested.
+When `review_scope` is not explicitly provided, infer it from the issue title, description, and the checks provided. Derive a concise 1-2 sentence summary of what was reviewed or tested.
 
 **Paragraph form** (default, when `test_scope` is a string or inferred):
 
 ```
-### Test Scope
-Verified the customer create and edit flow for newly created customers on the STAGING environment.
+### Review Scope
+Verified the customer create and edit flow for newly created customers on the resolved environment.
 ```
 
 **Table form** (when `test_scope` is provided as an array):
 
 ```
-### Test Scope
+### Review Scope
 
 | Area | Description | Coverage |
 |---|---|---|
@@ -133,22 +133,22 @@ Verified the customer create and edit flow for newly created customers on the ST
 
 Table columns: Area, Description, Coverage. Omit Coverage column when all entries lack it.
 
-Never omit Test Scope. Always include it, inferring from context when not provided.
+Never omit Review Scope. Always include it, inferring from context when not provided.
 
-## Test Results Section
+## Review Results Section
 
 **Paragraph form** (default):
 
-Write a single flowing paragraph that describes what was tested and the outcome. Do not append `— PASS` or `— FAIL` to each sentence. Weave status into the natural prose.
+Write a single flowing paragraph that describes what was reviewed or tested and the outcome. Do not append status labels to each sentence. Weave status into the natural prose.
 
 ```
-### Test Results
+### Review Results
 All acceptance criteria verified successfully. Newly created customers can be edited after creation, updateCustomer no longer returns BAD_REQUEST for valid edit data, seeded customer edits remain unchanged, and the UI shows correct success state after saving.
 ```
 
 For a FAIL overall status, describe what passed and what failed in plain prose:
 ```
-### Test Results
+### Review Results
 Customer creation and seeded customer edits pass. However, editing a newly created customer still returns BAD_REQUEST from updateCustomer, and the UI does not show a save success state.
 ```
 
@@ -157,14 +157,14 @@ For PARTIAL, describe what passed, what failed, and what was blocked in natural 
 **Table form** (only when caller explicitly asks for a table or checks carry expected/actual detail):
 
 ```
-### Test Results
+### Review Results
 
 | # | Check | Expected | Actual | Result |
 |---|---|---|---|---|
 | 1 | {description} | {expected} | {actual} | PASS |
 ```
 
-Default to paragraph form. Never render Test Results as bulleted lists.
+Default to paragraph form. Never render Review Results as bulleted lists.
 
 ## Notes Section
 

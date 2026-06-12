@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ticket Implementation Drafter"
+  short_description: "Draft profile-aware non-bug implementation tickets and return provider-agnostic handoff metadata"
+  default_prompt: "Use $ticket-implementation-drafter to turn this feature, enhancement, refactor, or other non-bug implementation request into a structured ticket. Do not publish directly; return handoff metadata only after approval."

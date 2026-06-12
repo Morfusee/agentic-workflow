@@ -10,7 +10,7 @@ Expected domain shape:
 
 - `kind`: `technical_issue`
 - `template`: `linear_issue_markdown`
-- `draft_profile`: an `$issue-drafter` profile name, currently `notion_coding_projects`
+- `draft_profile`: a `$ticket-defect-drafter` profile name, currently `notion_coding_projects`
 - `tracker_page`: parent Coding Projects Tracker page
 - `projects`: Projects database and data source mapping
 - `tasks`: Tasks database, data source, and field mapping
@@ -56,7 +56,7 @@ Options I found:
 
 ## Drafting Contract
 
-Use `$issue-drafter` as the technical issue drafting engine with the configured `draft_profile`. The draft body must keep the same Markdown section shape used for Linear issues:
+Use `$ticket-defect-drafter` as the technical issue drafting engine with the configured `draft_profile`. The draft body must keep the same Markdown section shape used for Linear issues:
 
 ```markdown
 ### The Problem
@@ -108,7 +108,7 @@ Use only tags that exist in the fetched Tasks schema. If the mapped tag is missi
 4. Fetch the configured Projects and Tasks data sources.
 5. Verify configured field names exist and configured status/tag/priority values are valid.
 6. Resolve or ask for the target project.
-7. Draft via `$issue-drafter` using the configured `draft_profile`.
+7. Draft via `$ticket-defect-drafter` using the configured `draft_profile`.
 8. Present the draft and ask the user to review it.
 9. Create only after a clear approval signal such as `create it`, `add it`, `publish`, `looks good`, or equivalent.
 10. Create the page in the configured Tasks data source with the approved Markdown as page content.
@@ -188,5 +188,5 @@ If there are no matching tasks, say `No matching Coding Projects tasks found for
 - Ask for project selection before writing.
 - Use Notion relation values as page URLs.
 - Do not invent project rows, tags, statuses, assignees, deadlines, or requirements.
-- Do not publish directly from `$issue-drafter`; Notion writes belong to `$notion-orchestrator`.
+- Do not publish directly from `$ticket-defect-drafter`; Notion writes belong to `$notion-orchestrator`.
 - Stop on schema mismatch instead of writing partial data.

@@ -16,7 +16,7 @@ Prepare a development ticket for implementation. Analyze the ticket, classify th
 - Analyze and prepare tickets only. Do not implement code.
 - Do not create branches, modify worktrees, or write files until the user confirms.
 - Do not publish tickets to providers, draft new tickets, or hand off to other workflows.
-- If the ticket is clearly a bug report, investigation, or defect, recommend `$issue-drafter` or `$ticket-codebase-investigator` instead.
+- If the ticket is clearly a bug report, investigation, or defect, recommend `$ticket-defect-drafter` or `$ticket-codebase-investigator` instead.
 
 ## Integration With Other Skills
 

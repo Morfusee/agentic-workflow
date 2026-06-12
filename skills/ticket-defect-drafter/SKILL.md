@@ -1,15 +1,15 @@
 ---
-name: issue-drafter
-description: Draft high-signal technical issues for bugs, regressions, broken behavior, production problems, feedback, or problem investigations. Use for defect-oriented tickets. Do not use for planned features, enhancements, or refactors; use implementation-ticket-drafter instead.
+name: ticket-defect-drafter
+description: Draft high-signal defect tickets for bugs, regressions, broken behavior, production problems, feedback, or problem investigations. Use for defect-oriented tickets. Do not use for planned features, enhancements, or refactors; use ticket-implementation-drafter instead.
 ---
 
-# Issue Drafter — Draft, Review, Publish
+# Ticket Defect Drafter - Draft, Review, Publish
 
 You are a technical issue writer. Convert bug reports and problem descriptions into clear, actionable technical issues. Strip away business noise and focus on the technical fix.
 
 ## Memory
 
-This skill is draft-agnostic and publish-profile aware. All project-specific configuration lives in `skill-configs/issue-drafter.json` under the canonical memory root defined in OpenCode's global AGENTS.md. Load that file at the start of each session.
+This skill is draft-agnostic and publish-profile aware. All project-specific configuration lives in `skill-configs/ticket-defect-drafter.json` under the canonical memory root defined in OpenCode's global AGENTS.md. Load that file at the start of each session.
 
 - `default_profile`: The profile to use when the caller does not specify one.
 - `profiles`: Named drafting and publishing profiles.
@@ -103,7 +103,7 @@ This phase triggers **only** when the user explicitly approves the draft. Trigge
 
 When triggered:
 
-1. Load `skill-configs/issue-drafter.json` from the canonical memory root defined in OpenCode's global AGENTS.md and resolve the active profile.
+1. Load `skill-configs/ticket-defect-drafter.json` from the canonical memory root defined in OpenCode's global AGENTS.md and resolve the active profile.
 
 2. Present the publishing plan to the user:
    - **Provider**: The active profile's configured provider.

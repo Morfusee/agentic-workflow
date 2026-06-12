@@ -72,7 +72,7 @@ Use direct language. After drafting, invoke `$avoid-ai-writing` in rewrite mode,
 
 Write `phase-1-handoff.md` with:
 
-- Suggested skill: `$prd-to-ticket-planner`.
+- Suggested skill: `$ticket-prd-planner`.
 - Current phase completed: Phase 1.
 - Next phase: Phase 2 setup.
 - PRD path.
@@ -132,7 +132,7 @@ Use the destination orchestrator or provider tool appropriate to the selected PM
 
 Write `phase-2-subphase-NN-handoff.md` with:
 
-- Suggested skill: `$prd-to-ticket-planner`.
+- Suggested skill: `$ticket-prd-planner`.
 - PMS destination and required project/list/database location.
 - PRD path.
 - Ticket index path.

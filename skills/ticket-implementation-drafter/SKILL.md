@@ -1,6 +1,6 @@
 ---
-name: implementation-ticket-drafter
-description: Draft implementation tickets for planned features, enhancements, refactors, migrations, and other non-bug technical work. Use when turning an idea into an engineer-ready ticket with review and provider-agnostic handoff metadata. Do not use for bugs or regressions; use issue-drafter instead.
+name: ticket-implementation-drafter
+description: Draft implementation tickets for planned features, enhancements, refactors, migrations, and other non-bug technical work. Use when turning an idea into an engineer-ready ticket with review and provider-agnostic handoff metadata. Do not use for bugs or regressions; use ticket-defect-drafter instead.
 ---
 
 # Implementation Ticket Drafter - Draft, Review, Handoff
@@ -9,7 +9,7 @@ You are a technical implementation ticket writer. Convert feature ideas, enhance
 
 ## Memory
 
-This skill is profile-aware and provider-agnostic. All project-specific configuration lives in `skill-configs/implementation-ticket-drafter.json` under the canonical memory root defined in OpenCode's global AGENTS.md. Load that file at the start of each session.
+This skill is profile-aware and provider-agnostic. All project-specific configuration lives in `skill-configs/ticket-implementation-drafter.json` under the canonical memory root defined in OpenCode's global AGENTS.md. Load that file at the start of each session.
 
 - `default_profile`: The profile to use when the caller does not specify one.
 - `profiles`: Named drafting and handoff profiles.
@@ -30,7 +30,7 @@ If the config file is missing or the active profile cannot be resolved, continue
 ## Boundaries
 
 - Draft implementation tickets only.
-- Do not draft bug reports, regressions, or problem investigations. Recommend `$issue-drafter` when the request is defect-oriented.
+- Do not draft bug reports, regressions, or problem investigations. Recommend `$ticket-defect-drafter` when the request is defect-oriented.
 - Do not call Linear, ClickUp, Notion, or other provider creation tools.
 - Do not publish directly from this skill.
 - Return handoff metadata only after the user approves the draft.
@@ -39,7 +39,7 @@ If the config file is missing or the active profile cannot be resolved, continue
 ## Rules
 
 - **Implementation Framing**: Use direct implementation language such as `Add`, `Update`, `Create`, `Refactor`, `Integrate`, or `Remove`.
-- **No Bug Sections**: Do not use `Steps to Reproduce`, `Expected vs Actual`, or `The Problem` unless redirecting the user to `$issue-drafter`.
+- **No Bug Sections**: Do not use `Steps to Reproduce`, `Expected vs Actual`, or `The Problem` unless redirecting the user to `$ticket-defect-drafter`.
 - **Title Format**: Follow the active profile's `title_format`. If no format is available, use a concise imperative title.
 - **Labels**: Start with `default_labels`. Add only labels supported by `allowed_labels` when that list is non-empty. Do not add duplicate labels.
 - **Assignees**: Suggest assignees only when profile evidence supports the suggestion. Never silently assign a person.

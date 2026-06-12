@@ -1,6 +1,6 @@
 ---
 name: linear-orchestrator
-description: Linear entrypoint. Use when the user names Linear or a Linear issue and wants ticket dumps, stand-ups, issue drafts, implementation ticket drafts, weekly slideshow prep, QA comments, or direct Linear publishing. Routes to provider-agnostic helper skills after collecting Linear context.
+description: Linear entrypoint. Use when the user names Linear or a Linear issue and wants ticket dumps, stand-ups, issue drafts, implementation ticket drafts, weekly slideshow prep, review/QA comments, or direct Linear publishing. Routes to provider-agnostic helper skills after collecting Linear context.
 ---
 
 # Linear Orchestrator
@@ -14,20 +14,20 @@ Infer intent heuristically and route to one branch:
 1. `dump-creation`: collect Linear activity and write a ticket dump.
 2. `standup-from-dump`: read dump, select tickets, capture an explicit next-day plan if provided, generate spoken stand-up, update dump.
 3. `full-flow`: run dump creation then stand-up from that dump.
-4. `issue-draft`: route to `$issue-drafter` only when request is clearly Linear-contextual.
-5. `implementation-ticket-draft`: route to `$implementation-ticket-drafter` only when the request is clearly Linear-contextual and describes a feature, enhancement, refactor, or other non-bug implementation ticket.
+4. `defect-ticket-draft`: route to `$ticket-defect-drafter` only when request is clearly Linear-contextual.
+5. `implementation-ticket-draft`: route to `$ticket-implementation-drafter` only when the request is clearly Linear-contextual and describes a feature, enhancement, refactor, or other non-bug implementation ticket.
 6. `weekly-slideshow`: route to `$weekly-ticket-slideshow-generator` only when request is clearly Linear-contextual.
-7. `qa-comment`: route to `$qa-comment-formatter` when the user provides QA results, pass/fail checks, or test observations to format into a Linear ticket comment. If the request includes a Linear issue ID, ticket identifier, or issue URL, pass it through as `linear_issue_id` so the formatter publishes directly to that issue.
+7. `review-comment`: route to `$ticket-review-comment-drafter` when the user provides code review findings, implementation review notes, QA results, pass/fail checks, or test observations to draft into a Linear ticket comment. If the request includes a Linear issue ID, ticket identifier, or issue URL, pass it through as `linear_issue_id` so the drafter publishes directly to that issue.
 
 If confidence is low, ask one focused clarification.
 
 ## implementation-ticket-draft Branch
 
-Route Linear-context feature, enhancement, refactor, and other non-bug implementation ticket requests to `$implementation-ticket-drafter`.
+Route Linear-context feature, enhancement, refactor, and other non-bug implementation ticket requests to `$ticket-implementation-drafter`.
 
-- Keep `$issue-drafter` for bugs, regressions, production problems, broken behavior, and problem investigations.
-- Instruct `$implementation-ticket-drafter` to use the active implementation-ticket profile and include Linear as the preferred provider context when relevant.
-- Let `$implementation-ticket-drafter` own draft, review, iteration, and provider-agnostic handoff metadata.
+- Keep `$ticket-defect-drafter` for bugs, regressions, production problems, broken behavior, and problem investigations.
+- Instruct `$ticket-implementation-drafter` to use the active implementation-ticket profile and include Linear as the preferred provider context when relevant.
+- Let `$ticket-implementation-drafter` own draft, review, iteration, and provider-agnostic handoff metadata.
 - Do not create a Linear issue until the user approves the implementation ticket draft and explicitly asks to create or publish it.
 - After approval, map the handoff metadata into Linear fields using Linear tools: title, description, labels, priority, project, estimate, and confirmed assignee when available.
 - If required Linear publish fields are missing, ask one focused clarification before creating the issue.

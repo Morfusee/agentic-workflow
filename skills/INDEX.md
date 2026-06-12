@@ -6,8 +6,8 @@ Use this as the routing map before loading a skill. Prefer the narrowest skill t
 
 | Need | Use | Notes |
 | --- | --- | --- |
-| Work with Linear tickets, dumps, stand-ups, QA comments, or Linear ticket drafts | `linear-orchestrator` | Provider-specific entrypoint. It routes to ticket helper skills. |
-| Work with ClickUp tasks, dumps, stand-ups, QA comments, or ClickUp ticket drafts | `clickup-orchestrator` | Provider-specific entrypoint. It routes to ticket helper skills. |
+| Work with Linear tickets, dumps, stand-ups, review comments, or Linear ticket drafts | `linear-orchestrator` | Provider-specific entrypoint. It routes to ticket helper skills. |
+| Work with ClickUp tasks, dumps, stand-ups, review comments, or ClickUp ticket drafts | `clickup-orchestrator` | Provider-specific entrypoint. It routes to ticket helper skills. |
 | Create or update Notion pages, tasks, or Coding Projects Tracker items | `notion-orchestrator` | Provider-specific entrypoint. Use for Notion schema and placement. |
 | Improve a frontend interface or product UI | `impeccable` | UI/UX critique, redesign, polish, and frontend visual quality. |
 | Refactor existing code without behavior changes | `refactor` | Surgical maintainability improvements. |
@@ -18,11 +18,11 @@ Use this as the routing map before loading a skill. Prefer the narrowest skill t
 
 | Need | Use | Avoid When |
 | --- | --- | --- |
-| Draft a bug, regression, production issue, or problem investigation ticket | `issue-drafter` | The work is a planned feature or refactor. |
-| Draft a feature, enhancement, refactor, or non-bug implementation ticket | `implementation-ticket-drafter` | The request is a defect report or broken behavior. |
+| Draft a bug, regression, production issue, or problem investigation ticket | `ticket-defect-drafter` | The work is a planned feature or refactor. |
+| Draft a feature, enhancement, refactor, or non-bug implementation ticket | `ticket-implementation-drafter` | The request is a defect report or broken behavior. |
 | Investigate tracker tickets against a codebase | `ticket-codebase-investigator` | The user only wants a clean ticket draft. |
-| Create a PRD and split it into ticket phases | `prd-to-ticket-planner` | The user already has an implementation-ready ticket. |
-| Format QA results as a tracker comment | `qa-comment-formatter` | The user needs a new ticket, not a QA update. |
+| Create a PRD and split it into ticket phases | `ticket-prd-planner` | The user already has an implementation-ready ticket. |
+| Draft code review, implementation review, or QA results as a tracker comment | `ticket-review-comment-drafter` | The user needs a new ticket, not a review/update comment. |
 
 ## Implementation Flow
 
@@ -58,7 +58,7 @@ Use this as the routing map before loading a skill. Prefer the narrowest skill t
 ## Routing Rules
 
 - Start with provider orchestrators when the request names Linear, ClickUp, or Notion.
-- Use `issue-drafter` for defects and `implementation-ticket-drafter` for planned work.
+- Use `ticket-defect-drafter` for defects and `ticket-implementation-drafter` for planned work.
 - Use `brainstorming` before `writing-plans` when the design is not settled.
 - Use `implementation-prep` only for approved Coding Projects implementation handoff or explicit `/implementation-prep` requests.
 - Do not load multiple planning skills at once; move stage by stage.
