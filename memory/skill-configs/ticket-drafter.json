@@ -1,0 +1,114 @@
+{
+  "default_profile": "default",
+  "profiles": {
+    "default": {
+      "provider": "unspecified",
+      "draft_types": {
+        "defect": {
+          "title_format": "Actionable technical fix",
+          "services": [],
+          "default_labels": ["defect"],
+          "allowed_labels": [],
+          "default_priority": null,
+          "default_project": null,
+          "default_estimate": null
+        },
+        "implementation": {
+          "title_format": "[description]",
+          "default_labels": ["implementation"],
+          "allowed_labels": [],
+          "default_priority": null,
+          "default_project": null,
+          "default_estimate": null,
+          "services": []
+        }
+      },
+      "engineers": [],
+      "service_to_engineer": {},
+      "defaults": {}
+    },
+    "linear_workspace": {
+      "provider": "linear",
+      "publisher": "linear-orchestrator",
+      "draft_types": {
+        "defect": {
+          "title_format": "Actionable technical fix",
+          "services": [],
+          "default_labels": ["Bug"],
+          "allowed_labels": [],
+          "default_priority": 3,
+          "default_project": null,
+          "default_estimate": null
+        },
+        "implementation": {
+          "title_format": "[description]",
+          "default_labels": ["implementation"],
+          "allowed_labels": [],
+          "default_priority": null,
+          "default_project": null,
+          "default_estimate": null,
+          "services": []
+        }
+      },
+      "engineers": [],
+      "service_to_engineer": {},
+      "defaults": {
+        "priority": 3
+      }
+    },
+    "clickup_workspace": {
+      "provider": "clickup",
+      "publisher": "clickup-orchestrator",
+      "draft_types": {
+        "defect": {
+          "title_format": "Actionable technical fix",
+          "services": [],
+          "default_labels": ["Bug"],
+          "allowed_labels": ["Bug", "Feature", "Fix", "Refactor"],
+          "default_priority": null,
+          "default_project": null,
+          "default_estimate": null
+        },
+        "implementation": {
+          "title_format": "[description]",
+          "default_labels": ["Feature"],
+          "allowed_labels": [],
+          "default_priority": null,
+          "default_project": null,
+          "default_estimate": null,
+          "services": []
+        }
+      },
+      "engineers": [],
+      "service_to_engineer": {},
+      "defaults": {}
+    },
+    "notion_coding_projects": {
+      "provider": "notion",
+      "publisher": "notion-orchestrator",
+      "draft_types": {
+        "defect": {
+          "title_format": "Actionable technical fix",
+          "services": [],
+          "default_labels": ["Fix"],
+          "allowed_labels": ["Feature", "Fix", "Refactor", "Release"],
+          "default_priority": null,
+          "default_project": null,
+          "default_estimate": null
+        },
+        "implementation": {
+          "title_format": "[description]",
+          "default_labels": ["Feature"],
+          "allowed_labels": ["Feature", "Fix", "Refactor", "Release"],
+          "default_priority": null,
+          "default_project": null,
+          "default_estimate": null,
+          "services": []
+        }
+      },
+      "engineers": [],
+      "service_to_engineer": {},
+      "defaults": {}
+    }
+  }
+}

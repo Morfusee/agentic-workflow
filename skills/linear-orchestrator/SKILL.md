@@ -1,6 +1,6 @@
 ---
 name: linear-orchestrator
-description: Linear entrypoint. Use when the user names Linear or a Linear issue and wants ticket dumps, stand-ups, issue drafts, implementation ticket drafts, weekly slideshow prep, review/QA comments, or direct Linear publishing. Routes to provider-agnostic helper skills after collecting Linear context.
+description: Linear entrypoint. Use when the user names Linear or a Linear issue and wants ticket dumps, stand-ups, technical ticket drafts, weekly slideshow prep, review/QA comments, or direct Linear publishing. Routes to provider-agnostic helper skills after collecting Linear context.
 ---
 
 # Linear Orchestrator
@@ -14,21 +14,19 @@ Infer intent heuristically and route to one branch:
 1. `dump-creation`: collect Linear activity and write a ticket dump.
 2. `standup-from-dump`: read dump, select tickets, capture an explicit next-day plan if provided, generate spoken stand-up, update dump.
 3. `full-flow`: run dump creation then stand-up from that dump.
-4. `defect-ticket-draft`: route to `$ticket-defect-drafter` only when request is clearly Linear-contextual.
-5. `implementation-ticket-draft`: route to `$ticket-implementation-drafter` only when the request is clearly Linear-contextual and describes a feature, enhancement, refactor, or other non-bug implementation ticket.
-6. `weekly-slideshow`: route to `$weekly-ticket-slideshow-generator` only when request is clearly Linear-contextual.
-7. `review-comment`: route to `$ticket-review-comment-drafter` when the user provides code review findings, implementation review notes, QA results, pass/fail checks, or test observations to draft into a Linear ticket comment. If the request includes a Linear issue ID, ticket identifier, or issue URL, pass it through as `linear_issue_id` so the drafter publishes directly to that issue.
+4. `ticket-draft`: route to `$ticket-drafter` only when request is clearly Linear-contextual and describes a defect, regression, production problem, feature, enhancement, refactor, or other technical ticket.
+5. `weekly-slideshow`: route to `$weekly-ticket-slideshow-generator` only when request is clearly Linear-contextual.
+6. `review-comment`: route to `$ticket-review-comment-drafter` when the user provides code review findings, implementation review notes, QA results, pass/fail checks, or test observations to draft into a Linear ticket comment. If the request includes a Linear issue ID, ticket identifier, or issue URL, pass it through as `linear_issue_id` so the drafter publishes directly to that issue.
 
 If confidence is low, ask one focused clarification.
 
-## implementation-ticket-draft Branch
+## ticket-draft Branch
 
-Route Linear-context feature, enhancement, refactor, and other non-bug implementation ticket requests to `$ticket-implementation-drafter`.
+Route Linear-context defect, regression, production problem, feature, enhancement, refactor, and other technical ticket requests to `$ticket-drafter`.
 
-- Keep `$ticket-defect-drafter` for bugs, regressions, production problems, broken behavior, and problem investigations.
-- Instruct `$ticket-implementation-drafter` to use the active implementation-ticket profile and include Linear as the preferred provider context when relevant.
-- Let `$ticket-implementation-drafter` own draft, review, iteration, and provider-agnostic handoff metadata.
-- Do not create a Linear issue until the user approves the implementation ticket draft and explicitly asks to create or publish it.
+- Instruct `$ticket-drafter` to use the `linear_workspace` profile and classify the request as `defect` or `implementation`.
+- Let `$ticket-drafter` own draft, review, iteration, and provider-agnostic handoff metadata.
+- Do not create a Linear issue until the user approves the ticket draft and explicitly asks to create or publish it.
 - After approval, map the handoff metadata into Linear fields using Linear tools: title, description, labels, priority, project, estimate, and confirmed assignee when available.
 - If required Linear publish fields are missing, ask one focused clarification before creating the issue.
 

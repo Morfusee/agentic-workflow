@@ -1,4 +1,0 @@
-interface:
-  display_name: "Ticket Defect Drafter"
-  short_description: "Draft profile-aware defect tickets and publish when the active profile supports it"
-  default_prompt: "Use $ticket-defect-drafter to convert this report into a structured defect ticket using the active profile. Publish only when the profile and caller support publishing."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ticket Drafter"
+  short_description: "Draft defect and implementation tickets"
+  default_prompt: "Use $ticket-drafter to classify this request as a defect or implementation ticket, draft it with the active profile, and return handoff metadata after approval."

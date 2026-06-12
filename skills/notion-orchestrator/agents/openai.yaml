@@ -1,4 +1,4 @@
 interface:
   display_name: "Notion Orchestrator"
   short_description: "Single entrypoint for configured Notion Personal Tasks and Coding Projects workflows"
-  default_prompt: "Use $notion-orchestrator to infer my Notion intent and run the correct configured flow: Personal Tasks drafting, creation, updates, review, Coding Projects technical ticket drafting/creation via $ticket-defect-drafter, or location/project resolution. Ask where to implement changes when the target page, database, or project is not specified or safely inferred."
+  default_prompt: "Use $notion-orchestrator to infer my Notion intent and run the correct configured flow: Personal Tasks drafting, creation, updates, review, Coding Projects technical ticket drafting/creation via $ticket-drafter, or location/project resolution. Ask where to implement changes when the target page, database, or project is not specified or safely inferred."

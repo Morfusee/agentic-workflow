@@ -30,13 +30,12 @@ Infer intent heuristically and route to one branch:
 3. `personal-task-create`: create an approved personal task in the Personal Tasks database.
 4. `personal-task-update`: update an existing personal task's title, status, due date, priority, URL, relation, or structured body.
 5. `personal-task-review`: fetch Personal Tasks and summarize active work, upcoming deadlines, or completed work.
-6. `coding-defect-ticket-draft`: draft a Coding Projects Tracker bug, regression, or problem-investigation ticket using `$ticket-defect-drafter` and the configured draft profile.
-7. `coding-implementation-ticket-draft`: draft a Coding Projects Tracker feature, enhancement, refactor, or other non-bug implementation ticket using `$ticket-implementation-drafter`.
-8. `coding-ticket-create`: create an approved Coding Projects Tracker task in the configured shared Tasks data source.
-9. `coding-ticket-update`: update an existing Coding Projects task's fields, project relation, or Markdown body.
-10. `coding-ticket-review`: fetch Coding Projects tasks for a selected project and summarize active work.
-11. `coding-ticket-implement`: when the user references an approved Coding Projects task and appears to ask for repo, code, CI/CD, deploy, branch, commit, or other implementation work, ask whether to route to `$implementation-prep`. If approved, pass normalized ticket context to `$implementation-prep` for classification, branch/worktree setup, brainstorming decision, and implementation plan approval.
-12. `location-resolution`: resolve the target Notion page, database, data source, or project before any write.
+6. `coding-ticket-draft`: draft a Coding Projects Tracker bug, regression, problem-investigation, feature, enhancement, refactor, or other technical ticket using `$ticket-drafter` and the configured draft profile.
+7. `coding-ticket-create`: create an approved Coding Projects Tracker task in the configured shared Tasks data source.
+8. `coding-ticket-update`: update an existing Coding Projects task's fields, project relation, or Markdown body.
+9. `coding-ticket-review`: fetch Coding Projects tasks for a selected project and summarize active work.
+10. `coding-ticket-implement`: when the user references an approved Coding Projects task and appears to ask for repo, code, CI/CD, deploy, branch, commit, or other implementation work, ask whether to route to `$implementation-prep`. If approved, pass normalized ticket context to `$implementation-prep` for classification, branch/worktree setup, brainstorming decision, and implementation plan approval.
+11. `location-resolution`: resolve the target Notion page, database, data source, or project before any write.
 
 If confidence is low, ask one focused clarification.
 
@@ -56,7 +55,7 @@ Use the loaded config's `domains` map to resolve Notion workflows.
 
 - Match explicit user wording against domain names and configured trigger hints.
 - If the request is a technical issue or bug but mentions Notion/Coding Projects, choose `coding_projects`.
-- If the request is a feature, enhancement, refactor, or non-bug implementation ticket and mentions Notion/Coding Projects, choose `coding_projects` and route to `coding-implementation-ticket-draft`.
+- If the request is a technical ticket and mentions Notion/Coding Projects, choose `coding_projects` and route to `coding-ticket-draft`.
 - If the request is a lightweight personal reminder/task, choose `personal_tasks`.
 - If multiple domains match or confidence is low, ask one focused clarification.
 - If a configured domain references a template this skill does not know, stop and report the unsupported template key.
@@ -84,17 +83,17 @@ Personal Tasks targets are configured in `skill-configs/notion-orchestrator.json
 
 Load `references/coding-projects-template.md` before drafting, creating, updating, or reviewing Coding Projects Tracker tasks.
 
-Coding Projects bug, regression, and problem-investigation tickets must use the Linear-style issue body from `$ticket-defect-drafter`: `The Problem`, `Steps to Reproduce`, `Technical Requirements`, `Expected vs Actual`, and `Acceptance Criteria`.
+Coding Projects bug, regression, and problem-investigation tickets must use the Linear-style defect body from `$ticket-drafter`: `The Problem`, `Steps to Reproduce`, `Technical Requirements`, `Expected vs Actual`, and `Acceptance Criteria`.
 
-Coding Projects feature, enhancement, refactor, and other non-bug implementation tickets must use `$ticket-implementation-drafter`: `Objective`, `Scope`, `Implementation Requirements`, `Acceptance Criteria`, `Testing Notes`, and any relevant adaptive sections.
+Coding Projects feature, enhancement, refactor, and other non-bug implementation tickets must use the implementation body from `$ticket-drafter`: `Objective`, `Scope`, `Implementation Requirements`, `Acceptance Criteria`, `Testing Notes`, and any relevant adaptive sections.
 
 Coding Projects targets are configured in `skill-configs/notion-orchestrator.json` under `domains.coding_projects`. Treat config values as the only cached target source. Re-fetch before writes and fall back to Notion search for the configured domain name if a fetch fails.
 
 Always resolve the project relation before creating a Coding Projects task. Ask which project to connect when the request does not specify exactly one configured project.
 
-Do not publish Coding Projects tasks directly from `$ticket-defect-drafter` or `$ticket-implementation-drafter`; use those skills only to draft approved Markdown and handoff metadata, then use this skill for Notion schema validation and page creation.
+Do not publish Coding Projects tasks directly from `$ticket-drafter`; use that skill only to draft approved Markdown and handoff metadata, then use this skill for Notion schema validation and page creation.
 
-For approved `$ticket-implementation-drafter` handoffs, map provider-agnostic metadata into the Coding Projects data source fields when those fields exist: title, Markdown body, status, priority, project relation, labels or tags, estimate, and confirmed assignee.
+For approved `$ticket-drafter` handoffs, map provider-agnostic metadata into the Coding Projects data source fields when those fields exist: title, Markdown body, status, priority, project relation, labels or tags, estimate, and confirmed assignee.
 
 ### Implementation Prep Handoff
 
@@ -115,7 +114,7 @@ Before routing, verify that:
 - The task includes enough detail for the implementation-prep skill to classify work type and produce a plan.
 - The user's current working directory or project context is known.
 
-If no Coding Projects task has been created yet, stop and route through `coding-ticket-draft` or `coding-implementation-ticket-draft` first.
+If no Coding Projects task has been created yet, stop and route through `coding-ticket-draft` first.
 
 ## Draft-First Writes
 

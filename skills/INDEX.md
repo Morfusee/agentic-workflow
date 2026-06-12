@@ -16,13 +16,12 @@ Use this as the routing map before loading a skill. Prefer the narrowest skill t
 
 ## Ticket And Work Planning
 
-| Need | Use | Avoid When |
+| Need | Use | Notes |
 | --- | --- | --- |
-| Draft a bug, regression, production issue, or problem investigation ticket | `ticket-defect-drafter` | The work is a planned feature or refactor. |
-| Draft a feature, enhancement, refactor, or non-bug implementation ticket | `ticket-implementation-drafter` | The request is a defect report or broken behavior. |
-| Investigate tracker tickets against a codebase | `ticket-codebase-investigator` | The user only wants a clean ticket draft. |
-| Create a PRD and split it into ticket phases | `ticket-prd-planner` | The user already has an implementation-ready ticket. |
-| Draft code review, implementation review, or QA results as a tracker comment | `ticket-review-comment-drafter` | The user needs a new ticket, not a review/update comment. |
+| Draft a bug, regression, production issue, feature, enhancement, refactor, or implementation ticket | `ticket-drafter` | Classifies the request as defect or implementation, then returns reviewed handoff metadata. |
+| Investigate tracker tickets against a codebase | `ticket-codebase-investigator` | Returns root causes, file evidence, and effort estimates. |
+| Create a PRD and split it into ticket phases | `ticket-prd-planner` | Requirements gathering through phased ticket plans. |
+| Draft code review, implementation review, or QA results as a tracker comment | `ticket-review-comment-drafter` | Review and QA comments only; not for new ticket creation. |
 
 ## Implementation Flow
 
@@ -58,7 +57,7 @@ Use this as the routing map before loading a skill. Prefer the narrowest skill t
 ## Routing Rules
 
 - Start with provider orchestrators when the request names Linear, ClickUp, or Notion.
-- Use `ticket-defect-drafter` for defects and `ticket-implementation-drafter` for planned work.
+- Use `ticket-drafter` for defect and implementation ticket drafts.
 - Use `brainstorming` before `writing-plans` when the design is not settled.
 - Use `implementation-prep` only for approved Coding Projects implementation handoff or explicit `/implementation-prep` requests.
 - Do not load multiple planning skills at once; move stage by stage.
