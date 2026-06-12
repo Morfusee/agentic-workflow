@@ -1,0 +1,4 @@
+interface:
+  display_name: "Review Orchestrator"
+  short_description: "Coordinate post-implementation reviews across reviewer skills"
+  default_prompt: "Use $review-orchestrator to review implementation work against requirements, select focused reviewer skills, aggregate their checks, and optionally route review results to $ticket-review-comment-drafter."

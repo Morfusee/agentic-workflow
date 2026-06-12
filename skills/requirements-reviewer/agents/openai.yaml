@@ -1,0 +1,4 @@
+interface:
+  display_name: "Requirements Reviewer"
+  short_description: "Review implementation coverage against requirements and acceptance criteria"
+  default_prompt: "Use $requirements-reviewer to compare implementation evidence against requirements or acceptance criteria and return structured pass/fail checks."

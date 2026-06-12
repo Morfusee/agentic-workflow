@@ -21,6 +21,7 @@ Use this as the routing map before loading a skill. Prefer the narrowest skill t
 | Draft a bug, regression, production issue, feature, enhancement, refactor, or implementation ticket | `ticket-drafter` | Classifies the request as defect or implementation, then returns reviewed handoff metadata. |
 | Implement a provider ticket/task or prompt from analysis through optional commit and notification | `ticket-implementation-flow` | Usually routed by `workflow-orchestrator`; handles confidence scoring, branch/worktree setup, implementation, commit, and comments. |
 | Create a PRD and split it into ticket phases | `ticket-prd-planner` | Requirements gathering through phased ticket plans. |
+| Review implementation against requirements or acceptance criteria | `review-orchestrator` | Coordinates focused reviewers, aggregates checks, and can route results to `ticket-review-comment-drafter`. |
 | Draft code review, implementation review, or QA results as a tracker comment | `ticket-review-comment-drafter` | Review and QA comments only; not for new ticket creation. |
 
 ## Implementation Flow
@@ -30,6 +31,7 @@ Use this as the routing map before loading a skill. Prefer the narrowest skill t
 | Clarify ambiguous or creative work before implementation | `brainstorming` | Turn fuzzy ideas into an approved design/spec. |
 | Turn an approved spec into an implementation plan | `writing-plans` | Produce task-by-task engineering instructions before coding. |
 | Execute an approved implementation ticket flow | `ticket-implementation-flow` | Usually routed by `workflow-orchestrator`; asks confidence and execution-mode gates before coding. |
+| Check implemented behavior against requirements | `requirements-reviewer` | Usually called by `review-orchestrator`; produces structured pass/fail checks. |
 | Create an isolated worktree for feature work | `using-git-worktrees` | Keep implementation work separate from the current workspace. |
 | Stress-test a plan through questioning | `grill-me` | Use for adversarial plan/design review, often inside PRD work. |
 
