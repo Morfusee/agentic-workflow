@@ -27,6 +27,7 @@ Run provider-backed or prompt-backed implementation work through explicit confid
 9. Verify with the agreed tests or checks. If checks cannot run, report the limitation.
 10. Commit only when the chosen execution mode allows it, using `$git-commit`.
 11. Notify only when the chosen execution mode reaches notification or the user explicitly invokes the comment command.
+12. After the flow reaches its terminal stage (completion), follow the Post-Completion Behavior rules for any follow-up revisions or changes.
 
 ## Branch And Worktree Rules
 
@@ -49,7 +50,7 @@ Run provider-backed or prompt-backed implementation work through explicit confid
 
 - Use `$git-commit` for all commits.
 - `/ticket-implementation-flow commit` commits current flow changes and then follows the notification prompt rule when ticket/provider context exists.
-- After a successful `/ticket-implementation-flow commit`, if any ticket/provider context exists, always ask whether to proceed to the ticket comment stage.
+- After a successful `/ticket-implementation-flow commit`, if any ticket/provider context exists, always ask whether to proceed to the ticket comment stage. Exception: see Post-Completion Behavior for the session gate when the flow has reached its terminal stage.
 - `/ticket-implementation-flow commit [ticket]` commits current changes and treats `[ticket]` as ticket/provider context when no prior flow context exists.
 - Do not commit when the selected mode stops at reviewable unstaged or staged changes.
 
@@ -61,6 +62,17 @@ Run provider-backed or prompt-backed implementation work through explicit confid
 - Do not comment when changes are uncommitted unless the comment stage was explicitly invoked.
 - `/ticket-implementation-flow comment [ticket]` may be invoked independently; inspect committed branch changes and comment on the resolved ticket.
 - Never mention developer names, expose commit hashes, use emojis, or write verbose commentary in ticket comments.
+
+## Post-Completion Behavior
+
+After the flow reaches its terminal stage based on the selected execution mode:
+
+- The flow is considered completed. Subsequent revision requests or follow-up changes are outside the main flow.
+- For revision commits after completion, the notification prompt in `references/commands/commit.md` is gated: ask at most once per session. If the user declines, do not ask again in the same session.
+- The user may always explicitly invoke `/ticket-implementation-flow comment` to post an update regardless.
+- Do not auto-comment on the ticket for revision work without asking.
+
+Example: after mode 4 completes (chat notification after commit), the user asks for revisions. The agent commits and asks once about posting. If the user declines, subsequent revision commits in the same session skip the prompt.
 
 ## Supporting References
 

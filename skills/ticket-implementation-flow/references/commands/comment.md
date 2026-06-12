@@ -15,6 +15,7 @@ Use for `/ticket-implementation-flow comment [ticket]` or when the main flow rea
 ## Rules
 
 - Do not comment if implementation changes are only uncommitted, unless the user explicitly invoked this command.
+- After the flow has reached its terminal stage (completed), do not auto-trigger this command; only run when explicitly invoked via `/ticket-implementation-flow comment`.
 - Do not mention developer names.
 - Do not include commit hashes.
 - Do not use emojis.
