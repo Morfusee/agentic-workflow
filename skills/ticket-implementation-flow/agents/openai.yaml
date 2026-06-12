@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ticket Implementation Flow"
+  short_description: "Analyze, implement, commit, and notify from tickets"
+  default_prompt: "Use $ticket-implementation-flow to handle provider-backed or prompt-backed implementation work through requirements analysis, confidence scoring, branch/worktree setup, implementation, optional commit, and optional ticket notification. For /ticket-implementation-flow commit or /ticket-implementation-flow comment, load the matching command reference."
