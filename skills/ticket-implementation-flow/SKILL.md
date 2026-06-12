@@ -22,6 +22,7 @@ Run provider-backed or prompt-backed implementation work through explicit confid
 5. In phase 2, ask the execution-mode, base-branch, branch override, and worktree questions from `references/analysis-confidence.md`.
 6. If brainstorming is required, invoke `$brainstorming` and follow that skill completely. Resume this flow only after its approvals and outputs are available.
 7. Create or switch to the approved branch/worktree. Invoke `$using-git-worktrees` only when creating a new worktree.
+7.5. If provider context includes a ticket ID: toggle the ticket to an active implementation status and assign it to the current user. The connected user from the provider's MCP session is authoritative for the assignee. Resolve the correct status name from the provider's available statuses; prefer "In Progress" when it exists, otherwise pick the first active (non-todo, non-done) status. Skip the update when the ticket is already in an active implementation status and assigned to you. Report the outcome in the chat thread.
 8. Implement the approved plan with minimal, targeted code changes.
 9. Verify with the agreed tests or checks. If checks cannot run, report the limitation.
 10. Commit only when the chosen execution mode allows it, using `$git-commit`.
