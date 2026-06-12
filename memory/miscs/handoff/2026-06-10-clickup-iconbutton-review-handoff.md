@@ -45,7 +45,7 @@
 
 ## Suggested Skills
 - `react-quality-review`: Use if continuing or re-running the React/TypeScript review after the branch is rebased.
-- `clickup-orchestrator`: Use if the next agent needs to publish the review as a ClickUp comment or perform another ClickUp workflow.
+- `workflow-orchestrator`: Use `/skill clickup [prompt]` if the next agent needs to publish the review as a ClickUp comment or perform another ClickUp workflow.
 - `qa-comment-formatter`: Use if the user asks to format these findings as a structured ClickUp QA/review comment.
 - `handoff`: Use again if the conversation needs to be compacted for another agent.
 

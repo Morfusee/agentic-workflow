@@ -1,6 +1,6 @@
 ---
 name: implementation-prep
-description: Prepare a development ticket for implementation — classify work type, generate branch names, resolve worktree setup, decide whether brainstorming is needed, and produce an implementation plan summary for user approval before any code is written. Invoke only when explicitly called by another skill (e.g., notion-orchestrator) or when the user issues the slash command `/implementation-prep`. Do not auto-trigger from general "I want to implement this" requests.
+description: Prepare a development ticket for implementation — classify work type, generate branch names, resolve worktree setup, decide whether brainstorming is needed, and produce an implementation plan summary for user approval before any code is written. Invoke only when explicitly called by another skill (e.g., workflow-orchestrator for Notion Coding Projects) or when the user issues the slash command `/implementation-prep`. Do not auto-trigger from general "I want to implement this" requests.
 ---
 
 # Implementation Prep

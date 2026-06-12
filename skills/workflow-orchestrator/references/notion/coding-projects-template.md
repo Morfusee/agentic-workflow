@@ -4,7 +4,7 @@ Use this template for Coding Projects Tracker technical tickets only.
 
 ## Configuration Contract
 
-Load `memory/skill-configs/notion-orchestrator.json` from the canonical memory root before using this template. Resolve the `coding_projects` domain and verify its configured values against Notion before writes.
+Load `memory/skill-configs/workflow-orchestrator.json` from the canonical memory root before using this template. Resolve the `coding_projects` domain and verify its configured values against Notion before writes.
 
 Expected domain shape:
 

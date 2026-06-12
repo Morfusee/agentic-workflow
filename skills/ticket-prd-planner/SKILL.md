@@ -24,7 +24,7 @@ Use this skill only by explicit invocation. Each phase must end with a saved han
 
 - Invoke `$grill-me` during Phase 1 to stress-test requirements, risks, contradictions, and major concerns.
 - Invoke `$avoid-ai-writing` before saving the final PRD.
-- Invoke the destination orchestrator when publishing tickets, such as `$linear-orchestrator`, `$clickup-orchestrator`, or `$notion-orchestrator`.
+- Invoke `$workflow-orchestrator` when publishing tickets to Linear, ClickUp, Notion, or another supported provider.
 
 ## Artifacts
 

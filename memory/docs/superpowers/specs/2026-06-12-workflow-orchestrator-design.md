@@ -2,7 +2,7 @@
 
 ## Goal
 
-Replace the separate `linear-orchestrator`, `clickup-orchestrator`, and `notion-orchestrator` skills with one provider-oriented skill that can route commands shaped like:
+Replace the separate `workflow-orchestrator`, `workflow-orchestrator`, and `workflow-orchestrator` skills with one provider-oriented skill that can route commands shaped like:
 
 ```text
 /skill [provider] [prompt]
@@ -14,11 +14,7 @@ The new skill should make provider workflows easier to maintain and make future 
 
 Create a new `skills/workflow-orchestrator/` skill that owns provider parsing, intent routing, shared ticket workflow rules, and provider reference loading.
 
-Remove the old provider-specific orchestrator skill folders after their behavior is migrated:
-
-- `skills/linear-orchestrator/`
-- `skills/clickup-orchestrator/`
-- `skills/notion-orchestrator/`
+Remove the old provider-specific orchestrator skill folders after their behavior is migrated.
 
 Preserve existing behavior for Linear, ClickUp, and Notion. Do not intentionally change dump formats, stand-up carry-over behavior, Notion schema safety, ticket drafting contracts, publishing approval gates, or helper skill handoffs.
 
@@ -128,7 +124,7 @@ Preserve these branches:
 - `coding-ticket-implement`
 - `location-resolution`
 
-Load Notion volatile facts from `memory/skill-configs/notion-orchestrator.json` initially to avoid an unnecessary config migration. The provider reference may name this as legacy config and can later support `workflow-orchestrator.json` if desired.
+Load Notion volatile facts from `memory/skill-configs/workflow-orchestrator.json` initially to avoid an unnecessary config migration. The provider reference may name this as legacy config and can later support `workflow-orchestrator.json` if desired.
 
 Preserve Notion write safety:
 
@@ -161,7 +157,7 @@ Validate that:
 - `agents/openai.yaml` strings are quoted.
 - old orchestrator folders are removed.
 - migrated references exist.
-- no old `$linear-orchestrator`, `$clickup-orchestrator`, or `$notion-orchestrator` self-references remain except in historical config names or migration notes.
+- no old `$workflow-orchestrator`, `$workflow-orchestrator`, or `$workflow-orchestrator` self-references remain except in historical config names or migration notes.
 
 If no dedicated validation script exists, use shell checks and report that limitation.
 

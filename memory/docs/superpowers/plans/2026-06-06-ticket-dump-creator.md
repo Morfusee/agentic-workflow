@@ -13,16 +13,16 @@
 ## File Structure
 
 - Create: `skills/ticket-dump-creator/SKILL.md`
-- Modify: `skills/linear-orchestrator/SKILL.md`
-- Modify: `skills/clickup-orchestrator/SKILL.md`
-- Do not modify: `skills/notion-orchestrator/SKILL.md`
+- Modify: `skills/workflow-orchestrator/references/providers/linear.md`
+- Modify: `skills/workflow-orchestrator/references/providers/clickup.md`
+- Do not modify: `skills/workflow-orchestrator/references/providers/notion.md`
 - Reference: `memory/docs/superpowers/specs/2026-06-06-ticket-dump-creator-design.md`
 
 `skills/ticket-dump-creator/SKILL.md` is responsible for the shared dump creation contract only. It must not contain Linear or ClickUp API retrieval instructions.
 
-`skills/linear-orchestrator/SKILL.md` remains responsible for Linear intent routing, Linear retrieval, Linear normalization, stand-up-from-dump, issue drafting, weekly slideshow, and QA comment routing.
+`skills/workflow-orchestrator/references/providers/linear.md` remains responsible for Linear intent routing, Linear retrieval, Linear normalization, stand-up-from-dump, issue drafting, weekly slideshow, and QA comment routing.
 
-`skills/clickup-orchestrator/SKILL.md` remains responsible for ClickUp intent routing, ClickUp retrieval, ClickUp ticket formatting convention, ClickUp normalization, stand-up-from-dump, issue drafting, and QA comment routing.
+`skills/workflow-orchestrator/references/providers/clickup.md` remains responsible for ClickUp intent routing, ClickUp retrieval, ClickUp ticket formatting convention, ClickUp normalization, stand-up-from-dump, issue drafting, and QA comment routing.
 
 ---
 
@@ -283,11 +283,11 @@ If commits are not authorized, do not commit. Record that the commit step was sk
 ### Task 2: Update Linear Dump Creation Branch
 
 **Files:**
-- Modify: `skills/linear-orchestrator/SKILL.md:40-223`
+- Modify: `skills/workflow-orchestrator/references/providers/linear.md:40-223`
 
 - [ ] **Step 1: Review current Linear dump branch**
 
-Run: `Select-String -Path "skills\linear-orchestrator\SKILL.md" -Pattern "## dump-creation Branch|## standup-from-dump Branch" -Context 0,2`
+Run: `Select-String -Path "skills\workflow-orchestrator\references\providers\linear.md" -Pattern "## dump-creation Branch|## standup-from-dump Branch" -Context 0,2`
 
 Expected: both headings are present, and `## dump-creation Branch` appears before `## standup-from-dump Branch`.
 
@@ -378,13 +378,13 @@ Collect Linear activity, normalize qualifying issues, invoke `$ticket-dump-creat
 
 - [ ] **Step 3: Verify the Linear stand-up branch was not edited**
 
-Run: `Select-String -Path "skills\linear-orchestrator\SKILL.md" -Pattern "## standup-from-dump Branch|### Unselected Ticket Carry-Over|# Selected Tickets|# Unselected Tickets"`
+Run: `Select-String -Path "skills\workflow-orchestrator\references\providers\linear.md" -Pattern "## standup-from-dump Branch|### Unselected Ticket Carry-Over|# Selected Tickets|# Unselected Tickets"`
 
 Expected: all four patterns are still present.
 
 - [ ] **Step 4: Verify Linear now references the shared skill**
 
-Run: `Select-String -Path "skills\linear-orchestrator\SKILL.md" -Pattern "ticket-dump-creator|memory/tickets/linear|item_label: ticket"`
+Run: `Select-String -Path "skills\workflow-orchestrator\references\providers\linear.md" -Pattern "ticket-dump-creator|memory/tickets/linear|item_label: ticket"`
 
 Expected: all three patterns are present.
 
@@ -393,7 +393,7 @@ Expected: all three patterns are present.
 If the user has explicitly authorized commits for the implementation session, run:
 
 ```bash
-git add skills/linear-orchestrator/SKILL.md
+git add skills/workflow-orchestrator/references/providers/linear.md
 git commit -m "refactor(linear): delegate dump creation"
 ```
 
@@ -404,11 +404,11 @@ If commits are not authorized, do not commit. Record that the commit step was sk
 ### Task 3: Update ClickUp Dump Creation Branch
 
 **Files:**
-- Modify: `skills/clickup-orchestrator/SKILL.md:66-237`
+- Modify: `skills/workflow-orchestrator/references/providers/clickup.md:66-237`
 
 - [ ] **Step 1: Review current ClickUp dump branch**
 
-Run: `Select-String -Path "skills\clickup-orchestrator\SKILL.md" -Pattern "## dump-creation Branch|## standup-from-dump Branch" -Context 0,2`
+Run: `Select-String -Path "skills\workflow-orchestrator\references\providers\clickup.md" -Pattern "## dump-creation Branch|## standup-from-dump Branch" -Context 0,2`
 
 Expected: both headings are present, and `## dump-creation Branch` appears before `## standup-from-dump Branch`.
 
@@ -487,13 +487,13 @@ Collect ClickUp activity, normalize qualifying tasks, invoke `$ticket-dump-creat
 
 - [ ] **Step 3: Verify the ClickUp stand-up branch was not edited**
 
-Run: `Select-String -Path "skills\clickup-orchestrator\SKILL.md" -Pattern "## standup-from-dump Branch|### Unselected Task Carry-Over|# Selected Tasks|# Unselected Tasks"`
+Run: `Select-String -Path "skills\workflow-orchestrator\references\providers\clickup.md" -Pattern "## standup-from-dump Branch|### Unselected Task Carry-Over|# Selected Tasks|# Unselected Tasks"`
 
 Expected: all four patterns are still present.
 
 - [ ] **Step 4: Verify ClickUp now references the shared skill**
 
-Run: `Select-String -Path "skills\clickup-orchestrator\SKILL.md" -Pattern "ticket-dump-creator|memory/tickets/clickup|item_label: task"`
+Run: `Select-String -Path "skills\workflow-orchestrator\references\providers\clickup.md" -Pattern "ticket-dump-creator|memory/tickets/clickup|item_label: task"`
 
 Expected: all three patterns are present.
 
@@ -502,7 +502,7 @@ Expected: all three patterns are present.
 If the user has explicitly authorized commits for the implementation session, run:
 
 ```bash
-git add skills/clickup-orchestrator/SKILL.md
+git add skills/workflow-orchestrator/references/providers/clickup.md
 git commit -m "refactor(clickup): delegate dump creation"
 ```
 
@@ -514,9 +514,9 @@ If commits are not authorized, do not commit. Record that the commit step was sk
 
 **Files:**
 - Inspect: `skills/ticket-dump-creator/SKILL.md`
-- Inspect: `skills/linear-orchestrator/SKILL.md`
-- Inspect: `skills/clickup-orchestrator/SKILL.md`
-- Inspect: `skills/notion-orchestrator/SKILL.md`
+- Inspect: `skills/workflow-orchestrator/references/providers/linear.md`
+- Inspect: `skills/workflow-orchestrator/references/providers/clickup.md`
+- Inspect: `skills/workflow-orchestrator/references/providers/notion.md`
 
 - [ ] **Step 1: Confirm the new skill folder follows naming rules**
 
@@ -539,7 +539,7 @@ description: Create source-agnostic ticket or task dump files from normalized pr
 
 - [ ] **Step 3: Confirm Notion was not changed**
 
-Run: `git diff -- skills/notion-orchestrator/SKILL.md`
+Run: `git diff -- skills/workflow-orchestrator/references/providers/notion.md`
 
 Expected: no output.
 
@@ -551,17 +551,17 @@ Expected: no matches.
 
 - [ ] **Step 5: Confirm provider orchestrators still include retrieval strategies**
 
-Run: `Select-String -Path "skills\linear-orchestrator\SKILL.md" -Pattern "list_issues|get_issue|list_comments|get_user"`
+Run: `Select-String -Path "skills\workflow-orchestrator\references\providers\linear.md" -Pattern "list_issues|get_issue|list_comments|get_user"`
 
 Expected: matches for Linear retrieval tools.
 
-Run: `Select-String -Path "skills\clickup-orchestrator\SKILL.md" -Pattern "clickup_filter_tasks|clickup_search|clickup_get_task|clickup_get_task_comments|clickup_resolve_assignees"`
+Run: `Select-String -Path "skills\workflow-orchestrator\references\providers\clickup.md" -Pattern "clickup_filter_tasks|clickup_search|clickup_get_task|clickup_get_task_comments|clickup_resolve_assignees"`
 
 Expected: matches for ClickUp retrieval tools.
 
 - [ ] **Step 6: Check for accidental unfinished-marker text**
 
-Run: `Select-String -Path "skills\ticket-dump-creator\SKILL.md","skills\linear-orchestrator\SKILL.md","skills\clickup-orchestrator\SKILL.md" -Pattern "T`BD|TO`DO|place`holder|imple`ment later"`
+Run: `Select-String -Path "skills\ticket-dump-creator\SKILL.md","skills\workflow-orchestrator\references\providers\linear.md","skills\workflow-orchestrator\references\providers\clickup.md" -Pattern "T`BD|TO`DO|place`holder|imple`ment later"`
 
 Expected: no matches.
 
@@ -571,8 +571,8 @@ Expected: no matches.
 
 **Files:**
 - Review: `skills/ticket-dump-creator/SKILL.md`
-- Review: `skills/linear-orchestrator/SKILL.md`
-- Review: `skills/clickup-orchestrator/SKILL.md`
+- Review: `skills/workflow-orchestrator/references/providers/linear.md`
+- Review: `skills/workflow-orchestrator/references/providers/clickup.md`
 - Review: `memory/docs/superpowers/specs/2026-06-06-ticket-dump-creator-design.md`
 - Review: `memory/docs/superpowers/plans/2026-06-06-ticket-dump-creator.md`
 
@@ -586,15 +586,15 @@ Expected changed files are limited to:
 ?? memory/docs/superpowers/specs/2026-06-06-ticket-dump-creator-design.md
 ?? memory/docs/superpowers/plans/2026-06-06-ticket-dump-creator.md
 ?? skills/ticket-dump-creator/
- M skills/linear-orchestrator/SKILL.md
- M skills/clickup-orchestrator/SKILL.md
+ M skills/workflow-orchestrator/references/providers/linear.md
+ M skills/workflow-orchestrator/references/providers/clickup.md
 ```
 
 If the spec and plan were already committed or intentionally staged earlier, their status may differ. Do not revert them.
 
 - [ ] **Step 2: Review full diff**
 
-Run: `git diff -- skills/linear-orchestrator/SKILL.md skills/clickup-orchestrator/SKILL.md`
+Run: `git diff -- skills/workflow-orchestrator/references/providers/linear.md skills/workflow-orchestrator/references/providers/clickup.md`
 
 Expected: Linear and ClickUp dump branches delegate to `$ticket-dump-creator`; stand-up branches remain present.
 
@@ -609,7 +609,7 @@ Expected: the file contains only the shared dump creation contract and no provid
 If commits are authorized and previous task commits were skipped, make one logical commit for the remaining related skill extraction files:
 
 ```bash
-git add skills/ticket-dump-creator/SKILL.md skills/linear-orchestrator/SKILL.md skills/clickup-orchestrator/SKILL.md memory/docs/superpowers/specs/2026-06-06-ticket-dump-creator-design.md memory/docs/superpowers/plans/2026-06-06-ticket-dump-creator.md
+git add skills/ticket-dump-creator/SKILL.md skills/workflow-orchestrator/references/providers/linear.md skills/workflow-orchestrator/references/providers/clickup.md memory/docs/superpowers/specs/2026-06-06-ticket-dump-creator-design.md memory/docs/superpowers/plans/2026-06-06-ticket-dump-creator.md
 git commit -m "refactor(skills): extract ticket dump creator"
 ```
 

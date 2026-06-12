@@ -6,9 +6,9 @@ Use this as the routing map before loading a skill. Prefer the narrowest skill t
 
 | Need | Use | Notes |
 | --- | --- | --- |
-| Work with Linear tickets, dumps, stand-ups, review comments, or Linear ticket drafts | `linear-orchestrator` | Provider-specific entrypoint. It routes to ticket helper skills. |
-| Work with ClickUp tasks, dumps, stand-ups, review comments, or ClickUp ticket drafts | `clickup-orchestrator` | Provider-specific entrypoint. It routes to ticket helper skills. |
-| Create or update Notion pages, tasks, or Coding Projects Tracker items | `notion-orchestrator` | Provider-specific entrypoint. Use for Notion schema and placement. |
+| Work with Linear tickets, dumps, stand-ups, review comments, or Linear ticket drafts | `workflow-orchestrator` | Use `/skill linear [prompt]`; routes to Linear provider workflows and ticket helper skills. |
+| Work with ClickUp tasks, dumps, stand-ups, review comments, or ClickUp ticket drafts | `workflow-orchestrator` | Use `/skill clickup [prompt]`; routes to ClickUp provider workflows and ticket helper skills. |
+| Create or update Notion pages, tasks, or Coding Projects Tracker items | `workflow-orchestrator` | Use `/skill notion [prompt]`; handles Notion schema, domains, and placement. |
 | Improve a frontend interface or product UI | `impeccable` | UI/UX critique, redesign, polish, and frontend visual quality. |
 | Refactor existing code without behavior changes | `refactor` | Surgical maintainability improvements. |
 | Commit current changes | `git-commit` | Conventional commit staging and message workflow. |
@@ -29,7 +29,7 @@ Use this as the routing map before loading a skill. Prefer the narrowest skill t
 | --- | --- | --- |
 | Clarify ambiguous or creative work before implementation | `brainstorming` | Turn fuzzy ideas into an approved design/spec. |
 | Turn an approved spec into an implementation plan | `writing-plans` | Produce task-by-task engineering instructions before coding. |
-| Prepare an approved Notion Coding Projects ticket for implementation | `implementation-prep` | Classify work, choose branch/worktree strategy, and decide whether brainstorming is needed. |
+| Prepare an approved Notion Coding Projects ticket for implementation | `implementation-prep` | Usually routed by `workflow-orchestrator`; classifies work, branch/worktree strategy, and brainstorming need. |
 | Create an isolated worktree for feature work | `using-git-worktrees` | Keep implementation work separate from the current workspace. |
 | Stress-test a plan through questioning | `grill-me` | Use for adversarial plan/design review, often inside PRD work. |
 
@@ -37,7 +37,7 @@ Use this as the routing map before loading a skill. Prefer the narrowest skill t
 
 | Need | Use | Notes |
 | --- | --- | --- |
-| Create normalized ticket dump files from provider facts | `ticket-dump-creator` | Usually called by Linear or ClickUp orchestrators. |
+| Create normalized ticket dump files from provider facts | `ticket-dump-creator` | Usually called by `workflow-orchestrator` after Linear or ClickUp facts are collected. |
 | Generate a spoken stand-up script from selected work items | `standup-generator` | Source-agnostic stand-up narration. |
 | Prepare weekly ticket work for a slideshow | `weekly-ticket-slideshow-generator` | Produces a presentation brief, not final HTML. |
 | Create a RevealJS slide deck | `revealjs-presenter` | Final presentation authoring. |
@@ -56,7 +56,7 @@ Use this as the routing map before loading a skill. Prefer the narrowest skill t
 
 ## Routing Rules
 
-- Start with provider orchestrators when the request names Linear, ClickUp, or Notion.
+- Start with `workflow-orchestrator` when the request names Linear, ClickUp, or Notion.
 - Use `ticket-drafter` for defect and implementation ticket drafts.
 - Use `brainstorming` before `writing-plans` when the design is not settled.
 - Use `implementation-prep` only for approved Coding Projects implementation handoff or explicit `/implementation-prep` requests.

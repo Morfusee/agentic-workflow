@@ -10,9 +10,9 @@ The extraction should reduce duplicated dump instructions while preserving provi
 
 Create a source-agnostic dump creation skill that owns the common dump contract after provider facts have been collected and normalized.
 
-Update `linear-orchestrator` and `clickup-orchestrator` to invoke the shared skill for dump writing. Keep each orchestrator as the public entrypoint for its provider.
+Update `workflow-orchestrator` and `workflow-orchestrator` to invoke the shared skill for dump writing. Keep each orchestrator as the public entrypoint for its provider.
 
-Do not change `notion-orchestrator` for this refactor. The current Notion workflow does not perform activity-first ticket dump creation. A Notion dump workflow can be added later as a separate behavior if needed.
+Do not change `workflow-orchestrator` for this refactor. The current Notion workflow does not perform activity-first ticket dump creation. A Notion dump workflow can be added later as a separate behavior if needed.
 
 ## Non-Goals
 
@@ -163,7 +163,7 @@ The chat summary remains grouped by activity date and status.
 
 ## Linear Orchestrator Changes
 
-Keep Linear-specific retrieval instructions in `linear-orchestrator`:
+Keep Linear-specific retrieval instructions in `workflow-orchestrator`:
 
 - resolve current user through Linear tools
 - collect candidates without assignee bias
@@ -177,7 +177,7 @@ Linear should pass `item_label: ticket`, `item_collection_label: tickets`, and `
 
 ## ClickUp Orchestrator Changes
 
-Keep ClickUp-specific retrieval instructions in `clickup-orchestrator`:
+Keep ClickUp-specific retrieval instructions in `workflow-orchestrator`:
 
 - resolve current user through ClickUp tools
 - collect candidate tasks through filtered task lookup and search
@@ -191,7 +191,7 @@ ClickUp should pass `item_label: task`, `item_collection_label: tasks`, and `mem
 
 ## Notion Orchestrator Decision
 
-Do not modify `notion-orchestrator` in this refactor.
+Do not modify `workflow-orchestrator` in this refactor.
 
 Reason: the current Notion orchestrator routes Notion content creation, drafting, updates, and reviews. It does not create activity-first ticket dumps. Including Notion now would either add new behavior or force an artificial abstraction.
 

@@ -55,4 +55,4 @@ No explicit direction was provided. The natural next step would be one of:
 | `react-quality-review` | Re-run the review after fixes are applied |
 | `qa-comment-formatter` | Format the review findings as a ClickUp task comment on [86d36z2nx](https://app.clickup.com/t/86d36z2nx) |
 | `brainstorming` | If the fix approach for critical issues needs design discussion |
-| `clickup-orchestrator` | If further ClickUp workflow actions are needed (e.g., status updates, subtask creation) |
+| `workflow-orchestrator` | If further ClickUp workflow actions are needed, use `/skill clickup [prompt]` (e.g., status updates, subtask creation) |

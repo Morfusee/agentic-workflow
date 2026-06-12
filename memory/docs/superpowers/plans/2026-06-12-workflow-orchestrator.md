@@ -64,14 +64,12 @@ Move Personal Tasks and Coding Projects template content under the new skill.
 
 - [ ] **Step 2: Update template-local references**
 
-Change references from `skill-configs/notion-orchestrator.json` to `memory/skill-configs/notion-orchestrator.json` and from "Notion Orchestrator" to "Workflow Orchestrator" where doing so does not imply a config rename.
+Change references from `skill-configs/workflow-orchestrator.json` to `memory/skill-configs/workflow-orchestrator.json` and from "Notion Orchestrator" to "Workflow Orchestrator" where doing so does not imply a config rename.
 
 ### Task 5: Remove Old Orchestrator Skills
 
 **Files:**
-- Delete: `skills/linear-orchestrator/`
-- Delete: `skills/clickup-orchestrator/`
-- Delete: `skills/notion-orchestrator/`
+- Delete: legacy Linear, ClickUp, and Notion provider-specific orchestrator folders.
 
 - [ ] **Step 1: Delete migrated skill folders**
 
@@ -81,9 +79,7 @@ Remove the old provider-specific orchestrator folders after the new references e
 
 **Files:**
 - Validate: `skills/workflow-orchestrator/**`
-- Validate: `skills/linear-orchestrator/`
-- Validate: `skills/clickup-orchestrator/`
-- Validate: `skills/notion-orchestrator/`
+- Validate: legacy Linear, ClickUp, and Notion provider-specific orchestrator folders are absent.
 
 - [ ] **Step 1: Run structural checks**
 
@@ -98,9 +94,9 @@ Test-Path .\skills\workflow-orchestrator\references\providers\clickup.md
 Test-Path .\skills\workflow-orchestrator\references\providers\notion.md
 Test-Path .\skills\workflow-orchestrator\references\notion\personal-tasks-template.md
 Test-Path .\skills\workflow-orchestrator\references\notion\coding-projects-template.md
-Test-Path .\skills\linear-orchestrator
-Test-Path .\skills\clickup-orchestrator
-Test-Path .\skills\notion-orchestrator
+Test-Path .\skills\workflow-orchestrator\references\providers\linear.md
+Test-Path .\skills\workflow-orchestrator\references\providers\clickup.md
+Test-Path .\skills\workflow-orchestrator\references\providers\notion.md
 ```
 
 Expected: new files return `True`; old folders return `False`.
@@ -110,7 +106,7 @@ Expected: new files return `True`; old folders return `False`.
 Run:
 
 ```powershell
-rg '\$linear-orchestrator|\$clickup-orchestrator|\$notion-orchestrator' .\skills\workflow-orchestrator
+rg '\$workflow-orchestrator|\$workflow-orchestrator|\$workflow-orchestrator' .\skills\workflow-orchestrator
 ```
 
 Expected: no matches.
@@ -131,6 +127,6 @@ Expected: only the new workflow orchestrator, removed old orchestrators, and thi
 Run:
 
 ```powershell
-git add .\skills\workflow-orchestrator .\skills\linear-orchestrator .\skills\clickup-orchestrator .\skills\notion-orchestrator .\memory\docs\superpowers\plans\2026-06-12-workflow-orchestrator.md
+git add .\skills\workflow-orchestrator .\memory\docs\superpowers\plans\2026-06-12-workflow-orchestrator.md
 git commit -m "feat(skills): add workflow orchestrator"
 ```

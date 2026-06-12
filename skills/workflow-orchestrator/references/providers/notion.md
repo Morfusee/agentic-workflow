@@ -4,7 +4,7 @@ Route and execute Notion workflows from one entry point.
 
 ## Config Contract
 
-Load `memory/skill-configs/notion-orchestrator.json` from the canonical memory root defined in OpenCode's global AGENTS.md at the start of every Notion workflow.
+Load `memory/skill-configs/workflow-orchestrator.json` from the canonical memory root defined in OpenCode's global AGENTS.md at the start of every Notion workflow.
 
 The config owns volatile Notion facts:
 
@@ -72,7 +72,7 @@ Load `references/notion/personal-tasks-template.md` before drafting, creating, u
 
 Personal Task pages and database-backed subtasks must use the four-section body from the template: `What It Is`, `How To Do It`, `Requirements`, and `Notes`.
 
-Personal Tasks targets are configured in `memory/skill-configs/notion-orchestrator.json` under `domains.personal_tasks`. Treat config values as the only cached target source. Re-fetch before writes and fall back to Notion search for the configured domain name if a fetch fails.
+Personal Tasks targets are configured in `memory/skill-configs/workflow-orchestrator.json` under `domains.personal_tasks`. Treat config values as the only cached target source. Re-fetch before writes and fall back to Notion search for the configured domain name if a fetch fails.
 
 ## Coding Projects Contract
 
@@ -82,7 +82,7 @@ Coding Projects bug, regression, and problem-investigation tickets must use the 
 
 Coding Projects feature, enhancement, refactor, and other non-bug implementation tickets must use the implementation body from `$ticket-drafter`: `Objective`, `Scope`, `Implementation Requirements`, `Acceptance Criteria`, `Testing Notes`, and any relevant adaptive sections.
 
-Coding Projects targets are configured in `memory/skill-configs/notion-orchestrator.json` under `domains.coding_projects`. Treat config values as the only cached target source. Re-fetch before writes and fall back to Notion search for the configured domain name if a fetch fails.
+Coding Projects targets are configured in `memory/skill-configs/workflow-orchestrator.json` under `domains.coding_projects`. Treat config values as the only cached target source. Re-fetch before writes and fall back to Notion search for the configured domain name if a fetch fails.
 
 Always resolve the project relation before creating a Coding Projects task. Ask which project to connect when the request does not specify exactly one configured project.
 

@@ -29,7 +29,7 @@
     },
     "linear_workspace": {
       "provider": "linear",
-      "publisher": "linear-orchestrator",
+      "publisher": "workflow-orchestrator",
       "draft_types": {
         "defect": {
           "title_format": "Actionable technical fix",
@@ -58,7 +58,7 @@
     },
     "clickup_workspace": {
       "provider": "clickup",
-      "publisher": "clickup-orchestrator",
+      "publisher": "workflow-orchestrator",
       "draft_types": {
         "defect": {
           "title_format": "Actionable technical fix",
@@ -85,7 +85,7 @@
     },
     "notion_coding_projects": {
       "provider": "notion",
-      "publisher": "notion-orchestrator",
+      "publisher": "workflow-orchestrator",
       "draft_types": {
         "defect": {
           "title_format": "Actionable technical fix",
