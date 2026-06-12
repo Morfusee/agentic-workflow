@@ -1,4 +1,0 @@
-interface:
-  display_name: "Linear Orchestrator"
-  short_description: "Single entrypoint for Linear dump, standup, and related flows"
-  default_prompt: "Use $linear-orchestrator to infer my Linear intent and run the correct flow: dump creation, stand-up from dump, full stand-up flow, Linear-context issue drafting, or Linear-context weekly slideshow prep. For stand-up flows, carry through any explicit next-day plan and do not infer it from open or unselected work."

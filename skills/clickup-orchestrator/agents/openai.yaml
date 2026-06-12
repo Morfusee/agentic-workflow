@@ -1,4 +1,0 @@
-interface:
-  display_name: "ClickUp Orchestrator"
-  short_description: "Single entrypoint for ClickUp dump, standup, and related flows"
-  default_prompt: "Use $clickup-orchestrator to infer my ClickUp intent and run the correct flow: dump creation, stand-up from dump, full stand-up flow, ClickUp-context issue drafting, or ClickUp-context review/QA comment formatting. For stand-up flows, carry through any explicit next-day plan and do not infer it from open or unselected work."

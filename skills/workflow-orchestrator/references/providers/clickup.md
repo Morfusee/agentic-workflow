@@ -1,9 +1,4 @@
----
-name: clickup-orchestrator
-description: ClickUp entrypoint. Use when the user names ClickUp or a ClickUp task and wants task dumps, stand-ups, technical ticket drafts, review/QA comments, or direct ClickUp task updates. Routes to provider-agnostic helper skills after collecting ClickUp context.
----
-
-# ClickUp Orchestrator
+# ClickUp Provider Reference
 
 Route and execute ClickUp workflows from one entry point.
 

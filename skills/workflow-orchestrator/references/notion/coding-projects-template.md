@@ -4,7 +4,7 @@ Use this template for Coding Projects Tracker technical tickets only.
 
 ## Configuration Contract
 
-Load `skill-configs/notion-orchestrator.json` from the canonical memory root before using this template. Resolve the `coding_projects` domain and verify its configured values against Notion before writes.
+Load `memory/skill-configs/notion-orchestrator.json` from the canonical memory root before using this template. Resolve the `coding_projects` domain and verify its configured values against Notion before writes.
 
 Expected domain shape:
 
@@ -102,7 +102,7 @@ Use only tags that exist in the fetched Tasks schema. If the mapped tag is missi
 
 ## Create Workflow
 
-1. Load Notion Orchestrator config.
+1. Load Workflow Orchestrator Notion config.
 2. Resolve the `coding_projects` domain.
 3. Fetch the tracker page.
 4. Fetch the configured Projects and Tasks data sources.
@@ -188,5 +188,5 @@ If there are no matching tasks, say `No matching Coding Projects tasks found for
 - Ask for project selection before writing.
 - Use Notion relation values as page URLs.
 - Do not invent project rows, tags, statuses, assignees, deadlines, or requirements.
-- Do not publish directly from `$ticket-drafter`; Notion writes belong to `$notion-orchestrator`.
+- Do not publish directly from `$ticket-drafter`; Notion writes belong to `$workflow-orchestrator`.
 - Stop on schema mismatch instead of writing partial data.

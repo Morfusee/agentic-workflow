@@ -1,15 +1,10 @@
----
-name: notion-orchestrator
-description: Notion entrypoint. Use when the user wants to create, draft, update, review, or place Notion content, especially Personal Tasks or Coding Projects Tracker items. Handles Notion schema, target resolution, and publishing after helper skills draft ticket content.
----
-
-# Notion Orchestrator
+# Notion Provider Reference
 
 Route and execute Notion workflows from one entry point.
 
 ## Config Contract
 
-Load `skill-configs/notion-orchestrator.json` from the canonical memory root defined in OpenCode's global AGENTS.md at the start of every Notion workflow.
+Load `memory/skill-configs/notion-orchestrator.json` from the canonical memory root defined in OpenCode's global AGENTS.md at the start of every Notion workflow.
 
 The config owns volatile Notion facts:
 
@@ -66,28 +61,28 @@ Use the relevant template from `references/` for formatting and field mapping.
 
 Current supported templates:
 
-- `references/personal-tasks-template.md`: Personal Tasks drafting, creation, updating, and review.
-- `references/coding-projects-template.md`: Coding Projects Tracker technical ticket drafting, creation, updating, and review.
+- `references/notion/personal-tasks-template.md`: Personal Tasks drafting, creation, updating, and review.
+- `references/notion/coding-projects-template.md`: Coding Projects Tracker technical ticket drafting, creation, updating, and review.
 
 Future domains, such as coding tasks or notes, must be added as new reference templates inside this skill folder. Do not create a separate skill for each Notion domain unless the user explicitly asks.
 
 ## Personal Tasks Contract
 
-Load `references/personal-tasks-template.md` before drafting, creating, updating, or reviewing Personal Tasks.
+Load `references/notion/personal-tasks-template.md` before drafting, creating, updating, or reviewing Personal Tasks.
 
 Personal Task pages and database-backed subtasks must use the four-section body from the template: `What It Is`, `How To Do It`, `Requirements`, and `Notes`.
 
-Personal Tasks targets are configured in `skill-configs/notion-orchestrator.json` under `domains.personal_tasks`. Treat config values as the only cached target source. Re-fetch before writes and fall back to Notion search for the configured domain name if a fetch fails.
+Personal Tasks targets are configured in `memory/skill-configs/notion-orchestrator.json` under `domains.personal_tasks`. Treat config values as the only cached target source. Re-fetch before writes and fall back to Notion search for the configured domain name if a fetch fails.
 
 ## Coding Projects Contract
 
-Load `references/coding-projects-template.md` before drafting, creating, updating, or reviewing Coding Projects Tracker tasks.
+Load `references/notion/coding-projects-template.md` before drafting, creating, updating, or reviewing Coding Projects Tracker tasks.
 
 Coding Projects bug, regression, and problem-investigation tickets must use the Linear-style defect body from `$ticket-drafter`: `The Problem`, `Steps to Reproduce`, `Technical Requirements`, `Expected vs Actual`, and `Acceptance Criteria`.
 
 Coding Projects feature, enhancement, refactor, and other non-bug implementation tickets must use the implementation body from `$ticket-drafter`: `Objective`, `Scope`, `Implementation Requirements`, `Acceptance Criteria`, `Testing Notes`, and any relevant adaptive sections.
 
-Coding Projects targets are configured in `skill-configs/notion-orchestrator.json` under `domains.coding_projects`. Treat config values as the only cached target source. Re-fetch before writes and fall back to Notion search for the configured domain name if a fetch fails.
+Coding Projects targets are configured in `memory/skill-configs/notion-orchestrator.json` under `domains.coding_projects`. Treat config values as the only cached target source. Re-fetch before writes and fall back to Notion search for the configured domain name if a fetch fails.
 
 Always resolve the project relation before creating a Coding Projects task. Ask which project to connect when the request does not specify exactly one configured project.
 

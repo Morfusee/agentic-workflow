@@ -4,7 +4,7 @@ Use this template for Notion Personal Tasks only.
 
 ## Configuration Contract
 
-Load `skill-configs/notion-orchestrator.json` from the canonical memory root before using this template. Resolve the `personal_tasks` domain and verify its configured values against Notion before writes.
+Load `memory/skill-configs/notion-orchestrator.json` from the canonical memory root before using this template. Resolve the `personal_tasks` domain and verify its configured values against Notion before writes.
 
 Expected domain shape:
 
@@ -138,7 +138,7 @@ Relative dates use the user's local date. If the date could mean more than one d
 
 ## Create Workflow
 
-1. Load Notion Orchestrator config.
+1. Load Workflow Orchestrator Notion config.
 2. Resolve the `personal_tasks` domain.
 3. Resolve the target database and data source from config.
 4. Fetch the data source and confirm the configured fields exist.
