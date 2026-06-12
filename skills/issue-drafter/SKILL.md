@@ -1,6 +1,6 @@
 ---
 name: issue-drafter
-description: Convert bug reports, feedback, or loose problem descriptions into high-signal, actionable technical issues. Use when the user asks to draft, refine, or create a technical issue from a bug report, convert feedback into a structured ticket, or write up a regression as a formal issue. Follows a profile-aware workflow: draft, review, and optional publishing or handoff to the configured provider/orchestrator.
+description: Draft high-signal technical issues for bugs, regressions, broken behavior, production problems, feedback, or problem investigations. Use for defect-oriented tickets. Do not use for planned features, enhancements, or refactors; use implementation-ticket-drafter instead.
 ---
 
 # Issue Drafter — Draft, Review, Publish

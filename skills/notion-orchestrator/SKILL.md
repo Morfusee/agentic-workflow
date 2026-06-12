@@ -1,6 +1,6 @@
 ---
 name: notion-orchestrator
-description: Route and orchestrate Notion-specific workflows through one entry point. Use when the user asks to create, draft, update, review, or place Notion content, especially Personal Tasks or Coding Projects Tracker tickets, and ask for the target page, database, or project when it is not specified or safely inferred.
+description: Notion entrypoint. Use when the user wants to create, draft, update, review, or place Notion content, especially Personal Tasks or Coding Projects Tracker items. Handles Notion schema, target resolution, and publishing after helper skills draft ticket content.
 ---
 
 # Notion Orchestrator

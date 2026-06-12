@@ -1,6 +1,6 @@
 ---
 name: linear-orchestrator
-description: Route and orchestrate Linear-specific workflows through one entry point. Use when the user asks for Linear ticket dump creation, stand-up generation from Linear dumps, full Linear stand-up flow, Linear-context issue drafting, Linear-context implementation ticket drafting, Linear-context weekly ticket slideshow preparation, or Linear-context QA comment formatting.
+description: Linear entrypoint. Use when the user names Linear or a Linear issue and wants ticket dumps, stand-ups, issue drafts, implementation ticket drafts, weekly slideshow prep, QA comments, or direct Linear publishing. Routes to provider-agnostic helper skills after collecting Linear context.
 ---
 
 # Linear Orchestrator

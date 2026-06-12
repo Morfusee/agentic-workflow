@@ -1,6 +1,6 @@
 ---
 name: implementation-ticket-drafter
-description: Draft profile-aware implementation tickets for features, enhancements, refactors, and other non-bug technical work; use when the user wants to turn implementation ideas into structured tickets with review and provider-agnostic handoff metadata.
+description: Draft implementation tickets for planned features, enhancements, refactors, migrations, and other non-bug technical work. Use when turning an idea into an engineer-ready ticket with review and provider-agnostic handoff metadata. Do not use for bugs or regressions; use issue-drafter instead.
 ---
 
 # Implementation Ticket Drafter - Draft, Review, Handoff

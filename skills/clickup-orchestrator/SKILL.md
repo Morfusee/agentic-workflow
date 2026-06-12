@@ -1,6 +1,6 @@
 ---
 name: clickup-orchestrator
-description: Route and orchestrate ClickUp-specific workflows through one entry point. Use when the user asks for ClickUp ticket dump creation, stand-up generation from ClickUp dumps, full ClickUp stand-up flow, ClickUp-context issue drafting, ClickUp-context implementation ticket drafting, or ClickUp-context QA comment formatting.
+description: ClickUp entrypoint. Use when the user names ClickUp or a ClickUp task and wants task dumps, stand-ups, issue drafts, implementation ticket drafts, QA comments, or direct ClickUp task updates. Routes to provider-agnostic helper skills after collecting ClickUp context.
 ---
 
 # ClickUp Orchestrator

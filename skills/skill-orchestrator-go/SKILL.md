@@ -1,13 +1,10 @@
 ---
 name: skill-orchestrator-go
 description: >
-  Use when the user asks to "parallelize", "delegate", "spawn subagents",
-  "run multiple agents", "fan out tasks", "orchestrate", "divide and conquer",
-  "run in parallel", "distribute work", or "coordinate subagents".
-  Coordinate a main OpenCode Go agent with lightweight subagents for narrow
-  parallel tasks while preserving main-agent authority over planning, reasoning,
-  review, and final output. Use when a request can be split into small
-  independent tasks that benefit from cost-aware delegation.
+  OpenCode-specific subagent coordination. Use when the user asks to parallelize,
+  delegate, spawn subagents, run multiple agents, fan out tasks, divide and
+  conquer, or coordinate narrow independent subtasks. Preserve main-agent
+  authority over planning, reasoning, review, edits, and final output.
 ---
 
 # Skill Name

@@ -1,6 +1,6 @@
 ---
 name: standup-generator
-description: Generate a spoken stand-up script from structured work items, explicit next-day plans, and explicit evidence, with strict attribution and chronology rules. Use when the user wants an agnostic stand-up script from tickets, tasks, notes, or mixed sources without source-specific assumptions.
+description: Generate a spoken stand-up script from selected work items, next-day plans, and explicit evidence. Use after ticket/task facts are collected from dumps, notes, or mixed sources. Does not retrieve provider data itself.
 ---
 
 # Stand-up Generator

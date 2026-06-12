@@ -197,18 +197,6 @@ prefix_rule(
 )
 
 prefix_rule(
-    pattern = ["pwsh", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "skills/opencode-subagent-orchestrator/scripts/list-models.ps1"],
-    decision = "allow",
-    justification = "Allow repo-owned OpenCode model discovery script.",
-)
-
-prefix_rule(
-    pattern = ["pwsh", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "skills/opencode-subagent-orchestrator/scripts/invoke-opencode.ps1"],
-    decision = "allow",
-    justification = "Allow repo-owned OpenCode subagent invocation script.",
-)
-
-prefix_rule(
     pattern = ["git", "-C"],
     decision = "allow",
     justification = "Allow git read commands against an explicit project path. Destructive subcommands are still covered by stricter rules when run directly.",

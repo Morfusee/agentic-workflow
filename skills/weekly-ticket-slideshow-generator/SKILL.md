@@ -1,6 +1,6 @@
 ---
 name: weekly-ticket-slideshow-generator
-description: Transform weekly ticket dumps and stand-up scripts into an objective weekly presentation brief for $revealjs-presenter. Use when weekly work needs to be pulled from dump files, normalized, and turned into clear presentation-ready information that shows what the user actually worked on last week without directly authoring the final slideshow HTML.
+description: Transform weekly ticket dumps and stand-up scripts into an objective presentation brief for revealjs-presenter. Use when weekly work needs to be normalized into presentation-ready facts. Does not author final slideshow HTML.
 ---
 
 # Weekly Ticket Slideshow Generator

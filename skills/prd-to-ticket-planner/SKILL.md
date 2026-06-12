@@ -1,6 +1,6 @@
 ---
 name: prd-to-ticket-planner
-description: Creates phased PRDs and turns approved PRDs into provider-backed execution ticket plans with strict handoff boundaries. Use when the user wants to gather product requirements, create a PRD, refine requirements through grill-me, split a PRD into development phases, or generate tickets across Linear, ClickUp, or Notion.
+description: Create phased PRDs and turn approved PRDs into provider-backed execution ticket plans. Use for product requirement discovery, PRD creation, grill-me refinement, phase splitting, and ticket generation across Linear, ClickUp, or Notion. Do not use for already-scoped single tickets.
 ---
 
 # PRD To Ticket Planner

@@ -1,6 +1,6 @@
 ---
 name: ticket-dump-creator
-description: Create source-agnostic ticket or task dump files from normalized provider facts. Use when Linear, ClickUp, or another provider orchestrator has collected work item activity and needs the common activity-first dump contract, grouped summary, memory path, and Markdown output generated without provider-specific retrieval.
+description: Create source-agnostic ticket or task dump files from normalized provider facts. Use only after Linear, ClickUp, or another provider orchestrator has collected work item activity. Owns the common dump contract, grouped summary, memory path, and Markdown output.
 ---
 
 # Ticket Dump Creator

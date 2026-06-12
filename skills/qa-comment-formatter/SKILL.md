@@ -1,6 +1,6 @@
 ---
 name: qa-comment-formatter
-description: Format QA testing results into structured Linear-ready markdown comments. Use when the user provides QA observations, test results, pass/fail checks, or verification notes that need to be formatted as a ticket comment. When checks are not provided but a Linear issue ID is available, load the issue and infer test checks from its acceptance criteria. Supports direct Linear comment publishing, and can move Linear issue status only when the user explicitly asks to move, mark done, close, pass-and-done, or otherwise change the issue status.
+description: Format QA testing results into structured tracker-ready markdown comments. Use when the user provides QA observations, pass/fail checks, verification notes, or a ticket ID whose acceptance criteria should drive QA checks. Supports Linear and ClickUp publishing through provider context; only changes status when explicitly requested.
 ---
 
 # QA Comment Formatter

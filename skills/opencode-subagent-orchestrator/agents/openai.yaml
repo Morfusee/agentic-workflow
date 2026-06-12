@@ -1,4 +1,0 @@
-interface:
-  display_name: "OpenCode Subagent Orchestrator"
-  short_description: "Delegate costly tasks to OpenCode models"
-  default_prompt: "Use $opencode-subagent-orchestrator to decide whether to delegate expensive work to cheaper OpenCode subagents while Codex keeps final review."
