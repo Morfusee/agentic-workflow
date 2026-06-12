@@ -1,4 +1,4 @@
 interface:
   display_name: "Workflow Orchestrator"
-  short_description: "Unified entrypoint for Linear, ClickUp, and Notion workflows"
-  default_prompt: "Use $workflow-orchestrator to parse /skill [provider] [prompt], resolve Linear, ClickUp, or Notion context, load only the relevant provider reference, and run the correct workflow for ticket dumps, stand-ups, ticket drafts, review comments, weekly slideshows, Notion tasks, provider updates, or provider publishing. Ask one focused clarification when the provider, Notion domain, destination, or publish target is not clear."
+  short_description: "Unified entrypoint for Linear, ClickUp, Notion, and implementation workflows"
+  default_prompt: "Use $workflow-orchestrator to parse /skill [provider] [prompt] or /workflow-orchestrator implement [ticket-or-task], resolve Linear, ClickUp, Notion, or prompt-only context, load only the relevant provider reference, and run the correct workflow for ticket dumps, stand-ups, ticket drafts, implementation flows, review comments, weekly slideshows, Notion tasks, provider updates, or provider publishing. Ask one focused clarification when the provider, Notion domain, destination, implementation target, or publish target is not clear."

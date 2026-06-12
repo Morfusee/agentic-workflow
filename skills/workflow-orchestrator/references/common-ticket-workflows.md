@@ -5,6 +5,7 @@ Use this reference for provider-neutral ticket, dump, stand-up, review-comment, 
 ## Helper Skill Routing
 
 - Use `$ticket-drafter` for technical ticket drafts covering defects, regressions, production problems, features, enhancements, refactors, and other implementation work.
+- Use `$ticket-implementation-flow` for provider-backed or prompt-backed implementation work that needs requirements analysis, confidence scoring, branch/worktree setup, implementation, commit, and optional ticket notification.
 - Use `$ticket-review-comment-drafter` for code review findings, implementation review notes, QA results, pass/fail checks, or test observations intended for provider comments.
 - Use `$ticket-dump-creator` after provider facts are collected and normalized.
 - Use `$standup-generator` after selected dump/manual items have been normalized into source-agnostic evidence.
@@ -76,6 +77,16 @@ For review or QA comment drafting:
 1. Pass provider context and any provider item ID or URL to `$ticket-review-comment-drafter`.
 2. Let the drafter create the comment body and determine whether it can publish directly.
 3. If the drafter returns a provider-ready body but cannot publish, use the selected provider reference's comment publishing rules.
+
+## Implementation Flow
+
+For `/workflow-orchestrator implement [ticket-or-task]` or provider-specific implementation intent:
+
+1. Resolve the ticket/task/page when a provider ID or URL is supplied.
+2. Normalize provider facts: provider name, item ID, title, URL, status, body/description, acceptance criteria, comments needed for requirements, and comment target.
+3. Pass normalized context to `$ticket-implementation-flow`.
+4. Let `$ticket-implementation-flow` own analysis, confidence scoring, branching, worktree setup, implementation, commit, and notification decisions.
+5. Use the selected provider reference's comment publishing rules only when `$ticket-implementation-flow` reaches the ticket notification stage.
 
 ## Weekly Slideshows
 

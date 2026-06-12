@@ -1,6 +1,6 @@
 ---
 name: workflow-orchestrator
-description: Unified provider workflow entrypoint for Linear, ClickUp, and Notion. Use when the user invokes "/skill [provider] [prompt]", names Linear, ClickUp, or Notion, or wants ticket dumps, stand-ups, technical ticket drafts, review comments, weekly ticket slideshows, Notion task creation, Notion task updates, or provider publishing workflows.
+description: Unified provider workflow entrypoint for Linear, ClickUp, Notion, and ticket implementation flows. Use when the user invokes "/skill [provider] [prompt]", "/workflow-orchestrator implement [ticket-or-task]", names Linear, ClickUp, or Notion, or wants ticket dumps, stand-ups, technical ticket drafts, implementation, review comments, weekly ticket slideshows, Notion task creation, Notion task updates, or provider publishing workflows.
 ---
 
 # Workflow Orchestrator
@@ -13,7 +13,10 @@ Treat this skill as the entrypoint for commands shaped like:
 
 ```text
 /skill [provider] [prompt]
+/workflow-orchestrator implement [ticket-or-task]
 ```
+
+When the command starts with `implement`, resolve the ticket, task, URL, or prompt context and route to `$ticket-implementation-flow`.
 
 Supported providers:
 
@@ -55,6 +58,7 @@ Common branches include:
 - `standup-from-dump`
 - `full-flow`
 - `ticket-draft`
+- `implementation-flow`
 - `review-comment`
 - `weekly-slideshow`
 - provider-specific creation, update, review, publishing, or location-resolution branches
@@ -64,6 +68,7 @@ If confidence is low, ask one focused clarification before reading, drafting, or
 ## Execution Rules
 
 - Use provider tools as source of truth. Do not fabricate provider IDs, URLs, schema fields, task facts, ownership, chronology, outcomes, or write targets.
+- For `/workflow-orchestrator implement [ticket-or-task]`, resolve provider-backed ticket/task context first when possible, then invoke `$ticket-implementation-flow` with normalized requirements and any provider comment target.
 - Preserve draft-first publishing gates. Do not create provider records from a draft until the user approves the draft and asks to create, publish, add, or equivalent.
 - Preserve provider terminology in user-facing prompts: Linear uses tickets/issues, ClickUp uses tasks, Notion uses tasks/pages/databases according to the selected domain.
 - Keep provider-specific dump and stand-up formats stable for downstream consumers.

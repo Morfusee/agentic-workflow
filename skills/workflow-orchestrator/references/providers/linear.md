@@ -12,6 +12,7 @@ Infer intent heuristically and route to one branch:
 4. `ticket-draft`: route to `$ticket-drafter` only when request is clearly Linear-contextual and describes a defect, regression, production problem, feature, enhancement, refactor, or other technical ticket.
 5. `weekly-slideshow`: route to `$weekly-ticket-slideshow-generator` only when request is clearly Linear-contextual.
 6. `review-comment`: route to `$ticket-review-comment-drafter` when the user provides code review findings, implementation review notes, QA results, pass/fail checks, or test observations to draft into a Linear ticket comment. If the request includes a Linear issue ID, ticket identifier, or issue URL, pass it through as `linear_issue_id` so the drafter publishes directly to that issue.
+7. `implementation-flow`: route to `$ticket-implementation-flow` when the user invokes `/workflow-orchestrator implement [ticket-or-task]`, references a Linear issue ID or URL, and asks to implement, code, fix, branch, commit, deploy, or otherwise make repository changes.
 
 If confidence is low, ask one focused clarification.
 
@@ -24,6 +25,16 @@ Route Linear-context defect, regression, production problem, feature, enhancemen
 - Do not create a Linear issue until the user approves the ticket draft and explicitly asks to create or publish it.
 - After approval, map the handoff metadata into Linear fields using Linear tools: title, description, labels, priority, project, estimate, and confirmed assignee when available.
 - If required Linear publish fields are missing, ask one focused clarification before creating the issue.
+
+## implementation-flow Branch
+
+Resolve the Linear issue, then route normalized context to `$ticket-implementation-flow`.
+
+- Load the issue with Linear tools using the provided identifier or URL.
+- Include issue identifier, title, URL, status, description, labels, priority, project, comments relevant to requirements, and acceptance criteria when available.
+- Pass the Linear issue identifier as the provider comment target.
+- Let `$ticket-implementation-flow` decide confidence, brainstorming, branch/worktree setup, implementation, commit, and notification gates.
+- If `$ticket-implementation-flow` reaches ticket notification, publish its comment body to the Linear issue without adding commit hashes or developer names.
 
 ## Agent Execution Contract
 

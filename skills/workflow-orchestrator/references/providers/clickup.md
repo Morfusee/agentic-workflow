@@ -11,6 +11,7 @@ Infer intent heuristically and route to one branch:
 3. `full-flow`: run dump creation then stand-up from that dump.
 4. `ticket-draft`: route to `$ticket-drafter` only when request is clearly ClickUp-contextual and describes a defect, regression, production problem, feature, enhancement, refactor, or other technical ticket. Instruct `$ticket-drafter` to output the final draft in the ClickUp ticket format convention defined below (Description -> Scope -> Deliverable) when creating ClickUp-facing ticket text.
 5. `review-comment`: route to `$ticket-review-comment-drafter` when the user provides code review findings, implementation review notes, QA results, pass/fail checks, or test observations to draft into a ClickUp ticket comment. If the request includes a ClickUp task ID or task URL, pass it through as `clickup_task_id` so the drafter publishes directly to that task.
+6. `implementation-flow`: route to `$ticket-implementation-flow` when the user invokes `/workflow-orchestrator implement [ticket-or-task]`, references a ClickUp task ID or URL, and asks to implement, code, fix, branch, commit, deploy, or otherwise make repository changes.
 
 If confidence is low, ask one focused clarification.
 
@@ -24,6 +25,16 @@ Route ClickUp-context defect, regression, production problem, feature, enhanceme
 - Do not create a ClickUp task until the user approves the ticket draft and explicitly asks to create or publish it.
 - After approval, map the handoff metadata into ClickUp fields using ClickUp tools: title, description, labels/tags, priority, list, project or folder context, estimate, and confirmed assignee when available.
 - If the target ClickUp list is missing, ask which list to use before creating the task.
+
+## implementation-flow Branch
+
+Resolve the ClickUp task, then route normalized context to `$ticket-implementation-flow`.
+
+- Load the task with ClickUp tools using the provided identifier or URL.
+- Include task ID, title, URL, status, description, tags, priority, list/folder/space context, comments relevant to requirements, and acceptance criteria when available.
+- Pass the ClickUp task ID as the provider comment target.
+- Let `$ticket-implementation-flow` decide confidence, brainstorming, branch/worktree setup, implementation, commit, and notification gates.
+- If `$ticket-implementation-flow` reaches ticket notification, publish its comment body to the ClickUp task without adding commit hashes or developer names.
 
 ## ClickUp Ticket Format Convention
 

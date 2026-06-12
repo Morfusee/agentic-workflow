@@ -29,7 +29,7 @@ Infer intent heuristically and route to one branch:
 7. `coding-ticket-create`: create an approved Coding Projects Tracker task in the configured shared Tasks data source.
 8. `coding-ticket-update`: update an existing Coding Projects task's fields, project relation, or Markdown body.
 9. `coding-ticket-review`: fetch Coding Projects tasks for a selected project and summarize active work.
-10. `coding-ticket-implement`: when the user references an approved Coding Projects task and appears to ask for repo, code, CI/CD, deploy, branch, commit, or other implementation work, ask whether to route to `$implementation-prep`. If approved, pass normalized ticket context to `$implementation-prep` for classification, branch/worktree setup, brainstorming decision, and implementation plan approval.
+10. `coding-ticket-implement`: when the user references an approved Coding Projects task and appears to ask for repo, code, CI/CD, deploy, branch, commit, or other implementation work, ask whether to route to `$ticket-implementation-flow`. If approved, pass normalized ticket context to `$ticket-implementation-flow` for requirements analysis, confidence scoring, branch/worktree setup, implementation, commit, and optional notification.
 11. `location-resolution`: resolve the target Notion page, database, data source, or project before any write.
 
 If confidence is low, ask one focused clarification.
@@ -90,23 +90,23 @@ Do not publish Coding Projects tasks directly from `$ticket-drafter`; use that s
 
 For approved `$ticket-drafter` handoffs, map provider-agnostic metadata into the Coding Projects data source fields when those fields exist: title, Markdown body, status, priority, project relation, labels or tags, estimate, and confirmed assignee.
 
-### Implementation Prep Handoff
+### Implementation Flow Handoff
 
-When the user references an approved Coding Projects task and asks to implement it, start work, code it, build it, fix it in the repo, update CI/CD, deploy it, create a branch, commit changes, or otherwise make repository changes from that task, ask whether to route to `$implementation-prep`.
+When the user references an approved Coding Projects task and asks to implement it, start work, code it, build it, fix it in the repo, update CI/CD, deploy it, create a branch, commit changes, or otherwise make repository changes from that task, ask whether to route to `$ticket-implementation-flow`.
 
 Use a short confirmation prompt:
 
-"This looks like implementation work for a Coding Projects ticket. Run implementation-prep first?"
+"This looks like implementation work for a Coding Projects ticket. Run ticket-implementation-flow?"
 
 Options:
-1. Run implementation-prep
+1. Run ticket-implementation-flow
 2. Continue directly
 
-Do not invoke `$implementation-prep` silently. If implementation intent is likely but not explicit, ask the confirmation prompt first.
+Do not invoke `$ticket-implementation-flow` silently unless the user explicitly invoked `/workflow-orchestrator implement [ticket-or-task]`. If implementation intent is likely but not explicit, ask the confirmation prompt first.
 
 Before routing, verify that:
 - A Coding Projects task exists and has been approved or handoff-completed.
-- The task includes enough detail for the implementation-prep skill to classify work type and produce a plan.
+- The task includes enough detail for `$ticket-implementation-flow` to analyze requirements and produce a confidence-scored plan.
 - The user's current working directory or project context is known.
 
 If no Coding Projects task has been created yet, stop and route through `coding-ticket-draft` first.

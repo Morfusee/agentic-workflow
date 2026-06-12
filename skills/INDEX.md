@@ -6,8 +6,8 @@ Use this as the routing map before loading a skill. Prefer the narrowest skill t
 
 | Need | Use | Notes |
 | --- | --- | --- |
-| Work with Linear tickets, dumps, stand-ups, review comments, or Linear ticket drafts | `workflow-orchestrator` | Use `/skill linear [prompt]`; routes to Linear provider workflows and ticket helper skills. |
-| Work with ClickUp tasks, dumps, stand-ups, review comments, or ClickUp ticket drafts | `workflow-orchestrator` | Use `/skill clickup [prompt]`; routes to ClickUp provider workflows and ticket helper skills. |
+| Work with Linear tickets, dumps, stand-ups, review comments, implementation, or Linear ticket drafts | `workflow-orchestrator` | Use `/skill linear [prompt]` or `/workflow-orchestrator implement [ticket]`; routes to Linear provider workflows and ticket helper skills. |
+| Work with ClickUp tasks, dumps, stand-ups, review comments, implementation, or ClickUp ticket drafts | `workflow-orchestrator` | Use `/skill clickup [prompt]` or `/workflow-orchestrator implement [task]`; routes to ClickUp provider workflows and ticket helper skills. |
 | Create or update Notion pages, tasks, or Coding Projects Tracker items | `workflow-orchestrator` | Use `/skill notion [prompt]`; handles Notion schema, domains, and placement. |
 | Improve a frontend interface or product UI | `impeccable` | UI/UX critique, redesign, polish, and frontend visual quality. |
 | Refactor existing code without behavior changes | `refactor` | Surgical maintainability improvements. |
@@ -19,7 +19,7 @@ Use this as the routing map before loading a skill. Prefer the narrowest skill t
 | Need | Use | Notes |
 | --- | --- | --- |
 | Draft a bug, regression, production issue, feature, enhancement, refactor, or implementation ticket | `ticket-drafter` | Classifies the request as defect or implementation, then returns reviewed handoff metadata. |
-| Investigate tracker tickets against a codebase | `ticket-codebase-investigator` | Returns root causes, file evidence, and effort estimates. |
+| Implement a provider ticket/task or prompt from analysis through optional commit and notification | `ticket-implementation-flow` | Usually routed by `workflow-orchestrator`; handles confidence scoring, branch/worktree setup, implementation, commit, and comments. |
 | Create a PRD and split it into ticket phases | `ticket-prd-planner` | Requirements gathering through phased ticket plans. |
 | Draft code review, implementation review, or QA results as a tracker comment | `ticket-review-comment-drafter` | Review and QA comments only; not for new ticket creation. |
 
@@ -29,7 +29,7 @@ Use this as the routing map before loading a skill. Prefer the narrowest skill t
 | --- | --- | --- |
 | Clarify ambiguous or creative work before implementation | `brainstorming` | Turn fuzzy ideas into an approved design/spec. |
 | Turn an approved spec into an implementation plan | `writing-plans` | Produce task-by-task engineering instructions before coding. |
-| Prepare an approved Notion Coding Projects ticket for implementation | `implementation-prep` | Usually routed by `workflow-orchestrator`; classifies work, branch/worktree strategy, and brainstorming need. |
+| Execute an approved implementation ticket flow | `ticket-implementation-flow` | Usually routed by `workflow-orchestrator`; asks confidence and execution-mode gates before coding. |
 | Create an isolated worktree for feature work | `using-git-worktrees` | Keep implementation work separate from the current workspace. |
 | Stress-test a plan through questioning | `grill-me` | Use for adversarial plan/design review, often inside PRD work. |
 
@@ -59,6 +59,6 @@ Use this as the routing map before loading a skill. Prefer the narrowest skill t
 - Start with `workflow-orchestrator` when the request names Linear, ClickUp, or Notion.
 - Use `ticket-drafter` for defect and implementation ticket drafts.
 - Use `brainstorming` before `writing-plans` when the design is not settled.
-- Use `implementation-prep` only for approved Coding Projects implementation handoff or explicit `/implementation-prep` requests.
+- Use `ticket-implementation-flow` for approved Coding Projects implementation handoff, `/workflow-orchestrator implement [ticket-or-task]`, or direct commit/comment resume commands.
 - Do not load multiple planning skills at once; move stage by stage.
 - Hide or purge skills that are not clear enough to describe in this index.
