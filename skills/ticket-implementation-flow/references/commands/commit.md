@@ -6,10 +6,23 @@ Use for `/ticket-implementation-flow commit` and `/ticket-implementation-flow co
 
 1. Inspect `git status`, `git diff`, and staged diff.
 2. Identify whether the current conversation has a prior ticket context.
-3. If the command includes `[ticket]`, carry that ticket into the notification stage.
+3. If the command includes `[ticket]`, treat that ticket as context for the notification prompt.
 4. Use `$git-commit` to stage the intended implementation changes and create the commit.
-5. If the active flow selected ticket notification, proceed to the comment command with the resolved ticket.
-6. If no notification target exists, report the commit outcome in chat only.
+5. After a successful commit, check whether ticket/provider context exists.
+6. If ticket/provider context exists, always ask the user whether to proceed to the comment command with the resolved ticket.
+7. If the user agrees, proceed to the comment command.
+8. If the user declines, report the commit outcome in chat only.
+9. If no ticket/provider context exists, report the commit outcome in chat only.
+
+## Notification Prompt Rule
+
+After `/ticket-implementation-flow commit`, do not silently stop after committing when ticket/provider context exists. Always ask whether to post the implementation comment.
+
+Ticket/provider context includes a ticket ID, ticket URL, provider issue fetched during the flow, ticket context from a handoff, or a branch/current-task context that clearly maps to a ticket.
+
+Use this prompt:
+
+`Commit created. I have ticket context for [ticket]. Should I post the implementation comment now?`
 
 ## Rules
 

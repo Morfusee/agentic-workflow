@@ -47,8 +47,9 @@ Run provider-backed or prompt-backed implementation work through explicit confid
 ## Commit Rules
 
 - Use `$git-commit` for all commits.
-- `/ticket-implementation-flow commit` commits current flow changes and then continues to the next selected stage.
-- `/ticket-implementation-flow commit [ticket]` commits current changes and passes `[ticket]` to the notification stage when no prior flow context exists.
+- `/ticket-implementation-flow commit` commits current flow changes and then follows the notification prompt rule when ticket/provider context exists.
+- After a successful `/ticket-implementation-flow commit`, if any ticket/provider context exists, always ask whether to proceed to the ticket comment stage.
+- `/ticket-implementation-flow commit [ticket]` commits current changes and treats `[ticket]` as ticket/provider context when no prior flow context exists.
 - Do not commit when the selected mode stops at reviewable unstaged or staged changes.
 
 ## Notification Rules
