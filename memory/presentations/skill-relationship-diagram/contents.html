@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agentic Workflow Skills Map</title>
+<script>
+  (function () {
+    const saved = localStorage.getItem('theme');
+    const dark = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.classList.toggle('dark', dark);
+  })();
+</script>
+<style>
+  :root {
+    --bg: #f7f3ea;
+    --surface: #fffdf8;
+    --surface-2: #eee7dc;
+    --surface-3: #e6dccf;
+    --ink: #151413;
+    --body: #3d3934;
+    --muted: #847c71;
+    --line: #cfc4b7;
+    --line-soft: #ded4c6;
+    --core: #c96b4a;
+    --core-soft: rgba(201, 107, 74, 0.13);
+    --provider: #5d7f9a;
+    --provider-soft: rgba(93, 127, 154, 0.14);
+    --build: #7e905d;
+    --build-soft: rgba(126, 144, 93, 0.15);
+    --review: #9a6b9f;
+    --review-soft: rgba(154, 107, 159, 0.14);
+    --artifact: #bc9148;
+    --artifact-soft: rgba(188, 145, 72, 0.15);
+    --utility: #6f746f;
+    --utility-soft: rgba(111, 116, 111, 0.13);
+    --shadow: rgba(36, 29, 19, 0.13);
+    --glow: rgba(201, 107, 74, 0.32);
+    --serif: ui-serif, Georgia, "Times New Roman", serif;
+    --sans: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+  }
+  html.dark {
+    --bg: #121211;
+    --surface: #1c1b19;
+    --surface-2: #272520;
+    --surface-3: #312d27;
+    --ink: #f7f3ea;
+    --body: #d8d0c4;
+    --muted: #91887d;
+    --line: #464039;
+    --line-soft: #332f2a;
+    --core: #e58b69;
+    --core-soft: rgba(229, 139, 105, 0.16);
+    --provider: #86aac6;
+    --provider-soft: rgba(134, 170, 198, 0.16);
+    --build: #a9ba83;
+    --build-soft: rgba(169, 186, 131, 0.16);
+    --review: #c796cb;
+    --review-soft: rgba(199, 150, 203, 0.16);
+    --artifact: #d8b56f;
+    --artifact-soft: rgba(216, 181, 111, 0.17);
+    --utility: #a4aaa4;
+    --utility-soft: rgba(164, 170, 164, 0.14);
+    --shadow: rgba(0, 0, 0, 0.32);
+    --glow: rgba(229, 139, 105, 0.36);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    background:
+      radial-gradient(circle at 20% 10%, var(--core-soft), transparent 28%),
+      radial-gradient(circle at 85% 18%, var(--provider-soft), transparent 24%),
+      radial-gradient(circle at 55% 100%, var(--artifact-soft), transparent 30%),
+      var(--bg);
+    color: var(--body);
+    font-family: var(--sans);
+    overflow: hidden;
+  }
+  .app { height: 100%; display: flex; flex-direction: column; }
+  .bar {
+    min-height: 68px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--line-soft);
+    background: color-mix(in srgb, var(--bg) 84%, transparent);
+    backdrop-filter: blur(18px);
+    flex: none;
+  }
+  h1 {
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: clamp(18px, 2vw, 26px);
+    line-height: 1;
+    font-weight: 540;
+    letter-spacing: -0.03em;
+  }
+  .sub {
+    margin-top: 5px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .spacer { flex: 1; }
+  .chips { display: flex; gap: 7px; flex-wrap: wrap; justify-content: flex-end; }
+  .chip, #themeToggle {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--muted);
+    border-radius: 999px;
+    padding: 7px 11px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 5px 18px var(--shadow);
+    transition: transform 150ms ease, color 150ms ease, border-color 150ms ease, background 150ms ease;
+  }
+  .chip:hover, #themeToggle:hover { transform: translateY(-1px); color: var(--ink); border-color: var(--muted); }
+  .chip.on { color: var(--bg); background: var(--ink); border-color: var(--ink); }
+  #themeToggle { border-radius: 9px; }
+  .stage { position: relative; flex: 1; min-height: 0; overflow: hidden; }
+  svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+  .zone rect { fill: var(--zone-fill, transparent); stroke: var(--line-soft); stroke-width: 1.2; stroke-dasharray: 6 6; rx: 24; }
+  .zone text { font-family: var(--mono); fill: var(--muted); letter-spacing: 0.09em; text-transform: uppercase; }
+  .zone .zt { font-size: 12px; font-weight: 700; }
+  .zone .zs { font-size: 10px; opacity: 0.82; }
+
+  .edge { fill: none; stroke: var(--muted); stroke-width: 1.7; opacity: 0.62; marker-end: url(#arrow-muted); transition: opacity 170ms ease, stroke 170ms ease; }
+  .edge.soft { stroke-dasharray: 5 5; opacity: 0.45; }
+  .edge.primary { stroke-width: 2.2; }
+  .edge-label { font-family: var(--mono); font-size: 10px; fill: var(--muted); opacity: 0.72; transition: opacity 170ms ease, fill 170ms ease; }
+
+  .node { cursor: pointer; transition: opacity 180ms ease, transform 180ms ease; }
+  .node rect { fill: var(--surface); stroke: var(--line); stroke-width: 1.4; rx: 13; filter: drop-shadow(0 8px 14px var(--shadow)); transition: stroke 180ms ease, fill 180ms ease, filter 180ms ease; }
+  .node:hover rect { stroke: var(--ink); filter: drop-shadow(0 10px 20px var(--shadow)); }
+  .node .title { font-family: var(--sans); font-size: 13px; font-weight: 720; fill: var(--ink); pointer-events: none; }
+  .node .meta { font-family: var(--mono); font-size: 9.8px; fill: var(--muted); pointer-events: none; }
+  .node .tag { font-family: var(--mono); font-size: 8.8px; letter-spacing: 0.08em; text-transform: uppercase; fill: var(--accent); pointer-events: none; }
+  .node .dot { fill: var(--accent); pointer-events: none; }
+  .node.core { --accent: var(--core); --soft: var(--core-soft); }
+  .node.provider { --accent: var(--provider); --soft: var(--provider-soft); }
+  .node.build { --accent: var(--build); --soft: var(--build-soft); }
+  .node.review { --accent: var(--review); --soft: var(--review-soft); }
+  .node.artifact { --accent: var(--artifact); --soft: var(--artifact-soft); }
+  .node.utility { --accent: var(--utility); --soft: var(--utility-soft); }
+  .node rect.hotfill { fill: var(--soft); stroke: var(--accent); }
+  .node.sel rect { stroke: var(--core); stroke-width: 2.4; }
+
+  .stage.flowing .node { opacity: 0.22; }
+  .stage.flowing .edge, .stage.flowing .edge-label { opacity: 0.1; }
+  .stage.flowing .zone { opacity: 0.36; }
+  .stage.flowing .node.lit { opacity: 1; }
+  .stage.flowing .node.lit rect { stroke: var(--core); stroke-width: 2.3; filter: drop-shadow(0 0 18px var(--glow)); }
+  .stage.flowing .edge.lit { opacity: 1; stroke: var(--core); marker-end: url(#arrow-core); stroke-dasharray: 8 7; animation: march 900ms linear infinite; }
+  .stage.flowing .edge-label.lit { opacity: 1; fill: var(--core); }
+  @keyframes march { to { stroke-dashoffset: -15; } }
+  @media (prefers-reduced-motion: reduce) { .stage.flowing .edge.lit { animation: none; } }
+
+  .side, .flowcard {
+    position: absolute;
+    border: 1px solid var(--line);
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    color: var(--body);
+    box-shadow: 0 16px 48px var(--shadow);
+    backdrop-filter: blur(16px);
+    border-radius: 18px;
+  }
+  .side { right: 18px; bottom: 18px; width: min(380px, calc(100vw - 36px)); padding: 16px 17px 17px; }
+  .side h2 { color: var(--ink); font-family: var(--serif); font-size: 22px; font-weight: 540; letter-spacing: -0.02em; margin-bottom: 4px; }
+  .side .kind { font-family: var(--mono); color: var(--core); font-size: 10px; letter-spacing: 0.09em; text-transform: uppercase; margin-bottom: 9px; }
+  .side p { font-size: 13px; line-height: 1.5; }
+  .side .uses { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .pill { font-family: var(--mono); font-size: 10px; color: var(--muted); border: 1px solid var(--line-soft); border-radius: 999px; padding: 4px 7px; }
+  .flowcard { left: 18px; bottom: 18px; max-width: min(560px, calc(100vw - 36px)); padding: 13px 15px; display: none; }
+  .flowcard.show { display: block; }
+  .flowcard .name { color: var(--core); font-family: var(--mono); font-size: 10px; letter-spacing: 0.09em; text-transform: uppercase; margin-bottom: 5px; }
+  .flowcard p { font-size: 12.5px; line-height: 1.45; }
+  .source {
+    position: absolute;
+    left: 18px;
+    top: 14px;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  @media (max-width: 980px) {
+    body { overflow: auto; }
+    .app { min-height: 100%; height: auto; }
+    .bar { align-items: flex-start; flex-direction: column; }
+    .chips { justify-content: flex-start; }
+    .stage { min-height: 820px; }
+    .side, .flowcard { position: static; width: auto; margin: 10px 14px; }
+    .source { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="bar">
+    <div>
+      <h1>Agentic Workflow Skills Map</h1>
+      <div class="sub">27 local skills · provider workflows · implementation gates · artifact pipelines</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="chips" id="chips">
+      <button class="chip on" data-flow="all">All</button>
+      <button class="chip" data-flow="provider">Provider Work</button>
+      <button class="chip" data-flow="implement">Implement</button>
+      <button class="chip" data-flow="review">Review</button>
+      <button class="chip" data-flow="present">Present</button>
+      <button class="chip" data-flow="author">Author Skills</button>
+      <button class="chip" data-flow="ui">UI Quality</button>
+    </div>
+    <button id="themeToggle" type="button">Theme</button>
+  </div>
+
+  <main class="stage" id="stage">
+    <div class="source">Source: skills/*/SKILL.md</div>
+    <svg viewBox="0 0 1600 980" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Diagram showing relationships between all local agentic workflow skills">
+      <defs>
+        <marker id="arrow-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" style="fill: var(--muted)"></path>
+        </marker>
+        <marker id="arrow-core" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" style="fill: var(--core)"></path>
+        </marker>
+      </defs>
+
+      <g class="zone" style="--zone-fill: var(--provider-soft)">
+        <rect x="40" y="105" width="355" height="770"></rect>
+        <text class="zt" x="64" y="138">Provider And Planning Entry</text>
+        <text class="zs" x="64" y="157">Linear · ClickUp · Notion · PRD · dumps</text>
+      </g>
+      <g class="zone" style="--zone-fill: var(--core-soft)">
+        <rect x="430" y="105" width="360" height="770"></rect>
+        <text class="zt" x="454" y="138">Execution Core</text>
+        <text class="zs" x="454" y="157">implementation, review, subagents, git</text>
+      </g>
+      <g class="zone" style="--zone-fill: var(--review-soft)">
+        <rect x="825" y="105" width="315" height="770"></rect>
+        <text class="zt" x="849" y="138">Specialists</text>
+        <text class="zs" x="849" y="157">reviewers, UI, browser, writing</text>
+      </g>
+      <g class="zone" style="--zone-fill: var(--artifact-soft)">
+        <rect x="1175" y="105" width="385" height="770"></rect>
+        <text class="zt" x="1199" y="138">Artifacts And Memory</text>
+        <text class="zs" x="1199" y="157">presentations, notes, handoffs, config sync</text>
+      </g>
+
+      <path class="edge primary" id="e-workflow-impl" d="M365,245 C430,245 430,232 492,232"></path>
+      <path class="edge" id="e-workflow-dump" d="M236,285 C235,335 235,352 235,387"></path>
+      <path class="edge" id="e-workflow-draft" d="M236,285 C170,326 165,455 188,507"></path>
+      <path class="edge" id="e-workflow-review-comment" d="M365,267 C655,286 710,455 854,455"></path>
+      <path class="edge" id="e-workflow-weekly" d="M365,278 C640,320 975,645 1214,641"></path>
+      <path class="edge" id="e-prd-grill" d="M224,650 C425,596 715,623 854,632"></path>
+      <path class="edge" id="e-prd-avoid" d="M224,670 C452,715 630,785 854,783"></path>
+      <path class="edge" id="e-prd-workflow" d="M224,625 C172,540 178,360 204,285"></path>
+      <path class="edge" id="e-impl-brain" d="M650,259 C760,275 780,214 854,213"></path>
+      <path class="edge" id="e-brain-plan" d="M1013,213 C1072,214 1107,266 1134,315 C1167,374 790,362 655,361"></path>
+      <path class="edge" id="e-impl-worktree" d="M572,259 C572,315 572,322 572,334"></path>
+      <path class="edge" id="e-impl-git" d="M650,242 C682,242 699,242 714,242 C722,242 722,725 650,731"></path>
+      <path class="edge" id="e-impl-browser" d="M650,232 C743,232 777,325 854,332"></path>
+      <path class="edge" id="e-impl-review" d="M650,258 C734,286 746,402 854,402"></path>
+      <path class="edge" id="e-review-req" d="M1013,407 C1052,407 1070,404 1094,396 C1115,389 1116,272 1013,272"></path>
+      <path class="edge" id="e-review-react" d="M1013,428 C1072,454 1073,548 1013,555"></path>
+      <path class="edge" id="e-review-orch" d="M854,424 C765,440 719,523 650,522"></path>
+      <path class="edge" id="e-review-draft-comment" d="M1013,431 C1098,438 1129,454 1214,455"></path>
+      <path class="edge" id="e-dump-standup" d="M365,408 C700,408 868,641 1214,641"></path>
+      <path class="edge" id="e-standup-weekly" d="M1371,641 C1400,641 1404,698 1371,701"></path>
+      <path class="edge" id="e-weekly-reveal" d="M1214,704 C1178,730 1149,820 1214,823"></path>
+      <path class="edge" id="e-html-memory" d="M1407,835 C1390,835 1388,835 1371,835"></path>
+      <path class="edge" id="e-write-config" d="M1013,860 C1095,860 1125,520 1214,520"></path>
+      <path class="edge soft" id="e-handoff-memory" d="M650,845 C820,918 1100,918 1214,860"></path>
+      <path class="edge soft" id="e-note-memory" d="M1371,580 C1440,620 1440,806 1371,845"></path>
+      <path class="edge soft" id="e-config-skills" d="M1214,520 C1055,476 772,824 650,845"></path>
+      <path class="edge" id="e-impeccable-browser" d="M1013,333 C1044,333 1045,553 1013,555"></path>
+      <path class="edge" id="e-impeccable-react" d="M933,365 C933,438 933,486 933,528"></path>
+
+      <text class="edge-label" data-e="e-workflow-impl" x="414" y="222">implement</text>
+      <text class="edge-label" data-e="e-workflow-dump" x="248" y="346">dump</text>
+      <text class="edge-label" data-e="e-workflow-weekly" x="704" y="378">weekly slideshow</text>
+      <text class="edge-label" data-e="e-impl-brain" x="728" y="205">creative gate</text>
+      <text class="edge-label" data-e="e-impl-worktree" x="586" y="312">isolate</text>
+      <text class="edge-label" data-e="e-impl-git" x="688" y="713">commit</text>
+      <text class="edge-label" data-e="e-review-draft-comment" x="1092" y="444">tracker comment</text>
+      <text class="edge-label" data-e="e-dump-standup" x="696" y="437">spoken update</text>
+      <text class="edge-label" data-e="e-weekly-reveal" x="1174" y="774">deck HTML</text>
+
+      <g class="node provider" id="n-workflow" data-id="workflow-orchestrator" transform="translate(188 205)">
+        <rect class="hotfill" width="177" height="80"></rect><circle class="dot" cx="18" cy="18" r="4"></circle>
+        <text class="tag" x="32" y="22">router</text><text class="title" x="18" y="45">workflow-orchestrator</text><text class="meta" x="18" y="64">provider entrypoint</text>
+      </g>
+      <g class="node provider" id="n-dump" data-id="ticket-dump-creator" transform="translate(188 386)">
+        <rect width="177" height="66"></rect><circle class="dot" cx="18" cy="18" r="4"></circle>
+        <text class="title" x="18" y="39">ticket-dump-creator</text><text class="meta" x="18" y="55">normalized facts</text>
+      </g>
+      <g class="node provider" id="n-drafter" data-id="ticket-drafter" transform="translate(188 506)">
+        <rect width="177" height="66"></rect><circle class="dot" cx="18" cy="18" r="4"></circle>
+        <text class="title" x="18" y="39">ticket-drafter</text><text class="meta" x="18" y="55">draft, do not publish</text>
+      </g>
+      <g class="node provider" id="n-prd" data-id="ticket-prd-planner" transform="translate(82 625)">
+        <rect width="142" height="76"></rect><circle class="dot" cx="18" cy="18" r="4"></circle>
+        <text class="title" x="18" y="39">ticket-prd</text><text class="title" x="18" y="55">planner</text><text class="meta" x="18" y="70">PRD to tickets</text>
+      </g>
+
+      <g class="node core" id="n-impl" data-id="ticket-implementation-flow" transform="translate(492 205)">
+        <rect class="hotfill" width="158" height="82"></rect><circle class="dot" cx="18" cy="18" r="4"></circle>
+        <text class="tag" x="32" y="22">main lane</text><text class="title" x="18" y="45">ticket-implementation</text><text class="title" x="18" y="61">flow</text><text class="meta" x="18" y="76">analyze · implement · notify</text>
+      </g>
+      <g class="node core" id="n-worktrees" data-id="using-git-worktrees" transform="translate(492 334)">
+        <rect width="158" height="62"></rect><circle class="dot" cx="18" cy="18" r="4"></circle>
+        <text class="title" x="18" y="38">using-git-worktrees</text><text class="meta" x="18" y="53">isolation</text>
+      </g>
+      <g class="node core" id="n-orchestrator" data-id="skill-orchestrator-go" transform="translate(492 492)">
+        <rect width="158" height="62"></rect><circle class="dot" cx="18" cy="18" r="4"></circle>
+        <text class="title" x="18" y="38">skill-orchestrator-go</text><text class="meta" x="18" y="53">parallel agents</text>
+      </g>
+      <g class="node core" id="n-git" data-id="git-commit" transform="translate(492 716)">
+        <rect width="158" height="62"></rect><circle class="dot" cx="18" cy="18" r="4"></circle>
+        <text class="title" x="18" y="38">git-commit</text><text class="meta" x="18" y="53">conventional commits</text>
+      </g>
+      <g class="node utility" id="n-handoff" data-id="handoff" transform="translate(492 828)">
+        <rect width="158" height="54"></rect><circle class="dot" cx="18" cy="18" r="4"></circle>
+        <text class="title" x="18" y="34">handoff</text><text class="meta" x="18" y="48">fresh-agent context</text>
+      </g>
+
+      <g class="node build" id="n-brain" data-id="brainstorming" transform="translate(854 188)">
+        <rect width="159" height="62"></rect><circle class="dot" cx="18" cy="18" r="4"></circle>
+        <text class="title" x="18" y="38">brainstorming</text><text class="meta" x="18" y="53">design gate</text>
+      </g>
+      <g class="node build" id="n-plan" data-id="writing-plans" transform="translate(655 334)">
+        <rect width="112" height="62"></rect><circle class="dot" cx="18" cy="18" r="4"></circle>
+        <text class="title" x="18" y="38">writing</text><text class="title" x="18" y="53">plans</text>
+      </g>
+      <g class="node review" id="n-review" data-id="review-orchestrator" transform="translate(854 387)">
+        <rect class="hotfill" width="159" height="68"></rect><circle class="dot" cx="18" cy="18" r="4"></circle>
+        <text class="title" x="18" y="39">review-orchestrator</text><text class="meta" x="18" y="56">aggregate checks</text>
+      </g>
+      <g class="node review" id="n-req" data-id="requirements-reviewer" transform="translate(854 255)">
+        <rect width="159" height="62"></rect><circle class="dot" cx="18" cy="18" r="4"></circle>
+        <text class="title" x="18" y="38">requirements-reviewer</text><text class="meta" x="18" y="53">acceptance criteria</text>
+      </g>
+      <g class="node review" id="n-react" data-id="react-quality-review" transform="translate(854 528)">
+        <rect width="159" height="62"></rect><circle class="dot" cx="18" cy="18" r="4"></circle>
+        <text class="title" x="18" y="38">react-quality-review</text><text class="meta" x="18" y="53">React / TS</text>
+      </g>
+      <g class="node utility" id="n-grill" data-id="grill-me" transform="translate(854 617)">
+        <rect width="159" height="54"></rect><circle class="dot" cx="18" cy="18" r="4"></circle>
+        <text class="title" x="18" y="34">grill-me</text><text class="meta" x="18" y="48">stress-test plan</text>
+      </g>
+      <g class="node utility" id="n-avoid" data-id="avoid-ai-writing" transform="translate(854 761)">
+        <rect width="159" height="54"></rect><circle class="dot" cx="18" cy="18" r="4"></circle>
+        <text class="title" x="18" y="34">avoid-ai-writing</text><text class="meta" x="18" y="48">prose cleanup</text>
+      </g>
+      <g class="node utility" id="n-write" data-id="write-a-skill" transform="translate(854 833)">
+        <rect width="159" height="54"></rect><circle class="dot" cx="18" cy="18" r="4"></circle>
+        <text class="title" x="18" y="34">write-a-skill</text><text class="meta" x="18" y="48">skill authoring</text>
+      </g>
+      <g class="node build" id="n-browser" data-id="agent-browser" transform="translate(854 315)">
+        <rect width="159" height="62"></rect><circle class="dot" cx="18" cy="18" r="4"></circle>
+        <text class="title" x="18" y="38">agent-browser</text><text class="meta" x="18" y="53">browser / desktop QA</text>
+      </g>
+      <g class="node build" id="n-impeccable" data-id="impeccable" transform="translate(854 689)">
+        <rect width="159" height="54"></rect><circle class="dot" cx="18" cy="18" r="4"></circle>
+        <text class="title" x="18" y="34">impeccable</text><text class="meta" x="18" y="48">frontend design</text>
+      </g>
+      <g class="node utility" id="n-refactor" data-id="refactor" transform="translate(681 828)">
+        <rect width="109" height="54"></rect><circle class="dot" cx="16" cy="18" r="4"></circle>
+        <text class="title" x="16" y="34">refactor</text><text class="meta" x="16" y="48">surgical</text>
+      </g>
+
+      <g class="node artifact" id="n-comment" data-id="ticket-review-comment-drafter" transform="translate(1214 424)">
+        <rect width="157" height="70"></rect><circle class="dot" cx="18" cy="18" r="4"></circle>
+        <text class="title" x="18" y="38">ticket-review</text><text class="title" x="18" y="54">comment-drafter</text><text class="meta" x="18" y="66">tracker-ready</text>
+      </g>
+      <g class="node utility" id="n-config" data-id="config-symlink-maintainer" transform="translate(1214 503)">
+        <rect width="157" height="70"></rect><circle class="dot" cx="18" cy="18" r="4"></circle>
+        <text class="title" x="18" y="38">config-symlink</text><text class="title" x="18" y="54">maintainer</text><text class="meta" x="18" y="66">repo source of truth</text>
+      </g>
+      <g class="node artifact" id="n-standup" data-id="standup-generator" transform="translate(1214 611)">
+        <rect width="157" height="62"></rect><circle class="dot" cx="18" cy="18" r="4"></circle>
+        <text class="title" x="18" y="38">standup-generator</text><text class="meta" x="18" y="53">spoken script</text>
+      </g>
+      <g class="node artifact" id="n-weekly" data-id="weekly-ticket-slideshow-generator" transform="translate(1214 689)">
+        <rect class="hotfill" width="157" height="70"></rect><circle class="dot" cx="18" cy="18" r="4"></circle>
+        <text class="title" x="18" y="38">weekly-ticket</text><text class="title" x="18" y="54">slideshow</text><text class="meta" x="18" y="66">brief generator</text>
+      </g>
+      <g class="node artifact" id="n-reveal" data-id="revealjs-presenter" transform="translate(1214 806)">
+        <rect width="157" height="62"></rect><circle class="dot" cx="18" cy="18" r="4"></circle>
+        <text class="title" x="18" y="38">revealjs-presenter</text><text class="meta" x="18" y="53">final slide deck</text>
+      </g>
+      <g class="node artifact" id="n-html" data-id="html-diagram" transform="translate(1407 806)">
+        <rect width="114" height="58"></rect><circle class="dot" cx="16" cy="18" r="4"></circle>
+        <text class="title" x="16" y="36">html-diagram</text><text class="meta" x="16" y="51">SVG maps</text>
+      </g>
+      <g class="node utility" id="n-note" data-id="note-taking" transform="translate(1407 611)">
+        <rect width="114" height="58"></rect><circle class="dot" cx="16" cy="18" r="4"></circle>
+        <text class="title" x="16" y="36">note-taking</text><text class="meta" x="16" y="51">memory notes</text>
+      </g>
+    </svg>
+
+    <aside class="side" id="detail">
+      <h2>Click a Skill</h2>
+      <div class="kind">relationship map</div>
+      <p>Use the chips to animate the main paths. Click any node to see why it exists and what it connects to.</p>
+      <div class="uses"><span class="pill">provider routing</span><span class="pill">implementation</span><span class="pill">review</span><span class="pill">artifacts</span></div>
+    </aside>
+    <div class="flowcard" id="flowcard">
+      <div class="name">All skills</div>
+      <p>The full map is visible. Central lanes move left to right: provider context, execution core, specialist checks, and durable artifacts under memory.</p>
+    </div>
+  </main>
+</div>
+
+<script>
+  const skills = {
+    'workflow-orchestrator': ['Provider router', 'Unified Linear, ClickUp, Notion, and implementation entrypoint. It resolves provider context, chooses intent branches, and delegates helper skills instead of doing every job itself.', ['ticket-implementation-flow', 'ticket-dump-creator', 'ticket-drafter', 'ticket-review-comment-drafter', 'weekly-ticket-slideshow-generator']],
+    'ticket-implementation-flow': ['Implementation gate', 'Turns ticket or prompt requirements into repo analysis, confidence gates, worktree setup, minimal implementation, verification, commit, and optional provider notification.', ['brainstorming', 'using-git-worktrees', 'git-commit', 'agent-browser']],
+    'ticket-dump-creator': ['Evidence artifact', 'Writes source-agnostic Markdown dumps from normalized provider facts collected by the orchestrator. It owns the common dump contract and memory path.', ['workflow-orchestrator', 'standup-generator', 'weekly-ticket-slideshow-generator']],
+    'ticket-drafter': ['Drafting helper', 'Converts loose technical input into engineer-ready ticket drafts and handoff metadata. It never publishes directly.', ['workflow-orchestrator']],
+    'ticket-prd-planner': ['PRD pipeline', 'Runs phased PRD discovery, stress testing, writing cleanup, and provider-backed execution ticket planning.', ['grill-me', 'avoid-ai-writing', 'workflow-orchestrator']],
+    'brainstorming': ['Design gate', 'Required before creative behavior changes. It explores intent, produces an approved design, then transitions into planning.', ['writing-plans']],
+    'writing-plans': ['Planning handoff', 'Creates implementation plans from approved specs before code changes begin.', ['ticket-implementation-flow', 'using-git-worktrees']],
+    'using-git-worktrees': ['Isolation utility', 'Ensures implementation work happens in an isolated workspace when needed, preserving current workspace changes.', ['ticket-implementation-flow']],
+    'git-commit': ['Commit utility', 'Analyzes diffs, stages logical changes, and creates conventional commits.', ['ticket-implementation-flow']],
+    'skill-orchestrator-go': ['Parallel coordinator', 'Delegates narrow independent subtasks to subagents while keeping the main agent responsible for final decisions.', ['review-orchestrator', 'requirements-reviewer', 'react-quality-review']],
+    'review-orchestrator': ['Review coordinator', 'Aggregates implementation reviews against requirements, acceptance criteria, code quality, and diffs.', ['requirements-reviewer', 'react-quality-review', 'skill-orchestrator-go', 'ticket-review-comment-drafter']],
+    'requirements-reviewer': ['Required reviewer', 'Checks implemented work against requirements and acceptance criteria using a strict pass/fail contract.', ['review-orchestrator']],
+    'react-quality-review': ['React reviewer', 'Runs React and TypeScript quality review when project evidence or user request calls for it.', ['review-orchestrator', 'impeccable']],
+    'ticket-review-comment-drafter': ['Provider comment', 'Formats review and QA results into structured Linear or ClickUp-ready comments and can publish when provider context exists.', ['review-orchestrator', 'workflow-orchestrator']],
+    'standup-generator': ['Narration artifact', 'Creates factual spoken stand-up scripts from selected work item evidence after provider facts are collected.', ['ticket-dump-creator', 'weekly-ticket-slideshow-generator']],
+    'weekly-ticket-slideshow-generator': ['Presentation brief', 'Transforms weekly dumps and stand-up scripts into an objective brief for final rendering.', ['standup-generator', 'revealjs-presenter', 'avoid-ai-writing']],
+    'revealjs-presenter': ['Slide renderer', 'Produces final RevealJS HTML decks from prepared presentation briefs.', ['weekly-ticket-slideshow-generator']],
+    'html-diagram': ['Architecture visualizer', 'Creates full-screen, light-prose SVG architecture diagrams and interactive behavior maps.', ['memory/presentations', 'architecture references']],
+    'impeccable': ['Frontend design system', 'Audits, critiques, polishes, and improves frontend interfaces with strong visual standards.', ['agent-browser', 'react-quality-review']],
+    'agent-browser': ['Browser automation', 'Automates websites and desktop apps for testing, screenshots, QA, Slack, and browser-based workflows.', ['ticket-implementation-flow', 'impeccable']],
+    'avoid-ai-writing': ['Writing cleanup', 'Audits or rewrites content to remove AI writing patterns before publication or handoff.', ['ticket-prd-planner', 'weekly-ticket-slideshow-generator']],
+    'grill-me': ['Design interrogation', 'Stress-tests plans and requirements until the decision tree is explicit.', ['ticket-prd-planner']],
+    'write-a-skill': ['Skill authoring', 'Creates new skill folders, SKILL.md instructions, references, and scripts using repo conventions.', ['config-symlink-maintainer']],
+    'config-symlink-maintainer': ['Config sync', 'Keeps repo-owned OpenCode, Codex, Neovim, skills, and memory configuration synced safely.', ['write-a-skill', 'skills directory']],
+    'handoff': ['Conversation handoff', 'Compacts current work into memory so a fresh agent can continue without losing context.', ['memory']],
+    'note-taking': ['Memory notes', 'Creates, organizes, retrieves, and summarizes Markdown notes under the canonical memory root.', ['memory']],
+    'refactor': ['Surgical refactor', 'Improves maintainability without behavior changes when explicit refactoring is the goal.', ['ticket-implementation-flow']]
+  };
+
+  const flows = {
+    all: { name: 'All skills', text: 'The full map is visible. Central lanes move left to right: provider context, execution core, specialist checks, and durable artifacts under memory.', nodes: [], edges: [] },
+    provider: { name: 'Provider work', text: 'Provider requests enter through workflow-orchestrator, then become dumps, drafts, implementation flows, review comments, stand-ups, or weekly presentation briefs.', nodes: ['workflow-orchestrator','ticket-dump-creator','ticket-drafter','ticket-review-comment-drafter','standup-generator','weekly-ticket-slideshow-generator'], edges: ['e-workflow-dump','e-workflow-draft','e-workflow-review-comment','e-workflow-weekly','e-dump-standup','e-standup-weekly'] },
+    implement: { name: 'Implementation flow', text: 'Implementation starts from provider or prompt context, passes through analysis and gates, optionally brainstorms, isolates work, verifies, and commits.', nodes: ['workflow-orchestrator','ticket-implementation-flow','brainstorming','writing-plans','using-git-worktrees','agent-browser','git-commit'], edges: ['e-workflow-impl','e-impl-brain','e-brain-plan','e-impl-worktree','e-impl-browser','e-impl-git'] },
+    review: { name: 'Review flow', text: 'Review-orchestrator gathers context, runs requirements checks every time, adds React review when relevant, and hands accepted checks to the tracker comment drafter.', nodes: ['ticket-implementation-flow','review-orchestrator','requirements-reviewer','react-quality-review','skill-orchestrator-go','ticket-review-comment-drafter'], edges: ['e-impl-review','e-review-req','e-review-react','e-review-orch','e-review-draft-comment'] },
+    present: { name: 'Presentation flow', text: 'Ticket evidence becomes dumps and stand-up scripts, then a weekly brief, then RevealJS output. html-diagram creates standalone architecture maps directly under memory/presentations.', nodes: ['ticket-dump-creator','standup-generator','weekly-ticket-slideshow-generator','revealjs-presenter','html-diagram','avoid-ai-writing'], edges: ['e-dump-standup','e-standup-weekly','e-weekly-reveal','e-html-memory'] },
+    author: { name: 'Skill authoring', text: 'write-a-skill creates or updates skills under this repo. config-symlink-maintainer keeps repo-owned skill/config sources synchronized into local tool config locations.', nodes: ['write-a-skill','config-symlink-maintainer','handoff','note-taking'], edges: ['e-write-config','e-config-skills','e-handoff-memory','e-note-memory'] },
+    ui: { name: 'UI quality loop', text: 'Frontend work uses impeccable for design quality, agent-browser for live/browser feedback, and react-quality-review for React and TypeScript review.', nodes: ['impeccable','agent-browser','react-quality-review','ticket-implementation-flow'], edges: ['e-impeccable-browser','e-impeccable-react','e-impl-browser'] }
+  };
+
+  const stage = document.getElementById('stage');
+  const detail = document.getElementById('detail');
+  const flowcard = document.getElementById('flowcard');
+  const nodes = [...document.querySelectorAll('.node')];
+  const edges = [...document.querySelectorAll('.edge')];
+  const labels = [...document.querySelectorAll('.edge-label')];
+
+  function clearSelection() {
+    nodes.forEach(n => n.classList.remove('sel'));
+  }
+
+  function selectSkill(id) {
+    const data = skills[id];
+    if (!data) return;
+    clearSelection();
+    document.querySelector(`[data-id="${id}"]`)?.classList.add('sel');
+    detail.innerHTML = `<h2>${id}</h2><div class="kind">${data[0]}</div><p>${data[1]}</p><div class="uses">${data[2].map(x => `<span class="pill">${x}</span>`).join('')}</div>`;
+  }
+
+  function setFlow(name) {
+    const flow = flows[name] || flows.all;
+    document.querySelectorAll('.chip').forEach(chip => chip.classList.toggle('on', chip.dataset.flow === name));
+    nodes.forEach(n => n.classList.toggle('lit', flow.nodes.includes(n.dataset.id)));
+    edges.forEach(e => e.classList.toggle('lit', flow.edges.includes(e.id)));
+    labels.forEach(label => label.classList.toggle('lit', flow.edges.includes(label.dataset.e)));
+    stage.classList.toggle('flowing', name !== 'all');
+    flowcard.classList.toggle('show', name !== 'all');
+    flowcard.innerHTML = `<div class="name">${flow.name}</div><p>${flow.text}</p>`;
+  }
+
+  nodes.forEach(node => node.addEventListener('click', () => selectSkill(node.dataset.id)));
+  document.getElementById('chips').addEventListener('click', event => {
+    const button = event.target.closest('button[data-flow]');
+    if (button) setFlow(button.dataset.flow);
+  });
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    const dark = !document.documentElement.classList.contains('dark');
+    document.documentElement.classList.toggle('dark', dark);
+    localStorage.setItem('theme', dark ? 'dark' : 'light');
+  });
+  selectSkill('workflow-orchestrator');
+</script>
+</body>
+</html>
