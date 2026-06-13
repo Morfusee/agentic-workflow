@@ -65,6 +65,9 @@
 
   <dt>Usable IP Range</dt>
   <dd>The IPs in a subnet that can actually be assigned to devices = all addresses minus network, gateway, and broadcast. In a <code>/28</code> block of 16 IPs, typically 13 are usable.</dd>
+
+  <dt>Default Gateway</dt>
+  <dd>The router IP that devices send traffic to when the destination is not on their local network. On OVH without vRack, the default gateway is <code>100.64.0.1</code> — a carrier-grade NAT address. VMs use the Proxmox host's bridge IP as their default gateway.</dd>
 </dl>
 
 <h2>Network Interfaces &amp; Linux</h2>
@@ -89,7 +92,24 @@
 <h2>Key Concepts</h2>
 <dl>
   <dt>NAT (Network Address Translation)</dt>
-  <dd>A technique where one public IP is shared among multiple devices by mapping each device's traffic to a different port. Your home router uses NAT. On your KimSufi, you can use <code>iptables</code> NAT to give VMs internet access through the server's main IP.</dd>
+  <dd>A technique where one public IP is shared among multiple devices by rewriting packet headers in transit. Your home router uses NAT. On your KimSufi, you use <code>iptables</code> NAT to give VMs internet access through the server's single public IP.</dd>
+
+  <dt>Masquerade (SNAT)</dt>
+  <dd>Source NAT — rewrites the source IP of outgoing packets from VMs to the host's public IP so the internet sees the traffic as coming from the server. Handles <strong>outbound</strong> traffic (VMs can reach the internet).</dd>
+  <dd class="avoid">Avoid: "IP masquerading"</dd>
+
+  <dt>Port Forwarding (DNAT)</dt>
+  <dd>Destination NAT — rewrites the destination IP/port of incoming packets so they reach a specific VM instead of the host. Handles <strong>inbound</strong> traffic (internet can reach services in VMs). E.g. forward host port 443 to <code>192.168.0.2:443</code>.</dd>
+  <dd class="avoid">Avoid: "Port mapping"</dd>
+
+  <dt>Conntrack</dt>
+  <dd>Connection tracking — the kernel subsystem that remembers which NAT mapping belongs to which connection so return packets are correctly un-translated. Automatically managed by iptables when using the <code>state</code> or <code>conntrack</code> modules.</dd>
+
+  <dt>iptables</dt>
+  <dd>The legacy Linux firewall / NAT tool. Proxmox installs it by default. Rules are organized in tables (<code>nat</code>, <code>filter</code>, <code>mangle</code>) and chains (<code>PREROUTING</code>, <code>POSTROUTING</code>, <code>FORWARD</code>, etc.).</dd>
+
+  <dt>nftables</dt>
+  <dd>The modern replacement for iptables. Debian/Proxmox is transitioning to it. Syntax is different, but the concepts (NAT, filter, forward) are the same. Check which one your Proxmox version uses before writing rules.</dd>
 
   <dt>Port</dt>
   <dd>A number (0–65535) that identifies a specific process or service on a device. E.g. web servers listen on port 80 (HTTP) or 443 (HTTPS). To access a specific app on your server, you connect to <code>IP:port</code>.</dd>
@@ -105,9 +125,12 @@
 
   <dt>IP Forward (ip_forward)</dt>
   <dd>A Linux kernel setting (<code>net.ipv4.ip_forward = 1</code>) that allows a machine to forward packets between interfaces. Required for Proxmox to route traffic between VMs and the internet.</dd>
+
+  <dt>Neighbor Proxying (proxy_arp)</dt>
+  <dd>A kernel setting that makes the host answer ARP requests on behalf of VMs. On OVH with a <code>/32</code> public IP and bridge mode, you may need <code>net.ipv4.conf.vmbr0.proxy_arp = 1</code> so the host responds for VM IPs.</dd>
 </dl>
 
 <hr>
-<p><em>Glossary v1 — Session 1. Terms will be added as they are learned.</em></p>
+<p><em>Glossary v2 — Updated with NAT terms.</em></p>
 </body>
 </html>

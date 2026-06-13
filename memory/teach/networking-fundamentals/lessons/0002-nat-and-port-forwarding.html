@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 2: NAT &amp; Port Forwarding — Share One IP Among All VMs</title>
+<style>
+  @media print { body { font-size: 11pt; } }
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    max-width: 42rem; margin: 2rem auto; padding: 0 1.5rem;
+    line-height: 1.6; color: #1a1a1a; background: #fafafa;
+  }
+  h1 { font-size: 1.8rem; border-bottom: 2px solid #333; padding-bottom: .3rem; }
+  h2 { font-size: 1.25rem; margin-top: 2.2rem; color: #333; }
+  h3 { font-size: 1.1rem; margin-top: 1.5rem; }
+  p, li { margin-bottom: .7rem; }
+  code { background: #e8e8e8; padding: .1rem .3rem; border-radius: 3px; font-size: .9em; }
+  pre { background: #1a1a1a; color: #e0e0e0; padding: .8rem 1rem; border-radius: 5px; overflow-x: auto; font-size: .85rem; }
+  pre code { background: transparent; padding: 0; }
+  .info-box { background: #e3f2fd; border-left: 4px solid #2196f3; padding: .8rem 1rem; margin: 1rem 0; border-radius: 0 5px 5px 0; }
+  .ovh-box { background: #fff3e0; border-left: 4px solid #ff9800; padding: .8rem 1rem; margin: 1rem 0; border-radius: 0 5px 5px 0; }
+  .warn-box { background: #ffebee; border-left: 4px solid #f44336; padding: .8rem 1rem; margin: 1rem 0; border-radius: 0 5px 5px 0; }
+  .quiz { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: .8rem 1rem; margin: 1rem 0; border-radius: 0 5px 5px 0; }
+  .quiz ol { margin: .5rem 0; padding-left: 1.3rem; }
+  .quiz li { margin-bottom: .4rem; }
+  .note { color: #666; font-size: .9rem; font-style: italic; }
+  hr { border: none; border-top: 1px solid #ddd; margin: 2rem 0; }
+  .answer { background: #e8f5e9; border-left: 4px solid #4caf50; padding: .4rem .8rem; margin: .5rem 0 .8rem 0; border-radius: 0 3px 3px 0; font-size: .95rem; display: none; }
+  .reveal-btn { background: #9c27b0; color: #fff; border: none; padding: .3rem .7rem; border-radius: 3px; cursor: pointer; font-size: .85rem; }
+  .reveal-btn:hover { background: #7b1fa2; }
+  @media (prefers-color-scheme: dark) {
+    body { color: #e0e0e0; background: #1a1a1a; }
+    h2 { color: #ccc; }
+    code { background: #333; }
+    pre { background: #111; color: #ddd; }
+    .info-box { background: #1a237e33; border-color: #42a5f5; }
+    .ovh-box { background: #e6510033; border-color: #ff9800; }
+    .warn-box { background: #b71c1c33; border-color: #ef5350; }
+    .quiz { background: #4a148c33; border-color: #ce93d8; }
+    .answer { background: #1b5e2033; border-color: #66bb6a; }
+    .note { color: #aaa; }
+    hr { border-color: #444; }
+    h1 { border-color: #666; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Lesson 2: NAT &amp; Port Forwarding</h1>
+<p><em>Giving VMs internet access through your server's single public IP — without buying extras.</em></p>
+
+<h2>Why this replaces Additional IPs</h2>
+<p>OVH gave your KimSufi one public IP. If you want three VMs serving web apps, you have two options:</p>
+
+<ol>
+  <li><strong>Buy Additional IPs</strong> (€2–3/mo each) — each VM gets its own public IP. Simple, but costs add up.</li>
+  <li><strong>Use NAT + port forwarding</strong> (free) — VMs share the server's IP. Outbound traffic is masqueraded (all VMs can reach the internet). Inbound traffic is forwarded by port number (port 443 goes to VM1, port 51820 to VM2, etc.).</li>
+</ol>
+
+<p>You chose option 2. This is exactly how your home router works: one public IP from your ISP, all your devices behind it.</p>
+
+<h2>The topology</h2>
+
+<pre>
+        Internet
+           |
+   Public IP: 51.195.46.19
+           |
+   [Proxmox Host]
+   [vmbr0 bridge: 192.168.0.1/24]
+   [iptables: MASQUERADE all outbound]
+   [iptables: DNAT selected ports inbound]
+     /          |          \
+   VM1         VM2         VM3
+  192.168.0.2 192.168.0.3 192.168.0.4
+  port 443     port 51820  port 80
+  (Nextcloud)  (WireGuard) (static site)
+</pre>
+
+<p>Each VM uses a private IP on the bridge. The host runs iptables rules to:</p>
+<ul>
+  <li><strong>MASQUERADE</strong> (SNAT): rewrite the source IP of outgoing VM packets → the internet sees them as coming from <code>51.195.46.19</code></li>
+  <li><strong>DNAT</strong> (port forward): rewrite the destination of incoming packets on specific ports → they land on the right VM</li>
+</ul>
+
+<h2>How NAT works (conceptually)</h2>
+
+<h3>Outbound traffic (VM → internet)</h3>
+<ol>
+  <li>VM1 sends a packet to <code>8.8.8.8:53</code> (DNS query). Source: <code>192.168.0.2:12345</code>.</li>
+  <li>The host receives it on vmbr0. The MASQUERADE rule rewrites source to <code>51.195.46.19:54321</code>. The kernel stores this mapping in conntrack.</li>
+  <li>The internet sees the query coming from your server IP. The response goes back to <code>51.195.46.19:54321</code>.</li>
+  <li>The host looks up conntrack, reverses the mapping, and delivers the response to <code>192.168.0.2:12345</code>. VM1 gets its answer.</li>
+</ol>
+
+<h3>Inbound traffic (internet → VM service)</h3>
+<ol>
+  <li>A user connects to <code>51.195.46.19:443</code> (HTTPS).</li>
+  <li>The DNAT rule matches: "packet arriving on port 443 → send to <code>192.168.0.2:443</code>".</li>
+  <li>The kernel rewrites the destination and delivers it to VM1.</li>
+  <li>VM1's web server responds. The MASQUERADE rule rewrites the source, and conntrack ensures the reply reaches the original user.</li>
+</ol>
+
+<h2>The actual config</h2>
+
+<p>On your Proxmox host, you need three things:</p>
+
+<h3>1. Network interfaces (<code>/etc/network/interfaces</code>)</h3>
+<p>Assuming a single-NIC KimSufi server (no bonding):</p>
+<pre>auto lo
+iface lo inet loopback
+
+auto ensXXX             # replace with your actual NIC name
+iface ensXXX inet static
+        address 51.195.46.19/32    # your server's public IP
+        gateway 100.64.0.1         # OVH's gateway
+        post-up echo 1 > /proc/sys/net/ipv4/ip_forward
+        post-up echo 1 > /proc/sys/net/ipv4/conf/vmbr0/proxy_arp
+
+auto vmbr0
+iface vmbr0 inet static
+        address 192.168.0.1/24     # bridge IP
+        bridge-ports ensXXX        # attach the physical NIC
+        bridge-stp off
+        bridge-fd 0</pre>
+
+<div class="ovh-box">
+<strong>OVH-specific quirks</strong><br>
+<ul>
+  <li>The public IP is <code>/32</code> — it doesn't share a subnet with anything. The gateway (<code>100.64.0.1</code>) is on a carrier-grade NAT network.</li>
+  <li><code>proxy_arp</code> is often needed on OVH for the host to respond to ARP queries for the bridge subnet.</li>
+  <li>If you can't reach your VMs after setup, check whether you need <code>net.ipv4.conf.vmbr0.proxy_arp = 1</code>.</li>
+  <li>To find your NIC name: run <code>ip link</code> on the server. It'll be something like <code>enp2s0</code> or <code>eno1</code>.</li>
+</ul>
+</div>
+
+<h3>2. IP forward (already in the post-up above)</h3>
+<p>Also add to <code>/etc/sysctl.conf</code> to survive reboots:</p>
+<pre>net.ipv4.ip_forward = 1</pre>
+<pre>sysctl -p</pre>
+
+<h3>3. iptables rules — the NAT section</h3>
+<p>These handle both outbound (MASQUERADE) and inbound (port forwarding):</p>
+<pre># Outbound: all traffic from VMs gets the server's public IP
+iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -o ensXXX -j MASQUERADE
+
+# Inbound: forward specific ports to specific VMs
+iptables -t nat -A PREROUTING -i ensXXX -p tcp --dport 443 -j DNAT --to-destination 192.168.0.2:443
+iptables -t nat -A PREROUTING -i ensXXX -p udp --dport 51820 -j DNAT --to-destination 192.168.0.3:51820
+
+# Allow forwarding between interfaces
+iptables -A FORWARD -i vmbr0 -o ensXXX -j ACCEPT
+iptables -A FORWARD -i ensXXX -o vmbr0 -m state --state RELATED,ESTABLISHED -j ACCEPT</pre>
+
+<h3>4. Making iptables persistent</h3>
+<p>These rules disappear on reboot. Save them:</p>
+<pre>apt install iptables-persistent
+netfilter-persistent save</pre>
+<p>Or manually:</p>
+<pre>iptables-save > /etc/iptables/rules.v4</pre>
+
+<h3>5. VM configuration (Debian inside the VM)</h3>
+<pre>auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet static
+        address 192.168.0.2/24
+        gateway 192.168.0.1
+        dns-nameservers 1.1.1.1 8.8.8.8</pre>
+
+<div class="warn-box">
+<strong>Important tradeoff of this approach</strong><br>
+With one public IP, <strong>every port can only map to one VM</strong>. You cannot have two VMs both listening on port 443. If you need multiple HTTPS services, you need a reverse proxy (like Nginx or Caddy) on one VM that routes by domain name — but that's a later lesson.
+</div>
+
+<h2>Interactive Quiz</h2>
+<div class="quiz">
+<p><strong>Check your understanding</strong></p>
+<ol>
+  <li>Your Proxmox host has one public IP and three VMs behind NAT. VM1 downloads a file. The remote server sees the request coming from what IP?</li>
+  <div id="q1-answer" class="answer">The Proxmox host's public IP (<code>51.195.46.19</code>). The MASQUERADE rule rewrote VM1's private source IP to the host's public IP.</div>
+  <button class="reveal-btn" onclick="toggle('q1-answer')">Reveal answer</button>
+
+  <li style="margin-top: 1rem;">You want Nextcloud on VM1 (port 443) <em>and</em> a static site on VM2 (port 443). Can both VMs use port 443? Why or why not?</li>
+  <div id="q2-answer" class="answer">No. With one public IP, the DNAT rule can only forward port 443 to a single destination. To serve multiple HTTPS apps, you'd use a reverse proxy on one VM that inspects the domain name and routes internally.</div>
+  <button class="reveal-btn" onclick="toggle('q2-answer')">Reveal answer</button>
+
+  <li style="margin-top: 1rem;">You reboot your KimSufi server. The VMs come up but they can't reach the internet. What did you likely forget?</li>
+  <div id="q3-answer" class="answer">You didn't <strong>persist</strong> the iptables rules. They're lost on reboot. Either use <code>iptables-persistent</code> or put the rules in <code>/etc/rc.local</code>.</div>
+  <button class="reveal-btn" onclick="toggle('q3-answer')">Reveal answer</button>
+
+  <li style="margin-top: 1rem;">Your OVH gateway is <code>100.64.0.1</code>, not <code>192.168.0.1</code>. Why can't VMs use <code>100.64.0.1</code> as their default gateway?</li>
+  <div id="q4-answer" class="answer">Because <code>100.64.0.1</code> is on the <strong>host's</strong> public network, not on the bridge. VMs are on the <code>192.168.0.0/24</code> bridge network. They must use <code>192.168.0.1</code> (the bridge IP) as their gateway. The host then handles masquerading and forwarding to the real gateway.</div>
+  <button class="reveal-btn" onclick="toggle('q4-answer')">Reveal answer</button>
+</ol>
+</div>
+
+<script>
+function toggle(id) {
+  var el = document.getElementById(id);
+  el.style.display = el.style.display === 'block' ? 'none' : 'block';
+}
+</script>
+
+<h2>Go Further</h2>
+<ul>
+  <li>Read: <a href="https://www.digitalocean.com/community/tutorials/iptables-essentials-common-firewall-rules-and-commands">DigitalOcean: Iptables Essentials</a> — the most common iptables patterns, including NAT.</li>
+  <li>Read: OVH guide — <a href="https://docs.ovh.com/us/en/dedicated/network-bridging/">Configuring Additional IPs in bridge mode</a> — even if you're not using Additional IPs, the bridge setup section is relevant.</li>
+  <li>Reference: <a href="../reference/glossary.html">Networking Glossary</a> — see NAT, MASQUERADE, DNAT, conntrack.</li>
+  <li>Previous: <a href="0001-ip-addressing-and-subnetting.html">Lesson 1: IP Addressing &amp; Subnetting</a>.</li>
+</ul>
+
+<hr>
+<div class="note">
+  <p><strong>What's next?</strong> Lesson 3 will cover actually installing Proxmox on your KimSufi server and applying these configs — the hands-on part. We'll walk through getting your first VM online step by step.</p>
+  <p>If anything here is unclear, ask. The iptables syntax in particular can be confusing at first.</p>
+</div>
+
+</body>
+</html>
