@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Networking Glossary</title>
+<style>
+  @media print { body { font-size: 11pt; } }
+  body { font-family: Georgia, 'Times New Roman', serif; max-width: 50rem; margin: 2rem auto; padding: 0 1.5rem; line-height: 1.55; color: #1a1a1a; background: #fafafa; }
+  h1 { font-size: 1.8rem; border-bottom: 2px solid #333; padding-bottom: .3rem; }
+  h2 { font-size: 1.2rem; margin-top: 2rem; color: #444; }
+  dt { font-weight: 700; margin-top: 1rem; font-size: 1.05rem; }
+  dd { margin-left: 0; margin-top: .2rem; margin-bottom: .3rem; }
+  .avoid { color: #777; font-size: .9rem; }
+  code { background: #e8e8e8; padding: .1rem .3rem; border-radius: 3px; font-size: .9em; }
+  hr { border: none; border-top: 1px solid #ddd; margin: 2rem 0; }
+  @media (prefers-color-scheme: dark) {
+    body { color: #e0e0e0; background: #1a1a1a; }
+    h2 { color: #aaa; }
+    code { background: #333; }
+    hr { border-color: #444; }
+    h1 { border-color: #666; }
+  }
+</style>
+</head>
+<body>
+<h1>Networking Glossary</h1>
+<p>Key networking terms for setting up Proxmox on an OVH dedicated server.</p>
+
+<h2>IP Addressing</h2>
+<dl>
+  <dt>IP Address (IPv4)</dt>
+  <dd>A 32-bit number written as four decimal octets (e.g. <code>51.195.46.19</code>) that identifies a device on a network. Every device needs a unique IP to communicate.</dd>
+
+  <dt>Public IP</dt>
+  <dd>An IP address routable on the public internet. Your KimSufi server gets one from OVH. VMs behind Proxmox need Additional IPs or NAT to be reachable from the internet.</dd>
+
+  <dt>Private IP</dt>
+  <dd>An IP from reserved ranges (<code>10.0.0.0/8</code>, <code>172.16.0.0/12</code>, <code>192.168.0.0/16</code>). Only usable inside a local network. VMs on your Proxmox bridge use private IPs internally, with an Additional IP mapped on top for internet access.</dd>
+
+  <dt>Additional IP (Failover IP)</dt>
+  <dd>OVH's term for extra public IPs you can attach to a server or vRack. On Kimsufi, they're attached to the server and routed to VMs.</dd>
+
+  <dt>Loopback</dt>
+  <dd>The <code>127.0.0.1</code> address — a virtual interface a device uses to talk to itself. <code>lo</code> in your Proxmox config.</dd>
+</dl>
+
+<h2>Subnetting &amp; CIDR</h2>
+<dl>
+  <dt>Subnet Mask</dt>
+  <dd>A 32-bit number that separates the network portion of an IP from the host portion. Written as <code>255.255.255.0</code> or in CIDR as <code>/24</code>.</dd>
+
+  <dt>CIDR Notation</dt>
+  <dd>A compact way to write an IP and its subnet mask: <code>IP/prefix-length</code>. E.g. <code>/24</code> means 24 bits are network, 8 bits are hosts (256 addresses). <code>/32</code> is a single host. <code>/28</code> is 16 addresses.</dd>
+  <dd class="avoid">Avoid: "Slash notation"</dd>
+
+  <dt>Network Address</dt>
+  <dd>The first address in a subnet — all host bits are 0. Cannot be assigned to a device. E.g. in <code>46.105.135.96/28</code>, the network address is <code>46.105.135.96</code>.</dd>
+
+  <dt>Broadcast Address</dt>
+  <dd>The last address in a subnet — all host bits are 1. Used to send packets to every device on the subnet. Cannot be assigned. E.g. in <code>46.105.135.96/28</code>, broadcast is <code>46.105.135.111</code>.</dd>
+
+  <dt>Gateway</dt>
+  <dd>The router (usually the first or second usable IP in a subnet) that devices send traffic to when the destination is outside their local network. In OVH's vRack, the gateway is the penultimate IP (<code>.110</code> in a <code>/28</code>).</dd>
+
+  <dt>Usable IP Range</dt>
+  <dd>The IPs in a subnet that can actually be assigned to devices = all addresses minus network, gateway, and broadcast. In a <code>/28</code> block of 16 IPs, typically 13 are usable.</dd>
+</dl>
+
+<h2>Network Interfaces &amp; Linux</h2>
+<dl>
+  <dt>Bridge (vmbr)</dt>
+  <dd>A virtual switch in Proxmox that connects VMs to the physical network. <code>vmbr0</code> is typically the public bridge, <code>vmbr1</code> the private one.</dd>
+  <dd class="avoid">Avoid: "Virtual switch"</dd>
+
+  <dt>Bond</dt>
+  <dd>Two or more physical NICs combined into one logical interface for redundancy or bandwidth. OVH High Grade &amp; Scale servers use <code>bond0</code> (public) and <code>bond1</code> (private) with LACP (802.3ad). Kimsufi servers typically have a single NIC, so no bonding needed.</dd>
+
+  <dt>NIC</dt>
+  <dd>Network Interface Card — the physical hardware that connects a server to a network (e.g. <code>ens33f0</code>).</dd>
+
+  <dt>lo</dt>
+  <dd>The loopback interface. Always <code>127.0.0.1</code>. Present on every Linux system.</dd>
+
+  <dt>ifupdown2</dt>
+  <dd>The network configuration system used by Proxmox (Debian-based). Config lives in <code>/etc/network/interfaces</code>.</dd>
+</dl>
+
+<h2>Key Concepts</h2>
+<dl>
+  <dt>NAT (Network Address Translation)</dt>
+  <dd>A technique where one public IP is shared among multiple devices by mapping each device's traffic to a different port. Your home router uses NAT. On your KimSufi, you can use <code>iptables</code> NAT to give VMs internet access through the server's main IP.</dd>
+
+  <dt>Port</dt>
+  <dd>A number (0–65535) that identifies a specific process or service on a device. E.g. web servers listen on port 80 (HTTP) or 443 (HTTPS). To access a specific app on your server, you connect to <code>IP:port</code>.</dd>
+
+  <dt>DNS (Domain Name System)</dt>
+  <dd>Translates human-readable domain names (like <code>nextcloud.example.com</code>) into IP addresses. Configured per VM or per server in <code>/etc/resolv.conf</code>.</dd>
+
+  <dt>MTU</dt>
+  <dd>Maximum Transmission Unit — the largest packet size a network interface can transmit. Default is 1500 bytes. OVH uses 1500 on public interfaces.</dd>
+
+  <dt>Routing</dt>
+  <dd>The process of moving packets between networks. The <code>ip route</code> command manipulates the routing table — telling the kernel "to reach this destination, send packets via this gateway or interface."</dd>
+
+  <dt>IP Forward (ip_forward)</dt>
+  <dd>A Linux kernel setting (<code>net.ipv4.ip_forward = 1</code>) that allows a machine to forward packets between interfaces. Required for Proxmox to route traffic between VMs and the internet.</dd>
+</dl>
+
+<hr>
+<p><em>Glossary v1 — Session 1. Terms will be added as they are learned.</em></p>
+</body>
+</html>

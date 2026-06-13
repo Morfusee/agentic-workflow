@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 1: IP Addresses &amp; Subnetting — Networking Fundamentals</title>
+<style>
+  @media print { body { font-size: 11pt; } }
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    max-width: 42rem; margin: 2rem auto; padding: 0 1.5rem;
+    line-height: 1.6; color: #1a1a1a; background: #fafafa;
+  }
+  h1 { font-size: 1.8rem; border-bottom: 2px solid #333; padding-bottom: .3rem; }
+  h2 { font-size: 1.25rem; margin-top: 2.2rem; color: #333; }
+  p, li { margin-bottom: .7rem; }
+  code { background: #e8e8e8; padding: .1rem .3rem; border-radius: 3px; font-size: .9em; }
+  pre { background: #1a1a1a; color: #e0e0e0; padding: .8rem 1rem; border-radius: 5px; overflow-x: auto; font-size: .9rem; }
+  pre code { background: transparent; padding: 0; }
+  .info-box { background: #e3f2fd; border-left: 4px solid #2196f3; padding: .8rem 1rem; margin: 1rem 0; border-radius: 0 5px 5px 0; }
+  .ovh-box { background: #fff3e0; border-left: 4px solid #ff9800; padding: .8rem 1rem; margin: 1rem 0; border-radius: 0 5px 5px 0; }
+  .quiz { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: .8rem 1rem; margin: 1rem 0; border-radius: 0 5px 5px 0; }
+  .quiz ol { margin: .5rem 0; padding-left: 1.3rem; }
+  .quiz li { margin-bottom: .4rem; }
+  .note { color: #666; font-size: .9rem; font-style: italic; }
+  hr { border: none; border-top: 1px solid #ddd; margin: 2rem 0; }
+  .answer { background: #e8f5e9; border-left: 4px solid #4caf50; padding: .4rem .8rem; margin: .5rem 0 .8rem 0; border-radius: 0 3px 3px 0; font-size: .95rem; display: none; }
+  .reveal-btn { background: #9c27b0; color: #fff; border: none; padding: .3rem .7rem; border-radius: 3px; cursor: pointer; font-size: .85rem; }
+  .reveal-btn:hover { background: #7b1fa2; }
+  @media (prefers-color-scheme: dark) {
+    body { color: #e0e0e0; background: #1a1a1a; }
+    h2 { color: #ccc; }
+    code { background: #333; }
+    pre { background: #111; color: #ddd; }
+    .info-box { background: #1a237e33; border-color: #42a5f5; }
+    .ovh-box { background: #e6510033; border-color: #ff9800; }
+    .quiz { background: #4a148c33; border-color: #ce93d8; }
+    .answer { background: #1b5e2033; border-color: #66bb6a; }
+    .note { color: #aaa; }
+    hr { border-color: #444; }
+    h1 { border-color: #666; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Lesson 1: IP Addresses &amp; Subnetting</h1>
+<p><em>How your server and VMs talk to the internet — and each other.</em></p>
+
+<h2>Why this matters for your KimSufi</h2>
+<p>When you open the OVH control panel after ordering your KimSufi server, you'll see something like:</p>
+<pre>IPv4: 51.195.46.19
+IPv6: 2001:41d0:0401:01d2::/64</pre>
+<p>That's your server's public identity on the internet. Your Proxmox VMs will also need public identities if you want them to serve web apps, handle email, or be reachable from outside. Understanding IP addressing is the foundation of every network decision you'll make.</p>
+
+<h2>What is an IP Address?</h2>
+<p>Think of an IP address like a mailing address for a device. For a letter to reach you, it needs your street address. For data to reach a server, it needs its IP address.</p>
+
+<p>IPv4 addresses (the ones we'll focus on) are 32-bit numbers, written as four decimal numbers separated by dots — each between 0 and 255:</p>
+
+<pre>51 . 195 . 46 . 19</pre>
+
+<p>That's your KimSufi's main IP. Every device on the internet needs a <strong>unique</strong> public IPv4.</p>
+
+<div class="info-box">
+<strong>Two kinds of IPs</strong><br>
+<strong>Public IP</strong> — routable on the internet. Your server's main IP is public.<br>
+<strong>Private IP</strong> — only usable inside a local network. Ranges: <code>10.x.x.x</code>, <code>172.16.x.x</code>, <code>192.168.x.x</code>. Your home devices (laptop, phone) use private IPs behind your router.<br>
+At OVH, your VMs will use private IPs on the Proxmox bridge (e.g. <code>192.168.0.2</code>) with a public Additional IP mapped on top for internet access.
+</div>
+
+<h2>Subnetting &amp; CIDR — the part that matters most</h2>
+<p>An IP address alone isn't enough. You also need to know which <strong>part</strong> of the address identifies the <em>network</em> and which part identifies the <em>specific device</em>. That's where the subnet mask comes in.</p>
+
+<p>Here's the notation you'll see constantly in OVH guides:</p>
+
+<pre>51.195.46.19/32    &lt;- your server's main IP
+46.105.135.96/28   &lt;- a block of 16 IPs
+192.168.0.1/24     &lt;- typical bridge network
+100.64.0.1         &lt;- OVH's gateway (no /xx needed, it's a single IP)</pre>
+
+<p>The <code>/xx</code> is <strong>CIDR notation</strong> — how many bits are reserved for the network portion. The remaining bits identify hosts on that network.</p>
+
+<table style="width:100%; border-collapse: collapse; margin: 1rem 0;">
+<tr style="background: #333; color: #fff;"><th style="padding: .4rem; text-align: left;">CIDR</th><th style="padding: .4rem; text-align: left;">Subnet Mask</th><th style="padding: .4rem; text-align: left;">Total IPs</th><th style="padding: .4rem; text-align: left;">Usable</th><th style="padding: .4rem; text-align: left;">Context</th></tr>
+<tr style="background: #eee;"><td style="padding: .4rem;"><code>/32</code></td><td style="padding: .4rem;"><code>255.255.255.255</code></td><td style="padding: .4rem;">1</td><td style="padding: .4rem;">1</td><td style="padding: .4rem;">Your server's main IP</td></tr>
+<tr><td style="padding: .4rem;"><code>/30</code></td><td style="padding: .4rem;"><code>255.255.255.252</code></td><td style="padding: .4rem;">4</td><td style="padding: .4rem;">2</td><td style="padding: .4rem;">Point-to-point link</td></tr>
+<tr style="background: #eee;"><td style="padding: .4rem;"><code>/28</code></td><td style="padding: .4rem;"><code>255.255.255.240</code></td><td style="padding: .4rem;">16</td><td style="padding: .4rem;">13</td><td style="padding: .4rem;">OVH Additional IP block</td></tr>
+<tr><td style="padding: .4rem;"><code>/24</code></td><td style="padding: .4rem;"><code>255.255.255.0</code></td><td style="padding: .4rem;">256</td><td style="padding: .4rem;">254</td><td style="padding: .4rem;">Home network / Proxmox bridge</td></tr>
+</table>
+<style>@media (prefers-color-scheme: dark) { tr[style*="background: #eee"] { background: #2a2a2a !important; } }</style>
+
+<div class="ovh-box">
+<strong>Why /32 for your server?</strong><br>
+OVH assigns the server IP as a <code>/32</code> — it's a single host address. The gateway is a separate IP (<code>100.64.0.1</code>) on a special "carrier grade" network. This is unusual but important: it means your server doesn't share a subnet with anything else. Your VM bridge uses a private <code>/24</code> (<code>192.168.0.1/24</code>) internally.
+</div>
+
+<h2>The Special Trio: Network, Gateway, Broadcast</h2>
+<p>Every subnet reserves three addresses that <strong>cannot</strong> be assigned to a device:</p>
+
+<pre>46.105.135.96    &lt;- Network address  (first, all host bits = 0)
+46.105.135.97    &lt;- First usable IP
+...
+46.105.135.109   &lt;- Last usable IP
+46.105.135.110   &lt;- Gateway          (penultimate IP — OVH convention!)
+46.105.135.111   &lt;- Broadcast address (last, all host bits = 1)</pre>
+
+<div class="ovh-box">
+<strong>OVH's twist on gateway placement</strong><br>
+Most providers put the gateway as the first usable IP. OVH puts it as the <strong>penultimate</strong> (second-to-last) IP in a block. If you buy a <code>/28</code> block from OVH and use it in a vRack, the gateway is <code>.110</code> (if the network is <code>.96</code>). Always check their docs.
+</div>
+
+<h2>How this maps to your Proxmox config</h2>
+<p>Here's the networking picture you're building toward:</p>
+
+<pre>
+        Internet
+           |
+   [OVH Gateway: 100.64.0.1]
+           |
+   [KimSufi Server - main IP: 51.195.46.19/32]
+        |
+   [vmbr0 bridge - 192.168.0.1/24]
+     /    |     \
+   VM1   VM2    VM3
+  .0.2   .0.3   .0.4
+  +       +       +
+  |       |       |
+AddIP1  AddIP2  AddIP3
+</pre>
+
+<p>Each VM gets a private IP on the bridge (<code>192.168.0.x</code>) plus an Additional (public) IP routed to it. The VM uses the private IP for default traffic and the Additional IP as the source address for outgoing packets.</p>
+
+<h2>Interactive Quiz</h2>
+<div class="quiz">
+<p><strong>Check your understanding</strong></p>
+<ol>
+  <li>Your OVH dashboard says your server IP is <code>51.195.46.19/32</code>. What does the <code>/32</code> mean?</li>
+  <div id="q1-answer" class="answer">It means this is a single host address. All 32 bits identify the device — there are zero host bits, so no other device shares this subnet.</div>
+  <button class="reveal-btn" onclick="toggle('q1-answer')">Reveal answer</button>
+
+  <li style="margin-top: 1rem;">You buy an Additional IP block <code>46.105.135.96/28</code> from OVH. How many usable IPs do you get for your VMs?</li>
+  <div id="q2-answer" class="answer">13 usable IPs. <code>/28</code> = 16 total addresses. OVH reserves: network (.96), gateway (.110), and broadcast (.111). That's 3 reserved, leaving 13 assignable (.97–.109).</div>
+  <button class="reveal-btn" onclick="toggle('q2-answer')">Reveal answer</button>
+
+  <li style="margin-top: 1rem;">A VM on your Proxmox bridge has IP <code>192.168.0.5</code>. Can the internet directly reach it at that address? Why or why not?</li>
+  <div id="q3-answer" class="answer">No. <code>192.168.x.x</code> is a private range — not routable on the public internet. The VM needs an Additional public IP mapped to it, or NAT through the host, to be internet-reachable.</div>
+  <button class="reveal-btn" onclick="toggle('q3-answer')">Reveal answer</button>
+
+  <li style="margin-top: 1rem;">In OVH's vRack, why is the gateway at the penultimate IP (<code>.110</code> in a <code>/28</code>) rather than the first usable IP?</li>
+  <div id="q4-answer" class="answer">That's OVH's convention — the penultimate address is always the gateway, the last is the broadcast. This differs from most providers (who use the first usable as gateway). Always verify with OVH's documentation for your block.</div>
+  <button class="reveal-btn" onclick="toggle('q4-answer')">Reveal answer</button>
+</ol>
+</div>
+
+<script>
+function toggle(id) {
+  var el = document.getElementById(id);
+  el.style.display = el.style.display === 'block' ? 'none' : 'block';
+}
+</script>
+
+<h2>Go Further</h2>
+<ul>
+  <li>Read: <a href="https://www.digitalocean.com/community/tutorials/understanding-ip-addresses-subnets-and-cidr-notation-for-networking">DigitalOcean: Understanding IP Addresses, Subnets, and CIDR Notation</a> — the best concise primer on these topics.</li>
+  <li>Read: <a href="https://docs.ovh.com/us/en/dedicated/proxmox-network-hg-scale/">OVH: Proxmox VE Networking on Dedicated Servers</a> — the guide you'll follow to configure your server.</li>
+  <li>Bookmark: <a href="https://www.calculator.net/ip-subnet-calculator.html">Subnet Calculator</a> — use this to check your IP math when configuring OVH IP blocks.</li>
+  <li>Reference: <a href="../reference/glossary.html">Networking Glossary</a> — terms from this lesson plus more.</li>
+</ul>
+
+<hr>
+<div class="note">
+  <p><strong>What's next?</strong> Lesson 2 will cover network interfaces, bridges, and how Proxmox wires VMs to the physical network — you'll see exactly how <code>vmbr0</code>, <code>bond0</code>, and the config in <code>/etc/network/interfaces</code> work together.</p>
+  <p>If anything was unclear, ask me any follow-up questions. Your understanding now will make the hands-on config much smoother.</p>
+</div>
+
+</body>
+</html>
