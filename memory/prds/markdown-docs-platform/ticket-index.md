@@ -29,7 +29,7 @@
 
 - MDP-01: Scaffold Next.js App Router project structure for public docs and authenticated authoring surfaces
 - MDP-02: Add Postgres and Drizzle migration workflow for the docs platform
-- MDP-03: Integrate Auth.js with multi-provider OAuth and protected app routing
+- MDP-03: Integrate BetterAuth with multi-provider OAuth and protected app routing
 - MDP-04: Create shared public and authenticated application shells with environment contract documentation
 
 ### Phase 02 Tickets

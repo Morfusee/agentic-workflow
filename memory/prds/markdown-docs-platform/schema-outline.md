@@ -195,7 +195,7 @@ Suggested `event_type` values:
 
 ## Auth Tables
 
-Use the standard Auth.js adapter tables appropriate for the chosen adapter.
+Use the standard BetterAuth adapter tables appropriate for the chosen adapter.
 
 Expected tables usually include:
 

@@ -4,7 +4,7 @@
 
 **Architecture:** Use a single Next.js application with App Router. Store canonical content in Postgres via Drizzle. Keep mutable drafts on the document record, create immutable published revisions, render public pages from published markdown through a shared markdown pipeline, and expose authenticated MCP endpoints with scoped collection permissions.
 
-**Tech Stack:** Next.js 15, TypeScript, Postgres, Drizzle, Auth.js, `remark`, `rehype`, GitHub Flavored Markdown.
+**Tech Stack:** Next.js 15, TypeScript, Postgres, Drizzle, BetterAuth, `remark`, `rehype`, GitHub Flavored Markdown.
 
 ---
 
@@ -41,7 +41,7 @@
 
 - Create the Next.js app structure with App Router and route groups for public docs and authenticated app pages.
 - Add Postgres and Drizzle configuration.
-- Add Auth.js with multi-provider OAuth support.
+- Add BetterAuth with multi-provider OAuth support.
 - Add a minimal protected app shell and public docs shell.
 - Establish environment variable contracts for auth, database, cache revalidation, and MCP token minting.
 
