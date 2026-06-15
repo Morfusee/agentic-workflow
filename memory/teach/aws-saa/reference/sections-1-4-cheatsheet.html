@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWS SAA Reference — Sections 1–4</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #faf9f7;
+    --card-bg: #ffffff;
+    --text: #1a1a1a;
+    --muted: #6b6b6b;
+    --accent: #2563eb;
+    --border: #e5e5e5;
+    --code-bg: #f1f5f9;
+    --section-border: #d4d4d4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 2rem;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--border);
+  }
+
+  header h1 { font-size: 1.6rem; font-weight: 700; }
+  header .sub { color: var(--muted); font-size: 0.85rem; margin-top: 0.3rem; }
+
+  h2 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin: 2rem 0 0.75rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 1.25rem 0 0.5rem;
+    color: var(--accent);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.75rem 0;
+    font-size: 0.85rem;
+  }
+
+  th, td {
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    background: #f4f4f4;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  tr:hover { background: #fafafa; }
+
+  code, .code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85em;
+    background: var(--code-bg);
+    padding: 0.1em 0.3em;
+    border-radius: 3px;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin: 1rem 0;
+  }
+
+  .card .title {
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  ul { padding-left: 1.25rem; margin: 0.5rem 0; }
+  li { margin-bottom: 0.3rem; font-size: 0.88rem; }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.15rem 0.45rem;
+    border-radius: 3px;
+    margin-right: 0.25rem;
+  }
+  .tag-iam { background: #dbeafe; color: #1e40af; }
+  .tag-ec2 { background: #d1fae5; color: #065f46; }
+  .tag-elb { background: #fef3c7; color: #92400e; }
+  .tag-key { background: #f3e8ff; color: #6b21a8; }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+  @media print {
+    body { padding: 0; font-size: 11pt; }
+    .card { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>AWS SAA Reference: Sections 1–4</h1>
+  <div class="sub">IAM · AWS CLI · EC2 Fundamentals · EC2 SAA · ELB &amp; ASG</div>
+</header>
+
+<!-- ============ IAM ============ -->
+<h2>1. IAM &amp; AWS CLI</h2>
+
+<div class="card">
+<div class="title">Core IAM Concepts</div>
+<table>
+<tr><th>Concept</th><th>Description</th><th>Key Exam Point</th></tr>
+<tr><td><strong>User</strong></td><td>Identity for a person or service</td><td>Long-term credentials (password + access keys)</td></tr>
+<tr><td><strong>Group</strong></td><td>Collection of users</td><td>Not a true principal — can't be referenced in a policy's Principal element</td></tr>
+<tr><td><strong>Role</strong></td><td>Identity with temporary credentials</td><td>Use for EC2, cross-account access, federated users. Issued via STS</td></tr>
+<tr><td><strong>Policy</strong></td><td>JSON document defining permissions</td><td>Identity-based (attached to user/group/role) or Resource-based (attached to resource)</td></tr>
+</table>
+</div>
+
+<div class="card">
+<div class="title">Policy Structure</div>
+<pre style="background:var(--code-bg);padding:0.75rem;border-radius:6px;font-size:0.8rem;line-height:1.5;overflow-x:auto;">
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect":   "Allow" | "Deny",
+    "Action":   ["service:operation", ...],
+    "Resource": "arn:aws:...",
+    "Condition": {              // optional
+      "IpAddress": { "aws:SourceIp": "10.0.0.0/8" }
+    }
+  }]
+}
+</pre>
+</div>
+
+<div class="card">
+<div class="title">IAM Evaluation Logic</div>
+<p style="font-size:0.85rem;margin-bottom:0.4rem;"><strong>Order:</strong> Default Deny → Allow → Explicit Deny (wins all)</p>
+<p style="font-size:0.85rem;">An <strong>explicit Deny</strong> always overrides any Allow. This is the most tested exam concept in IAM.</p>
+</div>
+
+<div class="card">
+<div class="title">Key Exam Scenarios</div>
+<table>
+<tr><th>Scenario</th><th>Solution</th></tr>
+<tr><td>EC2 needs to access AWS service</td><td>IAM Role → Instance Profile</td></tr>
+<tr><td>Limit max permissions for a user</td><td>Permissions Boundary</td></tr>
+<tr><td>Block actions across all accounts</td><td>SCP (AWS Organizations)</td></tr>
+<tr><td>Secure CLI access for developers</td><td>IAM user with access keys, use <code>~/.aws/credentials</code></td></tr>
+<tr><td>Audit unused permissions</td><td>IAM Access Advisor</td></tr>
+<tr><td>Audit credential age/rotation</td><td>IAM Credential Report</td></tr>
+<tr><td>Cross-account access</td><td>Role in target account with trust policy</td></tr>
+</table>
+</div>
+
+<h3>AWS CLI</h3>
+<table>
+<tr><th>Command</th><th>What it does</th></tr>
+<tr><td><code>aws configure</code></td><td>Sets access keys, region, output format → writes to <code>~/.aws/credentials</code> and <code>~/.aws/config</code></td></tr>
+<tr><td><code>aws configure --profile &lt;name&gt;</code></td><td>Creates a named profile</td></tr>
+<tr><td><code>aws sts assume-role</code></td><td>Returns temporary credentials for a role</td></tr>
+<tr><td><code>aws iam list-users</code></td><td>Lists IAM users (requires iam:ListUsers permission)</td></tr>
+</table>
+
+<hr>
+
+<!-- ============ EC2 FUNDAMENTALS ============ -->
+<h2>2. EC2 Fundamentals</h2>
+
+<div class="card">
+<div class="title">Instance Types — Naming Convention</div>
+<p style="font-size:0.85rem;"><strong>m5.large</strong> = <code>[family][gen].[size]</code></p>
+<table>
+<tr><th>Family Letter</th><th>Type</th><th>Use Case</th></tr>
+<tr><td>m</td><td>General purpose</td><td>Balanced compute/memory/networking — web servers, code repos</td></tr>
+<tr><td>c</td><td>Compute optimized</td><td>Batch processing, media transcoding, HPC</td></tr>
+<tr><td>r</td><td>Memory optimized</td><td>In-memory caches, real-time big data</td></tr>
+<tr><td>i / d</td><td>Storage optimized</td><td>High sequential I/O — data warehousing, Elasticsearch</td></tr>
+<tr><td>g / p</td><td>Accelerated computing (GPU)</td><td>ML, rendering, gaming</td></tr>
+</table>
+</div>
+
+<div class="card">
+<div class="title">Security Groups vs NACLs</div>
+<table>
+<tr><th>Feature</th><th>Security Group (SG)</th><th>Network ACL (NACL)</th></tr>
+<tr><td>Level</td><td>Instance-level (ENI)</td><td>Subnet-level</td></tr>
+<tr><td>State</td><td><strong>Stateful</strong> — return traffic auto-allowed</td><td><strong>Stateless</strong> — return traffic must be explicitly allowed</td></tr>
+<tr><td>Rules</td><td>Allow rules ONLY</td><td>Allow and Deny rules</td></tr>
+<tr><td>Evaluation</td><td>All rules evaluated together</td><td>Ordered (numbered), first match wins</td></tr>
+<tr><td>Default</td><td>All inbound blocked, all outbound allowed</td><td>Allows all inbound/outbound (typically)</td></tr>
+</table>
+</div>
+
+<div class="card">
+<div class="title">EC2 Purchase Options</div>
+<table>
+<tr><th>Option</th><th>Use When</th><th>Key Exam Note</th></tr>
+<tr><td><strong>On-Demand</strong></td><td>Short, unpredictable workloads</td><td>Pay by second/hour, no commitment, highest cost</td></tr>
+<tr><td><strong>Reserved (RI)</strong></td><td>Steady-state, predictable workloads (1yr/3yr)</td><td>Standard = lower cost, Convertible = change instance family. Up to 72% discount</td></tr>
+<tr><td><strong>Savings Plan</strong></td><td>Commit to $/hour for 1yr/3yr</td><td>More flexible than RI — applies across instance families/regions (compute plan)</td></tr>
+<tr><td><strong>Spot</strong></td><td>Fault-tolerant, flexible workloads</td><td>Up to 90% discount. <strong>Can be interrupted</strong> (2 min warning). Not for databases or stateful apps</td></tr>
+<tr><td><strong>Dedicated Host</strong></td><td>Compliance / server-bound licensing</td><td>Physical server, visibility into sockets/cores. Most expensive</td></tr>
+<tr><td><strong>Dedicated Instance</strong></td><td>Hardware isolation, no license mgmt needed</td><td>Runs on dedicated hardware but no visibility/control over placement</td></tr>
+</table>
+</div>
+
+<div class="card">
+<div class="title">Placement Groups</div>
+<table>
+<tr><th>Type</th><th>Strategy</th><th>Use Case</th><th>Limitation</th></tr>
+<tr><td><strong>Cluster</strong></td><td>Same AZ, low latency</td><td>HPC, tightly-coupled apps</td><td>Single AZ — failure risk</td></tr>
+<tr><td><strong>Spread</strong></td><td>Distinct hardware per instance</td><td>Critical instances (max 7 per AZ)</td><td>Limited to 7 instances per AZ</td></tr>
+<tr><td><strong>Partition</strong></td><td>Groups partitioned across racks</td><td>Large distributed apps (Hadoop, Cassandra)</td><td>Partitions share no hardware within partition</td></tr>
+</table>
+</div>
+
+<div class="card">
+<div class="title">Other Key Facts</div>
+<ul>
+<li><strong>Public IP</strong> changes on stop/start (unless Elastic IP)</li>
+<li><strong>ENI</strong> = virtual network card, can be detached and reattached (failover)</li>
+<li><strong>Hibernate</strong> = RAM state written to EBS root volume. Preserves in-memory state</li>
+<li><strong>User Data</strong> = bootstrap script run at launch</li>
+<li><strong>Instance store</strong> = ephemeral, high IOPS, data lost on stop/terminate</li>
+</ul>
+</div>
+
+<hr>
+
+<!-- ============ EC2 SAA ============ -->
+<h2>3. EC2 SAA-Level</h2>
+
+<div class="card">
+<div class="title">Key SAA-Level Concepts</div>
+<table>
+<tr><th>Topic</th><th>Details</th></tr>
+<tr><td><strong>Nitro System</strong></td><td>Underlying hardware for modern EC2. Dedicated hardware for networking, storage, security. Enables bare-metal-like performance, EBS encryption on instances with no additional cost, faster networking (ENA), and NVMe local storage.</td></tr>
+<tr><td><strong>AMI</strong></td><td>Amazon Machine Image — template for an EC2 instance. Contains OS, software, block device mappings. Can be shared across accounts. Based on EBS snapshots of root volume.</td></tr>
+<tr><td><strong>EBS Encryption</strong></td><td>Uses KMS. Encrypted snapshots → encrypted volumes. Unencrypted snapshots must be copied with encryption to attach to encrypted instances.</td></tr>
+<tr><td><strong>Instance Metadata</strong></td><td>Accessible at <code>http://169.254.169.254/latest/meta-data/</code>. Contains instance info (not user data). No auth required — role credentials are available here.</td></tr>
+</table>
+</div>
+
+<hr>
+
+<!-- ============ ELB & ASG ============ -->
+<h2>4. ELB &amp; Auto Scaling Groups</h2>
+
+<div class="card">
+<div class="title">Load Balancer Types</div>
+<table>
+<tr><th>Type</th><th>Layer</th><th>Key Features</th><th>Best For</th></tr>
+<tr><td><strong>ALB</strong></td><td>Layer 7 (HTTP/HTTPS)</td><td>Path-based routing, host-based routing, HTTP/2, gRPC, redirects, fixed response, OIDC auth, WAF integration</td><td>Web apps, microservices, containers</td></tr>
+<tr><td><strong>NLB</strong></td><td>Layer 4 (TCP/UDP/TLS)</td><td>Static IP per AZ, highest performance (millions req/s), preserves source IP, TLS termination</td><td>TCP/UDP traffic, extreme scale, static IP needs</td></tr>
+<tr><td><strong>GLB</strong></td><td>Layer 3/4 (IP)</td><td>Transparent network gateway + LB. Route traffic to third-party appliances (firewalls, IDS/IPS)</td><td>Security appliance integration (GENEVE protocol)</td></tr>
+</table>
+</div>
+
+<div class="card">
+<div class="title">ALB Features in Detail</div>
+<table>
+<tr><th>Feature</th><th>What It Does</th><th>Exam Tip</th></tr>
+<tr><td><strong>Target Groups</strong></td><td>EC2 instances, Lambda, IP, ECS tasks</td><td>ALB routes to target groups, not directly to instances</td></tr>
+<tr><td><strong>Sticky Sessions</strong></td><td>Cookie-based routing to same target</td><td>Duration-based cookie or application cookie. Can cause uneven load</td></tr>
+<tr><td><strong>Cross-zone LB</strong></td><td>Distributes traffic evenly across all instances, not just within AZ</td><td>ALB = on by default (free). NLB = off by default (charged)</td></tr>
+<tr><td><strong>Connection Draining</strong></td><td>Wait for in-flight requests to complete before deregistering target</td><td>Also called "deregistration delay." Default 300s, can be 0–3600</td></tr>
+<tr><td><strong>SSL Termination</strong></td><td>ALB handles SSL decryption, instance gets plain HTTP</td><td>Use ACM certificates. Must have listeners with TLS certs</td></tr>
+</table>
+</div>
+
+<div class="card">
+<div class="title">Auto Scaling Groups (ASG)</div>
+<table>
+<tr><th>Concept</th><th>Details</th></tr>
+<tr><td><strong>Min / Desired / Max</strong></td><td>ASG always tries to keep <code>running == Desired</code>, within [Min, Max]</td></tr>
+<tr><td><strong>Launch Template</strong> (preferred)</td><td>AMI, instance type, SG, key pair, user data. Newer than Launch Config (no updates on LC)</td></tr>
+<tr><td><strong>Health checks</strong></td><td>EC2 status + ELB health checks. Unhealthy instances are terminated and replaced</td></tr>
+</table>
+</div>
+
+<div class="card">
+<div class="title">Scaling Policies</div>
+<table>
+<tr><th>Type</th><th>How It Works</th><th>When to Use</th></tr>
+<tr><td><strong>Target Tracking</strong></td><td>Set target value (e.g., CPU=50%), ASG auto-creates alarms</td><td>Simplest — most use cases</td></tr>
+<tr><td><strong>Step Scaling</strong></td><td>CloudWatch alarm + step adjustments (e.g., +2 if CPU &gt; 70%, +4 if &gt; 90%)</td><td>Need different reactions for different breach sizes</td></tr>
+<tr><td><strong>Simple Scaling</strong></td><td>Single adjustment per alarm breach. Must wait for cooldown</td><td>Legacy. Step scaling is better</td></tr>
+<tr><td><strong>Scheduled</strong></td><td>Scale at specific times</td><td>Predictable traffic patterns (end of month, sales)</td></tr>
+</table>
+</div>
+
+<div class="card">
+<div class="title">Scaling for SAA Exam: Key Rules</div>
+<ul>
+<li><strong>ASGs cannot scale-in</strong> below Min or above Max</li>
+<li><strong>Cooldown period</strong> prevents rapid scaling before metrics stabilize (default 300s)</li>
+<li><strong>Lifecycle hooks</strong> let you run custom actions before instance launches or terminates</li>
+<li><strong>ASG with ALB:</strong> ASG + ALB + Target Group = the trifecta. ASG auto-registers instances with the target group</li>
+</ul>
+</div>
+
+<hr>
+
+<!-- ============ TOP EXAM TRAPS ============ -->
+<h2>5. Common Exam Traps (Sections 1–4)</h2>
+
+<table>
+<tr><th>Trap</th><th>What they want you to pick</th><th>Correct answer</th></tr>
+<tr><td>EC2 needs access to S3</td><td>IAM user with keys stored on instance</td><td>IAM Role → Instance Profile</td></tr>
+<tr><td>Highest discount EC2</td><td>Spot Instances</td><td>Spot (if fault-tolerant). RI/Savings Plan (if steady)</td></tr>
+<tr><td>Block action in all accounts</td><td>Permissions Boundary</td><td>SCP (Permissions Boundary limits <em>within</em> one account)</td></tr>
+<tr><td>Difference SG vs NACL</td><td>SG is stateless</td><td>SG is <strong>stateful</strong>, NACL is <strong>stateless</strong></td></tr>
+<tr><td>NACL rule order</td><td>Most specific first</td><td>Lowest number first (ordered list)</td></tr>
+<tr><td>ASG scaling cooldown</td><td>Prevents instance termination</td><td>Prevents additional scaling actions until metrics stabilize</td></tr>
+<tr><td>Sticky sessions guarantee</td><td>Always routes to same instance</td><td>Routes by cookie — if cookie expires, different instance</td></tr>
+<tr><td>Cross-zone LB cost</td><td>Always free</td><td>Free on ALB, charged on NLB</td></tr>
+</table>
+
+<div style="margin-top:2rem;padding:1rem;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;font-size:0.85rem;">
+<strong>How to use this reference:</strong> Review one section at a time, then flip to the lesson and try those questions. Don't read everything at once — spaced repetition works better.
+</div>
+
+</div>
+</body>
+</html>

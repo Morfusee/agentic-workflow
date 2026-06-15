@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAA Griller — Sections 1–4 Review</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #faf9f7;
+    --card-bg: #ffffff;
+    --text: #1a1a1a;
+    --muted: #6b6b6b;
+    --accent: #2563eb;
+    --correct: #16a34a;
+    --wrong: #dc2626;
+    --border: #e5e5e5;
+    --code-bg: #f1f5f9;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    padding: 0;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid var(--border);
+  }
+
+  header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.4rem;
+  }
+
+  header .meta {
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  .scoreboard {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding: 1rem 1.25rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.9rem;
+  }
+
+  .scoreboard span { font-weight: 600; }
+  .scoreboard .correct { color: var(--correct); }
+  .scoreboard .wrong { color: var(--wrong); }
+
+  .question {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .question .q-num {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .question .q-text {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    line-height: 1.6;
+  }
+
+  .question .q-text code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85em;
+    background: var(--code-bg);
+    padding: 0.1em 0.3em;
+    border-radius: 3px;
+  }
+
+  .question ul.options {
+    list-style: none;
+    margin: 0.75rem 0;
+  }
+
+  .question ul.options li {
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.35rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .question ul.options li:hover {
+    background: #f1f5f9;
+    border-color: var(--accent);
+  }
+
+  .question ul.options li.selected {
+    border-color: var(--accent);
+    background: #eff6ff;
+  }
+
+  .question ul.options li.correct {
+    border-color: var(--correct);
+    background: #f0fdf4;
+  }
+
+  .question ul.options li.wrong {
+    border-color: var(--wrong);
+    background: #fef2f2;
+  }
+
+  .question ul.options li.revealed-correct {
+    border-color: var(--correct);
+    background: #f0fdf4;
+  }
+
+  .feedback {
+    margin-top: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    display: none;
+  }
+
+  .feedback.show { display: block; }
+  .feedback.correct { background: #f0fdf4; border-left: 3px solid var(--correct); }
+  .feedback.wrong { background: #fef2f2; border-left: 3px solid var(--wrong); }
+
+  .feedback strong { font-weight: 600; }
+
+  .btn {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: var(--accent);
+    color: white;
+    transition: opacity 0.15s;
+  }
+
+  .btn:hover { opacity: 0.9; }
+  .btn-outline {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+  }
+
+  .actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    margin: 1.5rem 0;
+    flex-wrap: wrap;
+  }
+
+  .source-note {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .source-note a { color: var(--accent); }
+
+  .tip-box {
+    margin-top: 2rem;
+    padding: 1rem 1.25rem;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 8px;
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 600px) {
+    .container { padding: 1.25rem 1rem 3rem; }
+    .question { padding: 1.1rem; }
+    .scoreboard { flex-wrap: wrap; gap: 0.75rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>SAA Griller: Sections 1–4</h1>
+  <div class="meta">IAM · AWS CLI · EC2 Fundamentals · EC2 SAA · ELB &amp; ASG</div>
+</header>
+
+<div class="scoreboard" id="scoreboard">
+  <div>Score: <span id="correctCount">0</span> / <span id="totalCount">0</span></div>
+  <div class="correct">Correct: <span id="correctPct">0%</span></div>
+</div>
+
+<div id="questions"></div>
+
+<div class="actions">
+  <button class="btn" id="revealAll">Reveal All Answers</button>
+  <button class="btn btn-outline" id="resetQuiz">Reset Quiz</button>
+</div>
+
+<div class="tip-box">
+  <strong>Exam tip:</strong> Read each question carefully — watch for <em>distractors</em> that sound right but change one critical detail (cost vs. performance, regional vs. global, instance vs. container). The exam tests precision.
+</div>
+
+<div class="source-note">
+  <p>Questions based on Stephen Mareek's <em>Ultimate AWS Certified Solutions Architect Associate 2026</em> course, Sections 1–4. Covers IAM, AWS CLI, EC2 Fundamentals, EC2 SAA-level, and ELB/ASG.</p>
+  <p>Recommended primary source: revisit the Mareek course quizzes and <a href="https://docs.aws.amazon.com/">AWS Documentation</a> for any missed topics.</p>
+  <p>If anything is unclear, ask your teacher for explanation — that's what I'm here for.</p>
+</div>
+
+</div>
+
+<script>
+const questions = [
+  // === IAM ===
+  {
+    topic: "IAM",
+    q: "A security auditor requires read-only access to all S3 buckets across your AWS account. Which IAM construct should you attach the policy to?",
+    options: [
+      "An IAM Group",
+      "An IAM Role",
+      "An IAM User",
+      "An IAM Policy"
+    ],
+    correct: 1,
+    explanation: "A <strong>Role</strong> is the correct construct when the auditor needs temporary credentials to assume. Groups and Users imply long-term credentials. A Policy alone isn't attached to a principal.",
+  },
+  {
+    topic: "IAM",
+    q: "What is the difference between an IAM role and an IAM user?",
+    options: [
+      "Roles have long-term credentials; users have temporary credentials",
+      "Users have long-term credentials; roles have temporary credentials",
+      "Both have long-term credentials",
+      "Both have temporary credentials"
+    ],
+    correct: 1,
+    explanation: "<strong>Users</strong> have long-term credentials (access key ID + secret access key, or console password). <strong>Roles</strong> issue temporary credentials via STS (Security Token Service) that expire.",
+  },
+  {
+    topic: "IAM",
+    q: "Which IAM feature allows you to restrict an IAM user's permissions so they cannot exceed a certain privilege level, even if an attached policy grants more?",
+    options: [
+      "Service Control Policy (SCP)",
+      "Permissions Boundary",
+      "IAM Access Analyzer",
+      "Resource-based Policy"
+    ],
+    correct: 1,
+    explanation: "A <strong>Permissions Boundary</strong> sets the maximum permissions a user/role can have. SCPs operate at the Organizations level, not for individual users within an account.",
+  },
+  {
+    topic: "IAM",
+    q: "An EC2 instance needs to read from a DynamoDB table. What is the BEST practice for granting access?",
+    options: [
+      "Store AWS credentials in the instance's user data",
+      "Create an IAM role and attach it to the EC2 instance profile",
+      "Create an IAM user with access keys and configure the AWS CLI on the instance",
+      "Use a resource-based policy on the DynamoDB table allowing the EC2 instance"
+    ],
+    correct: 1,
+    explanation: "An <strong>IAM role attached to an instance profile</strong> is the secure, AWS-best-practice way. Never put credentials in user data or on the instance. DynamoDB does not support resource-based policies.",
+  },
+  {
+    topic: "IAM",
+    q: "What does the 'Condition' element in an IAM policy do?",
+    options: [
+      "Defines which AWS service the policy applies to",
+      "Specifies conditions under which the policy grants or denies access",
+      "Lists the resources the policy applies to",
+      "Defines the effect (Allow or Deny) of the policy"
+    ],
+    correct: 1,
+    explanation: "The <strong>Condition</strong> element lets you specify when a policy should take effect — e.g., <code>IpAddress</code>, <code>Bool</code>, <code>StringEquals</code>, <code>DateGreaterThan</code>. It adds fine-grained control beyond just Effect/Action/Resource.",
+  },
+  {
+    topic: "IAM",
+    q: "Your company uses AWS Organizations. You need to prevent all member accounts from disabling CloudTrail. What should you use?",
+    options: [
+      "IAM Permissions Boundary on each account's admin role",
+      "AWS CloudTrail itself has no disable mechanism, so this is not possible",
+      "A Service Control Policy (SCP) that denies cloudtrail:StopLogging and cloudtrail:DeleteTrail",
+      "Enable CloudTrail in each account individually with a password on the trail"
+    ],
+    correct: 2,
+    explanation: "An <strong>SCP</strong> applied at the Organization or OU level can deny specific actions across all member accounts. Permissions Boundaries only apply within an account.",
+  },
+  {
+    topic: "IAM",
+    q: "Which IAM policy evaluation logic is correct when a request includes both an explicit Deny and an Allow?",
+    options: [
+      "Allow wins because it's more permissive",
+      "Deny wins — an explicit Deny overrides any Allow",
+      "AWS defaults to Deny, so both result in Deny",
+      "The most recently evaluated policy wins"
+    ],
+    correct: 1,
+    explanation: "An <strong>explicit Deny always wins</strong> over any Allow. The evaluation logic: default Deny → Allow (if applicable) → explicit Deny (overrides everything).",
+  },
+  {
+    topic: "IAM",
+    q: "Your developer needs CLI access. They run 'aws configure' and enter their keys. Where are these credentials stored?",
+    options: [
+      "~/.aws/config",
+      "~/.aws/credentials",
+      "/etc/aws/config",
+      "~/.aws/cli"
+    ],
+    correct: 1,
+    explanation: "<code>aws configure</code> stores credentials (access key ID, secret access key, session token if applicable) in <strong>~/.aws/credentials</strong>. The config file (~/.aws/config) stores region, output format, and named profile settings.",
+  },
+
+  // === EC2 Fundamentals ===
+  {
+    topic: "EC2 Fundamentals",
+    q: "An EC2 instance type is 'm5.large'. What does the 'm' indicate?",
+    options: [
+      "Memory-optimized",
+      "General purpose",
+      "Compute-optimized",
+      "Media-optimized"
+    ],
+    correct: 1,
+    explanation: "The <strong>instance family letter</strong> indicates the class: 'm' = general purpose, 'c' = compute optimized, 'r' = memory optimized, 'i' = storage optimized, 'g' = GPU. '5' = generation. 'large' = size within family.",
+  },
+  {
+    topic: "EC2 Fundamentals",
+    q: "Which statement about Security Groups is TRUE?",
+    options: [
+      "Security Groups are stateful — return traffic is automatically allowed",
+      "Security Groups are stateless — you must explicitly allow return traffic",
+      "Security Groups can have explicit Deny rules",
+      "Security Groups operate at the subnet level"
+    ],
+    correct: 0,
+    explanation: "<strong>Security Groups are stateful</strong>. If you allow inbound traffic, the outbound return traffic is automatically allowed regardless of outbound rules. NACLs are stateless and operate at the subnet level.",
+  },
+  {
+    topic: "EC2 Fundamentals",
+    q: "Which EC2 placement group delivers the lowest latency and highest throughput for tightly-coupled workloads?",
+    options: [
+      "Spread Placement Group",
+      "Partition Placement Group",
+      "Cluster Placement Group",
+      "Distributed Placement Group"
+    ],
+    correct: 2,
+    explanation: "<strong>Cluster Placement Group</strong> packs instances close together inside a single AZ, achieving low latency and high throughput. Spread and Partition groups are for fault isolation.",
+  },
+  {
+    topic: "EC2 Fundamentals",
+    q: "An instance you launched last week has a public IP. You stop it and start it again. What happens to the public IP?",
+    options: [
+      "It stays the same",
+      "It changes — a new public IP is assigned",
+      "It stays the same if you have an Elastic IP",
+      "It is released and you cannot get another public IP"
+    ],
+    correct: 1,
+    explanation: "When you <strong>stop and start</strong> an EC2 instance, the public IP (if not Elastic) is released and a new one is assigned on start. Elastic IPs persist across stop/start.",
+  },
+  {
+    topic: "EC2 Fundamentals",
+    q: "Which EC2 purchase option is BEST for a production database that must run 24/7 for 3 years?",
+    options: [
+      "On-Demand",
+      "Spot Instance",
+      "Reserved Instance (Convertible, 3-year)",
+      "Dedicated Host"
+    ],
+    correct: 2,
+    explanation: "A <strong>3-year Reserved Instance (Convertible)</strong> gives the highest discount for steady-state workloads. Convertible allows changing instance family if needed. Spot can be terminated; On-Demand is too expensive for predictable 3-year use.",
+  },
+  {
+    topic: "EC2 Fundamentals",
+    q: "What is an Elastic Network Interface (ENI) primarily used for?",
+    options: [
+      "Connecting instances to a VPN",
+      "Attaching EBS volumes to instances",
+      "Providing a network interface that can be detached and reattached to another instance",
+      "Mounting an EFS file system"
+    ],
+    correct: 2,
+    explanation: "An <strong>ENI</strong> is a virtual network card you can create independently and attach/detach from EC2 instances. Useful for failover — move the ENI (and its private IP/MAC) to a standby instance.",
+  },
+  {
+    topic: "EC2 Fundamentals",
+    q: "EC2 Hibernate preserves which of the following?",
+    options: [
+      "The contents of the instance store",
+      "The contents of RAM (memory) written to the EBS root volume",
+      "Only the OS, not the application state",
+      "The public and private IP addresses indefinitely"
+    ],
+    correct: 1,
+    explanation: "<strong>Hibernate</strong> writes the instance's in-memory state (RAM) to the EBS root volume, allowing the instance to resume with applications in the same state. Instance store is ephemeral and not preserved.",
+  },
+
+  // === EC2 SAA Level ===
+  {
+    topic: "EC2 SAA Level",
+    q: "Which EC2 Nitro feature enables bare-metal-like performance with hardware-level isolation?",
+    options: [
+      "Nitro Enclaves",
+      "Nitro Hypervisor",
+      "Nitro Security Chip",
+      "All of the above"
+    ],
+    correct: 3,
+    explanation: "The <strong>Nitro system</strong> combines a lightweight hypervisor, dedicated hardware for networking/storage, a security chip, and Enclaves for secure computation. Together they reduce overhead and improve performance.",
+  },
+  {
+    topic: "EC2 SAA Level",
+    q: "You need to run a workload that requires dedicated physical servers for compliance. What should you use?",
+    options: [
+      "Dedicated Instances",
+      "Dedicated Hosts",
+      "Reserved Instances",
+      "Spot Fleet"
+    ],
+    correct: 1,
+    explanation: "<strong>Dedicated Hosts</strong> provide you with a physical server fully dedicated to your use, with visibility into sockets and cores — useful for server-bound software licensing. Dedicated Instances run on dedicated hardware but don't give you control/visibility over placement.",
+  },
+  {
+    topic: "EC2 SAA Level",
+    q: "An instance store-backed EC2 instance fails and stops. What happens to data on the instance store volumes?",
+    options: [
+      "Data persists until the instance is terminated",
+      "Data is lost — instance store is ephemeral",
+      "Data is automatically copied to S3",
+      "Data persists if an AMI was created"
+    ],
+    correct: 1,
+    explanation: "<strong>Instance store volumes</strong> are ephemeral — data is lost if the instance stops, fails, or is terminated. They provide high I/O but no durability. For persistent data, use EBS-backed instances.",
+  },
+  {
+    topic: "EC2 SAA Level",
+    q: "You launch an EC2 instance with an encrypted EBS volume. Can you attach an unencrypted snapshot as an additional volume?",
+    options: [
+      "Yes, encryption is optional at the volume level",
+      "No, all attached volumes must match the instance's encryption setting",
+      "Yes, but only if you copy the snapshot and encrypt it first",
+      "No, but you can mount it using NFS"
+    ],
+    correct: 2,
+    explanation: "You can attach an encrypted snapshot, but you must first <strong>copy it and enable encryption on the copy</strong>. For encrypted instances, all volumes should use encrypted snapshots. Unencrypted snapshots cannot be directly attached.",
+  },
+  {
+    topic: "EC2 SAA Level",
+    q: "Which of the following is a key difference between AMIs and Snapshots?",
+    options: [
+      "Snapshots can only be taken of EBS volumes, AMIs can capture the entire instance",
+      "AMIs can be shared across accounts, snapshots cannot",
+      "Snapshots are region-specific, AMIs are global",
+      "AMIs are only created from running instances"
+    ],
+    correct: 0,
+    explanation: "A <strong>snapshot</strong> captures a single EBS volume at a point in time. An <strong>AMI</strong> captures the full instance configuration including launch permissions, block device mappings, and all attached EBS snapshots. AMIs and snapshots can both be shared across accounts.",
+  },
+
+  // === ELB & ASG ===
+  {
+    topic: "ELB & ASG",
+    q: "Which load balancer is best suited for handling TCP traffic at extreme scale with static IP addresses?",
+    options: [
+      "Application Load Balancer",
+      "Network Load Balancer",
+      "Gateway Load Balancer",
+      "Classic Load Balancer"
+    ],
+    correct: 1,
+    explanation: "<strong>Network Load Balancer (NLB)</strong> operates at Layer 4, handles millions of requests/second, supports static IPs, and is ideal for TCP/UDP traffic. ALB is Layer 7 (HTTP/HTTPS). GLB is for third-party virtual appliances.",
+  },
+  {
+    topic: "ELB & ASG",
+    q: "What does 'connection draining' (deregistration delay) do on an ALB?",
+    options: [
+      "Prevents new connections to a deregistering target while completing in-flight requests",
+      "Instantly terminates all connections to unhealthy targets",
+      "Routes traffic evenly across all healthy targets",
+      "Allows a target to finish processing for a set time before being removed"
+    ],
+    correct: 3,
+    explanation: "Actually, both A and D are describing aspects of it, but the most precise is D: <strong>connection draining</strong> (renamed to <em>deregistration delay</em>) allows in-flight requests to complete during a configured window before the target is fully deregistered. A is a consequence, but D captures the mechanism.",
+  },
+  {
+    topic: "ELB & ASG",
+    q: "An ASG's desired capacity is 4, minimum is 2, and maximum is 6. A scale-down policy triggers at 60% CPU utilization for 5 minutes. Currently there are 4 instances at 40% CPU. What happens?",
+    options: [
+      "The ASG scales down to 2 instances",
+      "The ASG scales down to 3 instances",
+      "The ASG scales down to 4 instances (no change)",
+      "The ASG scales down by 1 instance"
+    ],
+    correct: 2,
+    explanation: "The scale-down policy's <strong>threshold hasn't been met</strong> (60% CPU for 5 min) — current CPU is 40%. The ASG takes no action. Wait for the metric to breach the threshold.",
+  },
+  {
+    topic: "ELB & ASG",
+    q: "Which scaling policy should you use to maintain CPU utilization at approximately 50% across all instances?",
+    options: [
+      "Simple Scaling",
+      "Step Scaling",
+      "Scheduled Scaling",
+      "Target Tracking Scaling"
+    ],
+    correct: 3,
+    explanation: "<strong>Target Tracking Scaling</strong> is the simplest approach — you set a target value (e.g., average CPU = 50%) and ASG auto-creates the CloudWatch alarms and scaling policies to maintain it. Simple/Step scaling requires manual alarm setup.",
+  },
+  {
+    topic: "ELB & ASG",
+    q: "You have an ALB with stickiness enabled (cookie duration 1 hour). A user adds items to their cart, but after 45 minutes their request hits a different instance. What happens?",
+    options: [
+      "The cart data is lost because stickiness expired",
+      "The cookie still routes them to the original instance (stickiness is within 1 hour)",
+      "The ALB uses session replication to share cart data across instances",
+      "The request is rejected and the user must re-authenticate"
+    ],
+    correct: 1,
+    explanation: "With <strong>stickiness enabled for 1 hour</strong>, the ALB's cookie ensures the user is routed to the same instance for the full duration. After 1 hour, the cookie expires and the next request may go to a different instance.",
+  },
+  {
+    topic: "ELB & ASG",
+    q: "What is the benefit of cross-zone load balancing on an ALB?",
+    options: [
+      "It distributes traffic evenly across all registered instances in all AZs",
+      "It distributes traffic evenly across AZs only",
+      "It enables SSL offloading at the load balancer",
+      "It allows the ALB to fail over to a different region"
+    ],
+    correct: 0,
+    explanation: "<strong>Cross-zone load balancing</strong> evenly distributes traffic across all instances in all AZs, regardless of which AZ the load balancer node resides in. Without it, traffic is split evenly across AZs, not instances (so an AZ with 2 instances vs 8 gets the same share).",
+  },
+];
+
+// --- Render ---
+const container = document.getElementById('questions');
+const correctSpan = document.getElementById('correctCount');
+const totalSpan = document.getElementById('totalCount');
+const pctSpan = document.getElementById('correctPct');
+
+let selectedAnswers = new Array(questions.length).fill(null);
+let revealed = new Array(questions.length).fill(false);
+
+function render() {
+  let html = '';
+  questions.forEach((q, i) => {
+    const topicLabel = `<span style="display:inline-block;font-size:0.7rem;background:#e8e8e8;padding:0.15rem 0.5rem;border-radius:3px;margin-bottom:0.5rem;">${q.topic}</span>`;
+    html += `<div class="question" data-idx="${i}">`;
+    html += `<div class="q-num">Question ${i+1} · ${q.topic}</div>`;
+    html += `<div class="q-text">${q.q}</div>`;
+    html += `<ul class="options">`;
+    q.options.forEach((opt, j) => {
+      let cls = '';
+      if (selectedAnswers[i] === j) {
+        cls = j === q.correct ? 'correct' : 'wrong';
+      } else if (revealed[i] && j === q.correct) {
+        cls = 'revealed-correct';
+      }
+      const disabled = selectedAnswers[i] !== null || revealed[i] ? 'style="pointer-events:none;opacity:0.8;"' : '';
+      html += `<li class="${cls}" ${disabled} data-opt="${j}" onclick="selectAnswer(${i}, ${j})">${opt}</li>`;
+    });
+    html += `</ul>`;
+    const fbClass = selectedAnswers[i] !== null ? (selectedAnswers[i] === q.correct ? 'correct' : 'wrong') : '';
+    html += `<div class="feedback ${fbClass} ${selectedAnswers[i] !== null || revealed[i] ? 'show' : ''}" id="fb-${i}">`;
+    if (selectedAnswers[i] !== null) {
+      const isCorrect = selectedAnswers[i] === q.correct;
+      html += isCorrect ? '<strong>✓ Correct.</strong> ' : '<strong>✗ Incorrect.</strong> ';
+    } else if (revealed[i]) {
+      html += '<strong>Answer:</strong> ';
+    }
+    html += `${q.explanation}</div>`;
+    html += `</div>`;
+  });
+  container.innerHTML = html;
+  updateScoreboard();
+}
+
+function selectAnswer(idx, optIdx) {
+  if (selectedAnswers[idx] !== null || revealed[idx]) return;
+  selectedAnswers[idx] = optIdx;
+  const q = questions[idx];
+  const fb = document.getElementById(`fb-${idx}`);
+  if (optIdx === q.correct) {
+    fb.className = 'feedback correct show';
+    fb.innerHTML = `<strong>✓ Correct.</strong> ${q.explanation}`;
+  } else {
+    fb.className = 'feedback wrong show';
+    fb.innerHTML = `<strong>✗ Incorrect.</strong> ${q.explanation}`;
+  }
+  render();
+  updateScoreboard();
+}
+
+function updateScoreboard() {
+  const answered = selectedAnswers.filter(a => a !== null).length;
+  const correct = selectedAnswers.filter((a, i) => a !== null && a === questions[i].correct).length;
+  correctSpan.textContent = correct;
+  totalSpan.textContent = answered;
+  pctSpan.textContent = answered === 0 ? '0%' : Math.round(correct / answered * 100) + '%';
+}
+
+document.getElementById('revealAll').addEventListener('click', () => {
+  for (let i = 0; i < questions.length; i++) {
+    if (selectedAnswers[i] === null) {
+      revealed[i] = true;
+      const fb = document.getElementById(`fb-${i}`);
+      fb.className = 'feedback show';
+      fb.innerHTML = `<strong>Answer:</strong> ${questions[i].explanation}`;
+    }
+  }
+  render();
+});
+
+document.getElementById('resetQuiz').addEventListener('click', () => {
+  selectedAnswers = new Array(questions.length).fill(null);
+  revealed = new Array(questions.length).fill(false);
+  render();
+});
+
+render();
+</script>
+</body>
+</html>

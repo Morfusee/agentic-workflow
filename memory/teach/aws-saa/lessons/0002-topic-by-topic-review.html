@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAA Review — Topic by Topic</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #faf9f7;
+    --card-bg: #ffffff;
+    --text: #1a1a1a;
+    --muted: #6b6b6b;
+    --accent: #2563eb;
+    --correct: #16a34a;
+    --wrong: #dc2626;
+    --border: #e5e5e5;
+    --code-bg: #f1f5f9;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    padding: 0;
+  }
+
+  .container { max-width: 780px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--border);
+  }
+
+  header h1 { font-size: 1.6rem; font-weight: 700; }
+  header .sub { color: var(--muted); font-size: 0.85rem; margin-top: 0.3rem; }
+
+  .topic-section {
+    margin-bottom: 2.5rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .topic-header {
+    padding: 1rem 1.25rem;
+    font-weight: 600;
+    font-size: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .topic-header.iam { background: #dbeafe; color: #1e40af; }
+  .topic-header.ec2f { background: #d1fae5; color: #065f46; }
+  .topic-header.ec2s { background: #ede9fe; color: #5b21b6; }
+  .topic-header.elb { background: #fef3c7; color: #92400e; }
+
+  .teach-box {
+    padding: 1rem 1.25rem;
+    background: #f8fafc;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.88rem;
+    line-height: 1.7;
+  }
+
+  .teach-box .key {
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .teach-box ul { margin: 0.4rem 0 0.4rem 1.2rem; }
+  .teach-box li { margin-bottom: 0.2rem; }
+  .teach-box code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85em;
+    background: var(--code-bg);
+    padding: 0.1em 0.3em;
+    border-radius: 3px;
+  }
+
+  .question {
+    padding: 1.25rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .question:first-of-type { border-top: none; }
+
+  .question .q-text {
+    font-weight: 500;
+    margin-bottom: 0.6rem;
+  }
+
+  .question ul.options {
+    list-style: none;
+  }
+
+  .question ul.options li {
+    padding: 0.45rem 0.75rem;
+    margin-bottom: 0.3rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.88rem;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .question ul.options li:hover { background: #f1f5f9; border-color: var(--accent); }
+  .question ul.options li.selected { border-color: var(--accent); background: #eff6ff; }
+  .question ul.options li.correct { border-color: var(--correct); background: #f0fdf4; }
+  .question ul.options li.wrong { border-color: var(--wrong); background: #fef2f2; }
+  .question ul.options li.revealed-correct { border-color: var(--correct); background: #f0fdf4; }
+
+  .feedback {
+    margin-top: 0.6rem;
+    padding: 0.6rem 0.9rem;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    display: none;
+    line-height: 1.6;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct { background: #f0fdf4; border-left: 3px solid var(--correct); }
+  .feedback.wrong { background: #fef2f2; border-left: 3px solid var(--wrong); }
+
+  .btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: var(--accent);
+    color: white;
+    transition: opacity 0.15s;
+  }
+  .btn:hover { opacity: 0.9; }
+  .btn-outline { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+
+  .source-note {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .source-note a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>SAA Review: Topic by Topic</h1>
+  <div class="sub">Learn the concept → test it → move on. Do one section at a time.</div>
+</header>
+
+<!-- ============== TOPIC 1: IAM ============== -->
+<div class="topic-section" id="iam">
+<div class="topic-header iam">1. IAM &amp; AWS CLI</div>
+
+<div class="teach-box">
+<p><strong>The short version:</strong></p>
+<ul>
+<li><strong>Users</strong> = long-term credentials (password + access keys). One per person or service.</li>
+<li><strong>Groups</strong> = collections of users. Attach policies here, not to individual users.</li>
+<li><strong>Roles</strong> = temporary credentials (via STS). Used for EC2 instances, cross-account, federated access.</li>
+<li><strong>Policies</strong> = JSON: <code>Effect</code> (Allow/Deny) + <code>Action</code> + <code>Resource</code> + optional <code>Condition</code>.</li>
+<li><strong>Key rule:</strong> Explicit Deny always wins over Allow.</li>
+<li><strong>Permissions Boundary</strong> = max ceiling within an account. <strong>SCP</strong> = max ceiling across all accounts in an Organization.</li>
+</ul>
+</div>
+
+<div class="question" data-idx="0">
+  <div class="q-text">An application running on EC2 needs to write logs to CloudWatch Logs. What should you do?</div>
+  <ul class="options">
+    <li data-opt="0">Store IAM access keys in a config file on the instance</li>
+    <li data-opt="1">Create an IAM Role with CloudWatch Logs write permissions, attach to the EC2 Instance Profile</li>
+    <li data-opt="2">Create a CloudWatch Logs resource-based policy allowing the EC2 instance</li>
+    <li data-opt="3">Put credentials in the EC2 user data script</li>
+  </ul>
+  <div class="feedback" id="fb-0"></div>
+</div>
+
+<div class="question" data-idx="1">
+  <div class="q-text">An IAM policy contains <code>"Effect": "Allow"</code> on <code>s3:GetObject</code> and a <code>"NotAction": "s3:PutObject"</code> with <code>"Effect": "Deny"</code>. What does the user get?</div>
+  <ul class="options">
+    <li data-opt="0">Full S3 read access but denied only PutObject</li>
+    <li data-opt="1">Denied everything <strong>except</strong> s3:PutObject (NotAction reverses the Action logic)</li>
+    <li data-opt="2">Allowed all S3 actions </li>
+    <li data-opt="3">No access because NotAction is confusing</li>
+  </ul>
+  <div class="feedback" id="fb-1"></div>
+</div>
+
+<div class="question" data-idx="2">
+  <div class="q-text">What does <code>aws sts assume-role</code> return?</div>
+  <ul class="options">
+    <li data-opt="0">A new IAM user with permanent credentials</li>
+    <li data-opt="1">Temporary security credentials (AccessKeyId, SecretAccessKey, SessionToken) with an expiration</li>
+    <li data-opt="2">A signed URL for the AWS Management Console</li>
+    <li data-opt="3">An updated IAM policy document</li>
+  </ul>
+  <div class="feedback" id="fb-2"></div>
+</div>
+
+<div class="question" data-idx="3">
+  <div class="q-text">Your company has 50 AWS accounts under AWS Organizations. You need to ensure that no account can disable CloudTrail logging. What should you use?</div>
+  <ul class="options">
+    <li data-opt="0">Attach a permissions boundary to each account's admin role</li>
+    <li data-opt="1">A Service Control Policy that denies cloudtrail:StopLogging and cloudtrail:DeleteTrail</li>
+    <li data-opt="2">An IAM group policy applied to the root user of each account</li>
+    <li data-opt="3">Enable CloudTrail with SSE-KMS encryption</li>
+  </ul>
+  <div class="feedback" id="fb-3"></div>
+</div>
+</div>
+
+<!-- ============== TOPIC 2: EC2 FUNDAMENTALS ============== -->
+<div class="topic-section" id="ec2f">
+<div class="topic-header ec2f">2. EC2 Fundamentals</div>
+
+<div class="teach-box">
+<p><strong>The short version:</strong></p>
+<ul>
+<li><strong>Instance type naming:</strong> <code>[family][gen].[size]</code> — m=general purpose, c=compute, r=memory, i=storage, g=GPU</li>
+<li><strong>Security Groups:</strong> instance-level, <strong>stateful</strong>, allow rules only. NACLs: subnet-level, <strong>stateless</strong>, allow+deny, ordered.</li>
+<li><strong>Purchase options:</strong> On-Demand (flexible), Reserved (steady, 1/3yr, up to 72% off), Spot (fault-tolerant, 90% off, can be interrupted), Dedicated Host (compliance, sockets/cores visibility)</li>
+<li><strong>Placement Groups:</strong> Cluster (low latency, same AZ), Spread (fault isolation, 7/AZ), Partition (distributed apps, rack-level isolation)</li>
+<li><strong>Stop vs Terminate:</strong> Stop preserves EBS, changes public IP. Terminate destroys instance (unless disableApiTermination is set)</li>
+</ul>
+</div>
+
+<div class="question" data-idx="4">
+  <div class="q-text">Which statement about Security Groups is correct?</div>
+  <ul class="options">
+    <li data-opt="0">Security Groups are stateless — both inbound and outbound rules must be explicit</li>
+    <li data-opt="1">Security Groups are stateful — if you allow inbound, the outbound return traffic is automatically allowed</li>
+    <li data-opt="2">Security Groups support both Allow and Deny rules</li>
+    <li data-opt="3">Security Groups operate at the subnet level</li>
+  </ul>
+  <div class="feedback" id="fb-4"></div>
+</div>
+
+<div class="question" data-idx="5">
+  <div class="q-text">You have a batch processing job that runs nightly for 2 hours. It can tolerate interruptions. What is the most cost-effective EC2 purchase option?</div>
+  <ul class="options">
+    <li data-opt="0">On-Demand</li>
+    <li data-opt="1">Reserved Instance (1-year, partial upfront)</li>
+    <li data-opt="2">Spot Instance</li>
+    <li data-opt="3">Dedicated Host</li>
+  </ul>
+  <div class="feedback" id="fb-5"></div>
+</div>
+
+<div class="question" data-idx="6">
+  <div class="q-text">You need to run a large-scale distributed data processing workload (e.g., Hadoop) across many EC2 instances. You want fault isolation at the rack level, but don't need each instance on unique hardware. Which placement group?</div>
+  <ul class="options">
+    <li data-opt="0">Cluster Placement Group</li>
+    <li data-opt="1">Spread Placement Group</li>
+    <li data-opt="2">Partition Placement Group</li>
+    <li data-opt="3">Any of the above work equally well</li>
+  </ul>
+  <div class="feedback" id="fb-6"></div>
+</div>
+
+<div class="question" data-idx="7">
+  <div class="q-text">You stop an EC2 instance. What happens to data on the instance store volumes?</div>
+  <ul class="options">
+    <li data-opt="0">Data persists — instance store is preserved across stop/start</li>
+    <li data-opt="1">Data is lost — instance store is ephemeral</li>
+    <li data-opt="2">Data is automatically copied to EBS</li>
+    <li data-opt="3">Data persists only if the instance has termination protection enabled</li>
+  </ul>
+  <div class="feedback" id="fb-7"></div>
+</div>
+</div>
+
+<!-- ============== TOPIC 3: ELB & ASG ============== -->
+<div class="topic-section" id="elb">
+<div class="topic-header elb">3. ELB &amp; Auto Scaling Groups</div>
+
+<div class="teach-box">
+<p><strong>The short version:</strong></p>
+<ul>
+<li><strong>ALB</strong> (L7): HTTP/HTTPS, path/host-based routing, WAF, sticky sessions, container support (ECS).</li>
+<li><strong>NLB</strong> (L4): TCP/UDP/TLS, static IP per AZ, extreme performance, preserves client IP.</li>
+<li><strong>GLB</strong> (L3/4): Transparent gateway + LB for third-party appliances (GENEVE protocol).</li>
+<li><strong>Cross-zone LB:</strong> ALB = free & on by default. NLB = charged & off by default.</li>
+<li><strong>Sticky sessions:</strong> Cookie-based routing to the same target. Cookie expires → different target.</li>
+<li><strong>Connection draining</strong> (deregistration delay): lets in-flight requests complete before removing target.</li>
+<li><strong>ASG:</strong> Min/Desired/Max. Target tracking is easiest scaling policy. Launch Templates &gt; Launch Configs.</li>
+</ul>
+</div>
+
+<div class="question" data-idx="8">
+  <div class="q-text">Your application MUST receive traffic with the original client IP preserved. Which load balancer type can you use?</div>
+  <ul class="options">
+    <li data-opt="0">Application Load Balancer only</li>
+    <li data-opt="1">Network Load Balancer only</li>
+    <li data-opt="2">Both ALB and NLB preserve the client IP</li>
+    <li data-opt="3">Neither — client IP is always replaced</li>
+  </ul>
+  <div class="feedback" id="fb-8"></div>
+</div>
+
+<div class="question" data-idx="9">
+  <div class="q-text">An ALB has sticky sessions enabled with a cookie duration of 30 minutes. A user adds items to their cart and returns after 45 minutes. What happens?</div>
+  <ul class="options">
+    <li data-opt="0">The cart is lost — the cookie expired and they may hit a different instance</li>
+    <li data-opt="1">The cookie still works — it's within the 30-minute duration</li>
+    <li data-opt="2">The ALB has session replication, so the cart follows the user</li>
+    <li data-opt="3">The ALB returns an error and the user must re-authenticate</li>
+  </ul>
+  <div class="feedback" id="fb-9"></div>
+</div>
+
+<div class="question" data-idx="10">
+  <div class="q-text">You have 6 EC2 instances across 3 AZs (2 per AZ). With cross-zone load balancing DISABLED on an ALB, how is traffic distributed?</div>
+  <ul class="options">
+    <li data-opt="0">Evenly across all 6 instances (33% to each AZ, then 50/50 within AZ)</li>
+    <li data-opt="1">Evenly across AZs (33% each), then evenly within the AZ (50/50 per instance). So 2 instances handling 33% each, and 4 handling 67% split unevenly.</li>
+    <li data-opt="2">All traffic goes to a single AZ until it fails</li>
+    <li data-opt="3">Traffic is round-robined across instances regardless of AZ</li>
+  </ul>
+  <div class="feedback" id="fb-10"></div>
+</div>
+
+<div class="question" data-idx="11">
+  <div class="q-text">An ASG has Min=2, Desired=4, Max=8. A step scaling policy adds +2 instances when CPU &gt; 75% and +4 when CPU &gt; 90%. Currently 4 instances at 95% CPU. What happens?</div>
+  <ul class="options">
+    <li data-opt="0">ASG scales to 8 (4 + 4). Scale-out has no upper limit beyond Max.</li>
+    <li data-opt="1">ASG scales to 6 (4 + 2). Step with +4 also applies, total +6, but Max caps it at 8.</li>
+    <li data-opt="2">ASG scales to 8 (applies the +4 step, goes from 4 to 8)</li>
+    <li data-opt="3">ASG does nothing — instances are already at 95%</li>
+  </ul>
+  <div class="feedback" id="fb-11"></div>
+</div>
+
+<div class="question" data-idx="12">
+  <div class="q-text">You need to run a fleet of security appliance appliances (firewalls) that must inspect all traffic entering a VPC. Which load balancer routes traffic to them transparently?</div>
+  <ul class="options">
+    <li data-opt="0">Application Load Balancer</li>
+    <li data-opt="1">Network Load Balancer</li>
+    <li data-opt="2">Gateway Load Balancer</li>
+    <li data-opt="3">Classic Load Balancer</li>
+  </ul>
+  <div class="feedback" id="fb-12"></div>
+</div>
+</div>
+
+<div style="margin:1.5rem 0; display:flex; gap:0.75rem; flex-wrap:wrap;">
+  <button class="btn" id="revealAll">Reveal All Answers</button>
+  <button class="btn btn-outline" id="resetQuiz">Reset All</button>
+</div>
+
+<div class="source-note">
+  <p>Reference: <a href="../reference/sections-1-4-cheatsheet.html">Sections 1–4 Cheatsheet</a> (open in new tab). Revisit any topic where you got &lt;2 correct.</p>
+  <p>Primary source: Stephen Mareek's <em>Ultimate AWS Certified Solutions Architect Associate 2026</em> course.</p>
+  <p>Stuck on a question? Ask your teacher — that's what I'm here for.</p>
+</div>
+
+</div>
+
+<script>
+const questions = [
+  // 0-3: IAM
+  {
+    correct: 1,
+    explanation: "<strong>✓ An IAM Role attached to the instance profile</strong> is the correct answer. This way credentials are automatically rotated via STS. Never store keys on instances. CloudWatch Logs does not support resource-based policies in this context."
+  },
+  {
+    correct: 1,
+    explanation: "<strong>✓ Denied everything EXCEPT s3:PutObject.</strong> <code>NotAction</code> reverses the action: when you Deny with NotAction, it Denies everything <em>except</em> the specified action. Tricky, but the exam tests it."
+  },
+  {
+    correct: 1,
+    explanation: "<strong>✓ Temporary credentials.</strong> <code>AssumeRole</code> returns AccessKeyId + SecretAccessKey + SessionToken, all with an expiration (usually 15min–1hr by default)."
+  },
+  {
+    correct: 1,
+    explanation: "<strong>✓ SCP.</strong> SCPs applied at the Organization or OU level restrict permissions across ALL accounts. Permissions Boundaries limit <em>within</em> a single account only."
+  },
+  // 4-7: EC2 Fundamentals
+  {
+    correct: 1,
+    explanation: "<strong>✓ Stateful.</strong> Security Groups track connection state — if you allow inbound on port 443, the return traffic is automatically allowed regardless of outbound rules. NACLs are stateless."
+  },
+  {
+    correct: 2,
+    explanation: "<strong>✓ Spot Instance.</strong> 2-hour nightly batch job that can tolerate interruptions is the ideal Spot workload. Up to 90% cheaper than On-Demand. Reserved would be wasted on 2 hrs/night."
+  },
+  {
+    correct: 2,
+    explanation: "<strong>✓ Partition Placement Group.</strong> Partitions isolate failure at the rack level. Spread limits you to 7 per AZ. Cluster puts everything together in one AZ (high risk)."
+  },
+  {
+    correct: 1,
+    explanation: "<strong>✓ Data is lost.</strong> Instance store volumes are ephemeral — data is lost on stop, termination, or failure. EBS volumes persist (unless 'Delete on Termination' is set for the root volume)."
+  },
+  // 8-12: ELB & ASG
+  {
+    correct: 1,
+    explanation: "<strong>✓ NLB only</strong> preserves the source IP of the client. ALB terminates the client connection and re-establishes a new one — the target sees the ALB's private IP (unless using Proxy Protocol on ALB)."
+  },
+  {
+    correct: 0,
+    explanation: "<strong>✓ Cart may be lost.</strong> The 30-minute cookie expired at 30 min. At 45 min, the new request has no cookie → ALB routes to any instance (likely a different one). Sticky sessions do NOT replicate state."
+  },
+  {
+    correct: 1,
+    explanation: "<strong>✓ 33% to each AZ, split among instances in that AZ.</strong> Without cross-zone: 33% -> AZ1 (2 instances) = 16.5% each. Same AZ with 1 instance gets 33%. Very uneven. Cross-zone fixes this."
+  },
+  {
+    correct: 2,
+    explanation: "<strong>✓ Scales to 8.</strong> Step scaling evaluates the largest matching step. At 95%, the +4 step applies (the +2 also matches but +4 is the larger adjustment for the matched range). 4+4=8, which is within Max."
+  },
+  {
+    correct: 2,
+    explanation: "<strong>✓ Gateway Load Balancer.</strong> GLB operates transparently at L3/4 using GENEVE protocol, designed specifically for security appliances. ALB/NLB are for application/networking traffic routing, not appliance injection."
+  },
+];
+
+const selectedAnswers = new Array(questions.length).fill(null);
+const revealed = new Array(questions.length).fill(false);
+
+function render() {
+  questions.forEach((q, i) => {
+    const opts = document.querySelectorAll(`.question[data-idx="${i}"] .options li`);
+    opts.forEach((li, j) => {
+      let cls = '';
+      if (selectedAnswers[i] === j) {
+        cls = j === q.correct ? 'correct' : 'wrong';
+      } else if (revealed[i] && j === q.correct) {
+        cls = 'revealed-correct';
+      }
+      li.className = cls;
+      if (selectedAnswers[i] !== null || revealed[i]) {
+        li.style.pointerEvents = 'none';
+        li.style.opacity = '0.8';
+      } else {
+        li.style.pointerEvents = '';
+        li.style.opacity = '';
+      }
+    });
+    const fb = document.getElementById(`fb-${i}`);
+    if (selectedAnswers[i] !== null) {
+      const isCorrect = selectedAnswers[i] === q.correct;
+      fb.className = `feedback show ${isCorrect ? 'correct' : 'wrong'}`;
+      fb.innerHTML = (isCorrect ? '✓ ' : '✗ ') + q.explanation;
+    } else if (revealed[i]) {
+      fb.className = 'feedback show';
+      fb.innerHTML = 'Answer: ' + q.explanation;
+    } else {
+      fb.className = 'feedback';
+    }
+  });
+}
+
+// Set up click handlers
+document.querySelectorAll('.question').forEach((qDiv) => {
+  const idx = parseInt(qDiv.dataset.idx);
+  qDiv.querySelectorAll('.options li').forEach((li) => {
+    li.addEventListener('click', () => {
+      if (selectedAnswers[idx] !== null || revealed[idx]) return;
+      const optIdx = parseInt(li.dataset.opt);
+      selectedAnswers[idx] = optIdx;
+      render();
+    });
+  });
+});
+
+document.getElementById('revealAll').addEventListener('click', () => {
+  for (let i = 0; i < questions.length; i++) {
+    if (selectedAnswers[i] === null) {
+      revealed[i] = true;
+    }
+  }
+  render();
+});
+
+document.getElementById('resetQuiz').addEventListener('click', () => {
+  for (let i = 0; i < questions.length; i++) {
+    selectedAnswers[i] = null;
+    revealed[i] = false;
+  }
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
