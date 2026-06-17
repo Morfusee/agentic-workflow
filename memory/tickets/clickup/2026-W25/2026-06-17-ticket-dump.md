@@ -1,3 +1,33 @@
+# Stand-up Script
+
+Yesterday, I fixed up the Playwright POC so it can run scheduled website tests continuously and keep the Allure dashboard available after each run. The implementation uses a long-running control-plane worker that applies migrations, runs the DB-backed website test suite, allows failed test runs to continue through reporting, and regenerates the DB-based Allure report. I also deployed the POC on my own server through my personal Dokploy instance, using a worker-only control-plane service and a separate nginx report UI service to serve the generated Allure dashboard from a shared volume.
+
+No major blockers right now.
+
+---
+
+# Selected Tasks
+
+- [MANUAL-001]: Fix up Playwright POC test/reporting control plane
+  - Status: Done
+  - Activity date: 2026-06-17
+  - Reference: `# Manual Tasks` -> `## [MANUAL-001]: Fix up Playwright POC test/reporting control plane`
+  - Stand-up relevance: Core implementation work for scheduled Playwright execution and persisted Allure reporting.
+
+- [MANUAL-002]: Deploy Playwright POC on personal Dokploy instance
+  - Status: Done
+  - Activity date: 2026-06-17
+  - Reference: `# Manual Tasks` -> `## [MANUAL-002]: Deploy Playwright POC on personal Dokploy instance`
+  - Stand-up relevance: Deployment work that made the POC hosted and accessible through the report UI.
+
+---
+
+# Unselected Tasks
+
+No unselected tasks. Both manual tasks from this dump were included in the stand-up.
+
+---
+
 # Ticket Dump
 
 Generated: 2026-06-18 01:31:14 +08:00
