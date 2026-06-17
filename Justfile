@@ -61,6 +61,11 @@ auth-list:
     echo "auth-list: Windows-only for now. Run scripts/switch-accounts.ps1 manually."; \
   fi
 
+
+# Serve OpenCode bound to the current machine's Tailscale IPv4
+serve:
+  opencode serve --port 6767 --hostname $(tailscale ip -4)
+
 # -----------------------------------------------------------------------
 # Windows-only recipes
 # -----------------------------------------------------------------------
