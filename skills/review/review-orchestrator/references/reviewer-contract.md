@@ -8,10 +8,12 @@ Provide each reviewer only the context it needs:
 
 - Requirements or acceptance criteria.
 - Provider ID/URL when available.
-- Changed files, diff, or committed comparison range.
-- Relevant source files and tests.
+- Branch-scoped diff only (e.g., `git diff main...HEAD`), never the full repository or unrelated files. Only changed files and their immediate context should be passed to keep token usage minimal.
+- Relevant source files and tests (only those touched by the branch diff).
 - Verification commands and results.
 - Explicit review scope and exclusions.
+
+Reviewers must remember and address every instruction and acceptance criterion they receive. Do not drop or forget any check item.
 
 Reviewers must not modify files.
 

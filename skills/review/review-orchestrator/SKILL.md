@@ -13,7 +13,7 @@ Coordinate post-implementation review without owning any single review specialty
 
 ## Core Workflow
 
-1. Gather review context: requirements, acceptance criteria, provider IDs/URLs, changed files, current diff or committed range, implementation notes, and verification output.
+1. Gather review context: requirements, acceptance criteria, provider IDs/URLs, changed files, current diff or committed range, implementation notes, and verification output. Scope the diff to only the target branch changes (e.g., `git diff main...HEAD` or the equivalent base-branch comparison) to minimize token usage.
 2. Load `references/reviewer-contract.md` and `references/reviewer-selection.md`.
 3. Select reviewers:
    - Always run `$requirements-reviewer`.
@@ -32,10 +32,12 @@ Coordinate post-implementation review without owning any single review specialty
 
 ## Rules
 
+- Remember and apply every instruction, requirement, and acceptance criterion throughout the review. Do not drop or skip any check item during aggregation.
 - Do not treat automated tests as a substitute for requirements review.
 - Do not publish provider comments unless the user or invoking flow explicitly requested review-comment publication.
 - Do not invoke frontend UI review skills unless the user asks or the selected reviewer rules require them.
 - Keep review separate from implementation notification. `$ticket-review-comment-drafter` owns review comments; implementation-update comments belong to the implementation workflow that produced the changes.
+- Limit every review to only the changes on the target branch. Never review the entire repository or files not touched by the branch diff. Use the smallest possible diff (e.g., `git diff <base>...HEAD`) and pass only the changed files and their relevant context to reviewers. This minimizes token usage across all reviewer subagents.
 - If reviewers disagree, report the conflict and prefer the result with stronger file-level evidence.
 
 ## Supporting References
