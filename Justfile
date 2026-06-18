@@ -1,9 +1,7 @@
 alias se := sync-environment
 alias ss := sync-skills
-alias sm := sync-memory
 alias so := sync-opencode
 alias sc := sync-codex
-alias sn := sync-nvim
 alias sp := skills-open
 alias oc := opencode-config
 alias as := auth-save
@@ -21,10 +19,6 @@ sync-environment:
 sync-skills:
   @python scripts/sync_environment.py skills
 
-# Sync repo memory into OpenCode and Codex memory directories
-sync-memory:
-  @python scripts/sync_environment.py memory
-
 # Sync repo configs/opencode/* into ~/.config/opencode/
 sync-opencode:
   @python scripts/sync_environment.py opencode
@@ -32,10 +26,6 @@ sync-opencode:
 # Sync repo configs/codex/* into ~/.codex/
 sync-codex:
   @python scripts/sync_environment.py codex
-
-# Sync repo configs/nvim into OS-specific nvim config location
-sync-nvim:
-  @python scripts/sync_environment.py nvim
 
 # Save current Codex + OpenCode auth into a named profile
 auth-save +name:
