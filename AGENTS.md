@@ -27,7 +27,7 @@ Before creating a new directory or file in one of these locations, check whether
 ## Path Privacy
 
 - When writing docs, handoffs, plans, tickets, memory artifacts, config examples, or generated skill output, use `$HOME` for paths under the current user's home directory.
-- Do not write expanded user-specific home paths such as `C:\Users\<name>` or `/Users/<name>` into repository files.
+- Do not write expanded user-specific home paths into repository files.
 - If a tool returns an expanded home path, rewrite the home prefix to `$HOME` before saving or reporting it.
 
 ## Worktree Directory

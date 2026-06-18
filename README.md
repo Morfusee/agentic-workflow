@@ -82,6 +82,7 @@ This links:
 
 1. `configs\\codex\\config.toml.template` -> `%USERPROFILE%\\.codex\\config.toml` (rendered)
 2. `configs\\codex\\rules\\default.rules` -> `%USERPROFILE%\\.codex\\rules\\default.rules`
+3. `configs\\codex\\AGENTS.md` -> `%USERPROFILE%\\.codex\\AGENTS.md`
 
 #### 4. Sync only memory
 
@@ -127,7 +128,7 @@ just sync-environment
 ```
 
 This is the canonical command and syncs memory, OpenCode config, skills, and Neovim.
-It also syncs Codex config from `configs/codex/` into `~/.codex/`.
+It also syncs Codex config, rules, and `AGENTS.md` from `configs/codex/` into `~/.codex/`.
 
 #### 2. Sync only OpenCode config
 

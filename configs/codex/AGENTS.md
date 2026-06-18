@@ -1,4 +1,4 @@
-# Global OpenCode Rules
+# Global Codex Rules
 
 ## Core Principle
 
@@ -55,15 +55,15 @@ The test: Every changed line should trace directly to the user's request.
 **Define success criteria. Loop until verified.**
 
 Transform tasks into verifiable goals:
-- "Add validation" → "Write tests for invalid inputs, then make them pass"
-- "Fix the bug" → "Write a test that reproduces it, then make it pass"
-- "Refactor X" → "Ensure tests pass before and after"
+- "Add validation" -> "Write tests for invalid inputs, then make them pass"
+- "Fix the bug" -> "Write a test that reproduces it, then make it pass"
+- "Refactor X" -> "Ensure tests pass before and after"
 
 For multi-step tasks, state a brief plan:
 ```
-1. [Step] → verify: [check]
-2. [Step] → verify: [check]
-3. [Step] → verify: [check]
+1. [Step] -> verify: [check]
+2. [Step] -> verify: [check]
+3. [Step] -> verify: [check]
 ```
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
@@ -76,7 +76,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 All memory-backed workflows must resolve under `$HOME/Documents/Programming/agentic-workflow/memory`.
 
-Treat that path as authoritative for OpenCode memory reads and writes.
+Treat that path as authoritative for Codex memory reads and writes.
 
 Do not introduce alternate memory roots in downstream skills; they must follow this rule.
 
@@ -94,9 +94,9 @@ Never interpret a new request as permission to reset the solution.
 
 If the new request conflicts with existing changes, stop and explain the conflict instead of silently deleting prior work.
 
-## Complex Task Orchestration
+## Codex Execution
 
-For large-scale work spanning 3+ files, architectural redesign, multi-step builds, or any task that has been ongoing for 3 minutes, load `$skill-orchestrator-go` before delegating to subagents. Do not load it for single-file edits, quick audits, or simple fixes.
+Use Codex's available tools and repository instructions. Do not rely on OpenCode-specific subagent orchestration, hidden skill names, or OpenCode-only commands unless the user explicitly asks to operate on OpenCode configuration.
 
 ## Required Workflow Before Editing
 

@@ -1,0 +1,57 @@
+#!/bin/sh
+# agentic-workflow path privacy hook
+set -eu
+cd "$(git rev-parse --show-toplevel)"
+
+if command -v python >/dev/null 2>&1; then
+  PYTHON=python
+elif command -v python3 >/dev/null 2>&1; then
+  PYTHON=python3
+else
+  echo "python not found; cannot run path privacy check" >&2
+  exit 1
+fi
+
+exec "$PYTHON" - <<'PY'
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+root = Path.cwd()
+username = re.escape(Path.home().name)
+slash_users = "/" + "Users" + "/"
+backslash_users = "C:" + re.escape("\\") + "Users" + re.escape("\\")
+forward_users = "C:/" + "Users" + "/"
+patterns = [
+    re.compile(backslash_users + r"(?!\*)[^\\\s`'\")<>]+"),
+    re.compile(re.escape(forward_users) + r"(?!\*)[^/\s`'\")<>]+"),
+    re.compile(re.escape(slash_users) + r"(?!\*)[^/\s`'\")<>]+"),
+    re.compile(r"[\\/]" + username + r"[\\/]", re.IGNORECASE),
+]
+
+result = subprocess.run(
+    ["git", "diff", "--cached", "--name-only", "--diff-filter=ACMR"],
+    check=True,
+    capture_output=True,
+    text=True,
+)
+
+leaks = []
+for name in result.stdout.splitlines():
+    path = root / name
+    if not path.is_file():
+        continue
+    data = path.read_bytes()
+    if b"\0" in data:
+        continue
+    text = data.decode("utf-8", errors="ignore")
+    for line_number, line in enumerate(text.splitlines(), 1):
+        if any(pattern.search(line) for pattern in patterns):
+            leaks.append(f"{name}:{line_number}: {line.strip()}")
+
+if leaks:
+    print("Expanded home path or username path segment found. Use $HOME instead.", file=sys.stderr)
+    print("\n".join(leaks), file=sys.stderr)
+    raise SystemExit(1)
+PY

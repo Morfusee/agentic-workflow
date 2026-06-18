@@ -7,7 +7,6 @@ alias oc := opencode-config
 alias as := auth-save
 alias aw := auth-switch
 alias al := auth-list
-alias cpp := check-path-privacy
 alias iph := install-path-privacy-hook
 
 default:
@@ -53,17 +52,9 @@ auth-list:
     echo "auth-list: Windows-only for now. Run scripts/switch-accounts.ps1 manually."; \
   fi
 
-# Fail if tracked files contain expanded home paths or username path segments
-check-path-privacy:
-  @python scripts/check_path_privacy.py
-
-# Same check, scoped to staged files for the pre-commit hook
-check-path-privacy-staged:
-  @python scripts/check_path_privacy.py --staged
-
-# Install the active Git pre-commit hook for path privacy checks
+# Configure Git to use repo-tracked hooks from .githooks/
 install-path-privacy-hook:
-  @python scripts/install_path_privacy_hook.py
+  @python scripts/sync_environment.py hooks
 
 # Serve OpenCode bound to the current machine's Tailscale IPv4
 serve:

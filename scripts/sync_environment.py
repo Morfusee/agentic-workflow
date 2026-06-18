@@ -30,6 +30,7 @@ CODEX_CONFIG_DIR = REPO_ROOT / "configs" / "codex"
 SKILLS_SOURCE = REPO_ROOT / "skills"
 NVIM_SOURCE = REPO_ROOT / "configs" / "nvim"
 ENV_FILE = REPO_ROOT / ".skills.env"
+GIT_HOOKS_DIR = REPO_ROOT / ".githooks"
 
 OPENCODE_DIR = Path.home() / ".config" / "opencode"
 CODEX_DIR = Path.home() / ".codex"
@@ -45,6 +46,7 @@ OPENCODE_CONFIG_FILES = [
 ]
 
 CODEX_CONFIG_TEMPLATE = "config.toml.template"
+CODEX_AGENT_FILE = "AGENTS.md"
 
 CODEX_SKILLS_DIR = CODEX_DIR / "skills"
 OPENCODE_SKILLS_DIR = OPENCODE_DIR / "skills"
@@ -389,6 +391,27 @@ def sync_codex_config(dry_run: bool = False) -> bool:
         if not _sync_link(rules_dest, rules_source, is_dir=False, dry_run=dry_run):
             all_ok = False
 
+    agents_source = CODEX_CONFIG_DIR / CODEX_AGENT_FILE
+    if not agents_source.is_file():
+        error(f"Codex AGENTS file not found: {agents_source}")
+        all_ok = False
+    else:
+        agents_dest = CODEX_DIR / CODEX_AGENT_FILE
+        if path_kind(agents_dest) not in {"missing", "link"}:
+            if dry_run:
+                log("DRY-RUN", f"Would replace without backup and link: {agents_dest} -> {agents_source}")
+                agents_dest = None
+            else:
+                try:
+                    agents_dest.unlink()
+                    log("REMOVE", f"{agents_dest}")
+                except OSError as e:
+                    error(f"Cannot replace Codex AGENTS file: {e}")
+                    all_ok = False
+                    agents_dest = None
+        if agents_dest is not None and not _sync_link(agents_dest, agents_source, is_dir=False, dry_run=dry_run):
+            all_ok = False
+
     return all_ok
 
 
@@ -403,7 +426,19 @@ def sync_skills(dry_run: bool = False) -> bool:
         targets.append(OPENCODE_SKILLS_DIR)
 
     all_ok = True
-    skill_folders = sorted([p for p in SKILLS_SOURCE.iterdir() if p.is_dir()])
+    expected_skill_files = set(SKILLS_SOURCE.glob("*/*/SKILL.md"))
+    all_skill_files = {p for p in SKILLS_SOURCE.rglob("SKILL.md") if p.parent != SKILLS_SOURCE}
+    misplaced_skill_files = sorted(all_skill_files - expected_skill_files)
+    if misplaced_skill_files:
+        error("Skill files must live at skills/<category>/<skill-name>/SKILL.md:")
+        for path in misplaced_skill_files:
+            error(f"  {path.relative_to(REPO_ROOT)}")
+        return False
+
+    skill_folders = sorted({p.parent for p in expected_skill_files}, key=lambda p: p.name)
+    if len({p.name for p in skill_folders}) != len(skill_folders):
+        error("Duplicate skill folder names found; provider targets must stay flat.")
+        return False
 
     for target in targets:
         target.mkdir(parents=True, exist_ok=True)
@@ -437,6 +472,24 @@ def sync_nvim(dry_run: bool = False) -> bool:
     return _sync_link(target, NVIM_SOURCE, is_dir=True, dry_run=dry_run)
 
 
+def sync_git_hooks(dry_run: bool = False) -> bool:
+    pre_commit = GIT_HOOKS_DIR / "pre-commit"
+    if not pre_commit.is_file():
+        error(f"Git hook not found: {pre_commit}")
+        return False
+    if dry_run:
+        log("DRY-RUN", "Would set git config core.hooksPath .githooks")
+        return True
+    try:
+        subprocess.run(["git", "config", "core.hooksPath", ".githooks"], cwd=REPO_ROOT, check=True)
+        pre_commit.chmod(pre_commit.stat().st_mode | 0o111)
+    except (OSError, subprocess.SubprocessError) as e:
+        error(f"Cannot configure Git hooks: {e}")
+        return False
+    log("HOOKS", "core.hooksPath -> .githooks")
+    return True
+
+
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
@@ -448,7 +501,7 @@ def main() -> None:
     parser.add_argument(
         "targets",
         nargs="*",
-        choices=["memory", "opencode", "codex", "skills", "nvim", "all"],
+        choices=["memory", "opencode", "codex", "skills", "nvim", "hooks", "all"],
         default=["all"],
         help="Which targets to sync (default: all).",
     )
@@ -466,7 +519,7 @@ def main() -> None:
     args = parser.parse_args()
 
     if "all" in args.targets:
-        targets_to_run = ["memory", "opencode", "codex", "skills", "nvim"]
+        targets_to_run = ["memory", "opencode", "codex", "skills", "nvim", "hooks"]
     else:
         targets_to_run = args.targets
 
@@ -482,6 +535,8 @@ def main() -> None:
             results["skills"] = sync_skills(dry_run=args.dry_run)
         elif target == "nvim":
             results["nvim"] = sync_nvim(dry_run=args.dry_run)
+        elif target == "hooks":
+            results["hooks"] = sync_git_hooks(dry_run=args.dry_run)
 
     print()
     all_ok = all(results.values())
