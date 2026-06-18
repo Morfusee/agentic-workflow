@@ -23,7 +23,7 @@ Use this skill to keep local tool configuration reproducible from this repositor
 - On Windows, use PowerShell path inspection before any recursive remove or move.
 - Treat `.env`, credentials, SSH, cloud, and local app secrets as non-copyable unless the user explicitly instructs otherwise.
 - Prefer idempotent commands: rerunning a sync should not create unnecessary backups or duplicate links.
-- Confirm before writing outside `C:\Users\mrqvp\Documents\Programming\agentic-workflow` unless the sync script already owns that target behavior.
+- Confirm before writing outside `$HOME\Documents\Programming\agentic-workflow` unless the sync script already owns that target behavior.
 
 ## Repo Conventions
 

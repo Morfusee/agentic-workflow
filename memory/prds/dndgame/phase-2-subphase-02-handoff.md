@@ -3,8 +3,8 @@
 - Suggested skill: `$prd-to-ticket-planner`
 - PMS destination: Linear
 - PMS location: Team `Hatudoggy`; no project
-- PRD path: `C:\Users\mrqvp\Documents\Programming\agentic-workflow\memory\prds\dndgame\prd.md`
-- Ticket index path: `C:\Users\mrqvp\Documents\Programming\agentic-workflow\memory\prds\dndgame\ticket-index.md`
+- PRD path: `$HOME\Documents\Programming\agentic-workflow\memory\prds\dndgame\prd.md`
+- Ticket index path: `$HOME\Documents\Programming\agentic-workflow\memory\prds\dndgame\ticket-index.md`
 - Current subphase: 02, SQLite schema, migrations, and state access layer
 
 ## Current Subphase Outcome

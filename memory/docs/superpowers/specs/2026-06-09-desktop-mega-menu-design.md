@@ -5,7 +5,7 @@
 - ClickUp: `86d36z2nw`
 - Title: Implement Navbar desktop mega menu component
 - Target branch for implementation: `feat/CU-86d36z2nw_Implement-Navbar-desktop-mega-menu-component`
-- Repository worktree: `C:\Users\mrqvp\Documents\Programming\worktrees\website-worktree-review`
+- Repository worktree: `$HOME\Documents\Programming\worktrees\website-worktree-review`
 
 ## Goal
 

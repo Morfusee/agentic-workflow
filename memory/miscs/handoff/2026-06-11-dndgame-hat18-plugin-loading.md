@@ -13,11 +13,11 @@ All static verification passed — the dice tool was replaced with `dnd_game_hea
 
 ## Current Project State
 
-- **Repo:** `C:\Users\mrqvp\Documents\Programming\DnDGame`
+- **Repo:** `$HOME\Documents\Programming\DnDGame`
 - **Linear Team:** Hatudoggy (HAT)
 - **User:** Mark (c684c9a8-fc1c-4356-886f-55084b6e7ec8)
 - **Completed:** HAT-16 (scaffolding), HAT-18 (plugin shell — implemented but unverified)
-- **Bun:** Available at `C:\Users\mrqvp\.bun\bin\bun.exe` (v1.3.14)
+- **Bun:** Available at `$HOME\.bun\bin\bun.exe` (v1.3.14)
 - **Unstaged changes:** Only HAT-18 implementation files and planning docs (not committed)
 
 ## Root Cause Hypothesis (Must Be Confirmed)
@@ -59,7 +59,7 @@ This is the plugin HAT-18 created. But the root session doesn't look at `code/.o
 
 ### Why the user sees "Drag n' Dev" but no plugin
 
-When the user runs `opencode C:\Users\mrqvp\Documents\Programming\DnDGame\code`, OpenCode starts with `code/` as the project root. It shows "Drag n' Dev" (auto-generated project name). But the plugin may still not load because:
+When the user runs `opencode $HOME\Documents\Programming\DnDGame\code`, OpenCode starts with `code/` as the project root. It shows "Drag n' Dev" (auto-generated project name). But the plugin may still not load because:
 
 1. The `code/.opencode/package.json` uses `"@opencode-ai/plugin": "latest"` — may need `bun install` to resolve properly
 2. OpenCode may expect the package.json in a specific format or location

@@ -4,7 +4,7 @@ Date: 2026-06-05
 
 Source ticket: ClickUp `86d36z2p9` - Define mega menu component data contract
 
-Target repo: `C:\Users\mrqvp\Documents\Programming\website`
+Target repo: `$HOME\Documents\Programming\website`
 
 ## Goal
 

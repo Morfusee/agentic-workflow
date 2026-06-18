@@ -3,8 +3,8 @@
 - Suggested skill: `$prd-to-ticket-planner`
 - PMS destination: Linear
 - PMS location: Team `Hatudoggy`; no project
-- PRD path: `C:\Users\mrqvp\Documents\Programming\agentic-workflow\memory\prds\dndgame\prd.md`
-- Ticket index path: `C:\Users\mrqvp\Documents\Programming\agentic-workflow\memory\prds\dndgame\ticket-index.md`
+- PRD path: `$HOME\Documents\Programming\agentic-workflow\memory\prds\dndgame\prd.md`
+- Ticket index path: `$HOME\Documents\Programming\agentic-workflow\memory\prds\dndgame\ticket-index.md`
 - Current subphase: 12, Session recap, continuation, testing, and v0 playtest hardening
 
 ## Current Subphase Outcome
@@ -28,8 +28,8 @@ Created Linear tickets for session-end recap generation and continuation persist
 
 ## Completion Summary
 
-- PRD path: `C:\Users\mrqvp\Documents\Programming\agentic-workflow\memory\prds\dndgame\prd.md`
-- Ticket index path: `C:\Users\mrqvp\Documents\Programming\agentic-workflow\memory\prds\dndgame\ticket-index.md`
+- PRD path: `$HOME\Documents\Programming\agentic-workflow\memory\prds\dndgame\prd.md`
+- Ticket index path: `$HOME\Documents\Programming\agentic-workflow\memory\prds\dndgame\ticket-index.md`
 - PMS destination: Linear, Team `Hatudoggy`, no project
 - Phase status: Phase 2 complete across subphases 01 through 12
 - Unresolved risks or follow-up decisions: none identified for ticket-planning handoff purposes; implementation may create follow-up tickets as acceptance sweeps and playtests reveal issues.

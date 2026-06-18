@@ -154,7 +154,7 @@ This symlinks `memory/` into:
 just sync-skills
 ```
 
-This symlinks each `skills/<name>/` folder into `~/.codex/skills/` (skipping folders with `.codex-hidden`).
+This symlinks each `skills/<category>/<name>/` folder into `~/.codex/skills/<name>/` (skipping folders with `.codex-hidden`).
 
 To also mirror into OpenCode, copy `.skills.env.example` to `.skills.env` and set:
 
@@ -174,7 +174,7 @@ This links `~/.config/nvim` to `configs/nvim/` (repo is source of truth).
 
 ## Daily use
 
-1. Put each new skill in `skills/<skill-name>/`.
+1. Put each new skill in `skills/<category>/<skill-name>/`.
 2. Run `just sync-skills` to sync new skill folders.
 3. Run `just sync-environment` to sync everything at once.
 

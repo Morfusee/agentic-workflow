@@ -8,7 +8,7 @@ related: []
 # ClickUp Epics Board — Unassigned Task Analysis
 
 **Source list:** Epics board (`list_id: 901613629699`)
-**Context:** mmdc-web codebase (`C:\Users\mrqvp\Documents\Programming\website`)
+**Context:** mmdc-web codebase (`$HOME\Documents\Programming\website`)
 **Stack:** Next.js 16 (App Router), Payload CMS 3.75, Tailwind CSS 3, MongoDB, React 19
 
 Of 9 tickets in the Epics board, 4 are unassigned. Ranked by implementation effort (fastest first):

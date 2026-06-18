@@ -2,11 +2,11 @@
 
 ## Current Focus
 
-Continue work in `C:\Users\mrqvp\Documents\Programming\website` on migrating `DesktopMegaMenu` to reuse the newly implemented Link atom and shared Button component.
+Continue work in `$HOME\Documents\Programming\website` on migrating `DesktopMegaMenu` to reuse the newly implemented Link atom and shared Button component.
 
 Related prior handoff for the Link atom implementation:
 
-- `C:\Users\mrqvp\Documents\Programming\agentic-workflow\memory\miscs\handoff\2026-06-09-link-atom-review-refactor-handoff.md`
+- `$HOME\Documents\Programming\agentic-workflow\memory\miscs\handoff\2026-06-09-link-atom-review-refactor-handoff.md`
 
 Do not duplicate the Link atom design or implementation plan. Reference the prior handoff and the artifacts it lists if deeper context is needed.
 
@@ -53,7 +53,7 @@ In `src/components/DesktopMegaMenu/DesktopMegaMenu.component.tsx`:
 
 ## Verification Run
 
-From `C:\Users\mrqvp\Documents\Programming\website`:
+From `$HOME\Documents\Programming\website`:
 
 - `pnpm exec tsc --noEmit --pretty false` passed after the Link and Button migration updates.
 

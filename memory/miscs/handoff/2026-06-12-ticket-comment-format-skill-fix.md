@@ -8,8 +8,8 @@ The immediate problem: during the HAT-19 implementation flow, the Linear comment
 
 ## Current Repository State
 
-- Repo: `C:\Users\mrqvp\Documents\Programming\agentic-workflow`
-- Canonical memory root: `C:\Users\mrqvp\Documents\Programming\agentic-workflow\memory`
+- Repo: `$HOME\Documents\Programming\agentic-workflow`
+- Canonical memory root: `$HOME\Documents\Programming\agentic-workflow\memory`
 - Existing uncommitted change before this handoff: `skills/ticket-implementation-flow/references/ticket-comment-format.md`
 - That existing change updates the provider-facing comment template labels to use bold branch label and `###` section headings.
 - This handoff file is the only new file intentionally added for this request.
@@ -23,7 +23,7 @@ Do not overwrite or revert the existing uncommitted template change. Treat it as
 - Likely related orchestrator reference: `skills/workflow-orchestrator/references/providers/linear.md`
 - Workflow entrypoint skill: `skills/workflow-orchestrator/SKILL.md`
 - Prior Linear ticket involved: HAT-19, `https://linear.app/hatudoggy/issue/HAT-19/define-dndgame-sqlite-schema-and-migration-contract`
-- Prior DnDGame implementation branch: `docs/hat-19` in `C:\Users\mrqvp\Documents\Programming\DnDGame`
+- Prior DnDGame implementation branch: `docs/hat-19` in `$HOME\Documents\Programming\DnDGame`
 - Prior DnDGame commit: latest commit on that branch when completed was `docs(db): define sqlite schema contract for HAT-19`
 
 ## What Happened
@@ -40,7 +40,7 @@ Do not overwrite or revert the existing uncommitted template change. Treat it as
 
 The OpenCode skill symlink appears correct:
 
-- `C:\Users\mrqvp\.config\opencode\skills\ticket-implementation-flow` resolves to `C:\Users\mrqvp\Documents\Programming\agentic-workflow\skills\ticket-implementation-flow`.
+- `$HOME\.config\opencode\skills\ticket-implementation-flow` resolves to `$HOME\Documents\Programming\agentic-workflow\skills\ticket-implementation-flow`.
 
 The likely root cause is procedural:
 

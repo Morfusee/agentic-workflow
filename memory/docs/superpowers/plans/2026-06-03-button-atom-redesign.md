@@ -27,7 +27,7 @@
 
 - [ ] **Step 1: Confirm the website worktree state**
 
-Run from `C:\Users\mrqvp\Documents\Programming\website`:
+Run from `$HOME\Documents\Programming\website`:
 
 ```bash
 git status --short

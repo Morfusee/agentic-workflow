@@ -3,7 +3,7 @@
 ## Context
 - User asked for a React quality review of ClickUp ticket `86d36z2nx`: https://app.clickup.com/t/86d36z2nx
 - The review used the `react-quality-review` skill.
-- Current repo: `C:/Users/mrqvp/Documents/Programming/website`.
+- Current repo: `$HOME/Documents/Programming/website`.
 - Current checked-out branch during review: `feat/v3-redesign`.
 - Ticket implementation branch reviewed: `origin/CU-86d36z2nx_IconButton-Atom`.
 - Target branch used for comparison: `origin/feat/v3-redesign`.
@@ -12,7 +12,7 @@
 - `git status --short` showed only one untracked file: `repomix-output.xml`.
 - `git diff` showed no tracked working tree changes.
 - No code files were edited during the review.
-- A temporary detached worktree was created at `C:/Users/mrqvp/AppData/Local/Temp/opencode/website-iconbutton-review` and removed after use.
+- A temporary detached worktree was created at `$HOME/AppData/Local/Temp/opencode/website-iconbutton-review` and removed after use.
 
 ## Review Summary
 - The ticket branch adds an `IconButton` atom and Storybook stories, plus a component barrel export.
@@ -41,7 +41,7 @@
 - ClickUp ticket: https://app.clickup.com/t/86d36z2nx
 - Implementation branch: `origin/CU-86d36z2nx_IconButton-Atom`
 - Target branch: `origin/feat/v3-redesign`
-- React review checklist: `C:/Users/mrqvp/.config/opencode/skills/react-quality-review/references/react-quality-review-checklist.md`
+- React review checklist: `$HOME/.config/opencode/skills/react-quality-review/references/react-quality-review-checklist.md`
 
 ## Suggested Skills
 - `react-quality-review`: Use if continuing or re-running the React/TypeScript review after the branch is rebased.

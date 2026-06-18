@@ -74,11 +74,13 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ## Canonical Memory Root
 
-All memory-backed workflows must resolve under `${HOME}/Documents/Programming/agentic-workflow/memory`.
+All memory-backed workflows must resolve under `$HOME/Documents/Programming/agentic-workflow/memory`.
 
 Treat that path as authoritative for OpenCode memory reads and writes.
 
 Do not introduce alternate memory roots in downstream skills; they must follow this rule.
+
+When writing docs, handoffs, plans, tickets, memory artifacts, config examples, or generated skill output, use `$HOME` for paths under the current user's home directory. Do not write expanded user-specific home paths such as `C:\Users\<name>` or `/Users/<name>` into repository files. If a tool returns an expanded home path, rewrite the home prefix to `$HOME` before saving or reporting it.
 
 The current working tree, current git diff, and previous changes made in the session must be treated as intentional user-owned work unless the user explicitly asks to remove, revert, replace, or refactor them.
 

@@ -3,7 +3,7 @@
 **Date:** 2026-06-10
 **Ticket:** [CU-86d36z2p3](https://app.clickup.com/t/86d36z2p3) — Implement Card molecule for interactive Hero CTAs
 **Branch:** `CU-86d36z2p8_Mobile-Navbar-OffCanvas`
-**Prototype reference:** `C:\Users\mrqvp\Documents\Programming\website3.0-prototype\src\components\molecules\CardMolecule.tsx`
+**Prototype reference:** `$HOME\Documents\Programming\website3.0-prototype\src\components\molecules\CardMolecule.tsx`
 
 ## Objective
 

@@ -8,7 +8,7 @@
 
 **Tech Stack:** React 18, TypeScript (strict), Tailwind CSS, motion/react, class-variance-authority, Next.js Link, Storybook
 
-**Worktree:** `C:\Users\mrqvp\Documents\Programming\worktrees\website-worktree-review` (branch `CU-86d36z2p8_Mobile-Navbar-OffCanvas`)
+**Worktree:** `$HOME\Documents\Programming\worktrees\website-worktree-review` (branch `CU-86d36z2p8_Mobile-Navbar-OffCanvas`)
 
 ---
 

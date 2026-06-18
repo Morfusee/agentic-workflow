@@ -1,7 +1,7 @@
 # Handoff: Playwright POC Test Orchestrator Terminology
 
 Date: 2026-06-18
-Repo: `C:\Users\mrqvp\Documents\Programming\playwright-poc`
+Repo: `$HOME\Documents\Programming\playwright-poc`
 User focus: Rename or clarify anything currently called `control-plane` if it may confuse future developers.
 
 ## Current Context

@@ -6,7 +6,7 @@ Continue work on ClickUp ticket `86d39f67h`: Implement Link Atom.
 
 Ticket URL: https://app.clickup.com/t/90161490245/86d39f67h
 
-Main repo/worktree: `C:\Users\mrqvp\Documents\Programming\website`
+Main repo/worktree: `$HOME\Documents\Programming\website`
 
 Current branch: `feat/CU-86d39f67h`
 
@@ -16,11 +16,11 @@ Base branch used by prior planning: `feat/v3-redesign`
 
 Do not duplicate the design or implementation plan. Read these artifacts if deeper context is needed:
 
-- Prior handoff read at session start: `C:\Users\mrqvp\Documents\Programming\worktrees\website-worktree-review\link-atom-handoff-2026-06-09.md`
-- Design spec: `C:\Users\mrqvp\Documents\Programming\agentic-workflow\memory\docs\superpowers\specs\2026-06-09-link-atom-design.md`
-- Implementation plan: `C:\Users\mrqvp\Documents\Programming\agentic-workflow\memory\docs\superpowers\plans\2026-06-09-link-atom.md`
-- Prototype component reference: `C:\Users\mrqvp\Documents\Programming\website3.0-prototype\src\components\atoms\Link.tsx`
-- Prototype Storybook/Kitchen Sink reference: `C:\Users\mrqvp\Documents\Programming\website3.0-prototype\src\components\atoms\LinkPage.tsx`
+- Prior handoff read at session start: `$HOME\Documents\Programming\worktrees\website-worktree-review\link-atom-handoff-2026-06-09.md`
+- Design spec: `$HOME\Documents\Programming\agentic-workflow\memory\docs\superpowers\specs\2026-06-09-link-atom-design.md`
+- Implementation plan: `$HOME\Documents\Programming\agentic-workflow\memory\docs\superpowers\plans\2026-06-09-link-atom.md`
+- Prototype component reference: `$HOME\Documents\Programming\website3.0-prototype\src\components\atoms\Link.tsx`
+- Prototype Storybook/Kitchen Sink reference: `$HOME\Documents\Programming\website3.0-prototype\src\components\atoms\LinkPage.tsx`
 
 ## Current Implementation State
 
@@ -76,7 +76,7 @@ No changes were made to:
 
 ## Verification Run In This Session
 
-From `C:\Users\mrqvp\Documents\Programming\website`:
+From `$HOME\Documents\Programming\website`:
 
 - `pnpm exec tsc --noEmit --pretty false` passed after the refactor.
 - `pnpm build:storybook` passed earlier in the review pass. It emitted existing warning noise about `use client` directives, circular reexports, `public/storybook` output location, and chunk sizes. The new Link stories compiled successfully.

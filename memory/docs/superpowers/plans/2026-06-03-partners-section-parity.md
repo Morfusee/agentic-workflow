@@ -47,7 +47,7 @@ No files should be created in the website repository for this implementation.
 
 - [ ] **Step 1: Check current status**
 
-Run from `C:\Users\mrqvp\Documents\Programming\website-ngnair`:
+Run from `$HOME\Documents\Programming\website-ngnair`:
 
 ```powershell
 git status --short
@@ -57,7 +57,7 @@ Expected: any pre-existing user-owned changes remain visible. Do not clean, rese
 
 - [ ] **Step 2: Check current diff**
 
-Run from `C:\Users\mrqvp\Documents\Programming\website-ngnair`:
+Run from `$HOME\Documents\Programming\website-ngnair`:
 
 ```powershell
 git diff
@@ -172,7 +172,7 @@ Expected:
 
 - [ ] **Step 1: Run lint**
 
-Run from `C:\Users\mrqvp\Documents\Programming\website-ngnair`:
+Run from `$HOME\Documents\Programming\website-ngnair`:
 
 ```powershell
 pnpm lint
@@ -182,7 +182,7 @@ Expected: command completes successfully with no new lint errors from `src/compo
 
 - [ ] **Step 2: Run production build**
 
-Run from `C:\Users\mrqvp\Documents\Programming\website-ngnair`:
+Run from `$HOME\Documents\Programming\website-ngnair`:
 
 ```powershell
 pnpm build
@@ -200,7 +200,7 @@ Expected: Next.js build completes successfully and `/partners` remains part of t
 
 - [ ] **Step 1: Start the development server if one is not already running**
 
-Run from `C:\Users\mrqvp\Documents\Programming\website-ngnair`:
+Run from `$HOME\Documents\Programming\website-ngnair`:
 
 ```powershell
 pnpm dev

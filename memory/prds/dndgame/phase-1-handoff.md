@@ -4,8 +4,8 @@
 - Current phase completed: Phase 1, requirements to PRD
 - Next phase: Phase 2 setup
 - Project slug: `dndgame`
-- PRD path: `C:\Users\mrqvp\Documents\Programming\agentic-workflow\memory\prds\dndgame\prd.md`
-- Artifact folder: `C:\Users\mrqvp\Documents\Programming\agentic-workflow\memory\prds\dndgame`
+- PRD path: `$HOME\Documents\Programming\agentic-workflow\memory\prds\dndgame\prd.md`
+- Artifact folder: `$HOME\Documents\Programming\agentic-workflow\memory\prds\dndgame`
 
 ## Resolved decisions
 

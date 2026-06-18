@@ -4,7 +4,7 @@
 #
 # Goal:
 # - Mirror OpenCode-style command permissions from configs/opencode/opencode.jsonc
-# - Keep common project work fast under C:\Users\mrqvp\Documents\Programming
+# - Keep common project work fast under $HOME\Documents\Programming
 # - Prompt before destructive/runtime-heavy actions
 # - Forbid system-level changes and remote package execution shortcuts
 #
@@ -223,7 +223,7 @@ prefix_rule(
     justification = "Allow ripgrep searches through Codex's Windows PowerShell wrapper.",
 )
 
-prefix_rule(pattern=["cd", "C:\\Users\\mrqvp\\Documents\\Programming\\agentic-workflow"], decision="allow")
+prefix_rule(pattern=["cd", "$HOME\\Documents\\Programming\\agentic-workflow"], decision="allow")
 prefix_rule(pattern=["python", "scripts/sync_environment.py", "codex"], decision="allow")
-prefix_rule(pattern=["C:\\Program Files\\PowerShell\\7\\pwsh.exe", "-NoProfile", "-Command", "cd C:\\Users\\mrqvp\\Documents\\Programming\\agentic-workflow; \"test\" | Out-File -Encoding ascii .git\\_codex_write_test.txt; Remove-Item -Force .git\\_codex_write_test.txt; \"ok\""], decision="allow")
+prefix_rule(pattern=["C:\\Program Files\\PowerShell\\7\\pwsh.exe", "-NoProfile", "-Command", "cd $HOME\\Documents\\Programming\\agentic-workflow; \"test\" | Out-File -Encoding ascii .git\\_codex_write_test.txt; Remove-Item -Force .git\\_codex_write_test.txt; \"ok\""], decision="allow")
 prefix_rule(pattern=["agent-browser"], decision="allow")

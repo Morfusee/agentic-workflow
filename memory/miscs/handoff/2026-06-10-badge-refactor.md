@@ -2,7 +2,7 @@
 
 **Date:** 2026-06-10
 **Branch:** `feat/CU-86d39pyt8_Implement-Badge-Atom` (merged into `feat/v3-redesign`)
-**Repo:** `C:\Users\mrqvp\Documents\Programming\website`
+**Repo:** `$HOME\Documents\Programming\website`
 
 ---
 
@@ -59,7 +59,7 @@ If continuing this work, consider loading:
 
 ## References
 
-- **Review checklist:** `C:\Users\mrqvp\.config\opencode\skills\react-quality-review\references\react-quality-review-checklist.md`
+- **Review checklist:** `$HOME\.config\opencode\skills\react-quality-review\references\react-quality-review-checklist.md`
 - **Commit:** `ed49b2d` — refactor(Badge): replace useEffects with useReducedMotion hook and declarative framer-motion animations
 - **ClickUp task:** https://app.clickup.com/t/86d39pyt8
 - **Comment:** https://app.clickup.com/t/86d39pyt8 (comment `90160192844136`)

@@ -2,7 +2,7 @@
 
 Date: 2026-06-05
 Ticket: ClickUp `86d36z2p1` - Implement Input and SearchBar molecule
-Target repo: `C:\Users\mrqvp\Documents\Programming\website`
+Target repo: `$HOME\Documents\Programming\website`
 
 ## Context
 

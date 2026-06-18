@@ -2,8 +2,8 @@
 
 ## Source Artifacts
 
-- PRD: `C:\Users\mrqvp\Documents\Programming\agentic-workflow\memory\prds\dndgame\prd.md`
-- Phase 1 handoff: `C:\Users\mrqvp\Documents\Programming\agentic-workflow\memory\prds\dndgame\phase-1-handoff.md`
+- PRD: `$HOME\Documents\Programming\agentic-workflow\memory\prds\dndgame\prd.md`
+- Phase 1 handoff: `$HOME\Documents\Programming\agentic-workflow\memory\prds\dndgame\phase-1-handoff.md`
 
 ## PMS Destination
 

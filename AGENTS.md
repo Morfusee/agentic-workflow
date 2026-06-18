@@ -7,8 +7,8 @@ all skill authoring and updates must be written in this repository.
 
 ## Non-Negotiable Path Override
 
-- Treat `C:\Users\mrqvp\Documents\Programming\agentic-workflow\skills` as canonical.
-- Force all new skill creation into `skills/<skill-name>/` in this repo.
+- Treat `$HOME\Documents\Programming\agentic-workflow\skills` as canonical.
+- Force all new skill creation into a categorized folder under `skills/<category>/<skill-name>/` in this repo.
 - Force all edits to existing project skills to remain in this repo.
 - Do not default to `$CODEX_HOME/skills` or `~/.codex/skills`.
 - If asked for no location, still write to this repo.
@@ -23,6 +23,12 @@ Use these canonical subpaths under `${HOME}/Documents/Programming/agentic-workfl
 - `memory/presentations/[presentation-name]/` for slideshow generator output.
 
 Before creating a new directory or file in one of these locations, check whether an existing implementation already exists in the target location and reuse it if present.
+
+## Path Privacy
+
+- When writing docs, handoffs, plans, tickets, memory artifacts, config examples, or generated skill output, use `$HOME` for paths under the current user's home directory.
+- Do not write expanded user-specific home paths such as `C:\Users\<name>` or `/Users/<name>` into repository files.
+- If a tool returns an expanded home path, rewrite the home prefix to `$HOME` before saving or reporting it.
 
 ## Worktree Directory
 
@@ -49,23 +55,17 @@ Follow the Skill Creator process in order:
 
 ## Required Skill Structure
 
-Each skill must live under:
+Each skill must live under a category folder:
 
-`skills/<skill-name>/`
+`skills/<category>/<skill-name>/`
 
-Required file:
+The provider-facing sync target remains flat as `<skill-name>/`; category folders are for repo navigation only.
 
-- `skills/<skill-name>/SKILL.md`
+Inside each skill folder:
 
-Recommended file:
-
-- `skills/<skill-name>/agents/openai.yaml`
-
-Optional folders:
-
-- `skills/<skill-name>/scripts/`
-- `skills/<skill-name>/references/`
-- `skills/<skill-name>/assets/`
+- Required file: `SKILL.md`
+- Recommended file: `agents/openai.yaml`
+- Optional folders: `scripts/`, `references/`, `assets/`
 
 Do not create auxiliary docs like `README.md`, `CHANGELOG.md`, or install guides inside skill folders unless explicitly requested.
 

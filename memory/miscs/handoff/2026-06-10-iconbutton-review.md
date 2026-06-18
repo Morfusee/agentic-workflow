@@ -11,10 +11,10 @@ The ticket is in **"in review"** status and describes building a reusable `IconB
 | Artifact | Location |
 |---|---|
 | ClickUp ticket | https://app.clickup.com/t/86d36z2nx |
-| Reviewed source | `C:\Users\mrqvp\Documents\Programming\website3.0-prototype\src\components\atoms\IconButton.tsx` |
-| Demo page | `C:\Users\mrqvp\Documents\Programming\website3.0-prototype\src\components\atoms\IconButtonPage.tsx` |
-| Sibling reference | `C:\Users\mrqvp\Documents\Programming\website3.0-prototype\src\components\atoms\Button.tsx` (uses `forwardRef`, same patterns) |
-| Review checklist used | `C:\Users\mrqvp\.config\opencode\skills\react-quality-review\references\react-quality-review-checklist.md` |
+| Reviewed source | `$HOME\Documents\Programming\website3.0-prototype\src\components\atoms\IconButton.tsx` |
+| Demo page | `$HOME\Documents\Programming\website3.0-prototype\src\components\atoms\IconButtonPage.tsx` |
+| Sibling reference | `$HOME\Documents\Programming\website3.0-prototype\src\components\atoms\Button.tsx` (uses `forwardRef`, same patterns) |
+| Review checklist used | `$HOME\.config\opencode\skills\react-quality-review\references\react-quality-review-checklist.md` |
 
 ## Review Outcome
 

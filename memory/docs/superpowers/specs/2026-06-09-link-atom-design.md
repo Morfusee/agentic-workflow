@@ -2,9 +2,9 @@
 
 ## Context
 
-ClickUp ticket `86d39f67h` asks for a reusable Link atom in the main `website` repo, using `website3.0-prototype` as the Kitchen Sink reference. The implementation target is the main worktree at `C:\Users\mrqvp\Documents\Programming\website`, with `feat/v3-redesign` as the currently checked-out base branch and `feat/CU-86d39f67h` as the feature branch name.
+ClickUp ticket `86d39f67h` asks for a reusable Link atom in the main `website` repo, using `website3.0-prototype` as the Kitchen Sink reference. The implementation target is the main worktree at `$HOME\Documents\Programming\website`, with `feat/v3-redesign` as the currently checked-out base branch and `feat/CU-86d39f67h` as the feature branch name.
 
-The prototype reference is `C:\Users\mrqvp\Documents\Programming\website3.0-prototype\src\components\atoms\Link.tsx` and `LinkPage.tsx`. It defines variants for inline, standalone, arrow, quiet, and inverse links, plus external-link icon behavior and reduced-motion-aware arrow motion.
+The prototype reference is `$HOME\Documents\Programming\website3.0-prototype\src\components\atoms\Link.tsx` and `LinkPage.tsx`. It defines variants for inline, standalone, arrow, quiet, and inverse links, plus external-link icon behavior and reduced-motion-aware arrow motion.
 
 The website repo already has atom-style components under `src/components/*`, Storybook coverage titled under `Atoms/*`, shared `cn` and `cva` usage, `next/link`, `lucide-react`, and `motion`. Current navigation code still uses raw `next/link`; this ticket will not migrate those consumers.
 

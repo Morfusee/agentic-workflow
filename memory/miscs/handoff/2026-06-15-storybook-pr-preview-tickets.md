@@ -8,7 +8,7 @@ The feasibility was assessed: yes, it's doable. The next agent should create tic
 
 ## Context
 
-The website repo (`C:\Users\mrqvp\Documents\Programming\website`, branch `feat/v3-redesign`) has a PR preview workflow at `.github/workflows/cms-dev.yml` that:
+The website repo (`$HOME\Documents\Programming\website`, branch `feat/v3-redesign`) has a PR preview workflow at `.github/workflows/cms-dev.yml` that:
 
 1. Builds Next.js (`pnpm build`)
 2. Builds Storybook (`pnpm build:storybook`)
@@ -92,5 +92,5 @@ Suggested breakdown (agent should use judgment):
 - No secrets or credentials are included in this handoff.
 - The production workflow (`cms-prod.yml`) must NOT be altered — this is preview-only.
 - Existing PR previews for open PRs should continue to work; the change only affects newly created previews (or redeploys of existing ones).
-- Before editing, run `git status` and `git diff` from `C:\Users\mrqvp\Documents\Programming\website` to confirm the working tree is clean and no user-owned changes are present.
+- Before editing, run `git status` and `git diff` from `$HOME\Documents\Programming\website` to confirm the working tree is clean and no user-owned changes are present.
 - Preserve the existing `feat/v3-redesign` branch — do not switch branches unless the user requests it.

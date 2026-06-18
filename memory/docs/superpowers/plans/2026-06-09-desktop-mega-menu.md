@@ -35,7 +35,7 @@
 
 - [ ] **Step 1: Confirm current website worktree state**
 
-Run from `C:\Users\mrqvp\Documents\Programming\worktrees\website-worktree-review`:
+Run from `$HOME\Documents\Programming\worktrees\website-worktree-review`:
 
 ```bash
 git status --short --branch

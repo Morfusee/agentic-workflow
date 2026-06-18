@@ -14,7 +14,7 @@
 
 Read before starting:
 
-- `C:\Users\mrqvp\Documents\Programming\agentic-workflow\memory\docs\2026-06-03-typography-improvements-design.md`
+- `$HOME\Documents\Programming\agentic-workflow\memory\docs\2026-06-03-typography-improvements-design.md`
 - ClickUp ticket: `86d36xz5f`
 
 ## File Structure
@@ -34,8 +34,8 @@ Read before starting:
 - Base branch: `feat/v3-redesign`
 - Feature branch: `feat/86d36xz5f`
 - Prefer existing worktrees in this order:
-  - `C:\Users\mrqvp\Documents\Programming\website-worktree-1`
-  - `C:\Users\mrqvp\Documents\Programming\website-worktree-2`
+  - `$HOME\Documents\Programming\website-worktree-1`
+  - `$HOME\Documents\Programming\website-worktree-2`
 - Reuse a dirty worktree only when dirty changes are minimal and do not touch `src/app/(frontend)/styles.css`, `src/blocks/Hero/Hero.component.tsx`, `tailwind.config.js`, Payload schemas, or generated Payload files.
 - Preserve dirty changes. Do not reset, stash, delete, or checkout over user-owned work without explicit approval.
 - If a candidate worktree has conflicting dirty changes, stop and ask.
@@ -50,7 +50,7 @@ Read before starting:
 Run:
 
 ```powershell
-git -C "C:\Users\mrqvp\Documents\Programming\website" worktree list
+git -C "$HOME\Documents\Programming\website" worktree list
 ```
 
 Expected: command prints the main worktree and any existing linked worktrees. If `website-worktree-1` or `website-worktree-2` is listed, prefer them in that order.
@@ -60,7 +60,7 @@ Expected: command prints the main worktree and any existing linked worktrees. If
 Run:
 
 ```powershell
-Test-Path -LiteralPath "C:\Users\mrqvp\Documents\Programming\website-worktree-1"
+Test-Path -LiteralPath "$HOME\Documents\Programming\website-worktree-1"
 ```
 
 Expected: `True` or `False`.
@@ -70,9 +70,9 @@ Expected: `True` or `False`.
 Run only if Step 2 returned `True`:
 
 ```powershell
-git -C "C:\Users\mrqvp\Documents\Programming\website-worktree-1" status --short
-git -C "C:\Users\mrqvp\Documents\Programming\website-worktree-1" diff
-git -C "C:\Users\mrqvp\Documents\Programming\website-worktree-1" branch --show-current
+git -C "$HOME\Documents\Programming\website-worktree-1" status --short
+git -C "$HOME\Documents\Programming\website-worktree-1" diff
+git -C "$HOME\Documents\Programming\website-worktree-1" branch --show-current
 ```
 
 Expected: use this worktree if dirty changes are empty or minimal and do not conflict with typography files.
@@ -82,7 +82,7 @@ Expected: use this worktree if dirty changes are empty or minimal and do not con
 Run only if worktree 1 does not exist or is conflicting:
 
 ```powershell
-Test-Path -LiteralPath "C:\Users\mrqvp\Documents\Programming\website-worktree-2"
+Test-Path -LiteralPath "$HOME\Documents\Programming\website-worktree-2"
 ```
 
 Expected: `True` or `False`.
@@ -92,9 +92,9 @@ Expected: `True` or `False`.
 Run only if Step 4 returned `True`:
 
 ```powershell
-git -C "C:\Users\mrqvp\Documents\Programming\website-worktree-2" status --short
-git -C "C:\Users\mrqvp\Documents\Programming\website-worktree-2" diff
-git -C "C:\Users\mrqvp\Documents\Programming\website-worktree-2" branch --show-current
+git -C "$HOME\Documents\Programming\website-worktree-2" status --short
+git -C "$HOME\Documents\Programming\website-worktree-2" diff
+git -C "$HOME\Documents\Programming\website-worktree-2" branch --show-current
 ```
 
 Expected: use this worktree if dirty changes are empty or minimal and do not conflict with typography files.
@@ -104,30 +104,30 @@ Expected: use this worktree if dirty changes are empty or minimal and do not con
 Run only if both preferred worktrees are unavailable or conflicting:
 
 ```powershell
-git -C "C:\Users\mrqvp\Documents\Programming\website" fetch origin feat/v3-redesign
-git -C "C:\Users\mrqvp\Documents\Programming\website" worktree add -b feat/86d36xz5f "C:\Users\mrqvp\Documents\Programming\website-worktree-typography" origin/feat/v3-redesign
+git -C "$HOME\Documents\Programming\website" fetch origin feat/v3-redesign
+git -C "$HOME\Documents\Programming\website" worktree add -b feat/86d36xz5f "$HOME\Documents\Programming\website-worktree-typography" origin/feat/v3-redesign
 ```
 
-Expected: a new worktree exists at `C:\Users\mrqvp\Documents\Programming\website-worktree-typography` on branch `feat/86d36xz5f`.
+Expected: a new worktree exists at `$HOME\Documents\Programming\website-worktree-typography` on branch `feat/86d36xz5f`.
 
 - [ ] **Step 7: Prepare the selected existing worktree branch**
 
 Set `$worktree` to the selected path. If worktree 1 was selected, run:
 
 ```powershell
-$worktree = "C:\Users\mrqvp\Documents\Programming\website-worktree-1"
+$worktree = "$HOME\Documents\Programming\website-worktree-1"
 ```
 
 If worktree 2 was selected, run:
 
 ```powershell
-$worktree = "C:\Users\mrqvp\Documents\Programming\website-worktree-2"
+$worktree = "$HOME\Documents\Programming\website-worktree-2"
 ```
 
 If the newly created fallback worktree was selected, run:
 
 ```powershell
-$worktree = "C:\Users\mrqvp\Documents\Programming\website-worktree-typography"
+$worktree = "$HOME\Documents\Programming\website-worktree-typography"
 ```
 
 Run these commands only if `$worktree` is not already on `feat/86d36xz5f`:

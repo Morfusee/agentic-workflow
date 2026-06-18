@@ -4,7 +4,7 @@
 
 **Goal:** Add a reusable single-line `Input` atom and `SearchBar` molecule with Storybook coverage for ClickUp ticket `86d36z2p1`.
 
-**Architecture:** Additive component work in `C:\Users\mrqvp\Documents\Programming\website` on branch `feat/86d36z2p1`. `Input` mirrors the existing `Textarea` atom's form structure and styling while rendering an HTML `<input>`. `SearchBar` composes `Input` and the existing `Button` atom, manages controlled/uncontrolled query state, and submits through Enter or button click.
+**Architecture:** Additive component work in `$HOME\Documents\Programming\website` on branch `feat/86d36z2p1`. `Input` mirrors the existing `Textarea` atom's form structure and styling while rendering an HTML `<input>`. `SearchBar` composes `Input` and the existing `Button` atom, manages controlled/uncontrolled query state, and submits through Enter or button click.
 
 **Tech Stack:** Next.js 16, React 19, TypeScript, Tailwind CSS tokens, Storybook 9, lucide-react, existing `cn` utility, existing `Button` and `Textarea/FormAtoms` components.
 
@@ -20,7 +20,7 @@
 
 ## Preconditions
 
-- Worktree: `C:\Users\mrqvp\Documents\Programming\website`
+- Worktree: `$HOME\Documents\Programming\website`
 - Branch: `feat/86d36z2p1`
 - Starting state: `git status` should report a clean working tree.
 - Do not edit CMS schemas, Payload collections, existing blocks, global Storybook config, `Textarea`, or `Button`.

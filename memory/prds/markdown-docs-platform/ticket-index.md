@@ -2,8 +2,8 @@
 
 ## Source Artifacts
 
-- Implementation plan: `C:\Users\mrqvp\Documents\Programming\agentic-workflow\memory\prds\markdown-docs-platform\implementation-plan.md`
-- Schema outline: `C:\Users\mrqvp\Documents\Programming\agentic-workflow\memory\prds\markdown-docs-platform\schema-outline.md`
+- Implementation plan: `$HOME\Documents\Programming\agentic-workflow\memory\prds\markdown-docs-platform\implementation-plan.md`
+- Schema outline: `$HOME\Documents\Programming\agentic-workflow\memory\prds\markdown-docs-platform\schema-outline.md`
 
 ## Recommended Tracker Shape
 

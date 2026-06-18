@@ -20,10 +20,10 @@ Each worktree can only have **one branch checked out at a time**, but it still h
 Example structure:
 
 ```txt
-C:/Users/mrqvp/Documents/Programming/website
+$HOME/Documents/Programming/website
   → main workspace, usually on main
 
-C:/Users/mrqvp/Documents/Programming/website-agent
+$HOME/Documents/Programming/website-agent
   → AI-agent workspace, usually on an agent/task branch
 ```
 
@@ -66,7 +66,7 @@ origin/main
 Recommended worktree path:
 
 ```txt
-C:/Users/mrqvp/Documents/Programming/website-agent
+$HOME/Documents/Programming/website-agent
 ```
 
 Recommended branch naming:

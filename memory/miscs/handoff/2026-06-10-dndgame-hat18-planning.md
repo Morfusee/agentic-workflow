@@ -15,7 +15,7 @@ The user confirmed and now wants to plan HAT-18's implementation using brainstor
 
 ## Current Project State
 
-- **Repo:** `C:\Users\mrqvp\Documents\Programming\DnDGame`
+- **Repo:** `$HOME\Documents\Programming\DnDGame`
 - **Linear Team:** Hatudoggy (HAT)
 - **User:** Mark (c684c9a8-fc1c-4356-886f-55084b6e7ec8)
 - **Completed:** HAT-16 (scaffolding)
@@ -37,7 +37,7 @@ Full description is in the Linear issue (see URL above). Do not duplicate here.
 
 ### Key Constraints from PRD and Plans
 
-- **PRD:** `C:\Users\mrqvp\Documents\Programming\agentic-workflow\memory\prds\dndgame\prd.md`
+- **PRD:** `$HOME\Documents\Programming\agentic-workflow\memory\prds\dndgame\prd.md`
 - **Architecture:** `docs/architecture/ARCHITECTURE.md`
 - **Initial plan:** `docs/plans/initial-plan.md`
 - **Plugin reference:** `docs/brainstorms/2026-06-09-opencode-plugins.md` — describes OpenCode plugin loading (`.opencode/plugins/`, `opencode.json`, npm packages), hook events (`tool.execute.before`, `tool.execute.after`, `shell.env`, custom `tool`), and the `Plugin` type from `@opencode-ai/plugin`.
@@ -75,7 +75,7 @@ The next agent should invoke these skills in order:
 | Artifact | Path/URL |
 |----------|----------|
 | HAT-18 issue | https://linear.app/hatudoggy/issue/HAT-18 |
-| PRD | `C:\Users\mrqvp\Documents\Programming\agentic-workflow\memory\prds\dndgame\prd.md` |
+| PRD | `$HOME\Documents\Programming\agentic-workflow\memory\prds\dndgame\prd.md` |
 | Architecture docs | `docs/architecture/ARCHITECTURE.md` |
 | Initial plan | `docs/plans/initial-plan.md` |
 | OpenCode plugins brainstorm | `docs/brainstorms/2026-06-09-opencode-plugins.md` |

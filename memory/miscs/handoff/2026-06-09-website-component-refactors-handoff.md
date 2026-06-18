@@ -2,7 +2,7 @@
 
 ## Current Repo State
 
-- Repo/worktree: `C:\Users\mrqvp\Documents\Programming\website`
+- Repo/worktree: `$HOME\Documents\Programming\website`
 - Branch observed at handoff creation: `feat/CU-86d36z2nw`
 - `git status --short --branch` was clean when this handoff was written.
 - `git diff` for the recently touched component paths returned no output when this handoff was written.
@@ -31,7 +31,7 @@ During the conversation, the intended refactor was:
 
 Important reference artifact from the earlier Link atom session:
 
-- `C:\Users\mrqvp\Documents\Programming\website\2026-06-09-link-atom-review-refactor-handoff.md`
+- `$HOME\Documents\Programming\website\2026-06-09-link-atom-review-refactor-handoff.md`
 
 That artifact already contains broader Link atom implementation/review context, so this handoff does not duplicate it.
 
