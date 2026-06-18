@@ -9,6 +9,8 @@ allowed-tools: Bash
 
 ## Overview
 
+When this skill is invoked, **always commit the current changes**. Never stop at analysis or a draft — execute `git commit`. Ask the user if anything is unclear (type, scope, staging), but the end goal is always a commit.
+
 Create standardized, semantic git commits using the Conventional Commits specification. Analyze the actual diff to determine appropriate type, scope, and message.
 
 ## Conventional Commit Format
