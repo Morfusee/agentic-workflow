@@ -1,9 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "lsp": {},
-  "plugin": [
-    "$HOME/Documents/Programming/ponytail/.opencode/plugins/ponytail.mjs",
-  ],
   "mcp": {
     "linear": {
       "type": "local",
