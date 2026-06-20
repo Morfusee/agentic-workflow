@@ -17,6 +17,10 @@
       "url": "https://mcp.notion.com/mcp",
       "enabled": true,
     },
+    "next-devtools": {
+      "type": "local",
+      "command": ["npx", "-y", "next-devtools-mcp@latest"]
+    }
   },
   "permission": {
     "external_directory": {
