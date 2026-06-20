@@ -16,7 +16,7 @@ Coordinate post-implementation review without owning any single review specialty
 1. Gather review context: requirements, acceptance criteria, provider IDs/URLs, changed files, current diff or committed range, implementation notes, and verification output. Scope the diff to only the target branch changes (e.g., `git diff main...HEAD` or the equivalent base-branch comparison) to minimize token usage.
 2. Load `references/reviewer-contract.md` and `references/reviewer-selection.md`.
 3. Select reviewers:
-   - Always run `$requirements-reviewer`.
+   - Always run `$requirements-reviewer` and `$thermos`.
    - Run `$react-quality-review` only when React/TypeScript project evidence is present or the caller explicitly requests it.
 4. Use `$skill-orchestrator-go` to run selected reviewers in parallel when more than one reviewer is selected.
 5. Give each reviewer read-only scope and require the reviewer contract output.
@@ -27,8 +27,9 @@ Coordinate post-implementation review without owning any single review specialty
    - `FAIL` when any accepted check fails.
    - `PARTIAL` when checks are mixed or at least one check is partial.
    - `BLOCKED` when all accepted checks are blocked or review cannot proceed.
-9. Report results only. Do not block commits, change provider status, or modify code unless the user explicitly asks.
-10. When a provider review comment is requested, pass the aggregated `checks`, `overall_status`, review scope, notes, and provider context to `$ticket-review-comment-drafter`.
+9. Write the aggregated review to `$HOME/Documents/Programming/agentic-workflow/memory/reviews/YYYY-MM-DD-<brief-descriptor>-review.md`. Use today's date and a short kebab-case descriptor of the review subject. The file must contain `overall_status`, every `check` with `status`/`expected`/`actual`, review scope, reviewer names, and notes.
+10. Report results only. Do not block commits, change provider status, or modify code unless the user explicitly asks.
+11. When a provider review comment is requested, pass the aggregated `checks`, `overall_status`, review scope, notes, and provider context to `$ticket-review-comment-drafter`.
 
 ## Rules
 

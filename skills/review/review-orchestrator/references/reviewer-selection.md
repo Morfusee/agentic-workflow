@@ -7,6 +7,7 @@ Use these rules to choose reviewers for `$review-orchestrator`.
 Always run:
 
 - `$requirements-reviewer` for functional coverage against requirements and acceptance criteria.
+- `$thermos` for combined security/correctness and code-quality audit.
 
 ## React/TypeScript Quality Reviewer
 
@@ -18,6 +19,8 @@ Run `$react-quality-review` when any of these are true:
 - The caller explicitly requests code quality review for React/TypeScript work.
 
 Do not run `$react-quality-review` for backend-only, docs-only, config-only, or non-React changes unless explicitly requested.
+
+Do **not** also run `$thermo-nuclear-review` or `$thermo-nuclear-code-quality-review` individually — `$thermos` runs both internally.
 
 ## Caller Overrides
 
