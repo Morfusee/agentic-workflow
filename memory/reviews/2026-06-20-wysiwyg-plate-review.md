@@ -1,115 +1,87 @@
-# WYSIWYG Plate Branch Review
+# Branch Review: wysiwyg-plate
 
 overall_status: FAIL
 
 ## Review Scope
 
-- Subject: current branch `feat/wysiwyg-plate` reviewed against `main`.
-- Diff scope: `git diff main...HEAD` and changed files from `git diff main...HEAD --name-only`.
-- Branch commits reviewed: `main..HEAD`.
-- Provider context: none supplied.
-- Explicit requirements or acceptance criteria: none supplied; requirements checks infer intent only from commit messages, changed files, tests, and implementation behavior.
-- Verification: `pnpm test` failed. 14 passed, 1 failed, 4 skipped/not run. The first markdown document workflow timed out waiting for `locator("#editor-mode")` in `e2e/markdown-documents.spec.ts` lines 70-72.
-- Exclusions: unchanged files and whole-repository review outside branch-scoped changed-file context.
+- Subject: current branch `feat/wysiwyg-plate`
+- Base comparison: `main...HEAD`
+- Diff scope: branch-scoped changed files only
+- Provider context: none provided
+- Requirements context: review current branch changes against `main`; no external acceptance criteria provided
+- Exclusions: no provider comments published; no code modified; no full-repository review beyond immediate changed-file context
 
 ## Reviewers
 
 - requirements-reviewer
+- thermos
 - react-quality-review
-
-## Aggregate Notes
-
-- Both reviewer results complied with the required reviewer contract and stayed read-only.
-- Both reviewers independently identified the same blocking functional defect: save/revalidation targets `/app/md/{id}/edit`, but the changed App Router files define `/app/md/[documentId]` without an `/edit` child route.
-- Aggregate status is `FAIL` because multiple accepted checks failed.
 
 ## Checks
 
-### requirements-reviewer: Explicit Acceptance Criteria Available
-
-- status: BLOCKED
-- expected: A provider ticket, PRD, prompt, or explicit acceptance criteria defining required behavior.
-- actual: No provider ticket or explicit acceptance criteria were supplied; requirements had to be inferred from `git log --oneline main..HEAD`, changed files from `git diff main...HEAD --name-only`, branch tests, and implementation behavior.
-
-### requirements-reviewer: Markdown Editor Document Routes Are Consistent
+### requirements-reviewer: Markdown document save flow routes to an implemented edit page
 
 - status: FAIL
-- expected: New and existing Markdown documents should navigate to routes that exist in the changed App Router files.
-- actual: `features/markdown/components/editor/markdown-rich-editor.tsx` line 279 redirects new saved documents to `/app/md/${savedDocument.id}/edit`, and `features/markdown/actions/document-draft.action.ts` lines 73-74 revalidate `/app/md/${result.document.id}/edit`; changed route files define `/app/md`, `/app/md/new`, and `/app/md/[documentId]` through `app/(auth)/app/md/page.tsx`, `app/(auth)/app/md/new/page.tsx`, and `app/(auth)/app/md/[documentId]/page.tsx`, with no matching `/edit` route.
+- expected: Saving a new document should navigate to a route implemented by the branch, and cache revalidation should target that same route.
+- actual: `features/markdown/components/editor/markdown-rich-editor.tsx:278-279` redirects new saves to `/app/md/${savedDocument.id}/edit`, and `features/markdown/actions/document-draft.action.ts:73-74` revalidates `/app/md/${result.document.id}/edit`; the branch only adds `app/(auth)/app/md/[documentId]/page.tsx`, which implements `/app/md/[documentId]`, not `/edit`.
 
-### requirements-reviewer: Rich Markdown Editor Saves And Reloads Documents
-
-- status: FAIL
-- expected: Creating a document from `/app/md/new`, saving Markdown, refreshing, and switching back to Markdown mode should preserve the saved Markdown.
-- actual: `e2e/markdown-documents.spec.ts` lines 20-28 assert save, refresh, and exact Markdown retrieval; `pnpm test` failed with the first markdown-documents test timing out waiting for `locator("#editor-mode")` in `switchToMarkdownMode` at lines 70-72.
-
-### requirements-reviewer: Markdown File Listing Opens And Deletes Documents
-
-- status: PARTIAL
-- expected: Files on `/app` should link to editable document pages and row actions should delete files from the list.
-- actual: `features/markdown/components/markdown-files-table.tsx` links rows to `/app/md/${row.original.id}` and wires `DocumentRowActions`, while `features/markdown/services/document-draft.service.ts` soft-deletes accessible documents; however, saved-document navigation still targets `/app/md/[id]/edit`, and the markdown document workflow suite did not complete after the first failure.
-
-### requirements-reviewer: Slug Removal Reflected In Schema, Migrations, And Seed Data
-
-- status: PASS
-- expected: Removing document and collection slugs should remove schema fields, drop persisted columns/indexes, and stop seed data from depending on slugs.
-- actual: `lib/db/schema.ts` removes `collections.slug`, `documents.slug`, and slug unique indexes; `lib/db/migrations/0005_third_blindfold.sql` drops slug constraints/indexes/columns; `lib/db/seed-data.ts` and `lib/db/seed.ts` seed collections/documents by names/titles without slug values.
-
-### requirements-reviewer: Signup Supports Optional Display Usernames
-
-- status: PASS
-- expected: Signup should no longer require a user-entered full name while auth supports optional display usernames.
-- actual: `features/auth/schemas/signup.schema.ts` validates email/password/confirmPassword only; `app/(public)/signup/page.tsx` submits `name: data.email`; `lib/auth/index.ts` defines optional `displayUsername`; login/signup tests passed in the `pnpm test` run.
-
-### react-quality-review: Editor Post-Save Route Matches Implemented Route
+### requirements-reviewer: Branch e2e tests align with implemented Markdown document routes
 
 - status: FAIL
-- expected: After saving a new document, the client should navigate to an existing editor route that renders `MarkdownRichEditor` and exposes `#editor-mode`.
-- actual: `app/(auth)/app/md/[documentId]/page.tsx` defines the editor at `/app/md/[documentId]`, but `features/markdown/components/editor/markdown-rich-editor.tsx` line 279 redirects new saves to `/app/md/${savedDocument.id}/edit`, and `features/markdown/actions/document-draft.action.ts` lines 74 and 109 revalidate `/edit`. No `app/**/edit/**/*.tsx` route exists. `pnpm test` failed with the first markdown document test timing out waiting for `#editor-mode`.
+- expected: Tests should assert routes that the app implements.
+- actual: `e2e/markdown-documents.spec.ts:21` and `e2e/markdown-documents.spec.ts:66` expect `/app/md/[id]/edit`, matching the incorrect redirect but not the added route file `app/(auth)/app/md/[documentId]/page.tsx`.
 
-### react-quality-review: E2E Coverage Validates Changed Markdown Workflows
+### requirements-reviewer: Markdown document CRUD enforces authentication and access checks
+
+- status: PASS
+- expected: Create/update/delete/edit document flows should require an authenticated user and prevent access to unauthorized or deleted documents.
+- actual: `features/markdown/actions/document-draft.action.ts:62-67` and `features/markdown/actions/document-draft.action.ts:95-99` call `assertAuthenticated`; `features/markdown/services/document-draft.service.ts` access paths call `canAccessDocument`; `features/markdown/services/markdown.service.ts` filters `deletedAt` with `isNull`.
+
+### requirements-reviewer: Changed files satisfy repository lint standards
 
 - status: FAIL
-- expected: `pnpm test` should pass for the branch-scoped editor and document list workflows.
-- actual: `pnpm test` failed. 14 passed, 1 failed, 4 skipped/not run. Failure: `e2e/markdown-documents.spec.ts` timed out waiting for `locator("#editor-mode")` in `switchToMarkdownMode` at lines 70-72.
+- expected: Branch-scoped changed code should not introduce lint errors.
+- actual: Reviewer-reported `pnpm lint` exited 1. Reported changed-file lint errors include `components/blocks/data-table/data-column-meta.ts:20`, `components/blocks/data-table/data-table-context.tsx:194`, `components/blocks/data-table/types.ts:4`, `components/blocks/data-table/use-data-table.tsx:52`, and `hooks/use-mobile.ts:12`.
 
-### react-quality-review: Changed React/TypeScript Avoids Unsafe Any
+### thermos: New-document save redirects to a route that the branch does not define
 
-- status: PARTIAL
-- expected: Changed TS/TSX should avoid `any` and use typed child contracts or safe narrowing.
-- actual: `components/ui/toggle-group.tsx` lines 65-68 clones children via `React.ReactElement<any>` and reads `(child.props as any).value`, weakening type safety in a shared UI primitive.
+- status: FAIL
+- expected: After saving a new Markdown document, the app should navigate to an existing editor route for that document.
+- actual: `features/markdown/components/editor/markdown-rich-editor.tsx:278-280` redirects new documents to `/app/md/${savedDocument.id}/edit`, and `features/markdown/actions/document-draft.action.ts:73-75` revalidates the same `/edit` path. The branch contains `app/(auth)/app/md/[documentId]/page.tsx`, `app/(auth)/app/md/new/page.tsx`, and `app/(auth)/app/md/page.tsx`, but no `app/(auth)/app/md/[documentId]/edit/page.tsx` route.
 
-### react-quality-review: Changed List Rendering Uses Stable Keys
+### thermos: Destructive migrations drop persisted identifiers without a staged preservation path
 
-- status: PARTIAL
-- expected: Dynamic list items should use stable, unique keys rather than array indexes unless the list is static.
-- actual: `components/blocks/data-table/data-cell.tsx` lines 160-172 renders caller-provided menu items with `key={index}`, so reordering or insertion can preserve the wrong menu item state.
+- status: FAIL
+- expected: Schema migrations that remove user/document identifiers should preserve or backfill data before dropping columns, or stage the removal so existing production data is not irreversibly lost.
+- actual: `lib/db/migrations/0005_third_blindfold.sql:4-5` drops `collections.slug` and `documents.slug`; `lib/db/migrations/0006_loving_the_fallen.sql:1-2` drops `user.username`. The branch diff shows no migration that copies those values into replacement columns before dropping them.
 
-### react-quality-review: Icon-Only Controls Have Accessible Names
+### react-quality-review: Branch-scoped React/Next route consistency for the markdown editor save flow
 
-- status: PARTIAL
-- expected: Icon-only buttons should expose an accessible label when their visual content is only an icon.
-- actual: `components/blocks/data-table/data-table.tsx` lines 558-565 and 598-605 render clear-search icon buttons without `aria-label`; lines 610-617 render a filter icon button without visible text or `aria-label`.
+- status: FAIL
+- expected: Client navigation, cache revalidation, links, and E2E assertions should target an existing changed route.
+- actual: `features/markdown/components/editor/markdown-rich-editor.tsx:278-279` redirects new documents to `/app/md/${savedDocument.id}/edit`, `features/markdown/actions/document-draft.action.ts:73-75` and `features/markdown/actions/document-draft.action.ts:108-109` revalidate `/app/md/{id}/edit`, and `e2e/markdown-documents.spec.ts` expects `/app/md/{id}/edit`; `features/markdown/components/markdown-files-table.tsx:69-72` links rows to `/app/md/${row.original.id}` and the added route is `app/(auth)/app/md/[documentId]/page.tsx`.
 
-### react-quality-review: Editor Primary Controls Expose Labels And Focus Semantics
+### react-quality-review: Accessibility semantics for the changed toggle group component
 
-- status: PASS
-- expected: The editor mode selector, Markdown textarea, title input, and toolbar icon buttons should be labeled and keyboard-accessible.
-- actual: `features/markdown/components/editor/markdown-rich-editor.tsx` labels the editor mode selector and Markdown textarea; `features/markdown/components/editor/editor-shell.tsx` labels the title input; `features/markdown/components/editor/editor-toolbar.tsx` gives toolbar icon buttons `aria-label`.
+- status: FAIL
+- expected: A group of `role="radio"` items should expose the correct radio-group semantics to assistive technologies.
+- actual: `components/ui/toggle-group.tsx:57-63` renders the parent as `role="group"`, while `components/ui/toggle-group.tsx:91-97` renders each item as `role="radio"` with `aria-checked`; this changed component is used by `components/blocks/data-table/data-table.tsx`.
 
-### react-quality-review: React Hooks And Scheduled Work Cleanup
-
-- status: PASS
-- expected: Hooks should be called unconditionally and scheduled work should be cancelled on unmount.
-- actual: `features/markdown/components/editor/markdown-rich-editor.tsx` calls hooks at component top level and cleans up scheduled heading/tab conversion work in the unmount effect.
-
-### react-quality-review: TypeScript Strict Mode Enabled
+### react-quality-review: React hooks and client/server boundaries in changed React files
 
 - status: PASS
-- expected: The project should compile under TypeScript strict mode.
-- actual: `tsconfig.json` has `"strict": true`.
+- expected: Components using client hooks or browser globals should be client components, and server actions should remain server-only.
+- actual: Changed hook/browser-using components include `"use client"` in `features/markdown/components/editor/markdown-rich-editor.tsx`, `features/markdown/components/document-row-actions.tsx`, `components/blocks/data-table/data-table.tsx`, `components/blocks/data-table/data-table-context.tsx`, `components/layout/authenticated-shell-client.tsx`, and `app/(public)/signup/page.tsx`; changed server action file declares `"use server"` in `features/markdown/actions/document-draft.action.ts`.
 
-## Reviewer Confidence
+### react-quality-review: Test coverage evidence for changed React/TypeScript user flows
 
-- requirements-reviewer: low, because no explicit acceptance criteria were supplied.
-- react-quality-review: high.
+- status: PARTIAL
+- expected: Changed critical editor and document-list flows should have executable coverage that would catch routing and interaction regressions.
+- actual: `e2e/markdown-documents.spec.ts` adds save/reload/delete coverage, but the assertions currently encode the non-existent `/app/md/{id}/edit` route and there is no branch evidence of component/a11y tests for the new data table, toggle group, or editor controls.
+
+## Notes
+
+- Aggregate status is `FAIL` because multiple accepted checks failed.
+- The strongest and repeated finding is the route mismatch: new-document save, revalidation, and E2E tests use `/app/md/{id}/edit`, while the branch implements `/app/md/{id}`.
+- Reviewers agreed on the route mismatch. No reviewer-result conflicts required arbitration.
+- Reviewer outputs were accepted after spot-checking cited files and route file presence.
