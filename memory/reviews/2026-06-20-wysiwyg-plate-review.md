@@ -37,23 +37,11 @@ overall_status: FAIL
 - expected: Create/update/delete/edit document flows should require an authenticated user and prevent access to unauthorized or deleted documents.
 - actual: `features/markdown/actions/document-draft.action.ts:62-67` and `features/markdown/actions/document-draft.action.ts:95-99` call `assertAuthenticated`; `features/markdown/services/document-draft.service.ts` access paths call `canAccessDocument`; `features/markdown/services/markdown.service.ts` filters `deletedAt` with `isNull`.
 
-### requirements-reviewer: Changed files satisfy repository lint standards
-
-- status: FAIL
-- expected: Branch-scoped changed code should not introduce lint errors.
-- actual: Reviewer-reported `pnpm lint` exited 1. Reported changed-file lint errors include `components/blocks/data-table/data-column-meta.ts:20`, `components/blocks/data-table/data-table-context.tsx:194`, `components/blocks/data-table/types.ts:4`, `components/blocks/data-table/use-data-table.tsx:52`, and `hooks/use-mobile.ts:12`.
-
 ### thermos: New-document save redirects to a route that the branch does not define
 
 - status: FAIL
 - expected: After saving a new Markdown document, the app should navigate to an existing editor route for that document.
 - actual: `features/markdown/components/editor/markdown-rich-editor.tsx:278-280` redirects new documents to `/app/md/${savedDocument.id}/edit`, and `features/markdown/actions/document-draft.action.ts:73-75` revalidates the same `/edit` path. The branch contains `app/(auth)/app/md/[documentId]/page.tsx`, `app/(auth)/app/md/new/page.tsx`, and `app/(auth)/app/md/page.tsx`, but no `app/(auth)/app/md/[documentId]/edit/page.tsx` route.
-
-### thermos: Destructive migrations drop persisted identifiers without a staged preservation path
-
-- status: FAIL
-- expected: Schema migrations that remove user/document identifiers should preserve or backfill data before dropping columns, or stage the removal so existing production data is not irreversibly lost.
-- actual: `lib/db/migrations/0005_third_blindfold.sql:4-5` drops `collections.slug` and `documents.slug`; `lib/db/migrations/0006_loving_the_fallen.sql:1-2` drops `user.username`. The branch diff shows no migration that copies those values into replacement columns before dropping them.
 
 ### react-quality-review: Branch-scoped React/Next route consistency for the markdown editor save flow
 
