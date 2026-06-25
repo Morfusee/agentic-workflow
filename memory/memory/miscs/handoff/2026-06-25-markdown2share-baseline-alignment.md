@@ -8,8 +8,8 @@ The user wants the `Ordering-System` baseline files attached to this project and
 
 Attached baseline files already read in this session:
 
-- `C:\Users\mrqvp\Documents\Programming\Ordering-System\AGENTS.md`
-- `C:\Users\mrqvp\Documents\Programming\Ordering-System\code-style.md`
+- `$HOME/Documents/Programming/Ordering-System/AGENTS.md`
+- `$HOME/Documents/Programming/Ordering-System/code-style.md`
 
 Current repo:
 
