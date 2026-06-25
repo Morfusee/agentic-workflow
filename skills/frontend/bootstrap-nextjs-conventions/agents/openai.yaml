@@ -1,0 +1,4 @@
+interface:
+  display_name: "Bootstrap Next.js Conventions"
+  short_description: "Copy and audit Next.js apps against a bundled convention baseline."
+  default_prompt: "Use $bootstrap-nextjs-conventions to copy the golden AGENTS.md and code-style.md into this Next.js app, then report what follows or deviates from the convention."
