@@ -13,3 +13,21 @@ network_access = true
 
 [windows]
 sandbox = "elevated"
+
+[mcp_servers.clickup]
+url = "https://mcp.clickup.com/mcp"
+enabled = true
+
+[mcp_servers.notion]
+url = "https://mcp.notion.com/mcp"
+enabled = true
+
+[mcp_servers.next-devtools]
+command = "npx"
+args = ["-y", "next-devtools-mcp@latest"]
+enabled = true
+
+[mcp_servers.chrome-devtools]
+command = "npx"
+args = ["-y", "chrome-devtools-mcp@latest", "--autoConnect"]
+enabled = true
