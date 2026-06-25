@@ -79,6 +79,7 @@ Use this as the routing map before loading a skill. Repo source folders are cate
 | --- | --- | --- |
 | `config-symlink-maintainer` | Maintaining repo-owned config, symlinks, backups, or sync behavior for local tools. | Covers OpenCode, Codex, Neovim, skills, and memory sync. |
 | `write-a-skill` | Reference for the vocabulary and principles that make a skill predictable. User-invoked. | Covers invocation, descriptions, information hierarchy, progressive disclosure, leading words, pruning, and failure modes. |
+| `job-application` | Scouring job portals first, then applying only after the user approves listings. User-invoked. | Invoke with portal and locale, for example `/job-application jobstreet ph`. |
 | `skill-orchestrator-go` | Coordinating parallel, independent OpenCode subagent tasks. | OpenCode-specific and hidden from Codex. |
 | `git-commit` | Creating a Conventional Commit from current changes. | Stages intentionally and avoids unrelated changes. |
 | `handoff` | Compacting active work into a handoff document. | Use when another agent will continue. |
