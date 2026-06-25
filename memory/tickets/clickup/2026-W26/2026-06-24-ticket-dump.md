@@ -31,13 +31,13 @@ No major blockers right now.
 
 Carry-over tasks not yet included in a stand-up. These reappear as selectable items in future stand-up prompts.
 
-*No unselected tasks.*
+_No unselected tasks._
 
 ---
 
 # Manual Tasks
 
-*No manual tasks added.*
+_No manual tasks added._
 
 ---
 
@@ -46,6 +46,7 @@ Carry-over tasks not yet included in a stand-up. These reappear as selectable it
 2026-06-24
 
 ## Complete
+
 - 86d3f25qn: Set up Next.js packages
 
 ---
@@ -62,21 +63,28 @@ Testing actors: None identified
 My role for this task: dev-owner
 
 ### Why this task was included
+
 Status changed by me, commented on by me
 
 ### Description
+
 Tracked Next.js package setup and script invocation convention. Researched and decided on a hybrid approach: Justfile at the root for top-level orchestration, with each app (package.json) keeping its own scripts. The root Justfile delegates to per-app scripts rather than duplicating them.
 
 ### Comments
+
 #### Mark Rolis Valenzuela - 2026-06-24
+
 Went with a hybrid approach: Justfile at the root for top-level orchestration, and each app (package.json) keeps its own scripts. The root Justfile delegates to those per-app scripts rather than duplicating them.
 
 ### Activity Timeline
+
 - 2026-06-24: Status changed to complete
 - 2026-06-24: Commented - Documented the Justfile + package.json hybrid approach
 
 ### In-Range Day Mapping
+
 - 2026-06-24: Closed task as complete, added summary comment
 
 ### Activity Notes
+
 Finalized the script invocation convention decision. Task covers Next.js package setup tracking (Shadcn, TanStack Query/Table, zod, nuqs, lucide-react, drizzle-orm, date-fns, better-auth optional, next-devtools-mcp). The hybrid approach uses a root Justfile for orchestration and per-app package.json scripts for individual app commands.
