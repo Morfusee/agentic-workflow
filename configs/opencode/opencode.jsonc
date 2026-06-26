@@ -5,9 +5,9 @@
     "openai": {
       "options": {
         "headerTimeout": 60000,
-        "timeout": 120000
-      }
-    }
+        "timeout": 120000,
+      },
+    },
   },
   "mcp": {
     "linear": {
@@ -27,12 +27,16 @@
     },
     "next-devtools": {
       "type": "local",
-      "command": ["npx", "-y", "next-devtools-mcp@latest"]
+      "command": ["npx", "-y", "next-devtools-mcp@latest"],
     },
     "chrome-devtools": {
       "type": "local",
-      "command": ["npx", "-y", "chrome-devtools-mcp@latest", "--autoConnect"]
-    }
+      "command": ["npx", "-y", "chrome-devtools-mcp@latest", "--autoConnect"],
+    },
+    "codebase-memory": {
+      "type": "local",
+      "command": ["codebase-memory-mcp"],
+    },
   },
   "permission": {
     "external_directory": {
