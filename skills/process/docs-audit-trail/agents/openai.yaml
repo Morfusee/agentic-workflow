@@ -1,0 +1,4 @@
+interface:
+  display_name: "Docs Audit Trail"
+  short_description: "Ensure repo-local docs folders and AGENTS.md audit-trail rules exist."
+  default_prompt: "Use $docs-audit-trail to ensure this repo keeps brainstorms, plans, agreements, and project references under docs/."
