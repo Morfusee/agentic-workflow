@@ -17,6 +17,8 @@ Treat these bundled assets as the golden standard:
 
 Copy them byte-for-byte into each target Next.js app during phase 1. Do not edit the bundled assets or the original source files unless the user explicitly asks to update the golden standard.
 
+Also invoke `$docs-audit-trail` during phase 1 for each selected app. The docs audit trail step is idempotent: it must create missing `docs/`, `docs/brainstorm/`, and `docs/plans/` folders, and it must leave an already-compliant `AGENTS.md` unchanged.
+
 ## Phase 1: Provision And Audit
 
 1. Identify target apps:
@@ -37,16 +39,27 @@ Copy them byte-for-byte into each target Next.js app during phase 1. Do not edit
    - If either destination already exists, replace it with the golden file only for the selected app and record that replacement in the report.
    - Complete when both destination files match the bundled assets byte-for-byte for every selected app.
 
-4. Audit the app against the convention:
+4. Ensure the docs audit trail:
+   - Invoke `$docs-audit-trail` for each selected app.
+   - Complete when `docs/`, `docs/brainstorm/`, and `docs/plans/` exist and `AGENTS.md` contains the docs audit trail directive exactly once.
+
+5. Audit the app against the convention:
    - Read the copied `AGENTS.md` and `code-style.md`.
-   - Inspect the app structure, package manager, TypeScript config, Next.js router shape, aliases, feature folders, components, actions, services, repositories, hooks, schemas, errors, stories, and representative implementation patterns.
+   - Identify the app's ORM or persistence approach before classifying its boundaries.
+   - Inspect the app structure, package manager, TypeScript config, Next.js router shape, aliases, route-local and feature-owned UI, feature folders, components, actions, services, repository or use-case layers, hooks, schemas, errors, stories, and representative persistence operations.
+   - Audit speculative layers, single-use helpers split into separate files, empty future-facing folders, and unused persistence functions.
    - Compare observed code to the golden conventions using the app's existing path mappings where equivalent paths are already clear.
    - Complete when findings cover followed conventions, deviations, unknowns, and recommended changes for each selected app.
 
-5. Report phase 1 results:
+6. Report phase 1 results:
    - List copied files and whether they were created or replaced.
+   - List docs audit trail directories created or already present.
    - Report `Followed`, `Deviated`, and `Unclear` findings.
    - For each deviation, include the convention, observed evidence, affected paths, risk, and the smallest reasonable change.
+   - Report a Drizzle `repositories/` layer as `Deviated`; recommend folding used operations into the owning service.
+   - Report a Prisma repository boundary as `Unclear`; explain its observed value and do not recommend removal by default.
+   - Report other persistence boundaries as `Unclear` when current evidence does not justify a convention.
+   - Report reusable or feature-owned UI in a route `_components/` folder and explicit YAGNI violations as `Deviated`.
    - Do not implement deviation fixes in phase 1 unless the user explicitly asked for automatic fixes.
 
 ## Phase 2: Apply User Decisions
@@ -64,6 +77,9 @@ For each approved decision:
    - Match existing project style while moving toward the approved convention.
    - Avoid broad refactors, unrelated cleanup, or speculative abstractions.
    - Keep each app's changes scoped to the selected findings.
+   - For an approved Drizzle migration, move only currently used database operations into the owning service, place them below `// --- Database operations ------------------------------------------------------`, update imports, then remove repository files only after no callers remain.
+   - Do not introduce `use-cases/`, speculative helper files, future-facing folders, or unused migrated functions.
+   - Move feature-owned UI into the feature without changing genuinely route-specific components.
 
 3. Verify:
    - Run the app's available checks, preferring `pnpm lint`, `pnpm typecheck`, or the scripts defined in `package.json`.
