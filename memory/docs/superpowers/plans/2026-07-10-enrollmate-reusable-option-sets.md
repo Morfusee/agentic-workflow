@@ -22,7 +22,7 @@
 **Files:**
 
 - Modify: `nextjs/__tests__/unit/lib/enrollmate-contract.test.ts`
-- Create: `playwright/__tests__/unit/server/enrollmate-contract.test.ts`
+- Create: `playwright/server/__tests__/unit/enrollmate-contract.test.ts`
 
 - [ ] **Step 1: Add the Next.js getter contract test**
 
@@ -71,7 +71,7 @@ Run:
 
 ```powershell
 npx --yes pnpm@10.29.2 --dir nextjs test __tests__/unit/lib/enrollmate-contract.test.ts
-pnpm --dir playwright exec node --import tsx --test __tests__/unit/server/enrollmate-contract.test.ts
+pnpm --dir playwright exec node --import tsx --test server/__tests__/unit/enrollmate-contract.test.ts
 ```
 
 Expected: the Next.js test fails because the getter is not exported, and the Playwright server test fails because the package is not yet declared/resolvable there.
@@ -193,7 +193,7 @@ Run:
 ```powershell
 git diff --check
 git status --short --branch
-git diff -- packages/enrollmate-contract/src/types.ts packages/enrollmate-contract/src/registry.ts packages/enrollmate-contract/src/index.ts nextjs/__tests__/unit/lib/enrollmate-contract.test.ts playwright/package.json playwright/pnpm-lock.yaml playwright/__tests__/unit/server/enrollmate-contract.test.ts
+git diff -- packages/enrollmate-contract/src/types.ts packages/enrollmate-contract/src/registry.ts packages/enrollmate-contract/src/index.ts nextjs/__tests__/unit/lib/enrollmate-contract.test.ts playwright/package.json playwright/pnpm-lock.yaml playwright/server/__tests__/unit/enrollmate-contract.test.ts
 ```
 
 Confirm the only new repository changes are the shared getter, its tests, and Playwright dependency wiring. Leave the existing dirty contract test changes in place and do not reset or commit user-owned work.
