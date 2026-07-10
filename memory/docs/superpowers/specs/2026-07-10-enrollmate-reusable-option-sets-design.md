@@ -22,7 +22,7 @@ getEnrollmateReusableOptionSets(): Readonly<
 
 The getter will read the canonical source document and return every named option set. It will create a fresh record, option array, and option object for each call so consumers cannot mutate the registry’s in-memory source. Dynamic set names remain supported without TypeScript changes.
 
-Re-export the getter and its public return type from `@mihc/enrollmate-contract`. Add `@mihc/enrollmate-contract` as a local file dependency of the Playwright project; Next.js keeps its existing dependency and `transpilePackages` configuration.
+Re-export the getter and its public return type from `@mihc/enrollmate-contract`. Add `@mihc/enrollmate-contract` as a local file dependency of the Playwright project; Next.js keeps its existing dependency and `transpilePackages` configuration. Server-only Playwright validation belongs under `playwright/__tests__/unit/server/` and runs with Node's test runner, not `playwright test`.
 
 No HTTP route, database lookup, duplicate option catalog, or change to per-field option resolution is included.
 

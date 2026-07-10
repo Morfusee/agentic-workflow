@@ -22,7 +22,7 @@
 **Files:**
 
 - Modify: `nextjs/__tests__/unit/lib/enrollmate-contract.test.ts`
-- Create: `playwright/server/enrollmate-contract.test.ts`
+- Create: `playwright/__tests__/unit/server/enrollmate-contract.test.ts`
 
 - [ ] **Step 1: Add the Next.js getter contract test**
 
@@ -48,7 +48,7 @@ it("exposes all reusable option sets without sharing mutable source objects", ()
 
 - [ ] **Step 2: Add a Playwright import test**
 
-Create a Node unit test that imports the package by name and verifies the getter returns a reusable set:
+Create a Node unit test under the server-only unit-test tree that imports the package by name and verifies the getter returns a reusable set:
 
 ```ts
 import assert from "node:assert/strict";
@@ -71,10 +71,10 @@ Run:
 
 ```powershell
 npx --yes pnpm@10.29.2 --dir nextjs test __tests__/unit/lib/enrollmate-contract.test.ts
-pnpm --dir playwright test:unit
+pnpm --dir playwright exec node --import tsx --test __tests__/unit/server/enrollmate-contract.test.ts
 ```
 
-Expected: the Next.js test fails because the getter is not exported, and the Playwright test fails because the package is not yet declared/resolvable there.
+Expected: the Next.js test fails because the getter is not exported, and the Playwright server test fails because the package is not yet declared/resolvable there.
 
 ### Task 2: Implement the shared getter
 
@@ -170,7 +170,7 @@ pnpm --dir playwright test:unit
 pnpm --dir playwright typecheck
 ```
 
-Expected: all existing Node unit tests plus the new getter test pass, and TypeScript resolves the shared package from Playwright.
+Expected: all existing Node unit tests plus the new server getter test pass, and TypeScript resolves the shared package from Playwright. The command must not invoke the browser Playwright suite.
 
 ### Task 4: Complete repository verification
 
@@ -193,7 +193,7 @@ Run:
 ```powershell
 git diff --check
 git status --short --branch
-git diff -- packages/enrollmate-contract/src/types.ts packages/enrollmate-contract/src/registry.ts packages/enrollmate-contract/src/index.ts nextjs/__tests__/unit/lib/enrollmate-contract.test.ts playwright/package.json playwright/pnpm-lock.yaml playwright/server/enrollmate-contract.test.ts
+git diff -- packages/enrollmate-contract/src/types.ts packages/enrollmate-contract/src/registry.ts packages/enrollmate-contract/src/index.ts nextjs/__tests__/unit/lib/enrollmate-contract.test.ts playwright/package.json playwright/pnpm-lock.yaml playwright/__tests__/unit/server/enrollmate-contract.test.ts
 ```
 
 Confirm the only new repository changes are the shared getter, its tests, and Playwright dependency wiring. Leave the existing dirty contract test changes in place and do not reset or commit user-owned work.
