@@ -2,7 +2,7 @@
 
 ## Requested continuation
 
-Complete and review the EnrollMate form-definition normalization work in `C:/Users/mrqvp/Documents/Programming/mihc`. The user requested this handoff to a new Codex task and prefers the 5.6 Luna max model if that surface supports model selection.
+Complete and review the EnrollMate form-definition normalization work in `$HOME/Documents/Programming/mihc`. The user requested this handoff to a new Codex task and prefers the 5.6 Luna max model if that surface supports model selection.
 
 ## Current state
 
@@ -45,7 +45,7 @@ The default installed `pnpm` is 11.4.0 while this project requires 10.29.2; use 
 
 - Design: `$HOME/Documents/Programming/agentic-workflow/memory/docs/superpowers/specs/2026-07-10-enrollmate-form-definition-contract-design.md`
 - Implementation plan: `$HOME/Documents/Programming/agentic-workflow/memory/docs/superpowers/plans/2026-07-10-enrollmate-form-definition-contract.md`
-- Repository plan: `C:/Users/mrqvp/Documents/Programming/mihc/docs/plans/2026-07-10-enrollmate-jsonb-profile-model.md`
+- Repository plan: `$HOME/Documents/Programming/mihc/docs/plans/2026-07-10-enrollmate-jsonb-profile-model.md`
 
 ## Suggested skills
 
