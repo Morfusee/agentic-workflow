@@ -1,0 +1,4 @@
+interface:
+  display_name: "TLDR"
+  short_description: "Turn dense content into a faithful, plain TLDR"
+  default_prompt: "Use $tldr to give me a faithful, no-fluff summary of this content."
