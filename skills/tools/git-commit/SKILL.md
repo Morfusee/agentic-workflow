@@ -1,8 +1,6 @@
 ---
 name: git-commit
-description: 'Execute git commit with conventional commit message analysis, intelligent staging, and message generation. Use when user asks to commit changes, create a git commit, or mentions "/commit". Supports: (1) Auto-detecting type and scope from changes, (2) Generating conventional commit messages from diff, (3) Interactive commit with optional type/scope/description overrides, (4) Intelligent file staging for logical grouping'
-license: MIT
-allowed-tools: Bash
+description: Execute git commits with Conventional Commits, intelligent staging, and safe push-failure triage. Use when the user asks to commit changes, create a git commit, mentions "/commit", or requires the commit workflow to push and diagnose GitHub permission or account errors.
 ---
 
 # Git Commit with Conventional Commits
@@ -12,6 +10,8 @@ allowed-tools: Bash
 When this skill is invoked, **always commit the current changes**. Never stop at analysis or a draft — execute `git commit`. Ask the user if anything is unclear (type, scope, staging), but the end goal is always a commit.
 
 Create standardized, semantic git commits using the Conventional Commits specification. Analyze the actual diff to determine appropriate type, scope, and message.
+
+Only push when the user or the calling workflow explicitly requests a push. If a requested push fails, follow the permission and account recovery workflow below before reporting failure.
 
 ## Conventional Commit Format
 
@@ -109,6 +109,31 @@ EOF
 )"
 ```
 
+### 5. Recover from a Requested Push Failure
+
+Capture the complete `git push` error, then perform this self-check before changing authentication:
+
+1. Is this an authentication or authorization failure? Treat `403`, `permission denied`, `write access ... not granted`, `authentication failed`, `could not read Username`, `repository not found` for an expected private repository, and SSH `publickey` errors as possible auth failures. Treat non-fast-forward/rejected updates, branch-policy or hook failures, DNS/network/TLS failures, and missing refs as different problems; do not switch accounts for them.
+2. Is the remote hosted on GitHub or a GitHub Enterprise host? Inspect it with `git remote get-url <remote>`.
+3. If it is a GitHub auth failure, check whether `gh` is available with `gh --version`. If so, inspect accounts with `gh auth status --hostname <host>`; never use `--show-token` or `gh auth token`.
+4. Does the same host have another already-authenticated account that is plausibly authorized for this repository? Switch only when there is one clear candidate. If candidates are ambiguous, ask the user which account to use.
+
+For a clear candidate account:
+
+```bash
+gh auth switch --hostname <host> --user <user>
+```
+
+If the remote uses HTTPS, make Git use the selected GitHub CLI credentials:
+
+```bash
+gh auth setup-git --hostname <host>
+```
+
+Verify the selected identity with `gh api user --hostname <host>`, then retry the same push once. Do not assume `gh auth switch` changes an SSH key; for SSH remotes, report that the GitHub CLI account and SSH identity are separate and ask the user to select or configure the correct key.
+
+Do not run `gh auth login`, request tokens, or switch to an ambiguous account without user approval. Never print, copy, or include authentication tokens in output. If no suitable authenticated account exists, or the retry fails, stop and report the remote, active account if safely available, exact non-secret error, and the required user action (authenticate, grant repository access, configure SSH, or choose another account). Do not loop through accounts or retry indefinitely.
+
 ## Best Practices
 
 - One logical change per commit
@@ -119,8 +144,10 @@ EOF
 
 ## Git Safety Protocol
 
-- NEVER update git config
+- NEVER update unrelated git config; the only permitted config change is `gh auth setup-git --hostname <host>` during the HTTPS GitHub recovery path above
 - NEVER run destructive commands (--force, hard reset) without explicit request
 - NEVER skip hooks (--no-verify) unless user asks
 - NEVER force push to main/master
+- NEVER push unless the user or calling workflow explicitly requests it
+- NEVER switch GitHub accounts blindly; inspect the remote and `gh auth status` first
 - If commit fails due to hooks, fix and create NEW commit (don't amend)
