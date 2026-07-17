@@ -216,7 +216,7 @@ vmbr2
 Apply the configuration. Then verify:
 
 ```bash
-ip -br addr show vmbr0 vmbr1 vmbr2
+ip -br addr | grep -E '^(vmbr0|vmbr1|vmbr2)\b'
 ```
 
 Expected:
@@ -254,21 +254,47 @@ OPNsense’s documentation requires at least 3 GB of RAM for installation, recom
 
 ## Add the interfaces in this order
 
-### Network device 0
+### Configure network device 0 in the creation wizard
+
+On the wizard’s network page, configure the adapter shown there as:
 
 ```text
 Bridge: vmbr1
 Model: VirtIO
-Purpose: WAN
+Firewall: unchecked
+Purpose: OPNsense WAN
 ```
 
-### Network device 1
+Finish creating the VM, but do not start it yet.
+
+### Add network device 1 after creating the VM
+
+Open:
+
+```text
+OPNsense VM
+→ Hardware
+→ Add
+→ Network Device
+```
+
+Configure the second adapter as:
 
 ```text
 Bridge: vmbr2
 Model: VirtIO
-Purpose: LAN
+Firewall: unchecked
+Purpose: OPNsense LAN
 ```
+
+The final summary should contain something similar to:
+
+```text
+Network Device (net0): VirtIO, bridge=vmbr1
+Network Device (net1): VirtIO, bridge=vmbr2
+```
+
+Do **not** attach this OPNsense VM to `vmbr0` under the current double-NAT design.
 
 Write down their MAC addresses. That will help identify them if the interface order is unclear during installation.
 
@@ -310,44 +336,191 @@ ZFS also works, but UFS is simpler for a small single-disk firewall VM.
 
 When installation finishes:
 
-1. Shut down or reboot OPNsense.
-2. Remove or detach the ISO.
-3. Boot from the virtual disk.
+In the Proxmox web UI:
+
+```text
+VM 100 (opnsense-router)
+→ Hardware
+→ CD/DVD Drive (ide2)
+→ Edit
+→ Do not use any media
+→ OK
+```
+
+That **ejects the OPNsense ISO but keeps the virtual CD/DVD drive**, which is usually preferable to removing the whole device. Proxmox presents ISO files to guests as virtual CD-ROM media. ([Proxmox VE][11])
+
+Then check:
+
+```text
+VM 100
+→ Options
+→ Boot Order
+```
+
+Make sure the 32 GB disk, usually `scsi0`, is enabled and placed before the CD/DVD drive.
+
+If the installer is still running, finish the installation first. When it asks to reboot:
+
+1. Choose reboot.
+2. Detach the ISO immediately.
+3. Let the VM boot from `scsi0`.
+
+CLI equivalent:
+
+```bash
+sudo qm set 100 --ide2 none,media=cdrom
+```
 
 ---
 
 # Phase 4: Assign the interfaces
 
-At the OPNsense console, assign:
+Before assigning interfaces, confirm the Proxmox VM still has the correct bridge mapping:
 
 ```text
-WAN: vtnet0
-LAN: vtnet1
+OPNsense VM
+→ Hardware
+
+net0 → bridge=vmbr1
+net1 → bridge=vmbr2
 ```
 
-Verify the MAC addresses against those shown in Proxmox.
+The current double-NAT design depends on this order:
 
-Do not configure VLANs yet.
+```text
+vtnet0 → WAN transit network on vmbr1
+vtnet1 → private LAN on vmbr2
+```
 
-Use console option:
+## Assign WAN and LAN
+
+At the OPNsense console, choose:
+
+```text
+1) Assign interfaces
+```
+
+When prompted to configure link aggregation, enter:
+
+```text
+Configure LAGGs now? n
+```
+
+LAGG combines multiple NICs into one logical interface for bonding, redundancy, or additional throughput. This VM uses one WAN NIC and one LAN NIC, so link aggregation is not part of this setup.
+
+When prompted to configure VLANs, enter:
+
+```text
+Configure VLANs now? n
+```
+
+Assign the interfaces:
+
+```text
+WAN interface: vtnet0
+LAN interface: vtnet1
+Optional interface: press Enter without typing anything
+```
+
+Review the assignment summary:
+
+```text
+WAN  -> vtnet0
+LAN  -> vtnet1
+```
+
+When asked whether to proceed, enter:
+
+```text
+y
+```
+
+After assignment, the top of the console should show:
+
+```text
+WAN (vtnet0)
+LAN (vtnet1)
+```
+
+## Configure the LAN address
+
+Choose:
+
 
 ```text
 2) Set interface(s) IP address
 ```
 
-Configure the LAN first:
+Select the LAN interface and answer the prompts as follows:
 
 ```text
-Interface: LAN
-IPv4 address: 10.77.0.1
+Configure IPv4 address LAN interface via DHCP? n
+LAN IPv4 address: 10.77.0.1
 Subnet bits: 24
-Upstream gateway: none
-IPv6: none
-Enable DHCP now: no
-Revert WebGUI to HTTP: no
+Upstream gateway: press Enter
+Configure IPv6 via WAN tracking or DHCP6? n
+LAN IPv6 address: press Enter
+Enable DHCP server on LAN? n
+Revert WebGUI protocol to HTTP? n
+Generate a new self-signed WebGUI certificate? n
+Restore WebGUI access defaults? n
 ```
 
-You will configure DHCP through the WebGUI later.
+Keep DHCP disabled for now. It will be enabled and configured later through the OPNsense WebGUI.
+
+The final LAN configuration is:
+
+```text
+LAN interface: vtnet1
+LAN address: 10.77.0.1/24
+Gateway: none
+IPv6: disabled
+DHCP server: disabled for now
+WebGUI: keep HTTPS
+```
+
+Do not enter `10.77.0.2` as the LAN gateway. That address belongs to the Proxmox host on `vmbr2`; it is not an upstream router.
+
+After the configuration finishes, the console should show:
+
+```text
+LAN (vtnet1) → 10.77.0.1/24
+```
+
+## Configure the WAN address
+
+Choose option 2 again:
+
+```text
+2) Set interface(s) IP address
+```
+
+Select the WAN interface and enter:
+
+```text
+Configure IPv4 address WAN interface via DHCP? n
+WAN IPv4 address: 10.255.255.2
+Subnet bits: 30
+Upstream gateway: 10.255.255.1
+Configure IPv6 address via DHCP6? n
+WAN IPv6 address: press Enter
+```
+
+The final WAN configuration is:
+
+```text
+WAN interface: vtnet0
+WAN address: 10.255.255.2/30
+Gateway: 10.255.255.1
+IPv6: disabled
+```
+
+The console should now show both configured interfaces:
+
+```text
+WAN (vtnet0) → 10.255.255.2/30
+LAN (vtnet1) → 10.77.0.1/24
+```
 
 ---
 
@@ -390,31 +563,72 @@ Navigate to:
 Interfaces → WAN
 ```
 
-Set:
+The static WAN address should already be present from Phase 4. Verify:
 
 ```text
 Enable interface: Yes
 Description: WAN
 IPv4 Configuration Type: Static IPv4
 IPv6 Configuration Type: None
-
-IPv4 address: 10.255.255.2
-Prefix: 30
-Gateway: 10.255.255.1
-```
-
-When creating the gateway, mark it as an upstream gateway.
-
-Because this WAN uses an RFC1918 address rather than a public address:
-
-```text
+Static IPv4 address: 10.255.255.2/30
 Block private networks: unchecked
 Block bogon networks: unchecked
 ```
 
+Save and apply the interface changes.
+
 OPNsense specifically documents that the private-network block must be disabled when its WAN uses a private address. ([OPNsense Documentation][4])
 
-Initially, disable gateway monitoring or leave its monitor address blank. After outbound connectivity works, you can set the monitor address to something such as `1.1.1.1`.
+## Configure the WAN gateway
+
+The gateway is configured separately from `Interfaces → WAN`. Navigate to:
+
+```text
+System → Gateways → Configuration
+```
+
+Check whether a gateway for WAN already exists. If you configured the WAN gateway from the console in Phase 4, OPNsense may already have created it.
+
+If no correct entry exists, click **Add** and configure:
+
+```text
+Name: WAN_GW
+Interface: WAN
+Address Family: IPv4
+IP Address: 10.255.255.1
+Upstream Gateway: checked
+Far Gateway: unchecked
+Disable Gateway Monitoring: checked initially
+Description: Proxmox transit gateway
+```
+
+Save and apply the gateway changes.
+
+`Far Gateway` remains unchecked because `10.255.255.1` and `10.255.255.2/30` are directly connected on the same subnet. OPNsense manages gateways under **System → Gateways → Configuration**, and the active default route can be checked under **System → Routes → Status**. ([OPNsense Documentation][12])
+
+After saving, navigate to:
+
+```text
+System → Routes → Status
+```
+
+Verify that the default IPv4 route resembles:
+
+```text
+default → 10.255.255.1 → WAN/vtnet0
+```
+
+Do not configure a gateway on LAN. The final interface addressing is:
+
+```text
+WAN/vtnet0: 10.255.255.2/30
+WAN gateway: 10.255.255.1
+
+LAN/vtnet1: 10.77.0.1/24
+LAN gateway: none
+```
+
+After outbound connectivity works, you can enable gateway monitoring and set the monitor address to something such as `1.1.1.1`.
 
 ## LAN configuration
 
@@ -424,7 +638,7 @@ Navigate to:
 Interfaces → LAN
 ```
 
-Confirm:
+Confirm the console configuration is present:
 
 ```text
 IPv4 Configuration Type: Static IPv4
@@ -466,54 +680,440 @@ OPNsense documents firmware updates through that page. ([OPNsense Documentation]
 
 # Phase 7: Configure DHCP for automatic VM addressing
 
-For a small private network, use the DHCP service provided by your OPNsense installation—typically Dnsmasq or Kea. Do not enable two DHCP servers on the same interface.
+For your OPNsense 26.7 setup, use **Dnsmasq as the DHCP server**. It is the current default and is the simplest choice for a small Proxmox network. Keep **Unbound** handling DNS and configure Dnsmasq for DHCP only. ([OPNsense Documentation][13])
+
+Your target is:
+
+```text
+OPNsense LAN: 10.77.0.1/24
+DHCP pool:    10.77.0.100 – 10.77.0.199
+Gateway:      10.77.0.1
+DNS server:   10.77.0.1
+```
+
+## 1. Confirm Unbound DNS is enabled
+
+In OPNsense, open:
+
+```text
+Services
+→ Unbound DNS
+→ General
+```
+
+Confirm:
+
+```text
+Enable Unbound: checked
+Listen Port: blank
+Network Interfaces: All
+Outgoing Network Interfaces: All
+```
+
+Do not change its port. Blank means the normal DNS port `53`. OPNsense recommends leaving Unbound’s listening and outgoing interface selections at `All` unless you have a specific reason to restrict them. ([OPNsense Documentation][14])
+
+Click **Apply** only if you changed something.
+
+---
+
+## 2. Enable Dnsmasq for DHCP
+
+Open:
+
+```text
+Services
+→ Dnsmasq DNS & DHCP
+→ General
+```
 
 Configure:
 
 ```text
+Enable: checked
+
+Interface:
+  LAN
+
+Listen Port:
+  0
+
+DHCP register firewall rules:
+  checked
+```
+
+Important details:
+
+* Select **LAN only**, not WAN.
+* Setting **Listen Port to `0`** disables Dnsmasq’s DNS function while leaving its DHCP function available.
+* Unbound remains your DNS server on port 53.
+* Selecting LAN allows OPNsense to register the necessary DHCP firewall handling for that interface. ([OPNsense Documentation][15])
+
+Leave these disabled for now:
+
+```text
+Router Advertisements
+DHCPv6
+DHCP FQDN
+DHCP reply delay
+```
+
+You are currently building an IPv4-only setup, so you do not need DHCPv6 or Router Advertisements.
+
+Click:
+
+```text
+Save
+→ Apply
+```
+
+---
+
+## 3. Create the DHCP address range
+
+Open:
+
+```text
+Services
+→ Dnsmasq DNS & DHCP
+→ DHCP ranges
+```
+
+Click the **plus/Add** button.
+
+Enter:
+
+```text
 Interface: LAN
-Subnet: 10.77.0.0/24
-Pool: 10.77.0.100 - 10.77.0.199
-Router/Gateway: 10.77.0.1
-DNS server: 10.77.0.1
-Domain: lab.internal
+
+Start address:
+10.77.0.100
+
+End address:
+10.77.0.199
+
+Subnet Mask:
+leave blank
+
+Mode:
+leave blank/default
+
+Lease time:
+86400
+
+Domain:
+lab.internal
+
+Description:
+Private LAN DHCP pool
 ```
 
-Avoid using `.local`, because it is commonly used by multicast DNS.
+`86400` means a one-day DHCP lease. Leaving the subnet mask blank lets Dnsmasq derive `/24` from the LAN interface. The range screen supports selecting the interface, start and end addresses, lease time, and domain. ([OPNsense Documentation][15])
 
-OPNsense currently documents Kea and Dnsmasq as supported DHCP options; ISC DHCP is end-of-life. Kea is primarily positioned for larger or high-availability deployments, so a small environment does not require its more complex HA features. ([OPNsense Documentation][6])
-
-## Reserve stable addresses for servers
-
-Use static DHCP mappings based on the VM NIC’s MAC address:
+Click:
 
 ```text
-Dokploy:       10.77.0.10
-Database:      10.77.0.20
-Monitoring:    10.77.0.30
-Other servers: 10.77.0.31 onward
+Save
+→ Apply
 ```
 
-Keep the DHCP pool beginning at `.100`, leaving `.2–.99` available for infrastructure.
+You do **not** need to manually add DHCP options for the gateway and DNS server. When a range is created, Dnsmasq automatically advertises the receiving interface’s IP as both the default router and DNS server. In your case, that will be `10.77.0.1`. ([OPNsense Documentation][15])
 
-For a new cloud-init VM in Proxmox:
+Your clients should receive:
 
 ```text
-Network bridge: vmbr2
+IP address:  10.77.0.100–10.77.0.199
+Subnet:      255.255.255.0
+Gateway:     10.77.0.1
+DNS:         10.77.0.1
+Domain:      lab.internal
+```
+
+---
+
+## 4. Confirm Dnsmasq actually started
+
+Open:
+
+```text
+Services
+→ Dnsmasq DNS & DHCP
+→ Log
+```
+
+You should not see errors about port 67 already being occupied.
+
+Also check the OPNsense dashboard under **Services**. Dnsmasq should show as running.
+
+If it refuses to start, make sure neither of these is enabled:
+
+```text
+Services → Kea DHCP
+Services → ISC DHCP
+```
+
+Only one DHCP server can listen on the DHCP port for the LAN interface. The OPNsense documentation specifically warns that Kea or ISC DHCP can block Dnsmasq from starting. ([OPNsense Documentation][15])
+
+---
+
+## 5. Create a test VM in Proxmox
+
+Create a small Debian or Ubuntu VM, or use an existing private VM.
+
+Its network device must be:
+
+```text
 Model: VirtIO
-IPv4 configuration: DHCP
-IPv6 configuration: disabled
+Bridge: vmbr2
+VLAN Tag: blank
+Firewall: unchecked initially
 ```
 
-That VM will automatically receive:
+Do **not** attach this test VM to:
 
 ```text
-Address: 10.77.0.100–199
-Gateway: 10.77.0.1
-DNS: 10.77.0.1
+vmbr0
+vmbr1
 ```
 
-This is the “automatic discovery” portion: OPNsense automatically leases an address and becomes the VM’s gateway. It does **not** automatically expose the VM to the Internet, which is intentional.
+The topology should be:
+
+```text
+Test VM
+  │
+  └── vmbr2
+          │
+          └── OPNsense LAN: 10.77.0.1
+```
+
+## For a cloud-init VM
+
+In Proxmox:
+
+```text
+VM
+→ Cloud-Init
+→ IP Config
+→ Edit
+```
+
+Choose:
+
+```text
+IPv4: DHCP
+IPv6: DHCP or SLAAC disabled
+```
+
+Then regenerate the cloud-init image if Proxmox presents that option.
+
+## For a normally installed Linux VM
+
+During OS installation, choose automatic networking or DHCP.
+
+For Ubuntu/Debian using Netplan, a simple DHCP configuration looks like:
+
+```yaml
+network:
+  version: 2
+  ethernets:
+    ens18:
+      dhcp4: true
+      dhcp6: false
+```
+
+The interface is commonly `ens18`, but verify it inside the VM with:
+
+```bash
+ip -br link
+```
+
+Apply Netplan with:
+
+```bash
+sudo netplan apply
+```
+
+---
+
+## 6. Verify that the VM received a lease
+
+Inside the test VM, run:
+
+```bash
+ip -br addr
+ip route
+cat /etc/resolv.conf
+```
+
+Expected output should resemble:
+
+```text
+ens18    UP    10.77.0.100/24
+```
+
+The route should include:
+
+```text
+default via 10.77.0.1 dev ens18
+```
+
+DNS should ultimately point to:
+
+```text
+10.77.0.1
+```
+
+On systems using `systemd-resolved`, `/etc/resolv.conf` may show `127.0.0.53`. In that case, inspect the actual upstream DNS with:
+
+```bash
+resolvectl status
+```
+
+You should find:
+
+```text
+DNS Servers: 10.77.0.1
+DNS Domain: lab.internal
+```
+
+---
+
+## 7. View the lease inside OPNsense
+
+Open:
+
+```text
+Services
+→ Dnsmasq DNS & DHCP
+→ Leases
+```
+
+You should see the test VM with information resembling:
+
+```text
+IP address: 10.77.0.100
+MAC address: bc:24:11:...
+Hostname: test-vm
+Interface: LAN
+```
+
+This confirms that:
+
+```text
+VM DHCP broadcast
+→ reaches vmbr2
+→ reaches OPNsense LAN
+→ receives a lease
+```
+
+---
+
+## 8. Test LAN connectivity
+
+Inside the VM:
+
+```bash
+ping -c 3 10.77.0.1
+```
+
+This must work before testing anything else.
+
+Then test outbound IP connectivity:
+
+```bash
+ping -c 3 1.1.1.1
+```
+
+Then DNS:
+
+```bash
+getent hosts example.com
+```
+
+Then HTTPS:
+
+```bash
+curl -I https://example.com
+```
+
+Expected progression:
+
+```text
+10.77.0.1 works
+    ↓
+1.1.1.1 works
+    ↓
+example.com resolves
+    ↓
+HTTPS works
+```
+
+If the VM gets an address but cannot reach `1.1.1.1`, DHCP is working; the remaining problem is OPNsense outbound NAT/firewalling.
+
+---
+
+## Stable addresses for server VMs
+
+For a new general-purpose VM, let DHCP assign an address automatically.
+
+For important servers such as Dokploy or PostgreSQL, you need a stable address. With Dnsmasq, the cleanest reservation method is under:
+
+```text
+Services
+→ Dnsmasq DNS & DHCP
+→ Hosts
+→ Add
+```
+
+You need the VM’s MAC address from:
+
+```text
+Proxmox VM
+→ Hardware
+→ Network Device
+```
+
+A reservation could be:
+
+```text
+Host:
+dokploy
+
+IP addresses:
+10.77.0.10
+
+Hardware addresses:
+bc:24:11:xx:xx:xx
+
+Description:
+Dokploy reverse proxy
+```
+
+Click:
+
+```text
+Save
+→ Apply
+```
+
+Use the Dnsmasq Hosts entry to associate the server’s MAC address with its stable IP. Keep infrastructure reservations outside the dynamic pool of `10.77.0.100–10.77.0.199`. ([OPNsense Documentation][15])
+
+I recommend these assignments:
+
+```text
+10.77.0.10  Dokploy
+10.77.0.20  PostgreSQL
+10.77.0.30  Monitoring
+10.77.0.31 onward  Other infrastructure
+```
+
+After adding a reservation, restart the VM’s network or reboot it. On Linux, you can also request a fresh lease:
+
+```bash
+sudo dhclient -r
+sudo dhclient
+```
+
+The immediate goal is to get **one test VM on `vmbr2` showing in Dnsmasq Leases with an address between `10.77.0.100` and `10.77.0.199`**.
 
 ---
 
@@ -1261,5 +1861,10 @@ You are finished when all of these are true:
 [8]: https://manpages.ubuntu.com/manpages/focal/man8/ufw-framework.8.html?utm_source=chatgpt.com "using the ufw framework"
 [9]: https://docs.opnsense.org/manual/nat.html "Network Address Translation — OPNsense  documentation"
 [10]: https://docs.opnsense.org/manual/aliases.html?utm_source=chatgpt.com "Aliases"
+[11]: https://pve.proxmox.com/pve-docs/qm.conf.5.html?utm_source=chatgpt.com "qm.conf(5)"
+[12]: https://docs.opnsense.org/manual/gateways.html?utm_source=chatgpt.com "Gateways"
+[13]: https://docs.opnsense.org/manual/dhcp.html "DHCP — OPNsense  documentation"
+[14]: https://docs.opnsense.org/manual/unbound.html "Unbound DNS — OPNsense  documentation"
+[15]: https://docs.opnsense.org/manual/dnsmasq.html "Dnsmasq DNS & DHCP — OPNsense  documentation"
 
 
