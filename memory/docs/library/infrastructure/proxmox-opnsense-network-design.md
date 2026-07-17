@@ -1140,16 +1140,32 @@ For the initial setup, this lets private VMs initiate outbound connections.
 Navigate to:
 
 ```text
-Firewall → NAT → Outbound
+Firewall → NAT → Source NAT
 ```
 
-Use:
+Set the mode:
 
 ```text
-Mode: Automatic outbound NAT
+Mode: Hybrid
 ```
 
-OPNsense uses source NAT to let multiple internal clients share its WAN address. In this architecture, that WAN address is `10.255.255.2`; Proxmox will then translate it again to your public address. ([OPNsense Documentation][7])
+Add a Source NAT rule:
+
+```text
+Interface: WAN
+Version: IPv4
+Protocol: Any
+Source Address: LAN net
+Destination Address: any
+Destination Port: any
+Translate Source IP: Single host or Network
+Translate Source IP value: 10.255.255.2 (WAN IP)
+Translate Source port: any
+```
+
+Save and apply the rule.
+
+Hybrid mode retains automatically generated outbound NAT rules while allowing this explicit LAN-to-WAN rule. OPNsense uses source NAT to let private VMs share its WAN address, `10.255.255.2`; Proxmox will then translate that address again to your public IPv4. ([OPNsense Documentation][7])
 
 At this point OPNsense can reach Proxmox at `10.255.255.1`, but it cannot yet reach the Internet because the Proxmox host is not forwarding or masquerading traffic.
 
@@ -1325,7 +1341,87 @@ Interpretation:
 | Can ping `1.1.1.1`, not domain | DNS configuration is wrong                                 |
 | All three work                 | OPNsense outbound path works                               |
 
-Now create or attach a test VM to `vmbr2`.
+## Create the test VM in Proxmox
+
+In the Proxmox web interface, click **Create VM**.
+
+Use approximately these settings:
+
+### General
+
+```text
+Node: px
+VM ID: any unused ID, such as 110
+Name: test-vm
+Start at boot: optional
+```
+
+The VM ID does not affect networking. It does not have to be a particular number.
+
+### OS
+
+Use a small Debian or Ubuntu Server ISO:
+
+```text
+Storage: local
+ISO image: your Debian or Ubuntu Server ISO
+Guest OS: Linux
+```
+
+### System
+
+```text
+Machine: Default
+BIOS: SeaBIOS
+SCSI Controller: VirtIO SCSI single
+QEMU Guest Agent: Enabled
+```
+
+### Disk
+
+```text
+Bus/Device: SCSI
+Storage: local-lvm
+Disk size: 16–32 GiB
+Discard: Enabled
+IO thread: Enabled
+```
+
+### CPU
+
+```text
+Sockets: 1
+Cores: 1 or 2
+Type: host
+```
+
+### Memory
+
+```text
+Memory: 2048 MiB
+```
+
+One GiB can work for Debian, but 2 GiB is easier.
+
+### Network
+
+This is the important part:
+
+```text
+Bridge: vmbr2
+Model: VirtIO
+VLAN Tag: blank
+Firewall: disabled initially
+```
+
+Do not choose:
+
+```text
+vmbr0
+vmbr1
+```
+
+Finish creating the VM, install the operating system, and ensure its network configuration uses DHCP.
 
 Inside the VM:
 
