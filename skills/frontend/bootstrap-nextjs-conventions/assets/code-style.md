@@ -7,18 +7,18 @@
 | **Language** | TypeScript 5 (`strict: true`, `target: ES2017`) |
 | **Framework** | Next.js 16 (App Router, React 19) |
 | **Styling** | Tailwind CSS 4 |
-| **Database ORM** | Project-specific; apply the Drizzle and Prisma guidance below |
+| **Database ORM** | Drizzle ORM with PostgreSQL |
 | **Auth** | better-auth |
-| **Form handling** | react-hook-form + Zod (`@hookform/resolvers/zod`) |
+| **Form handling** | TanStack Form + Zod |
 | **Data fetching** | TanStack Query v5 (`@tanstack/react-query`) |
 | **Table** | TanStack Table v8 (`@tanstack/react-table`) |
 | **i18n** | next-intl (locales: `en`, `ar`, `fr`) |
 | **URL state** | nuqs |
 | **Package manager** | pnpm |
 | **UI stories** | Ladle |
-| **React optimisation** | React Compiler enabled (`reactCompiler: true`) |
+| **React optimisation** | React Compiler is not currently enabled; only rely on compiler-specific behavior when `reactCompiler: true` is present in `next.config.ts` |
 
-No ESLint or Prettier configuration files are present in the repository. The `lint` script runs `tsc --noEmit`. Formatting is not enforced by tooling; the observed style below reflects what is consistently practiced manually.
+ESLint is configured through `eslint.config.mjs`, and the `lint` script runs `eslint`. Formatting is not enforced by Prettier tooling; the observed style below reflects what is consistently practiced manually.
 
 ---
 
@@ -64,7 +64,8 @@ All functions use **camelCase**. Naming follows a strict verb-first convention t
 | Layer | Pattern | Examples |
 |---|---|---|
 | Server Actions | `verbNounAction` | `createUserAction`, `updateUserAction`, `deleteOrderAction`, `addOrderItem` |
-| Services | `verbNoun` for workflows; `verbNounRecord` for local database operations | `createUser`, `getDocumentAccess`, `findDocumentRecordById` |
+| Services | `verbNoun` | `createUser`, `updateUser`, `getAllUsers`, `getCustomerOrders` |
+| Repositories | `verbNounRecord` / `verbAllNoun` / `verbNounById` / `listNouns` | `createOrderRecord`, `listAllUsers`, `findUserById`, `checkOrderItemExists` |
 | TanStack Query hooks (queries) | `useQueryNoun` | `useQueryOrderItems`, `useQueryAuthSession` |
 | TanStack Query hooks (mutations) | `useVerbNoun` | `useAddOrderItem`, `useChangeOrderItemQuantity`, `useRemoveOrderItem` |
 | Auth guards (throwing) | `assertVerb` | `assertAuthenticated`, `assertRole` |
@@ -74,9 +75,13 @@ All functions use **camelCase**. Naming follows a strict verb-first convention t
 | Internal helpers | `verbNoun` | `downloadTemplate`, `parseCSVLine`, `parseCSV`, `handleSort`, `handleDelete` |
 
 ```ts
-// Service — features/markdown/services/markdown.service.ts
-export async function getDocumentAccess(documentId: string) { /* workflow */ }
-async function findDocumentRecordById(documentId: string) { /* database operation */ }
+// Service — src/features/users/services/user-mutations.service.ts
+export async function createUser({ email, password, name, ...data }: CreateUserData) { ... }
+export async function updateUser({ userId, ...data }: UpdateUserData) { ... }
+
+// Repository — src/features/users/repositories/user-queries.repo.ts
+export async function listAllUsers(query: ListAllUsersQuery, tx = db) { ... }
+export async function findUserById(query: FindUserByIdQuery, tx = db) { ... }
 
 // Action — src/features/users/actions/user.action.ts
 export async function createUserAction({ data }: CreateUserActionData) { ... }
@@ -124,8 +129,8 @@ export class OrderError extends AppError<OrderErrorCode> {
 | Kind | Pattern | Examples |
 |---|---|---|
 | DTOs (read model) | `NounDTO` | `UserDTO`, `CustomerDTO`, `CustomerDetailsDTO` |
-| Service database input | `VerbNounRecordData` | `CreateMarkdownDraftRecordData`, `UpdateMarkdownDraftRecordData` |
-| Service database queries | `VerbNounRecordsQuery` | `ListInfiniteMarkdownDocumentRecordsQuery` |
+| Repository input | `VerbNounRecordData` | `CreateOrderRecordData`, `UpdateOrderStatusData` |
+| Repository queries | `VerbAllNounQuery` / `VerbNounByIdQuery` | `FindAllUsersQuery`, `FindOrderForCustomerByIdQuery` |
 | Action payloads | `VerbNounActionData` | `CreateUserActionData`, `UpdateUserActionData` |
 | Component props | `[ComponentName]Props` | `UsersTableProps`, `OrderFilterProps`, `AppSidebarProps` |
 | Form data types (inferred from Zod) | `VerbNounFormData` | `CreateUserFormData`, `UpdateUserFormData` |
@@ -167,6 +172,7 @@ All non-component source files use **kebab-case dot-notation** with a layer suff
 | Layer | Pattern | Examples |
 |---|---|---|
 | Services | `noun-queries.service.ts` / `noun-mutations.service.ts` / `noun.service.ts` | `user-queries.service.ts`, `user-mutations.service.ts`, `auth.service.ts` |
+| Repositories | `noun-queries.repo.ts` / `noun-mutations.repo.ts` / `noun.repo.ts` | `user-queries.repo.ts`, `order-mutations.repo.ts`, `password-reset-throttle.repo.ts` |
 | Actions | `noun.action.ts` or `noun.actions.ts` | `user.action.ts`, `order.actions.ts`, `auth.actions.ts` |
 | Schemas | `verb-noun.schema.ts` | `create-user.schema.ts`, `update-user.schema.ts`, `login.schema.ts` |
 | Types | `noun.types.ts` or `noun.type.ts` | `user.types.ts`, `order-item.type.ts` |
@@ -193,7 +199,29 @@ All non-component source files use **kebab-case dot-notation** with a layer suff
 
 ## Folder Structure
 
-The project uses a **feature-based architecture** under `src/features/`, with a separate `src/app/` layer for routing and `src/components/` for shared UI.
+The project supports either a root-level Next.js layout (`app/`, `components/`, `lib/`, `hooks/`) or a `src/`-scoped layout (`src/app/`, `src/components/`, `src/lib/`, `src/hooks/`). Use the layout already present in the touched area. Do not migrate between root-level and `src/`-scoped layouts unless the request explicitly asks for that migration.
+
+Current root-level layout:
+
+```
+app/
+├── e2e-testing/
+│   ├── page.tsx
+│   └── _components/
+├── smoke-testing/
+│   ├── page.tsx
+│   └── _components/
+└── layout.tsx
+
+components/
+├── app-shell.tsx
+└── ui/
+
+hooks/
+lib/
+```
+
+Equivalent `src/`-scoped layout, when a project uses `src/`:
 
 ```
 src/
@@ -238,7 +266,7 @@ src/
 │
 ├── lib/
 │   ├── better-auth/          # Auth client + server config, roles
-│   ├── database/             # ORM client, schema, pagination helpers
+│   ├── drizzle/              # Drizzle client, schema, pagination helpers
 │   ├── resend/               # Email integration
 │   ├── tanstack-query/       # QueryClient factory + providers
 │   └── nuqs/
@@ -256,7 +284,8 @@ src/
 
 | Layer | Responsibility |
 |---|---|
-| `services/` | Business workflows, domain rules, domain errors, and direct Drizzle reads/writes |
+| `repositories/` | Raw Drizzle calls only — no business logic. Accept optional `tx`/executor param where needed |
+| `services/` | Business logic: coordinate repositories, enforce domain rules, throw domain errors |
 | `actions/` | Server actions: validate auth, call services, return `ok()`/`err()`, revalidate cache |
 | `queries/` | TanStack Query hooks for client-side data fetching (call API routes or server actions) |
 | `errors/` | Domain-specific error classes |
@@ -264,27 +293,19 @@ src/
 | `types/` | DTOs and TypeScript interfaces (no logic) |
 | `components/` | Feature UI components only |
 
-For Drizzle-backed features, do not add a `repositories/` folder. Keep database operations in the owning service. A Prisma-backed feature may use repositories when they provide a meaningful domain, testing, or integration boundary; assess that boundary case by case rather than removing it by default. Evaluate other persistence technologies from current evidence.
-
-### YAGNI
-
-- Do not create repository, use-case, helper, or other architectural layers without a current demonstrated need.
-- Keep single-use database operations in the owning service file.
-- Extract a helper only when it is reused across files or materially improves readability.
-- Do not carry unused persistence functions forward during migrations.
-- Do not create folders for anticipated future code.
-- Do not introduce `use-cases/` as a replacement for repositories.
-
 ---
 
 ## Import Conventions
 
 ### Path alias
 
-`@/` maps to `src/`. All imports of non-adjacent files use `@/`.
+`@/` maps to the project source root. In the current root-level layout, it maps to `./*`. In a `src/`-scoped layout, it maps to `./src/*`. All imports of non-adjacent files use `@/`.
 
 ```json
-// tsconfig.json
+// Current root-level layout — tsconfig.json
+"paths": { "@/*": ["./*"] }
+
+// src-scoped layout — tsconfig.json
 "paths": { "@/*": ["./src/*"] }
 ```
 
@@ -292,14 +313,14 @@ For Drizzle-backed features, do not add a `repositories/` folder. Keep database 
 
 - **Within a feature**, relative imports are used when referencing sibling directories:
   ```ts
-  // features/markdown/services/markdown.service.ts
-  import { MarkdownError } from "../errors/markdown.error";
-  import type { MarkdownDraft } from "../types/markdown.types";
+  // src/features/users/services/user-queries.service.ts
+  import { listAllUsers } from "../repositories/user-queries.repo";
+  import { CustomerDTO, UserDTO } from "../types/user.types";
   ```
 - **Cross-feature and cross-layer**, `@/` is used:
   ```ts
   import { assertRole } from "@/features/auth/auth-guards";
-  import { getDb } from "@/lib/db";
+  import { db } from "@/lib/drizzle/db";
   import { Paginated } from "@/features/pagination/types/paginate";
   ```
 
@@ -319,10 +340,10 @@ No `index.ts` barrel files are used. All imports reference the specific file pat
 
 ```ts
 // Correct — observed throughout
-import { MarkdownError } from "../errors/markdown.error";
+import { listAllUsers } from "../repositories/user-queries.repo";
 
 // Not present — no barrel pattern
-import { MarkdownError } from "../errors";
+import { listAllUsers } from "../repositories";
 ```
 
 ---
@@ -471,18 +492,6 @@ if (order.status !== OrderStatus.draft)
   throw new OrderError(OrderErrorCode.NOT_SUBMITTABLE);
 ```
 
-For Drizzle-backed services, keep public workflow functions readable and place local database operations at the bottom of the service file:
-
-```ts
-export async function getDocumentAccess(documentId: string) { /* workflow */ }
-export async function saveMarkdownDraft(documentId: string) { /* workflow */ }
-
-// --- Database operations ------------------------------------------------------
-
-async function findDocumentRecordById(documentId: string) { /* database operation */ }
-async function updateMarkdownDraftRecord(documentId: string) { /* database operation */ }
-```
-
 ### Auth guards
 
 - `assertRole` (throws `AuthError`): used in server actions and API route handlers.
@@ -560,7 +569,7 @@ Deleted or superseded code should be removed rather than preserved in source fol
 
 No test files (`.test.ts`, `.test.tsx`, `.spec.ts`, `.spec.tsx`) exist in the repository.
 
-**Ladle** is used for interactive component stories. Stories live in `src/stories/` and follow:
+**Ladle** is used for interactive component stories. Stories live in `stories/` for root-level layouts or `src/stories/` for `src/`-scoped layouts and follow:
 
 ```ts
 // src/stories/button.stories.tsx
@@ -590,11 +599,11 @@ import { assertRole } from "@/features/auth/auth-guards";
 
 ### 2. Optional Drizzle executor parameter
 
-Service-local database operations may accept a `tx` parameter defaulting to the singleton Drizzle `db` client. This allows them to participate in a larger transaction without changes at the call site:
+Repository functions accept a `tx` parameter defaulting to the singleton Drizzle `db` client. This allows them to participate in a larger transaction without changes at the call site:
 
 ```ts
-async function findDocumentRecordById(
-  { documentId }: { documentId: string },
+export async function findUserById(
+  { userId }: { userId: string },
   tx: DbExecutor = db,
 ) { ... }
 ```
@@ -630,18 +639,21 @@ TanStack Query keys follow an `[resource, id, subresource]` array structure:
 
 ### 5. `_components/` co-location
 
-Use a route `_components/` folder only for UI that is genuinely specific to that route. Place reusable or feature-owned UI under `features/<feature>/components/`, even when a route is its first consumer.
+Route-specific components are placed in `_components/` adjacent to their `page.tsx`:
 
 ```
-features/markdown/components/library/
-├── markdown-library-page.tsx
-├── markdown-files-table.tsx
-└── document-row-actions.tsx
-
-app/(auth)/app/
+app/[locale]/(app)/(admin)/users/
 ├── page.tsx
-└── _components/
-    └── page.config.ts
+├── _components/
+│   ├── page.config.ts
+│   ├── users-table.tsx
+│   ├── users-table.skeleton.tsx
+│   └── users-table-columns.tsx
+└── new/
+    ├── page.tsx
+    └── _components/
+        ├── create-user-form.tsx
+        └── batch-create-dialog.tsx
 ```
 
 ### 6. Skeleton companion components
@@ -708,13 +720,10 @@ export interface AppPageProps<
 Interfaces associated with data-layer functions are exported alongside the function:
 
 ```ts
-// features/markdown/services/markdown.service.ts
-export type ListInfiniteMarkdownDocumentRecordsQuery =
-  PaginationParams & SortQuery<Document>;
+// src/features/users/repositories/user-queries.repo.ts
+export type ListAllUsersQuery = PaginationParams & SortQuery<User>;
 
-async function listInfiniteMarkdownDocumentRecords(
-  query: ListInfiniteMarkdownDocumentRecordsQuery,
-) { /* database operation */ }
+export async function listAllUsers(query: ListAllUsersQuery, ...) { ... }
 ```
 
 ### 12. `PAGE_CONFIG` pattern
@@ -730,37 +739,3 @@ export const PAGE_CONFIG = {
     ...
   ],
 };
-```
-
----
-
-## Evidence
-
-| Convention | File |
-|---|---|
-| Abstract error base | [src/errors/app-error.ts](src/errors/app-error.ts) |
-| Domain error + enum | [src/features/orders/errors/order.error.ts](src/features/orders/errors/order.error.ts) |
-| `ok` / `err` utilities | [src/utils/server-action-return.ts](src/utils/server-action-return.ts) |
-| Server action pattern | [src/features/users/actions/user.action.ts](src/features/users/actions/user.action.ts) |
-| Service with domain throws | [src/features/orders/services/order-mutations.service.ts](src/features/orders/services/order-mutations.service.ts) |
-| Service-owned Drizzle operations | [features/markdown/services/markdown.service.ts](features/markdown/services/markdown.service.ts) |
-| Collection persistence service | [features/markdown/services/collection.service.ts](features/markdown/services/collection.service.ts) |
-| Authorization persistence service | [features/auth/services/authorization.service.ts](features/auth/services/authorization.service.ts) |
-| `assertRole` / `requireRole` | [src/features/auth/auth-guards.ts](src/features/auth/auth-guards.ts) |
-| `queryOptions` + `useQuery` | [src/features/orders/queries/order-item.query.ts](src/features/orders/queries/order-item.query.ts) |
-| Mutation hook pattern | [src/features/orders/queries/order-item.mutation.ts](src/features/orders/queries/order-item.mutation.ts) |
-| Zod discriminated union | [src/features/users/schemas/create-user.schema.ts](src/features/users/schemas/create-user.schema.ts) |
-| DTO interface | [src/features/users/types/user.types.ts](src/features/users/types/user.types.ts) |
-| `Roles` const object | [src/lib/better-auth/roles.ts](src/lib/better-auth/roles.ts) |
-| `SCREAMING_SNAKE_CASE` constants | [src/features/auth/role-redirect.ts](src/features/auth/role-redirect.ts) |
-| Feature-owned library UI | [features/markdown/components/library/markdown-library-page.tsx](features/markdown/components/library/markdown-library-page.tsx) |
-| Skeleton companion | [src/app/[locale]/(app)/(admin)/users/_components/users-table.skeleton.tsx](src/app/%5Blocale%5D/(app)/(admin)/users/_components/users-table.skeleton.tsx) |
-| `PAGE_CONFIG` pattern | [src/app/[locale]/(app)/(admin)/users/_components/page.config.ts](src/app/%5Blocale%5D/(app)/(admin)/users/_components/page.config.ts) |
-| `data-slot` attributes | [src/components/ui/button.tsx](src/components/ui/button.tsx) |
-| Compound component | [src/components/blocks/data-table/data-table-context.tsx](src/components/blocks/data-table/data-table-context.tsx) |
-| `AppPageProps` type | [src/types/page.props.ts](src/types/page.props.ts) |
-| API route handler | [src/app/api/orders/[orderId]/items/route.ts](src/app/api/orders/%5BorderId%5D/items/route.ts) |
-| Ladle stories | [src/stories/form.stories.tsx](src/stories/form.stories.tsx) |
-| Section divider comments | [src/app/[locale]/(app)/(admin)/users/new/_components/batch-user-form.tsx](src/app/%5Blocale%5D/(app)/(admin)/users/new/_components/batch-user-form.tsx) |
-| `DbExecutor` transaction type | [src/types/db-transaction.ts](src/types/db-transaction.ts) |
-| Feature-level components (kebab-case) | [src/features/orders/components/order-status-badge.tsx](src/features/orders/components/order-status-badge.tsx) |

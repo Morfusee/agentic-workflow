@@ -94,16 +94,6 @@ Never interpret a new request as permission to reset the solution.
 
 If the new request conflicts with existing changes, stop and explain the conflict instead of silently deleting prior work.
 
-## Codex Execution
-
-Use Codex's available tools and repository instructions. Do not rely on OpenCode-specific subagent orchestration, hidden skill names, or OpenCode-only commands unless the user explicitly asks to operate on OpenCode configuration.
-
-## Subagent Delegation
-
-If the OpenCode CLI is invokable and the task requires subagents, use OpenCode CLI for subagent delegation.
-
-Default to DeepSeek V4 Flash for OpenCode subagents unless the user specifies a different model or the task clearly requires a different capability.
-
 ## Required Workflow Before Editing
 
 Before making code changes:

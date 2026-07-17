@@ -1,3 +1,9 @@
+<!-- BEGIN:nextjs-agent-rules -->
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
+<!-- END:nextjs-agent-rules -->
+
 # AI Agent Contribution Guide
 
 ## Purpose  
@@ -12,7 +18,7 @@ The agent must prefer predictability, readability, and type safety over novelty.
 Agents must reference and comply with:
 
 - `code-style.md` (code structure, conventions, React patterns, effect policy)
-- `docs/` (project references, brainstorms, plans, agreements, and durable working notes)
+- `../docs/` (shared project references, brainstorms, plans, agreements, and durable working notes)
 - This document (`AGENTS.md`) for behavioral and process constraints
 
 When conflicts arise:
@@ -25,34 +31,38 @@ Agents must not introduce code that violates `code-style.md`.
 
 ## Docs Audit Trail
 
-Agents must treat `docs/` as the repository source of truth for project references, brainstorms, plans, agreements, and other durable working notes.
+Agents must treat `../docs/` as the repository source of truth for shared project references, brainstorms, plans, agreements, and other durable working notes.
 
-Agents must check relevant files under `docs/` before planning or implementing changes.
+Start with `../docs/README.md` for the current source-of-truth map and to
+distinguish active JSONB/package guidance from historical relational designs.
 
-Brainstorms must be saved under `docs/brainstorm/`. Capture the full useful conversation trail, including context, options considered, decisions, rejected paths, and open questions. Do not rely on chat history as the only audit trail.
+Agents must check relevant files under `../docs/` before planning or implementing changes.
 
-Plans must be saved under `docs/plans/`. Each plan must distill the concrete implementation path from the related brainstorm or agreement, including scope, steps, validation, risks, and unresolved questions.
+Brainstorms must be saved under `../docs/brainstorm/`. Capture the full useful conversation trail, including context, options considered, decisions, rejected paths, and open questions. Do not rely on chat history as the only audit trail.
 
-If the user and agent reach a concrete agreement, the agent must ask whether to write it as a Markdown file under `docs/`. When the agreement is a brainstorm, use `docs/brainstorm/`; when it is an execution plan, use `docs/plans/`; otherwise use the most relevant `docs/` subfolder.
+Plans must be saved under `../docs/plans/`. Each plan must distill the concrete implementation path from the related brainstorm or agreement, including scope, steps, validation, risks, and unresolved questions.
+
+If the user and agent reach a concrete agreement, the agent must ask whether to write it as a Markdown file under `../docs/`. When the agreement is a brainstorm, use `../docs/brainstorm/`; when it is an execution plan, use `../docs/plans/`; otherwise use the most relevant `../docs/` subfolder.
 
 This repository-local directive overrides any global or parent `AGENTS.md` instruction that would place brainstorms, plans, or durable project notes outside this repository.
 
 ---
 
 ## Repository Context  
-This is a TypeScript-first Next.js App Router application with server actions, route handlers, feature services, Drizzle-backed persistence, and React hooks-based UI architecture.
+This is a TypeScript-first Next.js App Router application with server actions, route handlers, feature services, repositories, Drizzle-backed persistence, and React hooks-based UI architecture.
 
 Canonical import alias: `@/*`.
 
-Core structure:
-- `src/app`: routes, layouts, page entrypoints, loading states, and API route handlers
-- `src/components`: shared UI primitives and reusable block components
-- `src/components/ui`: reusable UI primitives
-- `src/features`: feature modules with actions, components, schemas, services, queries/hooks, errors, and types
-- `src/lib`: shared integrations and infrastructure (`better-auth`, Drizzle, TanStack Query, nuqs, Resend)
-- `src/hooks`: shared hooks
-- `src/utils`: shared utilities
-- `src/constants`, `src/types`, `src/i18n`, and `src/messages`: cross-feature constants, types, locale routing, and translations
+Core structure may be root-level (`app/`, `components/`, `lib/`, `hooks/`) or `src/`-scoped (`src/app`, `src/components`, `src/lib`, `src/hooks`). Use the layout already present in the touched area.
+
+Common directories:
+- `app` or `src/app`: routes, layouts, page entrypoints, loading states, and API route handlers
+- `components` or `src/components`: shared UI primitives and reusable block components
+- `components/ui` or `src/components/ui`: reusable UI primitives
+- `features` or `src/features`: feature modules with actions, components, repositories, schemas, services, queries/hooks, errors, and types
+- `lib` or `src/lib`: shared integrations and infrastructure (`better-auth`, Drizzle, TanStack Query, nuqs, Resend)
+- `hooks` or `src/hooks`: shared hooks
+- `utils`, `constants`, `types`, `i18n`, and `messages` may be root-level or `src/`-scoped depending on the app layout
 
 ---
 
@@ -62,8 +72,6 @@ Reuse existing utilities, hooks, components, and API helpers before creating new
 Follow nearby implementation patterns in the same feature area before introducing new structure.  
 Preserve existing naming, file placement, and import style in touched files.  
 Keep logic local unless cross-feature reuse is clearly required by the request.  
-Keep reusable or feature-owned UI under the feature; use route-local `_components/` only for genuinely route-specific UI.
-Do not create speculative layers, helpers, folders, or unused persistence functions.
 Do not change unrelated files.  
 Do not reformat broad file regions unless required for the change.  
 All implementations must comply with `code-style.md`.
@@ -77,7 +85,7 @@ Avoid architecture drift.
 Use strict TypeScript contracts and narrow types where possible.  
 Treat `any` as a last resort and only when legacy boundaries require it.  
 For user messaging, follow existing toast, loading, empty, and error-state behavior patterns.  
-For API and persistence changes, keep request/response handling consistent with existing route handlers, server actions, services, and ORM helpers. For Drizzle, keep direct database operations in the owning service. Treat Prisma repository boundaries as case-by-case decisions rather than default deviations.
+For API and persistence changes, keep request/response handling consistent with existing route handlers, server actions, services, repositories, and Drizzle helpers.  
 Follow the Effect Usage Policy defined in `code-style.md`.
 
 ---
