@@ -21,8 +21,22 @@ from typing import Optional
 # Path resolution
 # ---------------------------------------------------------------------------
 
+REPO_DIRECTORY_MARKERS = ("configs", "skills", "memory")
+
+
+def find_repo_root(start: Path) -> Path:
+    """Return the nearest ancestor containing the repository's stable markers."""
+    resolved_start = start.resolve()
+    for candidate in (resolved_start, *resolved_start.parents):
+        if not (candidate / "Justfile").is_file():
+            continue
+        if all((candidate / marker).is_dir() for marker in REPO_DIRECTORY_MARKERS):
+            return candidate
+    raise RuntimeError(f"Repository root not found from: {resolved_start}")
+
+
 SCRIPT_DIR = Path(__file__).resolve().parent
-REPO_ROOT = SCRIPT_DIR.parent
+REPO_ROOT = find_repo_root(SCRIPT_DIR)
 
 MEMORY_SOURCE = REPO_ROOT / "memory"
 CONFIG_DIR = REPO_ROOT / "configs" / "opencode"
