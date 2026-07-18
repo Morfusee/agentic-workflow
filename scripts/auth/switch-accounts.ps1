@@ -50,7 +50,7 @@ function Invoke-Save {
     param([string]$Name)
 
     if (-not $Name) {
-        Write-Host "Usage: just auth-save <profile-name>" -ForegroundColor Yellow
+        Write-Host "Usage: just auth save <profile-name>" -ForegroundColor Yellow
         exit 1
     }
 
@@ -72,7 +72,7 @@ function Invoke-Switch {
     param([string]$Name)
 
     if (-not $Name) {
-        Write-Host "Usage: just auth-switch <profile-name>" -ForegroundColor Yellow
+        Write-Host "Usage: just auth switch <profile-name>" -ForegroundColor Yellow
         exit 1
     }
 
@@ -83,7 +83,7 @@ function Invoke-Switch {
         if ($available) {
             Write-Host "Available profiles: $($available -join ', ')"
         } else {
-            Write-Host "No profiles saved yet. Use 'just auth-save <name>' first."
+            Write-Host "No profiles saved yet. Use 'just auth save <name>' first."
         }
         exit 1
     }
@@ -154,7 +154,7 @@ switch ($Command) {
     "switch" { Invoke-Switch -Name $ProfileName }
     "list"   { Invoke-List }
     default  {
-        Write-Host "Usage: scripts/switch-accounts.ps1 [save|switch|list] [profile-name]" -ForegroundColor Yellow
+        Write-Host "Usage: scripts/auth/switch-accounts.ps1 [save|switch|list] [profile-name]" -ForegroundColor Yellow
         Write-Host "  save    <name>   Save current Codex + OpenCode auth to a profile"
         Write-Host "  switch  <name>   Restore a profile to Codex + OpenCode"
         Write-Host "  list             List saved profiles"

@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 SCRIPT_PATH = (
-    Path(__file__).resolve().parents[2] / "scripts" / "sync_environment.py"
+    Path(__file__).resolve().parents[2] / "scripts" / "sync" / "environment.py"
 )
 SPEC = importlib.util.spec_from_file_location("sync_environment", SCRIPT_PATH)
 assert SPEC is not None and SPEC.loader is not None
