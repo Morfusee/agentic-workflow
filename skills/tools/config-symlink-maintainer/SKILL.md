@@ -10,10 +10,10 @@ Use this skill to keep local tool configuration reproducible from this repositor
 ## Workflow
 
 1. Identify the canonical repo path and the external tool config path.
-2. Inspect the existing repo implementation first: `scripts/sync_environment.py`, `Justfile`, `.skills.env`, `configs/`, `skills/`, and `memory/`.
+2. Inspect the existing repo implementation first: `scripts/sync/environment.py`, `Justfile`, `commands/`, `.skills.env`, `configs/`, `skills/`, and `memory/`.
 3. Check whether the external target exists, whether it is a symlink or junction, and where it resolves.
 4. Preserve existing user data before changing links. Prefer the repo's existing backup policy and avoid creating repeated backups for unchanged files.
-5. Update the sync script and Justfile aliases instead of adding one-off shell commands.
+5. Update the sync script and the relevant namespaced module under `commands/` instead of adding one-off shell commands.
 6. Validate by running the narrow sync command and checking the resolved target path.
 7. Report what is linked, copied, backed up, skipped, and how to retry safely.
 
@@ -28,13 +28,13 @@ Use this skill to keep local tool configuration reproducible from this repositor
 ## Repo Conventions
 
 - Source-of-truth paths live under `configs/`, `skills/`, and `memory/`.
-- User-facing commands live in `Justfile` with short aliases when useful.
+- User-facing commands live in namespaced `commands/*.just` modules registered by the root `Justfile`.
 - Environment toggles belong in `.skills.env` or another repo-tracked template plus a local ignored file.
 - Keep generated external config out of skill folders.
 
 ## Validation Checklist
 
-- `just --list` shows the intended command and aliases.
+- `just --list` shows the intended command namespaces.
 - The narrow sync command completes without syntax errors.
 - The external path resolves to the expected repo path or contains the expected synced files.
 - Re-running the sync does not create a new backup when nothing changed.

@@ -37,7 +37,7 @@ Changes made in mirrored/linked target locations will be overwritten or lost.
 
 ## Requirements
 
-- **Python 3.8+** on all platforms (for `scripts/sync_environment.py`)
+- **Python 3.8+** on all platforms (for `scripts/sync/environment.py`)
 - **just** command runner (cross-platform)
 
 ## Setup
@@ -47,7 +47,7 @@ Changes made in mirrored/linked target locations will be overwritten or lost.
 #### 1. Sync everything (recommended)
 
 ```powershell
-just sync-environment
+just sync environment
 ```
 
 This is the canonical command and syncs:
@@ -61,7 +61,7 @@ This is the canonical command and syncs:
 #### 2. Sync only OpenCode config
 
 ```powershell
-just sync-opencode
+just sync opencode
 ```
 
 This links `configs\opencode\opencode.jsonc` and `configs\opencode\AGENTS.md` into `%USERPROFILE%\.config\opencode\`.
@@ -69,13 +69,13 @@ This links `configs\opencode\opencode.jsonc` and `configs\opencode\AGENTS.md` in
 If you want to open the config after linking, run:
 
 ```powershell
-just opencode-config
+just config open-opencode
 ```
 
 #### 3. Sync only Codex config
 
 ```powershell
-just sync-codex
+just sync codex
 ```
 
 This links:
@@ -87,7 +87,7 @@ This links:
 #### 4. Sync only memory
 
 ```powershell
-just sync-memory
+just sync memory
 ```
 
 This symlinks `memory\` into:
@@ -106,15 +106,15 @@ SYNC_OPENCODE=true
 Then run:
 
 ```powershell
-just sync-skills
+just sync skills
 ```
 
-`just sync-skills` bootstraps `skills\` into `%USERPROFILE%\.codex\skills\`. If `SYNC_OPENCODE=true`, it also mirrors into `%USERPROFILE%\.config\opencode\skills`. OpenCode skill sync skips folders with `.opencode-hidden`.
+`just sync skills` bootstraps `skills\` into `%USERPROFILE%\.codex\skills\`. If `SYNC_OPENCODE=true`, it also mirrors into `%USERPROFILE%\.config\opencode\skills`. OpenCode skill sync skips folders with `.opencode-hidden`.
 
 #### 6. Sync only Neovim config
 
 ```powershell
-just sync-nvim
+just sync nvim
 ```
 
 This links `%LOCALAPPDATA%\nvim` to `configs\nvim\` (repo is source of truth).
@@ -124,7 +124,7 @@ This links `%LOCALAPPDATA%\nvim` to `configs\nvim\` (repo is source of truth).
 #### 1. Sync everything (recommended)
 
 ```sh
-just sync-environment
+just sync environment
 ```
 
 This is the canonical command and syncs memory, OpenCode config, skills, and Neovim.
@@ -133,7 +133,7 @@ It also syncs Codex config, rules, and `AGENTS.md` from `configs/codex/` into `~
 #### 2. Sync only OpenCode config
 
 ```sh
-just sync-opencode
+just sync opencode
 ```
 
 This symlinks `configs/opencode/opencode.jsonc` and `configs/opencode/AGENTS.md` into `~/.config/opencode/`.
@@ -141,7 +141,7 @@ This symlinks `configs/opencode/opencode.jsonc` and `configs/opencode/AGENTS.md`
 #### 3. Sync only memory
 
 ```sh
-just sync-memory
+just sync memory
 ```
 
 This symlinks `memory/` into:
@@ -152,7 +152,7 @@ This symlinks `memory/` into:
 #### 4. Sync only skills
 
 ```sh
-just sync-skills
+just sync skills
 ```
 
 This symlinks each `skills/<category>/<name>/` folder into `~/.codex/skills/<name>/` (skipping folders with `.codex-hidden`).
@@ -163,12 +163,12 @@ To also mirror into OpenCode, copy `.skills.env.example` to `.skills.env` and se
 SYNC_OPENCODE=true
 ```
 
-Then run `just sync-skills` again. OpenCode skill sync skips folders with `.opencode-hidden`.
+Then run `just sync skills` again. OpenCode skill sync skips folders with `.opencode-hidden`.
 
 #### 5. Sync only Neovim config
 
 ```sh
-just sync-nvim
+just sync nvim
 ```
 
 This links `~/.config/nvim` to `configs/nvim/` (repo is source of truth).
@@ -176,12 +176,12 @@ This links `~/.config/nvim` to `configs/nvim/` (repo is source of truth).
 ## Daily use
 
 1. Put each new skill in `skills/<category>/<skill-name>/`.
-2. Run `just sync-skills` to sync new skill folders.
-3. Run `just sync-environment` to sync everything at once.
+2. Run `just sync skills` to sync new skill folders.
+3. Run `just sync environment` to sync everything at once.
 
 ## Codex Account Switching
 
-The auth switcher (`scripts/switch-accounts.ps1`) saves and restores both your
+The auth switcher (`scripts/auth/switch-accounts.ps1`) saves and restores both your
 Codex and OpenCode auth in lockstep so you can switch between accounts (e.g.,
 personal vs. work) with a single command.
 
@@ -198,16 +198,16 @@ personal vs. work) with a single command.
 
 ```powershell
 # Save current auth from both tools into a named profile
-just auth-save <profile-name>
+just auth save <profile-name>
 
 # Restore a saved profile to both Codex and OpenCode
-just auth-switch <profile-name>
+just auth switch <profile-name>
 
 # List saved profiles with timestamps
-just auth-list
+just auth list
 ```
 
-**Aliases:** `as` (auth-save), `aw` (auth-switch), `al` (auth-list)
+Commands are grouped by namespace. Run `just auth` to list authentication commands.
 
 **Important:** After switching, restart both OpenCode and Codex for the new auth
 to take effect — both tools cache auth on startup.

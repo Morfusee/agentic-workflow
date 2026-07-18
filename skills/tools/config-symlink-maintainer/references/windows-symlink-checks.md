@@ -30,9 +30,9 @@ if ($resolved -ne $allowed) {
 
 ```powershell
 just --list
-just sync-codex
-just sync-opencode
-just sync-nvim
+just sync codex
+just sync opencode
+just sync nvim
 ```
 
 After each sync, inspect both the repo source path and external target path.

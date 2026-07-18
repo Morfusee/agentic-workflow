@@ -87,7 +87,7 @@ Use this as the routing map before loading a skill. Repo source folders are cate
 ## Routing Rules
 
 - Keep repo source folders categorized as `skills/<category>/<skill-name>/SKILL.md`.
-- Keep provider-facing skill directories flat; `scripts/sync_environment.py` links each discovered skill folder to `<provider-skills>/<skill-name>/`.
+- Keep provider-facing skill directories flat; `scripts/sync/environment.py` links each discovered skill folder to `<provider-skills>/<skill-name>/`.
 - Start with `workflow-orchestrator` when the request names Linear, ClickUp, or Notion.
 - Use the narrowest skill that matches the request instead of loading a broad workflow by default.
 - Use `brainstorming` before `writing-plans` when the desired behavior or design is not settled.

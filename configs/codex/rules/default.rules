@@ -1,6 +1,6 @@
 # configs/codex/rules/default.rules
 #
-# Source of truth for ~/.codex/rules/default.rules (symlinked by scripts/sync_environment.py).
+# Source of truth for ~/.codex/rules/default.rules (symlinked by scripts/sync/environment.py).
 #
 # Goal:
 # - Mirror OpenCode-style command permissions from configs/opencode/opencode.jsonc
@@ -224,6 +224,6 @@ prefix_rule(
 )
 
 prefix_rule(pattern=["cd", "$HOME\\Documents\\Programming\\agentic-workflow"], decision="allow")
-prefix_rule(pattern=["python", "scripts/sync_environment.py", "codex"], decision="allow")
+prefix_rule(pattern=["python", "scripts/sync/environment.py", "codex"], decision="allow")
 prefix_rule(pattern=["C:\\Program Files\\PowerShell\\7\\pwsh.exe", "-NoProfile", "-Command", "cd $HOME\\Documents\\Programming\\agentic-workflow; \"test\" | Out-File -Encoding ascii .git\\_codex_write_test.txt; Remove-Item -Force .git\\_codex_write_test.txt; \"ok\""], decision="allow")
 prefix_rule(pattern=["agent-browser"], decision="allow")
