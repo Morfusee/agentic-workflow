@@ -1,7 +1,6 @@
 [private]
 default:
     @just --list config
-
 # Open mirrored skills folders in the default file manager
 open-skills:
     @if [ "{{ os() }}" == "windows" ]; then \
@@ -12,7 +11,6 @@ open-skills:
         xdg-open ~/.config/opencode/skills 2>/dev/null; \
       fi; \
     fi
-
 # Open OpenCode's configuration file in the default editor
 open-opencode:
     @if [ "{{ os() }}" == "windows" ]; then \

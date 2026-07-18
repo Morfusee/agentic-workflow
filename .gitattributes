@@ -1,0 +1,2 @@
+Justfile text eol=lf
+*.just text eol=lf
