@@ -166,7 +166,11 @@ This phase can be completed entirely in the Proxmox GUI.
 
 A normal Proxmox installation already creates `vmbr0`, so usually you only need to verify `vmbr0` and create the private bridge `vmbr1`. Proxmox describes a Linux bridge as a virtual network switch that connects physical interfaces and VM adapters.
 
-### 1. Open the node network page
+Phase 2 has four steps. Complete them in order.
+
+---
+
+### Step 1 of 4 — Open the node network page
 
 In Proxmox, open:
 
@@ -186,7 +190,9 @@ You should see entries similar to:
 
 The physical-interface name varies by server. Do not assume it is `eno1`; use the interface already listed as a bridge port under `vmbr0`.
 
-### 2. Verify the public bridge `vmbr0`
+---
+
+### Step 2 of 4 — Verify the public bridge `vmbr0`
 
 Select:
 
@@ -238,7 +244,9 @@ Physical NIC
 └── OPNsense WAN virtual adapter
 ```
 
-### 3. Create the private bridge `vmbr1`
+---
+
+### Step 3 of 4 — Create the private bridge `vmbr1`
 
 While still under:
 
@@ -298,7 +306,9 @@ vmbr0    Public bridge
 vmbr1    10.77.0.2/24
 ```
 
-### 4. Apply the network configuration
+---
+
+### Step 4 of 4 — Apply the network configuration
 
 At the top of the **Network** page, click **Apply Configuration**.
 
@@ -317,88 +327,1055 @@ Avoid attaching ordinary service VMs to `vmbr0`. Only OPNsense WAN should use th
 
 ---
 
-## Phase 3 — Create the OPNsense VM
+## Phase 3 — Create and install the OPNsense VM
 
-Upload the OPNsense DVD ISO to Proxmox.
+Phase 3 has 15 steps. Complete them in order.
 
-Create the VM with:
+---
 
-```text
-Name: opnsense
-OS type: Other
-Machine: q35
-BIOS: OVMF or SeaBIOS
-CPU type: host
-Sockets: 1
-Cores: 2
-Memory: 4096 MB
-Ballooning: disabled
-Disk: 32 GB
-Disk controller: VirtIO SCSI
-Start at boot: enabled
-Startup order: 1
-```
+### Step 1 of 15 — Prepare the OPNsense ISO
 
-Add two network devices.
-
-### WAN device
+The OPNsense download is often compressed as:
 
 ```text
-Model: VirtIO
-Bridge: vmbr0
-MAC address: <OVH-generated virtual MAC>
-Proxmox firewall: initially disabled
+OPNsense-xx.x-dvd-amd64.iso.bz2
 ```
 
-### LAN device
+Proxmox needs the extracted `.iso`, not the `.bz2` archive.
+
+On Windows, right-click the file in 7-Zip and extract it. The result should be:
 
 ```text
-Model: VirtIO
-Bridge: vmbr1
-MAC address: automatically generated
-Proxmox firewall: initially disabled
+OPNsense-xx.x-dvd-amd64.iso
 ```
 
-During OPNsense installation, assign:
+OPNsense's documentation confirms that the downloaded image must be unpacked before use.
+
+#### Upload the ISO to Proxmox
+
+In the Proxmox GUI:
+
+1. Select the node, probably `px`.
+2. Select **local** storage.
+3. Open **ISO Images**.
+4. Click **Upload**.
+5. Select the extracted OPNsense DVD ISO.
+6. Wait until the upload finishes.
+
+Use **local**, not **local-lvm**, because ISO images normally reside on directory storage.
+
+---
+
+### Step 2 of 15 — Start the VM creation wizard
+
+Click **Create VM**.
+
+On the **General** tab, use:
 
 ```text
-vtnet0 = WAN
-vtnet1 = LAN
+Node:           px
+VM ID:          any unused ID, for example 100
+Name:           opnsense
+Resource Pool:  leave empty
 ```
 
-Install OPNsense onto the virtual disk and remove the ISO afterward.
+Start-at-boot behavior will be enabled later under the VM's **Options** page.
+
+---
+
+### Step 3 of 15 — Configure the OS tab
+
+Use:
+
+```text
+Use CD/DVD disc image file: enabled
+Storage:                     local
+ISO image:                   your OPNsense DVD ISO
+Guest OS Type:               Other
+Version:                     default
+```
+
+OPNsense officially supports installation in a VM from its DVD ISO.
+
+---
+
+### Step 4 of 15 — Configure the System tab
+
+Use:
+
+```text
+Machine:          q35
+BIOS:             SeaBIOS
+SCSI Controller:  VirtIO SCSI single
+QEMU Guest Agent: disabled for now
+TPM:              none
+```
+
+OPNsense supports the newer Q35 chipset under KVM.
+
+#### Why SeaBIOS is recommended here
+
+OPNsense works without UEFI. SeaBIOS is simpler because it does not require an EFI disk or Secure Boot settings.
+
+OVMF may be used instead, but then configure:
+
+```text
+BIOS:             OVMF (UEFI)
+EFI Storage:      local
+Pre-Enroll Keys:  disabled
+EFI Disk:         created
+```
+
+Do not enable Secure Boot. It provides no meaningful benefit for this appliance and can complicate booting.
+
+---
+
+### Step 5 of 15 — Configure the Disk tab
+
+Use:
+
+```text
+Bus/Device:     SCSI 0
+Storage:        local
+Disk size:      32 GiB
+Cache:          Default
+Discard:        optional
+SSD emulation:  optional, if the physical storage is SSD
+```
+
+A 32 GB disk is comfortably above OPNsense's documented minimum virtual-disk recommendation of 8 GB.
+
+If the Proxmox installation only exposes **local**, using it here is acceptable. The virtual disk will generally be stored as a raw or QCOW2 file rather than an LVM volume.
+
+---
+
+### Step 6 of 15 — Configure the CPU tab
+
+Use:
+
+```text
+Sockets:  1
+Cores:    2
+Type:     host
+NUMA:     disabled
+```
+
+The `host` type exposes the physical CPU's supported instructions directly to OPNsense. On a single Proxmox node, losing cross-host live-migration compatibility is irrelevant.
+
+Two cores are enough for routing, NAT, firewalling, and moderate VPN use. Additional services such as heavy IDS/IPS inspection may eventually justify more cores.
+
+---
+
+### Step 7 of 15 — Configure the Memory tab
+
+Use:
+
+```text
+Memory:             4096 MiB
+Ballooning Device:  unchecked
+```
+
+OPNsense recommends at least 3 GB for virtual installations, so 4 GB is appropriate. Low memory can cause installation-copy failures.
+
+Disable ballooning because OPNsense is the router and its assigned memory should remain predictable.
+
+---
+
+### Step 8 of 15 — Add the WAN network device
+
+The VM wizard adds the first network device. Configure it as the WAN interface:
+
+```text
+Bridge:       vmbr0
+Model:        VirtIO (paravirtualized)
+MAC address:  exact OVH-generated virtual MAC
+VLAN Tag:     empty
+Firewall:     unchecked
+Rate limit:   empty/unlimited
+Multiqueue:   default
+```
+
+Enter the OVH MAC exactly. Do not:
+
+- Generate a random WAN MAC.
+- Copy the physical server's MAC.
+- Use the Proxmox host's MAC.
+- Use the automatically generated Proxmox MAC.
+
+OVH specifically requires the VM network interface to use the virtual MAC associated with the Additional IP.
+
+#### Do not start the VM yet
+
+On the final wizard page, leave **Start after created** unchecked.
+
+Create the VM first, and then add the LAN adapter.
+
+---
+
+### Step 9 of 15 — Add the LAN network device
+
+Select:
+
+```text
+opnsense VM
+→ Hardware
+→ Add
+→ Network Device
+```
+
+Configure:
+
+```text
+Bridge:       vmbr1
+Model:        VirtIO
+MAC address:  automatically generated
+VLAN Tag:     empty
+Firewall:     unchecked
+Rate limit:   unlimited
+```
+
+This should become the second device, `net1`.
+
+The intended mapping is:
+
+```text
+Proxmox net0 → vmbr0 → OPNsense vtnet0 → WAN
+Proxmox net1 → vmbr1 → OPNsense vtnet1 → LAN
+```
+
+#### Verify the device order
+
+From the Proxmox host, run:
+
+```shell
+qm config <VMID>
+```
+
+For VM ID `100`:
+
+```shell
+qm config 100
+```
+
+The output should resemble:
+
+```text
+net0: virtio=02:00:00:AB:CD:EF,bridge=vmbr0
+net1: virtio=BC:24:11:12:34:56,bridge=vmbr1
+```
+
+The MAC on `net0` must match the OVH-generated virtual MAC.
+
+Device order matters because the first VirtIO network interface normally becomes `vtnet0`, while the second becomes `vtnet1`. Nevertheless, verify them by their MAC addresses during interface assignment rather than trusting the names blindly.
+
+If the actual private bridge is named `vmbr2`, use `vmbr2`. Do not blindly select `vmbr1` merely because this guide uses that name.
+
+---
+
+### Step 10 of 15 — Configure startup behavior
+
+Open:
+
+```text
+opnsense VM
+→ Options
+```
+
+Set:
+
+```text
+Start at boot:  yes
+Start/Shutdown order:
+    Order:             1
+    Startup delay:     30
+    Shutdown timeout:  120
+```
+
+The startup delay gives OPNsense time to initialize before Proxmox starts VMs that depend on it for DHCP, DNS, or Internet access.
+
+Also open **Boot Order** and ensure that, during installation, the order is:
+
+```text
+1. CD/DVD drive
+2. SCSI disk
+```
+
+---
+
+### Step 11 of 15 — Start the installation
+
+Select the VM and click **Start**, and then open **Console**.
+
+OPNsense will boot into a live environment from the DVD ISO.
+
+You may see:
+
+```text
+Press any key to start the configuration importer
+```
+
+Do not press anything. The importer is for restoring an existing configuration.
+
+Wait for the login prompt.
+
+---
+
+### Step 12 of 15 — Start the OPNsense installer
+
+At the login prompt, enter:
+
+```text
+login: installer
+password: opnsense
+```
+
+The password will not visibly move the cursor while typing. That is normal.
+
+OPNsense documents `installer` / `opnsense` as the default installer credentials. The live environment also allows `root` / `opnsense`.
+
+If the installer account does not work:
+
+1. Log in as `root`.
+2. Enter `opnsense` as the password.
+3. Select **8) Shell**.
+4. Run:
+
+```shell
+opnsense-installer
+```
+
+---
+
+### Step 13 of 15 — Complete the installer selections
+
+Use approximately these selections.
+
+For the keymap, select:
+
+```text
+Default keymap
+```
+
+For the filesystem, either UFS or ZFS can be used. For this VM, use:
+
+```text
+Install ZFS
+```
+
+Then select:
+
+```text
+ZFS configuration:  stripe
+Disk:               the 32 GB virtual disk
+```
+
+A stripe is correct because there is only one virtual disk. It does not provide redundancy, but the Proxmox host handles the actual storage redundancy and backups.
+
+OPNsense currently describes ZFS as the generally preferred and more reliable option.
+
+The target disk will probably appear as something similar to:
+
+```text
+da0
+```
+
+Select the disk by its 32 GB size. Do not select the CD/DVD drive.
+
+#### Confirm formatting
+
+Choose **Yes**.
+
+This only erases the VM's 32 GB virtual disk; it does not erase the Proxmox host.
+
+#### Set the root password
+
+Set a strong root password and save it in a password manager.
+
+#### Complete the installation
+
+When the installer reaches its completion screen, do not allow the VM to repeatedly boot from the ISO.
+
+---
+
+### Step 14 of 15 — Remove the installation ISO
+
+Before selecting the final reboot option, return to the Proxmox GUI:
+
+```text
+opnsense VM
+→ Hardware
+→ CD/DVD Drive
+→ Edit
+```
+
+Select **Do not use any media**. Then return to the console and select **Complete Install**.
+
+Alternatively:
+
+1. Shut down the VM after installation.
+2. Remove the ISO.
+3. Change **Boot Order** so the SCSI disk is first.
+4. Start the VM again.
+
+The final boot order should be:
+
+```text
+1. scsi0
+```
+
+The empty CD/DVD device may remain attached. Only the ISO needs to be ejected; deleting the virtual CD drive is unnecessary.
+
+---
+
+### Step 15 of 15 — Assign WAN and LAN correctly
+
+After booting from the installed disk, OPNsense may ask whether to configure VLANs and assign interfaces.
+
+For the VLAN prompt, enter:
+
+```text
+Do you want to configure VLANs now? n
+```
+
+#### Assign the interfaces
+
+Be careful: OPNsense may ask for the LAN interface first, even though the WAN mapping is commonly described first.
+
+Enter:
+
+```text
+LAN interface:       vtnet1
+WAN interface:       vtnet0
+Optional interface:  press Enter
+```
+
+Confirm with `y`.
+
+The resulting assignment must be:
+
+```text
+WAN = vtnet0 = OVH virtual MAC = vmbr0
+LAN = vtnet1 = automatic MAC = vmbr1
+```
+
+OPNsense's documentation notes that manual assignment asks for LAN first and WAN second.
+
+#### Verify using the MAC addresses
+
+During assignment, OPNsense normally displays the detected interfaces and their MAC addresses. Match them as follows:
+
+```text
+Interface carrying OVH virtual MAC → WAN
+Other VirtIO interface             → LAN
+```
+
+This is safer than relying only on `vtnet0` and `vtnet1`.
+
+If the assignments are wrong later, log in to the console and choose:
+
+```text
+1) Assign interfaces
+```
 
 ---
 
 ## Phase 4 — Configure the OPNsense LAN first
 
-Using the OPNsense console, assign:
+This phase establishes the private network before configuring the OVH WAN.
+
+At the end of this phase, the LAN should be:
 
 ```text
-LAN IPv4: 10.77.0.1
-Prefix: 24
-LAN gateway: none
-IPv6: none
+OPNsense LAN
+vtnet1
+   │
+   ├── Address: 10.77.0.1/24
+   ├── Gateway: none
+   ├── IPv6: none
+   └── Bridge: vmbr1
 ```
 
-Create a temporary private VM or use the Proxmox private address to access:
+`10.77.0.1` becomes the default gateway for every private VM attached to this bridge.
+
+OPNsense normally starts with `192.168.1.1/24` on LAN. Replace that default address with `10.77.0.1/24`.
+
+Phase 4 has seven steps. Complete them in order.
+
+---
+
+### Step 1 of 7 — Confirm the LAN interface
+
+Before changing its address, confirm:
+
+```text
+WAN = vtnet0 = vmbr0 = OVH virtual MAC
+LAN = vtnet1 = vmbr1 = automatically generated MAC
+```
+
+From the Proxmox host, run:
+
+```shell
+qm config <OPNSENSE_VM_ID>
+```
+
+For example:
+
+```shell
+qm config 100
+```
+
+The output should resemble:
+
+```text
+net0: virtio=02:00:00:AB:CD:EF,bridge=vmbr0
+net1: virtio=BC:24:11:12:34:56,bridge=vmbr1
+```
+
+Use the bridge actually attached to the OPNsense LAN device. If the private bridge is named `vmbr2`, replace `vmbr1` throughout this phase.
+
+---
+
+### Step 2 of 7 — Open the OPNsense console
+
+In Proxmox, open:
+
+```text
+OPNsense VM
+→ Console
+```
+
+Log in with:
+
+```text
+Username: root
+Password: the root password created during installation
+```
+
+The console menu contains:
+
+```text
+1) Assign interfaces
+2) Set interface(s) IP address
+3) Reset the root password
+...
+```
+
+OPNsense documents option `2` as the console command for setting interface addresses.
+
+Select:
+
+```text
+2
+```
+
+---
+
+### Step 3 of 7 — Configure the LAN address
+
+The precise wording may vary slightly by OPNsense version, but answer approximately as follows.
+
+#### Select the LAN interface
+
+You may see:
+
+```text
+Available interfaces:
+
+1 - WAN
+2 - LAN
+```
+
+Enter:
+
+```text
+2
+```
+
+Make sure the selected interface is **LAN**, not **WAN**.
+
+#### Configure IPv4
+
+When asked:
+
+```text
+Configure IPv4 address LAN interface via DHCP?
+```
+
+Enter:
+
+```text
+n
+```
+
+For the new LAN IPv4 address, enter:
+
+```text
+10.77.0.1
+```
+
+For the subnet bit count, enter:
+
+```text
+24
+```
+
+A `/24` describes this network:
+
+```text
+Network:     10.77.0.0
+Usable IPs:  10.77.0.1–10.77.0.254
+Broadcast:   10.77.0.255
+```
+
+It does not automatically assign all those addresses to OPNsense. OPNsense itself receives only `10.77.0.1`.
+
+#### Leave the upstream gateway empty
+
+When asked for the upstream gateway, press **Enter** and leave it completely blank.
+
+Do not enter:
+
+- `10.77.0.1`
+- The OVH gateway
+
+The LAN interface has no upstream gateway because OPNsense is the gateway for the LAN. The system's default route will later point through the WAN interface.
+
+#### Leave IPv6 unconfigured
+
+When asked whether to configure IPv6 through DHCP6, enter:
+
+```text
+n
+```
+
+When asked for a LAN IPv6 address, press **Enter**. This leaves IPv6 unconfigured for now.
+
+#### Leave the DHCP server disabled for now
+
+You may be asked:
+
+```text
+Do you want to enable the DHCP server on LAN?
+```
+
+For this phase, enter:
+
+```text
+n
+```
+
+The final DHCP scope will be configured deliberately later. For initial access, use a temporary static address on Proxmox.
+
+If DHCP is enabled accidentally, it is not disastrous, but verify its range before attaching other VMs.
+
+#### Keep HTTPS enabled
+
+You may be asked:
+
+```text
+Do you want to revert to HTTP as the webGUI protocol?
+```
+
+Enter:
+
+```text
+n
+```
+
+#### Do not restore WebGUI defaults
+
+If asked whether to restore WebGUI access defaults, enter:
+
+```text
+n
+```
+
+Only use that recovery option if the WebGUI is inaccessible because of a previous configuration mistake.
+
+When complete, the console should display:
+
+```text
+LAN (vtnet1) → v4: 10.77.0.1/24
+```
+
+---
+
+### Step 4 of 7 — Establish temporary WebGUI access
+
+Because `vmbr1` is an isolated virtual switch, the Windows computer cannot directly reach `10.77.0.1` yet.
+
+The simplest temporary path is:
+
+```text
+Windows
+   │
+   │ Tailscale SSH
+   ▼
+Proxmox host: 10.77.0.2
+   │
+   │ vmbr1
+   ▼
+OPNsense LAN: 10.77.0.1
+```
+
+A Proxmox Linux bridge acts like a virtual network switch that connects the host and attached guests.
+
+#### Add a temporary private IP to Proxmox if needed
+
+On the Proxmox host, check the bridge first:
+
+```shell
+ip -br address show vmbr1
+```
+
+If it has no address in `10.77.0.0/24`, temporarily add:
+
+```shell
+sudo ip address add 10.77.0.2/24 dev vmbr1
+```
+
+If logged in as `root`, use:
+
+```shell
+ip address add 10.77.0.2/24 dev vmbr1
+```
+
+Do not add a gateway.
+
+Verify:
+
+```shell
+ip -br address show vmbr1
+```
+
+Expected output:
+
+```text
+vmbr1    UP    10.77.0.2/24
+```
+
+Test OPNsense:
+
+```shell
+ping -c 3 10.77.0.1
+```
+
+Then test HTTPS:
+
+```shell
+curl -kI https://10.77.0.1
+```
+
+A response such as `HTTP/1.1 200 OK` or a redirect confirms that the WebGUI is reachable.
+
+The `ip address add` command is temporary. It disappears after a Proxmox reboot or network reload, which is preferable during initial setup.
+
+---
+
+### Step 5 of 7 — Tunnel the WebGUI to Windows
+
+From PowerShell, run:
+
+```powershell
+ssh -N -L 8443:10.77.0.1:443 morfuse@px
+```
+
+Here:
+
+```text
+8443        = temporary port on the Windows computer
+10.77.0.1   = OPNsense LAN address
+443         = OPNsense HTTPS WebGUI
+morfuse@px  = normal Tailscale SSH connection to Proxmox
+```
+
+Leave that PowerShell window open.
+
+Open:
+
+```text
+https://localhost:8443
+```
+
+The browser will probably display a certificate warning because OPNsense initially uses a self-signed certificate and the certificate name will not match `localhost`. That is expected during setup.
+
+Proceed only because:
+
+- You created the SSH tunnel yourself.
+- It runs through the Tailscale connection.
+- The destination is the OPNsense VM.
+
+Log in using:
+
+```text
+Username: root
+Password: the OPNsense root password
+```
+
+OPNsense exposes its initial WebGUI on HTTPS and uses the `root` account for the first login.
+
+#### If a DNS-rebind warning appears
+
+Try opening:
 
 ```text
 https://10.77.0.1
 ```
 
-Complete the initial setup wizard.
+This only works when the computer already has a route to the private subnet.
+
+For the SSH-tunnel method, temporarily add this entry to the Windows hosts file:
+
+```text
+127.0.0.1 opnsense.px.mcube.uk
+```
+
+The hosts file is:
+
+```text
+C:\Windows\System32\drivers\etc\hosts
+```
+
+Then browse to:
+
+```text
+https://opnsense.px.mcube.uk:8443
+```
+
+Remove the hosts-file entry later, after internal DNS or Tailscale routing is configured.
+
+---
+
+### Step 6 of 7 — Complete the initial setup wizard
+
+OPNsense usually offers to start the wizard after the first WebGUI login. If it does not, open:
+
+```text
+System
+→ Wizard
+```
+
+The exact page order can vary slightly by release.
+
+#### General information
 
 Set:
 
 ```text
-Hostname: opnsense
-Domain: px.mcube.uk
-DNS servers: 1.1.1.1 and 9.9.9.9
+Hostname:  opnsense
+Domain:    px.mcube.uk
+```
+
+Do not put the complete hostname in the **Hostname** field.
+
+Correct:
+
+```text
+Hostname:  opnsense
+Domain:    px.mcube.uk
+```
+
+This produces:
+
+```text
+opnsense.px.mcube.uk
+```
+
+Incorrect:
+
+```text
+Hostname:  opnsense.px.mcube.uk
+Domain:    px.mcube.uk
+```
+
+OPNsense defines the hostname field as the host portion without the domain, while the domain is entered separately.
+
+#### DNS servers
+
+Enter:
+
+```text
+Primary DNS:    1.1.1.1
+Secondary DNS:  9.9.9.9
+```
+
+If the wizard provides gateway selectors beside each DNS server, leave them set to **None**.
+
+There is currently only one future WAN gateway, so explicit DNS-to-gateway binding is unnecessary.
+
+#### DNS override
+
+You may see:
+
+```text
+Allow DNS server list to be overridden by DHCP/PPP on WAN
+```
+
+Uncheck it.
+
+The OVH WAN will eventually use a manually configured static Additional IP rather than ISP-provided DNS through DHCP. Disabling the override ensures that the explicit DNS servers remain configured. OPNsense states that enabling this option permits WAN DHCP or PPP to replace the DNS servers used by the system and its DNS services.
+
+#### Local DNS service
+
+You may see:
+
+```text
+Do not use the local DNS service as a nameserver for this system
+```
+
+Leave this unchecked.
+
+This permits OPNsense itself to use its local DNS resolver. The setup wizard configures Unbound as the resolver and Dnsmasq for DHCP-related functionality in current OPNsense versions.
+
+#### Time server
+
+The NTP server can normally remain at its default, such as:
+
+```text
+0.opnsense.pool.ntp.org
+```
+
+Set:
+
+```text
 Timezone: Asia/Manila
 ```
 
-Do not assign a gateway to the LAN interface.
+OPNsense stores this under the general system settings and recommends selecting the timezone closest to the deployment.
+
+Accurate time matters for:
+
+- Firewall logs
+- TLS certificates
+- Authentication codes
+- Update checks
+- Scheduled tasks
+- Troubleshooting event timelines
+
+#### WAN interface
+
+Do not enter the OVH Additional IP in this phase unless already following the dedicated OVH WAN procedure.
+
+For now, leave IPv4 set to:
+
+```text
+IPv4 configuration type: DHCP
+```
+
+This is temporary. It probably will not obtain an address from OVH, which is expected.
+
+Set:
+
+```text
+IPv6 configuration type: None
+```
+
+Leave these enabled for a public OVH WAN:
+
+```text
+Block private networks: enabled
+Block bogon networks:   enabled
+```
+
+Do not configure these yet:
+
+- OVH Additional IP
+- `/32` prefix
+- OVH gateway
+- Gateway route
+- Public DNS record
+- Port forwarding
+
+Those belong to the next phase.
+
+#### LAN interface
+
+Confirm:
+
+```text
+LAN IPv4 address: 10.77.0.1
+Subnet mask:      24
+```
+
+There must be no LAN gateway.
+
+If the wizard attempts to change the LAN address back to `192.168.1.1`, replace it with `10.77.0.1`.
+
+Keep IPv6 disabled for now.
+
+#### Administrator password
+
+Set a strong, unique root password if this has not already been done.
+
+Do not reuse:
+
+- The Proxmox password
+- An email password
+- The OVH password
+- A regular Linux-account password
+
+Store it in a password manager.
+
+A named administrator and TOTP-based two-factor authentication can be configured later.
+
+#### Apply the wizard configuration
+
+Complete the wizard and allow OPNsense to reload.
+
+The browser connection may temporarily disappear while services restart.
+
+Reconnect through the existing SSH tunnel using:
+
+```text
+https://localhost:8443
+```
+
+If necessary, stop the tunnel with `Ctrl+C` and recreate it:
+
+```powershell
+ssh -N -L 8443:10.77.0.1:443 morfuse@px
+```
+
+---
+
+### Step 7 of 7 — Verify the resulting LAN configuration
+
+In OPNsense, open:
+
+```text
+Interfaces
+→ Overview
+```
+
+Confirm:
+
+```text
+LAN device:  vtnet1
+IPv4:        10.77.0.1/24
+IPv6:        none
+Gateway:     none
+Status:      up
+```
+
+Also open:
+
+```text
+System
+→ Settings
+→ General
+```
+
+Confirm:
+
+```text
+Hostname:    opnsense
+Domain:      px.mcube.uk
+Timezone:    Asia/Manila
+DNS server:  1.1.1.1
+DNS server:  9.9.9.9
+```
+
+OPNsense places the hostname, domain, timezone, and system DNS configuration on this **General** settings page.
 
 ---
 
