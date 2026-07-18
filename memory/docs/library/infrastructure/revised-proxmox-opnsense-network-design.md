@@ -1381,6 +1381,14 @@ OPNsense places the hostname, domain, timezone, and system DNS configuration on 
 
 ## Phase 5 — Configure the OPNsense WAN
 
+This phase assigns the OVH Additional IP to OPNsense, creates the far gateway, installs the default route, and verifies Internet and repository access.
+
+Phase 5 has nine steps. Complete them in order.
+
+---
+
+### Step 1 of 9 — Configure the static WAN address
+
 Open:
 
 ```text
@@ -1391,46 +1399,210 @@ Interfaces
 Configure:
 
 ```text
-IPv4 Configuration Type: Static IPv4
-IPv4 Address: <OPNSENSE_ADDITIONAL_IP>
-Prefix: 32
-IPv6 Configuration Type: None
-Block private networks: enabled
-Block bogon networks: enabled
+Enable interface:          enabled
+IPv4 Configuration Type:  Static IPv4
+IPv6 Configuration Type:  None
 ```
 
-Create the WAN gateway under:
+Under **Static IPv4 configuration**, enter:
+
+```text
+IPv4 Address:  <OPNSENSE_ADDITIONAL_IP>
+Prefix:        32
+```
+
+Example only:
+
+```text
+IPv4 Address:  192.0.2.50
+Prefix:        32
+```
+
+A `/32` means that OPNsense owns only that individual public IP. It does not imply that the OVH gateway belongs to the same directly connected subnet.
+
+#### Leave the MAC address field blank
+
+Leave the OPNsense WAN **MAC Address** field blank.
+
+The correct virtual MAC is already assigned to the VM's network adapter in Proxmox. Entering another value inside OPNsense would override it.
+
+#### Enable private and bogon filtering
+
+Set:
+
+```text
+Block private networks:  enabled
+Block bogon networks:    enabled
+```
+
+These settings are appropriate because `vtnet0` is a public Internet-facing interface.
+
+#### Leave the gateway rule unset initially
+
+At this point, leave:
+
+```text
+IPv4 gateway rules:  None
+```
+
+`OVH_WAN` has not been created yet.
+
+Click:
+
+```text
+Save
+→ Apply changes
+```
+
+OPNsense may temporarily show the WAN address without working Internet access. That is expected because the gateway and default route have not yet been configured.
+
+---
+
+### Step 2 of 9 — Create the OVH gateway
+
+Open:
 
 ```text
 System
 → Gateways
 → Configuration
-→ Add
 ```
 
-Set:
+Click **Add**.
+
+Configure:
 
 ```text
-Name: OVH_WAN
-Interface: WAN
-Address Family: IPv4
-IP address: <OVH_GATEWAY>
-Upstream Gateway: enabled
-Far Gateway: enabled
-Monitor IP: 1.1.1.1
+Name:              OVH_WAN
+Description:       OVH WAN gateway
+Interface:         WAN
+Address Family:    IPv4
+IP Address:        <OVH_GATEWAY>
+Upstream Gateway:  enabled
+Far Gateway:       enabled
+Monitor IP:        1.1.1.1
 ```
 
-The `Far Gateway` option is necessary when the `/32` WAN address and gateway are not inside the same apparent subnet. OVH documents this `/32` arrangement for virtualized firewall WAN interfaces. ([OVHcloud Help Centre][1])
-
-Return to the WAN interface and select:
+Also verify the advanced options:
 
 ```text
-IPv4 Upstream Gateway: OVH_WAN
+Disable Gateway Monitoring:  unchecked
+Disable Host Route:          unchecked
+Mark Gateway as Down:        unchecked
 ```
 
-Apply the configuration.
+Leave priority and weight at their defaults.
 
-Test from:
+#### Why Far Gateway is required
+
+The WAN interface is configured as:
+
+```text
+<OPNSENSE_ADDITIONAL_IP>/32
+```
+
+From a normal subnetting perspective, no other address—including the OVH gateway—is inside that `/32`.
+
+Enabling **Far Gateway** tells OPNsense that the gateway may legitimately exist outside the interface's directly connected subnet. OPNsense defines this option specifically for gateways outside the connected interface network.
+
+Conceptually, OPNsense needs to install:
+
+```text
+<OVH_GATEWAY> reachable through vtnet0
+0.0.0.0/0 routed through <OVH_GATEWAY>
+```
+
+#### Why Upstream Gateway is enabled
+
+This identifies `OVH_WAN` as an Internet-facing gateway that can provide the system's default IPv4 route.
+
+#### Why Monitor IP is `1.1.1.1`
+
+The immediate OVH gateway being reachable only proves that the local link works. Monitoring `1.1.1.1` checks whether traffic can travel beyond the gateway.
+
+OPNsense requires the monitor address to be reachable through the interface and gateway being monitored.
+
+Click:
+
+```text
+Save
+→ Apply changes
+```
+
+---
+
+### Step 3 of 9 — Assign the gateway to the WAN interface
+
+Return to:
+
+```text
+Interfaces
+→ WAN
+```
+
+Under **Static IPv4 configuration**, select:
+
+```text
+IPv4 gateway rules:  OVH_WAN
+```
+
+Click:
+
+```text
+Save
+→ Apply changes
+```
+
+Wait several seconds for the routes and gateway-monitoring service to reload.
+
+Do not add a WAN firewall rule during this process. Traffic initiated by OPNsense itself does not require an inbound WAN allow rule.
+
+---
+
+### Step 4 of 9 — Verify the installed route and gateway
+
+Open:
+
+```text
+System
+→ Routes
+→ Status
+```
+
+Look for a default IPv4 route resembling:
+
+```text
+Destination:  0.0.0.0/0
+Gateway:      <OVH_GATEWAY>
+Interface:    vtnet0
+```
+
+There should also be a route that makes the far gateway reachable through the WAN interface.
+
+Then open:
+
+```text
+System
+→ Gateways
+→ Configuration
+```
+
+Find `OVH_WAN` and confirm:
+
+```text
+Gateway:  OVH_WAN
+Status:   Online
+```
+
+It may initially display **Pending** or **Offline** for several seconds while monitoring starts.
+
+If it remains offline, check whether the monitor address is reachable through the intended interface and whether the appropriate route exists under **System → Routes → Status**.
+
+---
+
+### Step 5 of 9 — Test the OVH gateway
+
+Open:
 
 ```text
 Interfaces
@@ -1438,15 +1610,184 @@ Interfaces
 → Ping
 ```
 
-Test in this order:
+Configure:
 
 ```text
-OVH gateway
-1.1.1.1
+Address Family:  IPv4
+Source Address:  <OPNSENSE_ADDITIONAL_IP>
+Host:            <OVH_GATEWAY>
+Count:           3
+```
+
+Select the WAN Additional IP as the source. OPNsense's diagnostic ping supports choosing the source address so the correct interface and route can be verified.
+
+Run the test.
+
+Expected:
+
+```text
+0% packet loss
+```
+
+If the gateway test fails, check:
+
+- [ ] The correct Additional IP is entered.
+- [ ] The prefix is `/32`.
+- [ ] The correct OVH gateway is entered.
+- [ ] **Far Gateway** is enabled.
+- [ ] WAN is `vtnet0`.
+- [ ] `vtnet0` is connected to `vmbr0`.
+- [ ] `vtnet0` uses the OVH virtual MAC.
+- [ ] The Additional IP is attached to this OVH server.
+
+Do not continue until the gateway is reachable.
+
+---
+
+### Step 6 of 9 — Test Internet routing
+
+Still under:
+
+```text
+Interfaces
+→ Diagnostics
+→ Ping
+```
+
+Configure:
+
+```text
+Source Address:  <OPNSENSE_ADDITIONAL_IP>
+Host:            1.1.1.1
+```
+
+Run the test.
+
+If the OVH gateway responds but `1.1.1.1` does not, open:
+
+```text
+System
+→ Routes
+→ Status
+```
+
+Make sure the default route points to `OVH_WAN`.
+
+Also verify:
+
+```text
+System
+→ Gateways
+→ Configuration
+→ OVH_WAN
+```
+
+These settings must remain:
+
+```text
+Upstream Gateway:   enabled
+Far Gateway:        enabled
+Disable Host Route: unchecked
+```
+
+---
+
+### Step 7 of 9 — Test DNS resolution
+
+Pinging `pkg.opnsense.org` alone is not a reliable repository test. A hostname may resolve and serve HTTPS while refusing ICMP echo requests.
+
+Instead, open:
+
+```text
+Interfaces
+→ Diagnostics
+→ DNS Lookup
+```
+
+Enter:
+
+```text
 pkg.opnsense.org
 ```
 
-Do not continue until all three work.
+The lookup should return at least one IP address.
+
+The hostname may also be tested with ping, but do not treat a failed ping as conclusive if DNS resolution works.
+
+---
+
+### Step 8 of 9 — Test the OPNsense repository
+
+Open:
+
+```text
+System
+→ Firmware
+→ Status
+```
+
+Click **Check for updates**.
+
+This confirms that:
+
+- The WAN address works.
+- The default route works.
+- DNS resolution works.
+- HTTPS works.
+- The OPNsense repository is reachable.
+
+Do not proceed if errors appear, such as:
+
+```text
+Transient resolver failure
+Unable to update repository
+Repository has no meta file
+```
+
+The completion criteria are:
+
+- [x] The OVH gateway responds.
+- [x] `1.1.1.1` responds.
+- [x] `pkg.opnsense.org` resolves.
+- [x] The firmware update check reaches the repository.
+
+---
+
+### Step 9 of 9 — Complete the final configuration check
+
+The OPNsense WAN should now show:
+
+```text
+Interface:              vtnet0
+Bridge:                 vmbr0
+MAC:                    OVH-generated virtual MAC
+IPv4 Configuration:     Static IPv4
+IPv4 Address:           <OPNSENSE_ADDITIONAL_IP>/32
+IPv6 Configuration:     None
+IPv4 gateway rules:     OVH_WAN
+Block private networks: enabled
+Block bogon networks:   enabled
+```
+
+The gateway should show:
+
+```text
+Name:              OVH_WAN
+Interface:         WAN
+Address Family:    IPv4
+IP Address:        <OVH_GATEWAY>
+Upstream Gateway:  enabled
+Far Gateway:       enabled
+Monitor IP:        1.1.1.1
+Status:            Online
+```
+
+Keep this management path unchanged:
+
+```text
+Proxmox vmbr1:  10.77.0.2/24
+OPNsense LAN:   10.77.0.1/24
+```
 
 ---
 
