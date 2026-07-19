@@ -3,8 +3,8 @@ date: 2026-06-06
 type: howto
 tags: [vps, provisioning, ansible, tailscale, infrastructure]
 related:
-  - memory/docs/infrastructure/dokploy-service-deployment.md
-  - memory/docs/infrastructure/current-services.md
+  - memory/docs/library/infrastructure/dokploy-service-deployment.md
+  - memory/docs/library/infrastructure/current-services.md
 ---
 
 # Server Provisioning

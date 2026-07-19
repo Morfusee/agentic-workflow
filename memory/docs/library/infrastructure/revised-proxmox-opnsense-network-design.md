@@ -1,3 +1,13 @@
+---
+date: 2026-07-19
+type: howto
+tags: [proxmox, opnsense, caddy, dokploy, networking, infrastructure]
+related:
+  - memory/docs/library/infrastructure/proxmox-opnsense-network-design.md
+  - memory/docs/library/infrastructure/opnsense-hardening-and-network-segmentation.md
+  - memory/docs/library/infrastructure/dokploy-service-deployment.md
+---
+
 # Unified Proxmox → OPNsense → Caddy → Dokploy Guide
 
 This combines the original OPNsense routing setup, the Caddy edge-proxy setup, two Dokploy servers, wildcard DNS, internal DNS, and the migration away from double NAT.

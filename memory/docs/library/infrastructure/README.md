@@ -1,3 +1,17 @@
+---
+date: 2026-07-17
+type: index
+tags: [infrastructure, networking, deployment, documentation]
+related:
+  - memory/docs/library/infrastructure/current-services.md
+  - memory/docs/library/infrastructure/server-provisioning.md
+  - memory/docs/library/infrastructure/dokploy-service-deployment.md
+  - memory/docs/library/infrastructure/proxmox-opnsense-network-design.md
+  - memory/docs/library/infrastructure/revised-proxmox-opnsense-network-design.md
+  - memory/docs/library/infrastructure/opnsense-hardening-and-network-segmentation.md
+  - memory/docs/library/infrastructure/proxmox-ubuntu-cloud-init-template.md
+---
+
 # Infrastructure
 
 Documentation for servers, networking, deployments, and currently running services.

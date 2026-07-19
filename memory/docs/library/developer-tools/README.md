@@ -1,3 +1,12 @@
+---
+date: 2026-07-17
+type: index
+tags: [developer-tools, git, workflow, documentation]
+related:
+  - memory/docs/library/developer-tools/git-worktree-guide.md
+  - memory/docs/library/developer-tools/lazygit-lazyvim-cheatsheet.md
+---
+
 # Developer Tools
 
 Practical references for Git worktrees, LazyGit, LazyVim, and recovery workflows.

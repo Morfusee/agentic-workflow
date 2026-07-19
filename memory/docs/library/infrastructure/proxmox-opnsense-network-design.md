@@ -1,3 +1,13 @@
+---
+date: 2026-07-17
+type: howto
+tags: [proxmox, opnsense, networking, firewall, infrastructure]
+related:
+  - memory/docs/library/infrastructure/revised-proxmox-opnsense-network-design.md
+  - memory/docs/library/infrastructure/opnsense-hardening-and-network-segmentation.md
+  - memory/docs/library/infrastructure/proxmox-ubuntu-cloud-init-template.md
+---
+
 # Recommended design
 
 With only **one public IPv4**, I would **not** give the public IP directly to the OPNsense VM. Keep the primary IPv4 on Proxmox and place OPNsense behind a small private transit network.

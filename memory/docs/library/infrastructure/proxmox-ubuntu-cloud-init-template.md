@@ -1,3 +1,12 @@
+---
+date: 2026-07-17
+type: howto
+tags: [proxmox, ubuntu, cloud-init, vm-template, infrastructure]
+related:
+  - memory/docs/library/infrastructure/proxmox-opnsense-network-design.md
+  - memory/docs/library/infrastructure/server-provisioning.md
+---
+
 You can do **nearly everything through the Proxmox web interface**. The only exception is importing the initial Ubuntu cloud-image disk: Proxmox still lists direct disk-image import as unavailable in the GUI, so you paste one command into **Node → Shell**, which is itself inside the web interface. After that, creating new VMs is entirely point-and-click. ([Proxmox VE][1])
 
 # Part 1: Create the Ubuntu template once

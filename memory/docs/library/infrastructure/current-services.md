@@ -3,8 +3,8 @@ date: 2026-06-06
 type: reference
 tags: [vps, docker, dokploy, services, infrastructure]
 related:
-  - memory/docs/infrastructure/server-provisioning.md
-  - memory/docs/infrastructure/dokploy-service-deployment.md
+  - memory/docs/library/infrastructure/server-provisioning.md
+  - memory/docs/library/infrastructure/dokploy-service-deployment.md
   - memory/notes/2026-05-30-vps-current-services.md
 ---
 

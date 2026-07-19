@@ -3,8 +3,8 @@ date: 2026-06-06
 type: howto
 tags: [dokploy, deployment, cloudflare, github, infrastructure]
 related:
-  - memory/docs/infrastructure/server-provisioning.md
-  - memory/docs/infrastructure/current-services.md
+  - memory/docs/library/infrastructure/server-provisioning.md
+  - memory/docs/library/infrastructure/current-services.md
 ---
 
 # Dokploy Service Deployment
