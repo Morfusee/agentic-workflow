@@ -1845,20 +1845,20 @@ Avoid selecting the WAN gateway explicitly in this rule. Leave the gateway as th
 
 ---
 
-## Phase 8 — Configure outbound NAT
+## Phase 8 — Configure source NAT
 
 Open:
 
 ```text
 Firewall
 → NAT
-→ Outbound
+→ Source NAT
 ```
 
 Select:
 
 ```text
-Automatic outbound NAT rule generation
+Automatic Source NAT rule generation
 ```
 
 Apply the configuration.
@@ -1870,43 +1870,580 @@ OPNsense will automatically translate:
 → OPNsense WAN IPv4
 ```
 
-Automatic outbound NAT is the recommended mode when one WAN IPv4 is shared by an internal network. ([OPNsense Documentation][3])
+Automatic source NAT is the recommended mode when one WAN IPv4 is shared by an internal network. ([OPNsense Documentation][3])
 
-Do not create outbound NAT on Proxmox.
+Do not create source NAT on Proxmox.
 
 ---
 
 ## Phase 9 — Configure DHCP
 
-Use Dnsmasq as the DHCP service.
+Use Dnsmasq as the DHCP service and Unbound as the DNS resolver.
 
-Configure the LAN range:
+Phase 9 has 11 steps. Step 6 is optional, and Steps 9–11 may be deferred for now.
+
+---
+
+### Step 1 of 11 — Ensure no other DHCP server is active
+
+Only one DHCP server should listen on the LAN.
+
+Check that this service is not enabled for LAN:
 
 ```text
-Interface: LAN
-Range start: 10.77.0.100
-Range end: 10.77.0.199
-Subnet mask: 255.255.255.0
-Router: 10.77.0.1
-DNS server: 10.77.0.1
+Services
+→ KEA DHCP
 ```
 
-Reserve addresses below `.100` for infrastructure:
+Also check, if present:
 
 ```text
-10.77.0.1–9     network infrastructure
+Services
+→ ISC DHCPv4
+```
+
+If either service is enabled on LAN, disable it before enabling Dnsmasq.
+
+OPNsense warns that Dnsmasq may fail to start when Kea or ISC DHCP already occupies the required DHCP ports.
+
+This does not affect Unbound. Unbound provides DNS, while Dnsmasq will provide DHCP.
+
+---
+
+### Step 2 of 11 — Configure the Dnsmasq service
+
+Open:
+
+```text
+Services
+→ Dnsmasq DNS & DHCP
+→ General
+```
+
+Set:
+
+```text
+Enable:                        enabled
+Interface:                     LAN
+Listen Port:                   0
+DHCP authoritative:            enabled
+DHCP register firewall rules:  enabled
+Router Advertisements:         disabled
+```
+
+Then click **Apply**.
+
+#### Interface
+
+Select only:
+
+```text
+LAN
+```
+
+Do not select WAN.
+
+Selecting LAN tells Dnsmasq where to accept DHCP requests and allows OPNsense to register the required DHCP firewall rules for that interface.
+
+#### Listen Port
+
+Set:
+
+```text
+0
+```
+
+This is an intentional special value. In OPNsense, setting the Dnsmasq listening port to `0` completely disables its DNS function while leaving DHCP available. This avoids a conflict with Unbound, which normally owns TCP and UDP port 53.
+
+The service division becomes:
+
+```text
+Dnsmasq:
+  DHCP only
+  UDP 67
+
+Unbound:
+  DNS only
+  TCP/UDP 53
+```
+
+Do not leave the Dnsmasq port blank in this design. A blank value means the normal DNS port 53, which would conflict with Unbound.
+
+#### DHCP authoritative
+
+Enable this because OPNsense is intended to be the only DHCP server on `10.77.0.0/24`.
+
+Authoritative mode helps Dnsmasq respond cleanly to clients that previously received leases from another network or DHCP server.
+
+#### DHCP register firewall rules
+
+Enable this.
+
+It creates the service-level firewall allowances required for LAN clients to send DHCP requests to OPNsense. It does not grant general Internet access; that still depends on the LAN firewall rules.
+
+#### Router Advertisements
+
+Leave this disabled because IPv6 is currently disabled in this design.
+
+---
+
+### Step 3 of 11 — Create the LAN DHCP range
+
+Open:
+
+```text
+Services
+→ Dnsmasq DNS & DHCP
+→ DHCP ranges
+```
+
+Click **Add**.
+
+Configure:
+
+```text
+Interface:      LAN
+Start address:  10.77.0.100
+End address:    10.77.0.199
+```
+
+For the domain field, either leave it blank or enter:
+
+```text
+px.mcube.uk
+```
+
+Leaving it blank allows the system domain configured earlier to be used.
+
+Leave the remaining advanced fields at their defaults unless there is a specific reason to change them.
+
+Click:
+
+```text
+Save
+→ Apply
+```
+
+OPNsense's current Dnsmasq configuration uses this model: select an interface and provide the beginning and end of the address pool.
+
+---
+
+### Step 4 of 11 — Use the automatically derived DHCP options
+
+The original phase listed:
+
+```text
+Subnet mask:  255.255.255.0
+Router:       10.77.0.1
+DNS server:   10.77.0.1
+```
+
+Those are the correct values for clients to receive, but the current Dnsmasq interface may not ask for them manually.
+
+Dnsmasq automatically derives the common DHCP options from the interface receiving the request:
+
+```text
+Subnet:  10.77.0.0/24
+Mask:    255.255.255.0
+
+Router option:
+10.77.0.1
+
+DNS-server option:
+10.77.0.1
+```
+
+The router and DNS values default to the IPv4 address of the OPNsense LAN interface. OPNsense documents that a DHCP range automatically sends these standard options without requiring separate manual entries.
+
+Therefore, the configured range can be as simple as:
+
+```text
+Interface:  LAN
+Start:      10.77.0.100
+End:        10.77.0.199
+```
+
+Do not manually override the router or DNS options unless the defaults are wrong.
+
+---
+
+### Step 5 of 11 — Reserve addresses below `.100`
+
+The addresses below `.100` are protected because they are outside the DHCP pool.
+
+Dnsmasq will only allocate dynamically:
+
+```text
+10.77.0.100–10.77.0.199
+```
+
+It will not dynamically assign:
+
+```text
+10.77.0.2
+10.77.0.10
+10.77.0.11
+10.77.0.50
+```
+
+There is no need to create 98 individual reservations.
+
+The planned address allocation is:
+
+```text
+10.77.0.1       OPNsense
+10.77.0.2       Proxmox
+10.77.0.3–9     Network infrastructure
 10.77.0.10      Dokploy production
 10.77.0.11      Dokploy staging
-10.77.0.12–99   additional static servers
+10.77.0.12–99   Static servers
 ```
 
-Because Unbound will provide DNS, configure Dnsmasq so it does not also bind to DNS port 53:
+Configure these static addresses directly in the VM's operating system or through Proxmox cloud-init.
+
+For example, Dokploy production should use:
 
 ```text
-Dnsmasq DNS listening port: 0
+Address:  10.77.0.10/24
+Gateway:  10.77.0.1
+DNS:      10.77.0.1
 ```
 
-Avoid running Dnsmasq DNS and Unbound on the same address and port.
+Do not configure the same machine with both a manually assigned static address and a DHCP reservation. Choose one method per machine.
+
+For infrastructure servers, direct static addressing through cloud-init is appropriate.
+
+---
+
+### Optional Step 6 of 11 — Create DHCP reservations
+
+For ordinary devices that should use DHCP but always receive the same address, create a Dnsmasq host entry.
+
+Open:
+
+```text
+Services
+→ Dnsmasq DNS & DHCP
+→ Hosts
+```
+
+Add:
+
+```text
+Host:                <hostname>
+IP addresses:        <reserved-address>
+Hardware addresses:  <device-MAC>
+```
+
+For example:
+
+```text
+Host:                monitoring
+IP addresses:        10.77.0.20
+Hardware addresses:  BC:24:11:12:34:56
+```
+
+Reservations may exist outside the dynamic DHCP pool. OPNsense treats each reservation as its own single-address allocation.
+
+For cloud-init servers, static guest configuration remains simpler and more explicit.
+
+---
+
+### Step 7 of 11 — Confirm Unbound is running
+
+Open:
+
+```text
+Services
+→ Unbound DNS
+→ General
+```
+
+Confirm:
+
+```text
+Enable Unbound:  enabled
+Listen Port:     blank or 53
+```
+
+A blank Unbound listening port means the normal DNS port 53. Unbound is OPNsense's standard recursive DNS resolver and is enabled by default on new installations.
+
+Do not set both services to port 53.
+
+Correct:
+
+```text
+Unbound port:  53
+Dnsmasq port:  0
+```
+
+Incorrect:
+
+```text
+Unbound port:  53
+Dnsmasq port:  53
+```
+
+---
+
+### Step 8 of 11 — Understand the limitation of Dnsmasq port `0`
+
+With Dnsmasq's DNS feature disabled, it provides addresses but does not answer DNS queries for dynamically registered DHCP hostnames.
+
+For example, a DHCP client named:
+
+```text
+test-vm
+```
+
+may receive an address successfully, but Unbound will not necessarily resolve:
+
+```text
+test-vm.px.mcube.uk
+```
+
+For important static servers, create records under:
+
+```text
+Services
+→ Unbound DNS
+→ Overrides
+```
+
+For example:
+
+```text
+dokploy-prod.px.mcube.uk  → 10.77.0.10
+dokploy-stage.px.mcube.uk → 10.77.0.11
+```
+
+A more advanced alternative is to let Dnsmasq provide DHCP-hostname DNS on a nonstandard port such as `53053`, then configure Unbound to forward the relevant local zone to it. OPNsense documents that architecture, but it is not necessary for this initial deployment.
+
+For now, port `0` is the simpler option.
+
+> **Optional stopping point:** The initial DHCP configuration is complete. Steps 9–11 are validation and observation tasks that may be deferred for now.
+
+---
+
+### Optional Step 9 of 11 — Test DHCP from a private VM
+
+Use a test VM attached to:
+
+```text
+Bridge: vmbr1
+```
+
+Configure its IPv4 networking to use DHCP.
+
+On Ubuntu with Netplan, that normally resembles:
+
+```yaml
+network:
+  version: 2
+  ethernets:
+    ens18:
+      dhcp4: true
+```
+
+The interface name may differ.
+
+Restart networking or reboot the VM, and then inspect its lease:
+
+```shell
+ip -4 address
+ip route
+cat /etc/resolv.conf
+```
+
+Expected results:
+
+```text
+Address:
+10.77.0.100–10.77.0.199
+
+Subnet:
+10.77.0.0/24
+
+Default gateway:
+10.77.0.1
+
+DNS:
+10.77.0.1
+```
+
+The first client will not necessarily receive `.100`; Dnsmasq may choose any currently available address in the configured range.
+
+---
+
+### Optional Step 10 of 11 — Test connectivity in order
+
+From the DHCP client, perform these tests in order.
+
+Confirm its address:
+
+```shell
+ip -4 address
+```
+
+Confirm its route:
+
+```shell
+ip route
+```
+
+Expected:
+
+```text
+default via 10.77.0.1
+```
+
+Test the gateway:
+
+```shell
+ping -c 3 10.77.0.1
+```
+
+Test public routing:
+
+```shell
+ping -c 3 1.1.1.1
+```
+
+Test DNS through Unbound:
+
+```shell
+getent hosts example.com
+```
+
+Alternatively:
+
+```shell
+nslookup example.com 10.77.0.1
+```
+
+Test HTTPS:
+
+```shell
+curl -I https://example.com
+```
+
+If all these tests work, DHCP, LAN firewalling, source NAT, routing, and DNS are operating together.
+
+---
+
+### Optional Step 11 of 11 — Inspect active leases
+
+Open:
+
+```text
+Services
+→ Dnsmasq DNS & DHCP
+→ Leases
+```
+
+The test VM should appear with information such as:
+
+- IP address
+- MAC address
+- Hostname
+- Lease start
+- Lease expiry
+
+If the lease does not appear, open:
+
+```text
+Services
+→ Dnsmasq DNS & DHCP
+→ Log
+```
+
+OPNsense recommends checking this log when Dnsmasq fails to start or issue leases.
+
+---
+
+### Troubleshooting reference
+
+#### Dnsmasq will not start
+
+Check:
+
+- [ ] Dnsmasq is enabled.
+- [ ] The LAN interface is selected.
+- [ ] A DHCP range exists.
+- [ ] Kea DHCP is disabled.
+- [ ] ISC DHCP is disabled.
+- [ ] **Listen Port** is `0`.
+
+Then inspect:
+
+```text
+Services
+→ Dnsmasq DNS & DHCP
+→ Log
+```
+
+#### A client receives no IP address
+
+Check that its NIC is attached to:
+
+```text
+vmbr1
+```
+
+Not:
+
+```text
+vmbr0
+```
+
+Then verify:
+
+```text
+DHCP range interface:          LAN
+DHCP register firewall rules: enabled
+Range:                         10.77.0.100–199
+```
+
+#### A client receives an IP but has no Internet access
+
+Check:
+
+```text
+Default gateway:  10.77.0.1
+LAN firewall pass rule
+Automatic Source NAT
+OVH_WAN gateway status
+```
+
+#### A client can reach `1.1.1.1` but not domain names
+
+Check:
+
+```text
+DNS server received by client:  10.77.0.1
+Unbound service:                 running
+Unbound listen port:             53
+Dnsmasq listen port:             0
+```
+
+#### Dnsmasq reports that port 53 is already in use
+
+Confirm:
+
+```text
+Services
+→ Dnsmasq DNS & DHCP
+→ General
+→ Listen Port
+```
+
+is exactly:
+
+```text
+0
+```
+
+Then apply the configuration again.
 
 ---
 
