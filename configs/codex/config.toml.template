@@ -35,3 +35,10 @@ enabled = true
 [mcp_servers.codebase-memory]
 command = "codebase-memory-mcp"
 enabled = true
+
+[marketplaces.ponytail]
+source_type = "git"
+source = "https://github.com/DietrichGebert/ponytail.git"
+
+[plugins."ponytail@ponytail"]
+enabled = true
