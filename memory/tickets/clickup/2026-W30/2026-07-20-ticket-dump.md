@@ -1,3 +1,42 @@
+# Stand-up Script
+
+Yesterday, I created tasks to improve error verbosity for failed E2E test runs, add Last School Attended values to EnrollMate seed data, and fix guardian relationship rules for unavailable parents. ClickUp later recorded the E2E error task as in progress and the Last School Attended task as complete, although the actors for those status changes are unavailable; the guardian relationship task remains to do.
+
+No major blockers right now.
+
+---
+
+# Selected Tasks
+
+- 86d3r7d1t: Improve error verbosity for failed E2E test runs
+  - Status: in progress
+  - Activity date: 2026-07-20
+  - URL: https://app.clickup.com/t/86d3r7d1t
+  - Reference: `# All Scraped Tasks` -> `## 86d3r7d1t: Improve error verbosity for failed E2E test runs`
+  - Stand-up relevance: Mark created the task as a triage contribution; ClickUp later recorded it as in progress, but the update actor is unavailable.
+
+- 86d3r7ety: Add Last School Attended field to EnrollMate seed data
+  - Status: complete
+  - Activity date: 2026-07-20
+  - URL: https://app.clickup.com/t/86d3r7ety
+  - Reference: `# All Scraped Tasks` -> `## 86d3r7ety: Add Last School Attended field to EnrollMate seed data`
+  - Stand-up relevance: Mark created the task; ClickUp later recorded it as complete and closed, but the closing actor is unavailable.
+
+- 86d3r7fhy: Fix guardian relationship rules for unavailable parents
+  - Status: to do
+  - Activity date: 2026-07-20
+  - URL: https://app.clickup.com/t/86d3r7fhy
+  - Reference: `# All Scraped Tasks` -> `## 86d3r7fhy: Fix guardian relationship rules for unavailable parents`
+  - Stand-up relevance: Mark created the task in to-do status; no later activity was found.
+
+---
+
+# Unselected Tasks
+
+No unselected tasks remain.
+
+---
+
 # Ticket Dump
 
 Generated: 2026-07-20 22:34:44 +08:00
