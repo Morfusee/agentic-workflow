@@ -10,6 +10,7 @@ related:
   - memory/docs/library/infrastructure/revised-proxmox-opnsense-network-design.md
   - memory/docs/library/infrastructure/opnsense-hardening-and-network-segmentation.md
   - memory/docs/library/infrastructure/proxmox-ubuntu-cloud-init-template.md
+  - memory/docs/library/infrastructure/github-vps-limited-access.md
 ---
 
 # Infrastructure
@@ -23,6 +24,7 @@ Documentation for servers, networking, deployments, and currently running servic
 - [Dokploy service deployment](dokploy-service-deployment.md) — deploy and expose an application through Dokploy, Traefik, and Cloudflare.
 - [Proxmox and OPNsense network design](proxmox-opnsense-network-design.md) — build the private VM network, firewall, NAT, DHCP, DNS, and public forwarding architecture.
 - [Proxmox Ubuntu cloud-init template](proxmox-ubuntu-cloud-init-template.md) — create a reusable Ubuntu 24.04 template and provision cloned VMs through the Proxmox interface.
+- [Limited GitHub access for a coding VPS](github-vps-limited-access.md) — grant selected repositories narrowly scoped HTTPS access while protecting administrative operations and important branches.
 
 ## Quick routing
 
@@ -31,3 +33,4 @@ Documentation for servers, networking, deployments, and currently running servic
 - Shipping an application? Open **Dokploy service deployment**.
 - Configuring Proxmox networking or OPNsense? Open **Proxmox and OPNsense network design**.
 - Creating reusable Ubuntu VMs in Proxmox? Open **Proxmox Ubuntu cloud-init template**.
+- Connecting a coding VPS to selected GitHub repositories? Open **Limited GitHub access for a coding VPS**.
