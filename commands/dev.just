@@ -8,3 +8,7 @@ serve-opencode:
 # Forward local port 8443 to the OPN service through px
 opn:
     ssh -N -L 8443:10.77.0.1:8443 morfuse@px
+
+# Tunnel MCP OAuth callback port from the remote headless server
+mcp-tunnel:
+    ssh -N -L 127.0.0.1:19876:127.0.0.1:19876 morfuse@agent-morph
