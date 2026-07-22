@@ -1,0 +1,4 @@
+interface:
+  display_name: "Branch Change Explainer"
+  short_description: "Explain committed branch changes in exhaustive detail"
+  default_prompt: "Use $branch-change-explainer to explain the committed changes on this branch."
