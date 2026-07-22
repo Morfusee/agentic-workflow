@@ -2,11 +2,13 @@
 default:
     @just --list auth
 
+python := if os() == "windows" { "python" } else { "python3" }
+
 save +name:
-    python3 "{{ justfile_directory() }}/scripts/auth/switch-accounts.py" save "{{ name }}"
+    @{{ python }} "{{ justfile_directory() }}/scripts/auth/switch-accounts.py" save "{{ name }}"
 
 switch +name:
-    python3 "{{ justfile_directory() }}/scripts/auth/switch-accounts.py" switch "{{ name }}"
+    @{{ python }} "{{ justfile_directory() }}/scripts/auth/switch-accounts.py" switch "{{ name }}"
 
 list:
-    python3 "{{ justfile_directory() }}/scripts/auth/switch-accounts.py" list
+    @{{ python }} "{{ justfile_directory() }}/scripts/auth/switch-accounts.py" list
