@@ -15,4 +15,4 @@ mod sync 'commands/sync.just'
 
 [private]
 default:
-    @just --list
+    @just --list --list-submodules --unsorted
