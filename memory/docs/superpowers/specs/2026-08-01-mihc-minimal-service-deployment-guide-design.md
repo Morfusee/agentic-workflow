@@ -5,8 +5,7 @@
 ## Goal
 
 Replace the broad production operations runbook with a concise guide for
-deploying each MIHC service group independently through Coolify, Dokploy, or
-plain Docker Compose.
+deploying each MIHC service group independently through Coolify or Dokploy.
 
 ## Scope
 
@@ -17,7 +16,7 @@ configuration unchanged. Simplify current documentation so it covers only:
 - the shared `mihc-network`;
 - PgDog `pgdog.toml` and `users.toml` configuration;
 - individual Coolify and Dokploy resources;
-- exact per-service Compose startup commands; and
+- the service-owned `compose.deploy.yml` files; and
 - the required service startup sequence.
 
 Remove backup, update, rollback, reset, recovery, volume-migration, and general
@@ -33,7 +32,7 @@ documentation, including local-only pgAdmin guidance, remains available.
 3. One section for Inngest/PostgreSQL/Redis.
 4. One section for Next.js.
 5. One section for Playwright/Hono.
-6. The exact startup order and matching `docker compose ... up -d` commands.
+6. The required order for deploying or starting those resources.
 
 The root README, Docker README, documentation index, containerized
 infrastructure guide, and Docker command guide link to the authoritative guide
@@ -80,6 +79,6 @@ routed publicly. pgAdmin is not a production resource.
 Validation must prove that all four production Compose files render with their
 matching example environment files; PgDog/PostgreSQL owns `mihc-network`; all
 consumer services attach to the external network; the guide uses exact tracked
-paths and startup commands; duplicate production instructions are removed from
-other current documentation; no production pgAdmin or disclosed credential is
-introduced; and `git diff --check` passes.
+paths and the required deployment sequence; duplicate production instructions
+are removed from other current documentation; no production pgAdmin or
+disclosed credential is introduced; and `git diff --check` passes.
