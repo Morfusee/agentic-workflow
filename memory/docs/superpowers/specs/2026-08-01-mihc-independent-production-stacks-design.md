@@ -49,9 +49,11 @@ Documentation therefore treats starting PgDog/PostgreSQL first as mandatory.
 ## Service Definitions
 
 Production definitions preserve the images, environment contracts, volumes,
-healthchecks, and internal service hostnames from the supplied deployed-server
-configuration. Internal-only endpoints use `expose`; no production definition
-publishes pgAdmin or includes its data volume.
+healthchecks, exposure settings, and internal service hostnames from the
+supplied deployed-server configuration. PgDog retains its `6432:6432` host
+mapping and must be restricted at the host or platform boundary; the supplied
+Next.js, Playwright, Inngest, PostgreSQL, and Redis definitions use `expose`.
+No production definition publishes pgAdmin or includes its data volume.
 
 The Inngest stack contains `inngest`, `inngest-postgres`, and `inngest-redis`.
 The PgDog/PostgreSQL stack contains `app-pgdog` and `app-postgres`. Next.js and
