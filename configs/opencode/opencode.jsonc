@@ -11,6 +11,11 @@
     },
   },
   "mcp": {
+    "personal-n8n": {
+      "type": "remote",
+      "url": "https://neightn.cloud.mcube.uk/mcp-server/http",
+      "enabled": true,
+    },
     "linear": {
       "type": "remote",
       "url": "https://mcp.linear.app/mcp",
