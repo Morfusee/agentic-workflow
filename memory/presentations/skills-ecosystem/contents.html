@@ -1,0 +1,721 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skills — the ecosystem</title>
+<script>
+  (function () {
+    const saved = localStorage.getItem('theme');
+    const dark = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.classList.toggle('dark', dark);
+  })();
+</script>
+<style>
+  :root {
+    --bg: #FAF9F5; --surface: #FFFFFF; --surface2: #F0EEE6;
+    --ink: #141413; --body: #3D3D3A; --muted: #87867F;
+    --line: #D1CFC5; --line-soft: #E6E3DA;
+    --clay: #D97757; --clay-soft: rgba(217,119,87,0.10);
+    --olive: #788C5D; --olive-soft: rgba(120,140,93,0.12);
+    --gold: #C9A45C; --gold-soft: rgba(201,164,92,0.12);
+    --blue: #5B7E96; --blue-soft: rgba(91,126,150,0.12);
+    --plum: #8A6E9E; --plum-soft: rgba(138,110,158,0.12);
+    --zone: rgba(20,20,19,0.025); --zone-line: #D1CFC5;
+    --serif: ui-serif, Georgia, "Times New Roman", serif;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  html.dark {
+    --bg: #141413; --surface: #1F1F1D; --surface2: #2A2A28;
+    --ink: #FAF9F5; --body: #D1CFC5; --muted: #87867F;
+    --line: #3D3D3A; --line-soft: #2A2A28;
+    --clay: #E48A6E; --clay-soft: rgba(228,138,110,0.14);
+    --olive: #9DB07C; --olive-soft: rgba(157,176,124,0.16);
+    --gold: #D4B36F; --gold-soft: rgba(212,179,111,0.14);
+    --blue: #7FA3BC; --blue-soft: rgba(127,163,188,0.15);
+    --plum: #B193C6; --plum-soft: rgba(177,147,198,0.16);
+    --zone: rgba(250,249,245,0.03); --zone-line: #3D3D3A;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg); color: var(--body); font-family: var(--sans);
+    -webkit-font-smoothing: antialiased; display: flex; flex-direction: column; overflow: hidden;
+  }
+
+  /* ── top bar ─────────────────────────────── */
+  .bar {
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    padding: 12px 20px; border-bottom: 1px solid var(--line-soft); flex: none;
+  }
+  .bar h1 { font-family: var(--serif); font-weight: 500; font-size: 19px; color: var(--ink); letter-spacing: -0.01em; }
+  .bar .sub { font-family: var(--mono); font-size: 10.5px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+  .spacer { flex: 1; }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .chip {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em;
+    padding: 5px 11px; border: 1px solid var(--line); border-radius: 999px;
+    background: transparent; color: var(--muted); cursor: pointer; transition: all .15s ease;
+  }
+  .chip:hover { color: var(--ink); border-color: var(--muted); }
+  .chip.on { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+  #themeToggle {
+    font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em;
+    padding: 5px 10px; border: 1px solid var(--line); border-radius: 6px;
+    background: transparent; color: var(--muted); cursor: pointer;
+  }
+  #themeToggle:hover { color: var(--ink); border-color: var(--muted); }
+
+  /* ── stage ───────────────────────────────── */
+  .stage { flex: 1; position: relative; min-height: 0; }
+  .stage svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+  /* zones */
+  .zone rect { fill: var(--zone); stroke: var(--zone-line); stroke-width: 1; stroke-dasharray: 5 5; rx: 16; }
+  .zone .ztitle { font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; fill: var(--ink); font-weight: 600; }
+  .zone .zsub { font-family: var(--mono); font-size: 10.5px; fill: var(--muted); opacity: 0.75; }
+  .zone .sw rect { width: 9px; height: 9px; rx: 2; }
+  .zone .sw-plan rect { fill: var(--blue); }
+  .zone .sw-proc rect { fill: var(--gold); }
+  .zone .sw-tick rect { fill: var(--clay); }
+  .zone .sw-rev rect { fill: var(--plum); }
+  .zone .sw-fe rect { fill: var(--olive); }
+  .zone .sw-know rect { fill: var(--gold); }
+  .zone .sw-tools rect { fill: var(--muted); }
+
+  /* nodes */
+  .node { cursor: pointer; }
+  .node rect { fill: var(--surface); stroke: var(--line); stroke-width: 1.5; rx: 10; transition: stroke .15s ease, filter .15s ease; }
+  .node:hover rect { stroke: var(--muted); }
+  .node.sel rect { stroke: var(--clay) !important; stroke-width: 2; }
+  .node .t  { font-family: var(--sans); font-size: 13.5px; font-weight: 600; fill: var(--ink); pointer-events: none; }
+  .node .m  { font-family: var(--mono); font-size: 10.5px; fill: var(--muted); pointer-events: none; }
+  .node .k  { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; pointer-events: none; }
+  .node.sm .t { font-size: 12px; }
+  .node.xs .t { font-size: 11px; }
+  .node.xs .m { font-size: 9px; }
+  .node.hub rect { stroke-width: 2; stroke: var(--ink); }
+  .node.hub .k { fill: var(--clay); font-weight: 700; }
+  .node.c-plan .k { fill: var(--blue); }
+  .node.c-proc .k { fill: var(--gold); }
+  .node.c-tick .k { fill: var(--clay); }
+  .node.c-rev .k { fill: var(--plum); }
+  .node.c-fe .k { fill: var(--olive); }
+  .node.c-know .k { fill: var(--gold); }
+  .node.c-tools .k { fill: var(--muted); }
+  .node.gate rect { fill: var(--clay-soft); stroke: var(--clay); }
+  .node.do rect { fill: var(--olive-soft); stroke: var(--olive); }
+
+  /* edges */
+  .edge { stroke: var(--muted); stroke-width: 1.5; fill: none; marker-end: url(#a-mut); transition: opacity .2s ease, stroke .2s ease; }
+  .edge.ctx { stroke-dasharray: 5 4; }
+  .elbl { font-family: var(--mono); font-size: 10px; fill: var(--muted); transition: opacity .2s ease; }
+
+  /* flow highlighting */
+  .stage.flowing .edge { opacity: 0.10; }
+  .stage.flowing .elbl { opacity: 0.10; }
+  .stage.flowing .node { opacity: 0.28; }
+  .stage.flowing .zone { opacity: 0.4; }
+  .stage.flowing .edge.lit {
+    opacity: 1; stroke: var(--clay); marker-end: url(#a-clay);
+    stroke-dasharray: 7 5; animation: march 0.9s linear infinite;
+  }
+  .stage.flowing .elbl.lit { opacity: 1; fill: var(--clay); }
+  .stage.flowing .node.lit { opacity: 1; }
+  .stage.flowing .node.lit rect { stroke: var(--clay); }
+  @keyframes march { to { stroke-dashoffset: -12; } }
+  @media (prefers-reduced-motion: reduce) { .stage.flowing .edge.lit { animation: none; } }
+
+  /* ── floating cards ──────────────────────── */
+  .card {
+    position: absolute; max-width: 360px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    padding: 14px 16px; box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+  }
+  #detail { right: 16px; bottom: 16px; width: 340px; }
+  #detail h3 { font-family: var(--serif); font-weight: 500; font-size: 17px; color: var(--ink); margin-bottom: 2px; }
+  #detail .meta { font-family: var(--mono); font-size: 10.5px; color: var(--muted); margin-bottom: 8px; }
+  #detail p { font-size: 12.5px; line-height: 1.55; }
+  #detail p code, #flowcap code { font-family: var(--mono); font-size: 11px; color: var(--clay); }
+  #flowcap { left: 16px; bottom: 16px; max-width: 480px; display: none; }
+  #flowcap.show { display: block; }
+  #flowcap .fname { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--clay); margin-bottom: 6px; }
+  #flowcap ol { margin-left: 18px; }
+  #flowcap li { font-size: 12.5px; line-height: 1.55; }
+
+  #legend {
+    position: absolute; top: 12px; right: 16px;
+    display: flex; gap: 14px; align-items: center;
+    font-family: var(--mono); font-size: 9.5px; color: var(--muted); letter-spacing: 0.04em;
+  }
+  #legend .lg { display: flex; gap: 5px; align-items: center; }
+  #legend .ln { display: inline-block; width: 16px; height: 0; border-top: 1.5px solid var(--muted); }
+  #legend .ln.dash { border-top-style: dashed; }
+  #legend .hd { display: inline-block; width: 10px; height: 10px; border: 2px solid var(--ink); border-radius: 3px; }
+
+  .src { position: absolute; top: 10px; left: 16px; font-family: var(--mono); font-size: 10px; color: var(--muted); opacity: 0.8; }
+  @media (max-width: 880px) {
+    body { overflow: auto; }
+    .stage { min-height: 70vh; }
+    #detail { position: static; width: auto; margin: 10px 16px; }
+    #flowcap { position: static; margin: 0 16px 16px; }
+    #legend { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div>
+    <h1>Skills — the ecosystem</h1>
+    <div class="sub">43 skills · 7 categories · three loops</div>
+  </div>
+  <div class="spacer"></div>
+  <div class="chips" id="chips">
+    <button class="chip on" data-flow="all">Everything</button>
+    <button class="chip" data-flow="feature">Feature</button>
+    <button class="chip" data-flow="ticket">Ticket</button>
+    <button class="chip" data-flow="prd">PRD</button>
+    <button class="chip" data-flow="weekly">Weekly</button>
+    <button class="chip" data-flow="review">Deep review</button>
+    <button class="chip" data-flow="deliver">Deliver</button>
+    <button class="chip" data-flow="author">Author</button>
+  </div>
+  <button id="themeToggle">Theme</button>
+</div>
+
+<div class="stage" id="stage">
+<svg viewBox="0 0 1760 1100" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Skill ecosystem relationship diagram">
+  <defs>
+    <marker id="a-mut" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" style="fill: var(--muted)"/>
+    </marker>
+    <marker id="a-clay" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" style="fill: var(--clay)"/>
+    </marker>
+  </defs>
+
+  <!-- ── zones ─────────────────────────────── -->
+  <g class="zone" id="z-plan">
+    <rect x="40" y="90" width="350" height="790"/>
+    <rect class="sw sw-plan" x="60" y="112"/>
+    <text class="ztitle" x="76" y="121">Planning</text>
+    <text class="zsub" x="60" y="140">shape the work</text>
+  </g>
+  <g class="zone" id="z-proc">
+    <rect x="40" y="900" width="350" height="180"/>
+    <rect class="sw sw-proc" x="60" y="922"/>
+    <text class="ztitle" x="76" y="931">Process</text>
+    <text class="zsub" x="60" y="950">institutionalize the audit trail</text>
+  </g>
+  <g class="zone" id="z-tick">
+    <rect x="430" y="90" width="380" height="790"/>
+    <rect class="sw sw-tick" x="450" y="112"/>
+    <text class="ztitle" x="466" y="121">Tickets</text>
+    <text class="zsub" x="450" y="140">provider work · one entrypoint</text>
+  </g>
+  <g class="zone" id="z-rev">
+    <rect x="850" y="90" width="380" height="790"/>
+    <rect class="sw sw-rev" x="870" y="112"/>
+    <text class="ztitle" x="886" y="121">Review</text>
+    <text class="zsub" x="870" y="140">verify before merge</text>
+  </g>
+  <g class="zone" id="z-fe">
+    <rect x="1270" y="90" width="450" height="400"/>
+    <rect class="sw sw-fe" x="1290" y="112"/>
+    <text class="ztitle" x="1306" y="121">Frontend</text>
+    <text class="zsub" x="1290" y="140">design → artifact → verify</text>
+  </g>
+  <g class="zone" id="z-know">
+    <rect x="1270" y="510" width="450" height="370"/>
+    <rect class="sw sw-know" x="1290" y="532"/>
+    <text class="ztitle" x="1306" y="541">Knowledge</text>
+    <text class="zsub" x="1290" y="560">capture → condense → present</text>
+  </g>
+  <g class="zone" id="z-tools">
+    <rect x="420" y="900" width="1320" height="180"/>
+    <rect class="sw sw-tools" x="440" y="922"/>
+    <text class="ztitle" x="456" y="931">Tools</text>
+    <text class="zsub" x="440" y="950">operate · author · delegate</text>
+  </g>
+
+  <!-- ── edges ─────────────────────────────── -->
+  <!-- planning spine -->
+  <path class="edge" id="e-bg" d="M215,232 L215,247"/>
+  <path class="edge" id="e-gw" d="M215,319 L215,334"/>
+  <path class="edge" id="e-wg" d="M215,406 L215,421"/>
+  <path class="edge" id="e-ge" d="M215,493 L215,508"/>
+  <path class="edge" id="e-gs" d="M370,470 C400,470 400,610 370,610"/>
+  <!-- process -->
+  <path class="edge ctx" id="e-d"  d="M60,1034 C50,1034 50,196 60,196"/>
+  <path class="edge ctx" id="e-dw" d="M370,1034 C400,1034 400,370 370,370"/>
+  <!-- planning → tickets -->
+  <path class="edge ctx" id="e-bp" d="M370,196 C420,196 420,290 450,290"/>
+  <path class="edge ctx" id="e-gp" d="M370,283 C420,283 420,308 450,308"/>
+  <path class="edge" id="e-wt" d="M370,457 C420,457 420,562 450,562"/>
+  <!-- tickets spokes -->
+  <path class="edge" id="e-t1" d="M450,203 L450,262"/>
+  <path class="edge" id="e-t2" d="M790,200 C805,200 805,386 790,386"/>
+  <path class="edge" id="e-t3" d="M790,205 C815,205 815,474 790,474"/>
+  <path class="edge" id="e-t4" d="M790,210 C825,210 825,562 790,562"/>
+  <path class="edge" id="e-t5" d="M790,215 C835,215 835,650 790,650"/>
+  <path class="edge ctx" id="e-pi" d="M450,334 C430,334 430,562 450,562"/>
+  <path class="edge" id="e-di" d="M790,386 C810,386 810,562 790,562"/>
+  <!-- tickets outward -->
+  <path class="edge" id="e-ir" d="M790,562 C790,480 870,400 870,290"/>
+  <path class="edge" id="e-ig" d="M790,562 C790,948 700,948 700,952"/>
+  <path class="edge ctx" id="e-ds" d="M440,474 C440,880 450,880 1290,815"/>
+  <path class="edge ctx" id="e-dw2" d="M790,485 C810,850 800,940 1505,940 L1505,815 L1510,815"/>
+  <!-- review spokes -->
+  <path class="edge" id="e-r1" d="M1040,258 L1040,246"/>
+  <path class="edge" id="e-r2" d="M1210,225 C1228,225 1228,366 1210,366"/>
+  <path class="edge" id="e-r3" d="M1210,210 C1234,210 1234,594 1210,594"/>
+  <path class="edge" id="e-r4" d="M1210,215 C1240,215 1240,670 1210,670"/>
+  <path class="edge" id="e-r5" d="M1210,235 C1246,235 1246,746 1210,746"/>
+  <path class="edge" id="e-tn" d="M1210,398 L1210,410"/>
+  <path class="edge" id="e-tq" d="M870,366 C845,366 845,518 870,518"/>
+  <!-- review outward -->
+  <path class="edge" id="e-ts" d="M870,243 C860,243 860,880 855,880 L425,880 L425,650 L450,650"/>
+  <!-- frontend -->
+  <path class="edge" id="e-i1" d="M1490,199 L1510,199"/>
+  <path class="edge" id="e-i2" d="M1490,230 C1505,230 1505,297 1510,297"/>
+  <path class="edge" id="e-a1" d="M1510,297 L1490,297"/>
+  <!-- knowledge -->
+  <path class="edge ctx" id="e-ns" d="M1276,619 C1255,619 1255,815 1276,815"/>
+  <path class="edge ctx" id="e-sw" d="M1490,815 L1510,815"/>
+  <path class="edge ctx" id="e-wk" d="M1710,815 C1752,815 1752,434 1710,434"/>
+  <!-- tools -->
+  <path class="edge" id="e-sa" d="M370,667 C370,945 1316,945 1316,952"/>
+  <path class="edge" id="e-ws2" d="M595,1016 C595,1011 922,1011 922,1006"/>
+
+  <!-- edge labels -->
+  <text class="elbl" data-e="e-bp" x="417" y="236" text-anchor="middle">PRD discovery</text>
+  <text class="elbl" data-e="e-gp" x="417" y="288" text-anchor="middle">grill the PRD</text>
+  <text class="elbl" data-e="e-wt" x="417" y="510" text-anchor="middle">worktree</text>
+  <text class="elbl" data-e="e-ir" x="830" y="428" text-anchor="middle">verify</text>
+  <text class="elbl" data-e="e-ig" x="745" y="876" text-anchor="middle">commit</text>
+  <text class="elbl" data-e="e-ts" x="651" y="762" text-anchor="middle">publish results</text>
+  <text class="elbl" data-e="e-ds" x="1120" y="866" text-anchor="middle">dump → stand-up facts</text>
+  <text class="elbl" data-e="e-sw" x="1500" y="764" text-anchor="middle">script → brief</text>
+  <text class="elbl" data-e="e-wk" x="1705" y="768" text-anchor="end">brief → deck</text>
+  <text class="elbl" data-e="e-sa" x="840" y="940" text-anchor="middle">delegate subtasks</text>
+
+  <!-- ── nodes: planning ───────────────────── -->
+  <g class="node gate c-plan" data-k="brainstorming">
+    <rect x="60" y="160" width="310" height="72"/>
+    <text class="t" x="80" y="189">brainstorming</text>
+    <text class="k" x="80" y="205">entry gate · before any creative work</text>
+    <text class="m" x="80" y="222">intent → requirements → design</text>
+  </g>
+  <g class="node c-plan" data-k="grill-me">
+    <rect x="60" y="247" width="310" height="72"/>
+    <text class="t" x="80" y="276">grill-me</text>
+    <text class="k" x="80" y="292">stress-test</text>
+    <text class="m" x="80" y="309">interview until the decision tree resolves</text>
+  </g>
+  <g class="node hub c-plan" data-k="writing-plans">
+    <rect x="60" y="334" width="310" height="72"/>
+    <text class="t" x="80" y="363">writing-plans</text>
+    <text class="k" x="80" y="379">hub · plans out</text>
+    <text class="m" x="80" y="396">spec → step-by-step implementation plan</text>
+  </g>
+  <g class="node c-plan" data-k="using-git-worktrees">
+    <rect x="60" y="421" width="310" height="72"/>
+    <text class="t" x="80" y="450">using-git-worktrees</text>
+    <text class="k" x="80" y="466">isolation first</text>
+    <text class="m" x="80" y="483">clean workspace before any execution</text>
+  </g>
+  <g class="node c-plan" data-k="executing-plans">
+    <rect x="60" y="508" width="310" height="72"/>
+    <text class="t" x="80" y="537">executing-plans</text>
+    <text class="k" x="80" y="553">separate session</text>
+    <text class="m" x="80" y="570">execute with review checkpoints</text>
+  </g>
+  <g class="node c-plan" data-k="subagent-driven-development">
+    <rect x="60" y="595" width="310" height="72"/>
+    <text class="t" x="80" y="624">subagent-driven-development</text>
+    <text class="k" x="80" y="640">same session</text>
+    <text class="m" x="80" y="657">independent tasks, delegated out</text>
+  </g>
+  <g class="node c-plan" data-k="refactor">
+    <rect x="60" y="682" width="310" height="72"/>
+    <text class="t" x="80" y="711">refactor</text>
+    <text class="k" x="80" y="727">maintain</text>
+    <text class="m" x="80" y="744">surgical, behavior-preserving change</text>
+  </g>
+  <g class="node c-plan" data-k="finishing-a-development-branch">
+    <rect x="60" y="769" width="310" height="72"/>
+    <text class="t" x="80" y="798">finishing-a-development-branch</text>
+    <text class="k" x="80" y="814">ship</text>
+    <text class="m" x="80" y="831">integrate when done and green</text>
+  </g>
+
+  <!-- ── nodes: process ────────────────────── -->
+  <g class="node c-proc" data-k="docs-audit-trail">
+    <rect x="60" y="1006" width="310" height="56"/>
+    <text class="t" x="80" y="1030">docs-audit-trail</text>
+    <text class="k" x="80" y="1046">bootstrap</text>
+    <text class="m" x="80" y="1052" opacity="0">.</text>
+  </g>
+
+  <!-- ── nodes: tickets ────────────────────── -->
+  <g class="node hub c-tick" data-k="workflow-orchestrator">
+    <rect x="450" y="160" width="340" height="86"/>
+    <text class="t" x="470" y="193">workflow-orchestrator</text>
+    <text class="k" x="470" y="211">hub · 6 routes</text>
+    <text class="m" x="470" y="232">Linear · ClickUp · Notion · implement</text>
+  </g>
+  <g class="node c-tick" data-k="ticket-prd-planner">
+    <rect x="450" y="262" width="340" height="72"/>
+    <text class="t" x="470" y="291">ticket-prd-planner</text>
+    <text class="k" x="470" y="307">discovery</text>
+    <text class="m" x="470" y="324">phased PRD → execution tickets</text>
+  </g>
+  <g class="node c-tick" data-k="ticket-drafter">
+    <rect x="450" y="350" width="340" height="72"/>
+    <text class="t" x="470" y="379">ticket-drafter</text>
+    <text class="k" x="470" y="395">authoring</text>
+    <text class="m" x="470" y="412">loose input → engineer-ready draft</text>
+  </g>
+  <g class="node c-tick" data-k="ticket-dump-creator">
+    <rect x="450" y="438" width="340" height="72"/>
+    <text class="t" x="470" y="467">ticket-dump-creator</text>
+    <text class="k" x="470" y="483">facts</text>
+    <text class="m" x="470" y="500">provider activity → markdown dumps</text>
+  </g>
+  <g class="node c-tick" data-k="ticket-implementation-flow">
+    <rect x="450" y="526" width="340" height="72"/>
+    <text class="t" x="470" y="555">ticket-implementation-flow</text>
+    <text class="k" x="470" y="571">execution</text>
+    <text class="m" x="470" y="588">analysis → worktree → code → commit</text>
+  </g>
+  <g class="node c-tick" data-k="ticket-review-comment-drafter">
+    <rect x="450" y="614" width="340" height="72"/>
+    <text class="t" x="470" y="643">ticket-review-comment-drafter</text>
+    <text class="k" x="470" y="659">publishing</text>
+    <text class="m" x="470" y="676">review results → tracker comments</text>
+  </g>
+
+  <!-- ── nodes: review ─────────────────────── -->
+  <g class="node hub c-rev" data-k="review-orchestrator">
+    <rect x="870" y="160" width="340" height="86"/>
+    <text class="t" x="890" y="193">review-orchestrator</text>
+    <text class="k" x="890" y="211">hub · 5 reviewers</text>
+    <text class="m" x="890" y="232">coordinates + aggregates to checks</text>
+  </g>
+  <g class="node c-rev" data-k="requesting-code-review">
+    <rect x="870" y="258" width="340" height="64"/>
+    <text class="t" x="890" y="284">requesting-code-review</text>
+    <text class="k" x="890" y="300">entry</text>
+    <text class="m" x="890" y="314">verify work before merging</text>
+  </g>
+  <g class="node do c-rev" data-k="thermos">
+    <rect x="870" y="334" width="340" height="64"/>
+    <text class="t" x="890" y="360">thermos</text>
+    <text class="k" x="890" y="376">double thermo</text>
+    <text class="m" x="890" y="390">two audits in parallel, synthesized</text>
+  </g>
+  <g class="node c-rev" data-k="thermo-nuclear-review">
+    <rect x="870" y="410" width="340" height="64"/>
+    <text class="t" x="890" y="436">thermo-nuclear-review</text>
+    <text class="k" x="890" y="452">correctness</text>
+    <text class="m" x="890" y="466">security · bugs · breaking changes</text>
+  </g>
+  <g class="node c-rev" data-k="thermo-nuclear-code-quality-review">
+    <rect x="870" y="486" width="340" height="64"/>
+    <text class="t" x="890" y="512">thermo-nuclear-code-quality-review</text>
+    <text class="k" x="890" y="528">maintainability</text>
+    <text class="m" x="890" y="542">abstractions · giant files · spaghetti</text>
+  </g>
+  <g class="node c-rev" data-k="requirements-reviewer">
+    <rect x="870" y="562" width="340" height="64"/>
+    <text class="t" x="890" y="588">requirements-reviewer</text>
+    <text class="k" x="890" y="604">acceptance</text>
+    <text class="m" x="890" y="618">pass/fail checks with evidence</text>
+  </g>
+  <g class="node c-rev" data-k="react-quality-review">
+    <rect x="870" y="638" width="340" height="64"/>
+    <text class="t" x="890" y="664">react-quality-review</text>
+    <text class="k" x="890" y="680">stack</text>
+    <text class="m" x="890" y="694">React/TS best practices + a11y</text>
+  </g>
+  <g class="node c-rev" data-k="branch-change-explainer">
+    <rect x="870" y="714" width="340" height="64"/>
+    <text class="t" x="890" y="740">branch-change-explainer</text>
+    <text class="k" x="890" y="756">context</text>
+    <text class="m" x="890" y="770">evidence-backed branch report</text>
+  </g>
+
+  <!-- ── nodes: frontend ───────────────────── -->
+  <g class="node c-fe" data-k="impeccable">
+    <rect x="1290" y="160" width="200" height="78"/>
+    <text class="t" x="1310" y="190">impeccable</text>
+    <text class="k" x="1310" y="206">design</text>
+    <text class="m" x="1310" y="224">critique · polish · harden UI</text>
+  </g>
+  <g class="node c-fe" data-k="html">
+    <rect x="1510" y="160" width="200" height="78"/>
+    <text class="t" x="1530" y="190">html</text>
+    <text class="k" x="1530" y="206">output</text>
+    <text class="m" x="1530" y="224">reports · explainers · prototypes</text>
+  </g>
+  <g class="node c-fe" data-k="agent-browser">
+    <rect x="1290" y="258" width="200" height="78"/>
+    <text class="t" x="1310" y="288">agent-browser</text>
+    <text class="k" x="1310" y="304">verify</text>
+    <text class="m" x="1310" y="322">dogfood · QA · screenshot</text>
+  </g>
+  <g class="node c-fe" data-k="html-diagram">
+    <rect x="1510" y="258" width="200" height="78"/>
+    <text class="t" x="1530" y="288">html-diagram</text>
+    <text class="k" x="1530" y="304">output</text>
+    <text class="m" x="1530" y="322">full-screen SVG architecture</text>
+  </g>
+  <g class="node sm c-fe" data-k="bootstrap-nextjs-conventions">
+    <rect x="1290" y="356" width="200" height="78"/>
+    <text class="t" x="1310" y="386">bootstrap-nextjs</text>
+    <text class="k" x="1310" y="402">stack</text>
+    <text class="m" x="1310" y="420">AGENTS.md + code-style baseline</text>
+  </g>
+  <g class="node c-fe" data-k="revealjs-presenter">
+    <rect x="1510" y="356" width="200" height="78"/>
+    <text class="t" x="1530" y="386">revealjs-presenter</text>
+    <text class="k" x="1530" y="402">output</text>
+    <text class="m" x="1530" y="420">reliable slide decks</text>
+  </g>
+
+  <!-- ── nodes: knowledge ──────────────────── -->
+  <g class="node c-know" data-k="note-taking">
+    <rect x="1290" y="580" width="200" height="78"/>
+    <text class="t" x="1310" y="610">note-taking</text>
+    <text class="k" x="1310" y="626">capture</text>
+    <text class="m" x="1310" y="644">meetings · ideas · daily logs</text>
+  </g>
+  <g class="node c-know" data-k="teach">
+    <rect x="1510" y="580" width="200" height="78"/>
+    <text class="t" x="1530" y="610">teach</text>
+    <text class="k" x="1530" y="626">transfer</text>
+    <text class="m" x="1530" y="644">lessons under memory/teach/</text>
+  </g>
+  <g class="node c-know" data-k="tldr">
+    <rect x="1290" y="678" width="200" height="78"/>
+    <text class="t" x="1310" y="708">tldr</text>
+    <text class="k" x="1310" y="724">condense</text>
+    <text class="m" x="1310" y="742">faithful, no fluff</text>
+  </g>
+  <g class="node c-know" data-k="avoid-ai-writing">
+    <rect x="1510" y="678" width="200" height="78"/>
+    <text class="t" x="1530" y="708">avoid-ai-writing</text>
+    <text class="k" x="1530" y="724">polish</text>
+    <text class="m" x="1530" y="742">strip AI-isms from any text</text>
+  </g>
+  <g class="node c-know" data-k="standup-generator">
+    <rect x="1290" y="776" width="200" height="78"/>
+    <text class="t" x="1310" y="806">standup-generator</text>
+    <text class="k" x="1310" y="822">digest</text>
+    <text class="m" x="1310" y="840">facts → spoken script</text>
+  </g>
+  <g class="node sm c-know" data-k="weekly-ticket-slideshow-generator">
+    <rect x="1510" y="776" width="200" height="78"/>
+    <text class="t" x="1530" y="806">weekly-ticket-slideshow</text>
+    <text class="k" x="1530" y="822">digest</text>
+    <text class="m" x="1530" y="840">dump + script → deck brief</text>
+  </g>
+
+  <!-- ── nodes: tools ──────────────────────── -->
+  <g class="node xs c-tools" data-k="git-commit">
+    <rect x="440" y="952" width="312" height="54"/>
+    <text class="t" x="456" y="975">git-commit</text>
+    <text class="k" x="456" y="989">conventional commits</text>
+  </g>
+  <g class="node xs c-tools" data-k="config-symlink-maintainer">
+    <rect x="766" y="952" width="312" height="54"/>
+    <text class="t" x="782" y="975">config-symlink</text>
+    <text class="k" x="782" y="989">distribution</text>
+  </g>
+  <g class="node xs c-tools" data-k="skill-orchestrator-go">
+    <rect x="1092" y="952" width="312" height="54"/>
+    <text class="t" x="1108" y="975">skill-orchestrator-go</text>
+    <text class="k" x="1108" y="989">delegation</text>
+  </g>
+  <g class="node xs c-tools" data-k="handoff">
+    <rect x="1418" y="952" width="312" height="54"/>
+    <text class="t" x="1434" y="975">handoff</text>
+    <text class="k" x="1434" y="989">between sessions</text>
+  </g>
+  <g class="node hub xs c-tools" data-k="write-a-skill">
+    <rect x="440" y="1016" width="312" height="54"/>
+    <text class="t" x="456" y="1039">write-a-skill</text>
+    <text class="k" x="456" y="1053">hub · authoring</text>
+  </g>
+  <g class="node xs c-tools" data-k="agent-advisor">
+    <rect x="766" y="1016" width="312" height="54"/>
+    <text class="t" x="782" y="1039">agent-advisor</text>
+    <text class="k" x="782" y="1053">external advice</text>
+  </g>
+  <g class="node xs c-tools" data-k="job-application">
+    <rect x="1092" y="1016" width="312" height="54"/>
+    <text class="t" x="1108" y="1039">job-application</text>
+    <text class="k" x="1108" y="1053">scour → apply</text>
+  </g>
+  <g class="node xs c-tools" data-k="jsdoc-typescript-docs">
+    <rect x="1418" y="1016" width="312" height="54"/>
+    <text class="t" x="1434" y="1039">jsdoc-ts-docs</text>
+    <text class="k" x="1434" y="1053">type-safe docs</text>
+  </g>
+</svg>
+
+  <div class="src">skills/ · 7 categories · repo-owned</div>
+
+  <div id="legend">
+    <span class="lg"><span class="ln"></span> handoff</span>
+    <span class="lg"><span class="ln dash"></span> data / context</span>
+    <span class="lg"><span class="hd"></span> hub</span>
+  </div>
+
+  <div class="card" id="flowcap">
+    <div class="fname" id="f-name"></div>
+    <ol id="f-steps"></ol>
+  </div>
+
+  <div class="card" id="detail">
+    <h3 id="d-title">Click anything</h3>
+    <div class="meta" id="d-meta">skill detail</div>
+    <p id="d-body">Every box is one of the 43 skills in this repo. The chips up top light up the real workflows — Feature, Ticket, PRD, Weekly, Deep review, Deliver, Author.</p>
+  </div>
+</div>
+<script>
+const DETAIL = {
+  brainstorming:   { t:"brainstorming", m:"planning · entry gate", b:"The <b>mandatory gate</b> before any creative work. Explores intent, requirements, and design before implementation. Feeds <code>grill-me</code> and <code>writing-plans</code>; PRD mode feeds <code>ticket-prd-planner</code>." },
+  "grill-me":      { t:"grill-me", m:"planning · stress-test", b:"Interviews you relentlessly over a plan or design until every branch of the decision tree is resolved. Sharpens specs before they become plans or PRDs." },
+  "writing-plans": { t:"writing-plans", m:"planning · hub", b:"Turns a spec into a written, multi-step implementation plan. The plan then runs through <code>executing-plans</code> (separate session) or <code>subagent-driven-development</code> (this session)." },
+  "using-git-worktrees": { t:"using-git-worktrees", m:"planning · isolation", b:"Guarantees an isolated workspace before feature work or plan execution — native tools first, git worktree fallback. Feeds both executors and <code>ticket-implementation-flow</code>." },
+  "executing-plans":{ t:"executing-plans", m:"planning · executor", b:"Executes a written plan in a <b>separate session</b> with review checkpoints. Pairs with a <code>handoff</code> doc when the session changes." },
+  "subagent-driven-development": { t:"subagent-driven-development", m:"planning · executor", b:"Executes a plan's independent tasks in the <b>current session</b>, delegating narrow subtasks via <code>skill-orchestrator-go</code>." },
+  refactor:        { t:"refactor", m:"planning · maintain", b:"Surgical refactoring — extract functions, rename, break down god functions — without changing behavior. The gradual alternative to a full rebuild." },
+  "finishing-a-development-branch": { t:"finishing-a-development-branch", m:"planning · ship", b:"Decides how to integrate when implementation is complete and tests pass. The clean exit from the review loop." },
+  "docs-audit-trail": { t:"docs-audit-trail", m:"process · bootstrap", b:"Institutionalizes the audit trail: an AGENTS.md that forces <code>docs/brainstorm</code> and <code>docs/plans</code> in bootstrappable repos, so plans and agreements always have a home." },
+  "workflow-orchestrator": { t:"workflow-orchestrator", m:"tickets · hub", b:"The <b>single entrypoint</b> for Linear, ClickUp, and Notion. Routes to every ticket skill: dumps, drafts, PRDs, implementation, review comments, stand-ups, weekly slideshows." },
+  "ticket-prd-planner": { t:"ticket-prd-planner", m:"tickets · discovery", b:"Builds phased PRDs using <code>brainstorming</code> + <code>grill-me</code>, then turns approved PRDs into provider-backed execution ticket plans." },
+  "ticket-drafter":{ t:"ticket-drafter", m:"tickets · authoring", b:"Profile-aware, engineer-ready tickets from loose input. Drafts stay provider-agnostic — only the orchestrators publish." },
+  "ticket-dump-creator": { t:"ticket-dump-creator", m:"tickets · facts", b:"Owns the common dump contract: normalized provider facts into markdown dumps with grouped summaries. Feeds <code>standup-generator</code> and the weekly slideshow." },
+  "ticket-implementation-flow": { t:"ticket-implementation-flow", m:"tickets · execution", b:"Runs a ticket from requirements to code: codebase analysis, confidence scoring, worktree, implementation, commit, optional tracker comment." },
+  "ticket-review-comment-drafter": { t:"ticket-review-comment-drafter", m:"tickets · publishing", b:"Formats review and QA results into tracker-ready comments for Linear and ClickUp. Only changes status when explicitly asked." },
+  "review-orchestrator": { t:"review-orchestrator", m:"review · hub", b:"Coordinates reviews across the focused reviewer skills and aggregates results into tracker-ready checks. Runs <code>thermos</code>, requirements, React, and branch reviewers; publishes via <code>ticket-review-comment-drafter</code>." },
+  "requesting-code-review": { t:"requesting-code-review", m:"review · entry", b:"The trigger after implementation: verifies the work meets requirements before merging. Hands off to <code>review-orchestrator</code>." },
+  thermos:         { t:"thermos", m:"review · double", b:"Runs <code>thermo-nuclear-review</code> and <code>thermo-nuclear-code-quality-review</code> <b>in parallel</b>, then synthesizes the findings." },
+  "thermo-nuclear-review": { t:"thermo-nuclear-review", m:"review · correctness", b:"Security and correctness audit of branch changes: bugs, breaking changes, security issues, devex regressions, feature-gate leaks." },
+  "thermo-nuclear-code-quality-review": { t:"thermo-nuclear-code-quality-review", m:"review · quality", b:"Extremely strict maintainability review: abstraction quality, giant files, spaghetti-condition growth." },
+  "requirements-reviewer": { t:"requirements-reviewer", m:"review · acceptance", b:"Pass/fail checks with evidence against tickets, prompts, PRDs, specs, or acceptance criteria." },
+  "react-quality-review": { t:"react-quality-review", m:"review · stack", b:"React/TypeScript best practices: performance, accessibility, testing — adherence to CODE_STANDARDS.md." },
+  "branch-change-explainer": { t:"branch-change-explainer", m:"review · context", b:"An exhaustive, evidence-backed report of the committed changes on a branch — the context layer for PRs and diffs." },
+  impeccable:      { t:"impeccable", m:"frontend · design", b:"The taste layer: design, critique, polish, and harden frontend interfaces. Shapes what <code>html</code>, <code>html-diagram</code>, and <code>revealjs-presenter</code> produce." },
+  html:            { t:"html", m:"frontend · output", b:"Self-contained HTML artifacts — reports, explainers, comparisons, decks, prototypes — in the effective-HTML style." },
+  "html-diagram":  { t:"html-diagram", m:"frontend · output", b:"Full-screen SVG architecture diagrams: clickable nodes, flow chips that light up and animate paths. This very page." },
+  "agent-browser": { t:"agent-browser", m:"frontend · verify", b:"Browser automation CLI: dogfood, QA, bug hunts, screenshots — and drives Electron apps too. Verifies the artifacts." },
+  "bootstrap-nextjs-conventions": { t:"bootstrap-nextjs-conventions", m:"frontend · stack", b:"Bootstraps and audits Next.js apps against the MIHC-derived AGENTS.md and code-style.md baseline." },
+  "revealjs-presenter": { t:"revealjs-presenter", m:"frontend · output", b:"Reliable RevealJS decks with professional typography. Receives the brief from <code>weekly-ticket-slideshow-generator</code>." },
+  "note-taking":   { t:"note-taking", m:"knowledge · capture", b:"Structured capture of meetings, ideas, research, and daily logs — a source of facts for <code>standup-generator</code>." },
+  teach:           { t:"teach", m:"knowledge · transfer", b:"Lessons under <code>memory/teach/&lt;topic&gt;/</code> — artifact-based learning that keeps the repo root clean." },
+  tldr:            { t:"tldr", m:"knowledge · condense", b:"A faithful, plain-language TLDR of pasted text, links, or files — claims, evidence, caveats, no fluff." },
+  "avoid-ai-writing": { t:"avoid-ai-writing", m:"knowledge · polish", b:"Audits and rewrites content to remove AI writing patterns. Detection-only mode included." },
+  "standup-generator": { t:"standup-generator", m:"knowledge · digest", b:"A spoken stand-up script from selected work items and evidence — facts from dumps and notes, words out. No provider calls itself." },
+  "weekly-ticket-slideshow-generator": { t:"weekly-ticket-slideshow-generator", m:"knowledge · digest", b:"Normalizes dumps and stand-up scripts into an objective presentation brief for <code>revealjs-presenter</code>. Does not author the deck." },
+  "write-a-skill": { t:"write-a-skill", m:"tools · authoring hub", b:"The craft of writing predictable skills: vocabulary, structure, frontmatter, progressive disclosure. Feeds <code>config-symlink-maintainer</code> for distribution." },
+  "config-symlink-maintainer": { t:"config-symlink-maintainer", m:"tools · distribution", b:"Repo-owned configuration as source of truth, symlinked into Codex, OpenCode, Neovim. Ships authored skills out to the agents." },
+  "skill-orchestrator-go": { t:"skill-orchestrator-go", m:"tools · delegation", b:"Subagent coordination: fan out narrow, independent subtasks while the main agent keeps authority over planning, review, and output." },
+  handoff:         { t:"handoff", m:"tools · transfer", b:"Compacts the current conversation into a handoff document for another agent — the bridge between sessions." },
+  "git-commit":    { t:"git-commit", m:"tools · git", b:"Conventional Commits with intelligent staging and safe push-failure triage. Called by <code>ticket-implementation-flow</code>." },
+  "agent-advisor": { t:"agent-advisor", m:"tools · external", b:"Delegates to ChatGPT Agent Advisor for advice, fixes, reviews, or better approaches. A standalone second opinion." },
+  "job-application": { t:"job-application", m:"tools · workflow", b:"Two-phase job search: scour first, apply after approval. Standalone — touches nothing else in this graph." },
+  "jsdoc-typescript-docs": { t:"jsdoc-typescript-docs", m:"tools · docs", b:"JSDoc and type-safe API documentation for TypeScript codebases. Standalone." },
+};
+
+const FLOWS = {
+  feature: {
+    name: "Feature — plan → ship",
+    edges: ["e-bg","e-gw","e-wg","e-gs","e-sa","e-r1"],
+    nodes: ["brainstorming","grill-me","writing-plans","using-git-worktrees","subagent-driven-development","skill-orchestrator-go","requesting-code-review","review-orchestrator","finishing-a-development-branch"],
+    steps: ["<code>brainstorming</code> — the mandatory gate: intent, requirements, design","<code>grill-me</code> — stress-test every branch of the design","<code>writing-plans</code> — turn the spec into an implementation plan","<code>using-git-worktrees</code> — isolate a workspace first","<code>subagent-driven-development</code> — execute tasks, delegating via <code>skill-orchestrator-go</code>","<code>requesting-code-review</code> → <code>review-orchestrator</code> — verify before merging","<code>finishing-a-development-branch</code> — done and green, integrate the work"]
+  },
+  ticket: {
+    name: "Ticket — lifecycle",
+    edges: ["e-t2","e-di","e-ig","e-ir","e-r1","e-ts"],
+    nodes: ["workflow-orchestrator","ticket-drafter","ticket-implementation-flow","git-commit","requesting-code-review","review-orchestrator","ticket-review-comment-drafter"],
+    steps: ["<code>workflow-orchestrator</code> routes the ask to <code>ticket-drafter</code>","Engineer-ready draft → <code>ticket-implementation-flow</code>: analysis, confidence score, worktree, implementation","<code>git-commit</code> — Conventional Commits with intelligent staging","<code>requesting-code-review</code> → <code>review-orchestrator</code>","<code>ticket-review-comment-drafter</code> publishes results back to Linear / ClickUp"]
+  },
+  prd: {
+    name: "PRD — discovery to execution",
+    edges: ["e-bp","e-gp","e-t1","e-pi"],
+    nodes: ["workflow-orchestrator","ticket-prd-planner","brainstorming","grill-me","ticket-implementation-flow"],
+    steps: ["<code>workflow-orchestrator</code> → <code>ticket-prd-planner</code>","<code>brainstorming</code> + <code>grill-me</code> shape and refine the phased PRD","Approved PRD becomes provider-backed execution tickets","Tickets route straight into <code>ticket-implementation-flow</code>"]
+  },
+  weekly: {
+    name: "Weekly — digest to deck",
+    edges: ["e-t3","e-ds","e-sw","e-wk"],
+    nodes: ["workflow-orchestrator","ticket-dump-creator","standup-generator","weekly-ticket-slideshow-generator","revealjs-presenter"],
+    steps: ["<code>workflow-orchestrator</code> collects provider activity → <code>ticket-dump-creator</code> writes the dump","<code>standup-generator</code> turns dump facts into a spoken script","<code>weekly-ticket-slideshow-generator</code> normalizes dump + script into a presentation brief","<code>revealjs-presenter</code> ships the deck"]
+  },
+  review: {
+    name: "Deep review — the gauntlet",
+    edges: ["e-r1","e-r2","e-tn","e-tq","e-r3","e-r4","e-r5","e-ts"],
+    nodes: ["requesting-code-review","review-orchestrator","thermos","thermo-nuclear-review","thermo-nuclear-code-quality-review","requirements-reviewer","react-quality-review","branch-change-explainer","ticket-review-comment-drafter"],
+    steps: ["<code>requesting-code-review</code> hands completed work to <code>review-orchestrator</code>","<code>thermos</code> runs the security and maintainability thermo audits in parallel","<code>requirements-reviewer</code> checks acceptance criteria with evidence","<code>react-quality-review</code> + <code>branch-change-explainer</code> add stack and diff context","Aggregated checks → <code>ticket-review-comment-drafter</code> publishes to the tracker"]
+  },
+  deliver: {
+    name: "Deliver — artifact out",
+    edges: ["e-i1","e-i2","e-a1"],
+    nodes: ["impeccable","html","html-diagram","agent-browser"],
+    steps: ["<code>impeccable</code> sets the design direction","<code>html</code> or <code>html-diagram</code> builds the artifact — this page is the diagram branch","<code>agent-browser</code> dogfoods and verifies the result in a real browser"]
+  },
+  author: {
+    name: "Author — skill to agent",
+    edges: ["e-ws2"],
+    nodes: ["write-a-skill","config-symlink-maintainer"],
+    steps: ["<code>write-a-skill</code> — structure, frontmatter, progressive disclosure","<code>config-symlink-maintainer</code> syncs the skill into Codex / OpenCode so agents can load it"]
+  }
+};
+
+const stage = document.getElementById('stage');
+const nodes = document.querySelectorAll('.node');
+const edges = document.querySelectorAll('.edge');
+const elbls = document.querySelectorAll('.elbl');
+const chips = document.querySelectorAll('.chip');
+const fcap = document.getElementById('flowcap');
+
+function setFlow(key) {
+  chips.forEach(c => c.classList.toggle('on', c.dataset.flow === key));
+  edges.forEach(e => e.classList.remove('lit'));
+  elbls.forEach(l => l.classList.remove('lit'));
+  nodes.forEach(n => n.classList.remove('lit'));
+  if (key === 'all') { stage.classList.remove('flowing'); fcap.classList.remove('show'); return; }
+  const f = FLOWS[key];
+  stage.classList.add('flowing');
+  f.edges.forEach(id => document.getElementById(id)?.classList.add('lit'));
+  elbls.forEach(l => { if (f.edges.includes(l.dataset.e)) l.classList.add('lit'); });
+  f.nodes.forEach(k => document.querySelector(`.node[data-k="${k}"]`)?.classList.add('lit'));
+  document.getElementById('f-name').textContent = f.name;
+  document.getElementById('f-steps').innerHTML = f.steps.map(s => `<li>${s}</li>`).join('');
+  fcap.classList.add('show');
+}
+chips.forEach(c => c.addEventListener('click', () => setFlow(c.dataset.flow)));
+
+nodes.forEach(n => n.addEventListener('click', () => {
+  nodes.forEach(x => x.classList.remove('sel'));
+  n.classList.add('sel');
+  const d = DETAIL[n.dataset.k];
+  if (!d) return;
+  document.getElementById('d-title').textContent = d.t;
+  document.getElementById('d-meta').textContent = d.m;
+  document.getElementById('d-body').innerHTML = d.b;
+}));
+
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const dark = !document.documentElement.classList.contains('dark');
+  document.documentElement.classList.toggle('dark', dark);
+  localStorage.setItem('theme', dark ? 'dark' : 'light');
+});
+</script>
+</body>
+</html>
