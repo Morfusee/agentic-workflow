@@ -96,7 +96,7 @@ If the new request conflicts with existing changes, stop and explain the conflic
 
 ## Complex Task Orchestration
 
-For large-scale work spanning 3+ files, architectural redesign, multi-step builds, or any task that has been ongoing for 3 minutes, load `$skill-orchestrator-go` before delegating to subagents. Do not load it for single-file edits, quick audits, or simple fixes.
+For large-scale work spanning 3+ files, architectural redesign, multi-step builds, or any task that has been ongoing for 3 minutes, delegate independent subtasks to parallel subagents via the task tool. Do not delegate single-file edits, quick audits, or simple fixes.
 
 ## Required Workflow Before Editing
 
