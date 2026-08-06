@@ -21,10 +21,14 @@
       "url": "https://mcp.linear.app/mcp",
       "enabled": true,
     },
+    // "clickup": {
+    //   "type": "remote",
+    //   "url": "https://mcp.clickup.com/mcp",
+    //   "enabled": true,
+    // },
     "clickup": {
-      "type": "remote",
-      "url": "https://mcp.clickup.com/mcp",
-      "enabled": true,
+      "type": "local",
+      "command": ["clickup-cli", "mcp", "serve"],
     },
     "notion": {
       "type": "remote",
