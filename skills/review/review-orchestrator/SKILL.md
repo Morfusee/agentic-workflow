@@ -18,7 +18,9 @@ Coordinate post-implementation review without owning any single review specialty
 3. Select reviewers:
    - Always run `$requirements-reviewer` and `$thermos`.
    - Run `$react-quality-review` only when React/TypeScript project evidence is present or the caller explicitly requests it.
-4. Use `$skill-orchestrator-go` to run selected reviewers in parallel when more than one reviewer is selected.
+4. Run all selected reviewers in parallel: spawn every selected reviewer as its own subagent via the task tool (`explore` type), all in one batch. Do not wait between spawns and do not run reviewers sequentially, regardless of how many are selected.
+   - Do not pin a model or variant on reviewer subagents. Unpinned subagents inherit the main agent's current model and reasoning effort (variant) automatically; pinning would break that inheritance.
+   - State the main agent's current model and reasoning effort in every reviewer prompt. Reviewers must confirm their effective model and effort in their result. Re-run any reviewer whose result reports a different model or effort before accepting its output.
 5. Give each reviewer read-only scope and require the reviewer contract output.
 6. Review every reviewer result for evidence, scope compliance, and contract compliance before accepting it.
 7. Aggregate accepted `checks` into one result set. Preserve reviewer names in check descriptions or notes when useful.
@@ -40,6 +42,7 @@ Coordinate post-implementation review without owning any single review specialty
 - Keep review separate from implementation notification. `$ticket-review-comment-drafter` owns review comments; implementation-update comments belong to the implementation workflow that produced the changes.
 - Limit every review to only the changes on the target branch. Never review the entire repository or files not touched by the branch diff. Use the smallest possible diff (e.g., `git diff <base>...HEAD`) and pass only the changed files and their relevant context to reviewers. This minimizes token usage across all reviewer subagents.
 - If reviewers disagree, report the conflict and prefer the result with stronger file-level evidence.
+- Never pin reviewer subagents to a fixed model or variant. They must inherit the main agent's current model and reasoning effort so every reviewer runs with the same quality bar as the main agent.
 
 ## Supporting References
 
