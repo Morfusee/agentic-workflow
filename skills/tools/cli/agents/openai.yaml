@@ -1,0 +1,4 @@
+interface:
+  display_name: "CLI"
+  short_description: "Route requests to registered CLIs"
+  default_prompt: "Use $cli to route CLI requests to registered command-line tools such as GitHub CLI (gh)."
